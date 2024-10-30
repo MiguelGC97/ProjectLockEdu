@@ -22,11 +22,17 @@ exports.create = (req, res) => {
 
 
 exports.findAll = (req, res) => {
-
-
-
+    Box.findAll()
+        .then((data) => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "An error ocurred while retrieving the boxes"
+            });
+    });
 };
-
 
 
 exports.findAllQuery = (req, res) => {
