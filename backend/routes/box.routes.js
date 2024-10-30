@@ -14,4 +14,5 @@ module.exports = app => {
     router.delete("/:id", boxes.delete);
 
     app.use("/api/boxes", router);
+    
 }
