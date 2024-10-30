@@ -7,6 +7,7 @@ const userController = {};
 userController.getAll = async(req, res) => {
     try{
         const users = await User, findAll();
+        
         res.status(200).json({ data:users });
     }catch(error){
         res.status(500).json({ error: error.message});
@@ -41,4 +42,20 @@ userController.delete = async (req, res) => {
     const status = deleting ? 200:404; //operador ternario.  condición ? valor_si_verdadero : valor_si_falso
     const message = deleting ? "User deleted" : "User not found";
     res.status(status).json({ message });
-}
+};
+
+//FALTA IMPLEMENTAR EL UPDATE
+// userController.update = async (req, res) => {
+//     try {
+//         const [updated] = await User.update(req.body, { where: { id: req.body.id } });
+//         if (updated) {
+//             const updatedUser = await User.findOne({ where: { id: req.body.id } });
+//             res.status(200).json({ message: "Usuario actualizado", data: updatedUser });
+//         } else {
+//             res.status(404).json({ message: "Usuario no encontrado" });
+//         }
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// };
+
