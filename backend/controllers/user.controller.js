@@ -6,8 +6,7 @@ const userController = {};
 
 userController.getAll = async(req, res) => {
     try{
-        const users = await User, findAll();
-        
+        const users = await User.findAll();
         res.status(200).json({ data:users });
     }catch(error){
         res.status(500).json({ error: error.message});
@@ -19,7 +18,7 @@ userController.getByUsername = async (req, res) => {
         const q = req.params.username;
         const users = await User.findAll({
             where: 
-            { username:  {[Op.like]: `%{q}%`}} ,
+            { username:  {[Op.like]: '%'+ q + '%'}} ,
         });
         res.status(200).json({ data: users });
         
@@ -59,3 +58,4 @@ userController.delete = async (req, res) => {
 //     }
 // };
 
+module.exports = userController;
