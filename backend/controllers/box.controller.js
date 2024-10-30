@@ -60,13 +60,35 @@ exports.findAllQuery = (req, res) => {
 
 
 exports.update = (req, res) => {
+    const id = req.params.id;
 
+    if (!id) {
+        return res.status(400).send({
+            message: "Not a valid ID"
+        });
+    }
     
-
+    Box.update(req.body, { where: {id: id}})
+    .then(() => {
+        console.log("Box updated");
+        res.send({message: "Book updated"});
+    })
 };
 
 
 exports.delete = (req, res) => {
+    const id = req.params.id;
 
+    Box.destroy({ where: { id: id}})
+    .then(() => {
+        console.log("Box erased");
+        res.send({message: "Box erased"});
+    })
+    .catch(err => {
+        res.status(500).send({
+            message:
+                err.message || "Some error ocurred while deleting the box"
+        });
+    });
     
 };
