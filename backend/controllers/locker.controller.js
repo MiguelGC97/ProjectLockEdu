@@ -6,45 +6,29 @@ exports.create = (req, res) => {
     console.log(req.body);
 
     const locker = {
+        id: req.body.id,
+        number: req.body.number,
         description: req.body.description,
-        color: req.body.color,
-};
+        location: req.body.location
 
-console.log('Note:', note);
+    };
 
-Notebook.create(note).then(data => {
-    res.send(data);
-}).catch(err => {
-    res.status(500).send({ message: err.message || "Some error occurred while creating the notebook." });
-});
+    console.log('Locker:', locker);
+
+    Locker.create(locker).then(data => {
+        res.send(data);
+    }).catch(err => {
+        res.status(500).send({ message: err.message || "An error occurred while creating the locker." });
+    });
 };
 
 
 exports.findAll = (req, res) => {
 
-    const c = req.params.color;
-
-    Notebook.findAll().then((data) => {
+    Locker.findAll().then((data) => {
         res.send(data);
     }).catch(err => {
-        res.status(500).send({ message: err.message || "Some error occurred while retrieving all notes." });
-    });
-
-};
-
-
-
-exports.findAllQuery = (req, res) => {
-
-    const q = req.params.query;
-    Notebook.findAll({
-        where: {
-            content: { [Op.ilike]: '%' + q + '%' },
-        },
-    }).then((data) => {
-        res.send(data);
-    }).catch(err => {
-        res.status(500).send({ message: err.message || "Some error occurred while retrieving notes with this text." });
+        res.status(500).send({ message: err.message || "An error occurred while retrieving all lockers." });
     });
 
 };
@@ -52,19 +36,19 @@ exports.findAllQuery = (req, res) => {
 
 exports.update = (req, res) => {
 
-    console.log("Body is:" + req.body);
-
     const id = req.params.id;
-    const content = req.body.content;
-    const color = req.body.color;
 
+    if (!id) {
+        return res.status(400).send({
+            message: "Not a valid ID"
+        });
+    }
 
-    Notebook.update({ content, color }, { where: { id: id } }).then(() => {
-        res.send(newData);
-        console.log("Data updated");
-    }).catch(err => {
-        res.status(500).send({ message: err.message || "Some error occurred while updating note." });
-    });
+    Locker.update(req.body, { where: { id: id } })
+        .then(() => {
+            console.log("Locker updated");
+            res.send({ message: "Locker updated" });
+        })
 
 };
 
@@ -72,11 +56,10 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
 
     const id = req.params.id;
-    Notebook.destroy({ where: { id: id } }).then(() => {
-        console.log("Entry erased");
-        res.send({ message: "Erased." });
+    Locker.destroy({ where: { id: id } }).then(() => {
+        console.log("Locker erased");
+        res.send({ message: "Locker was erased." });
     })
-
 
 
 };
