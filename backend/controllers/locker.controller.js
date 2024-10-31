@@ -6,8 +6,8 @@ exports.create = (req, res) => {
     console.log(req.body);
 
     const locker = {
-        : req.body.content,
-        color: req.body.color
+        description: req.body.description,
+        color: req.body.color,
 };
 
 console.log('Note:', note);
