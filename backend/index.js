@@ -18,7 +18,7 @@ db.sequelize.sync({ force: false }).then(() => {
     console.log("Drop a re-sync db.");
 });
 
-app.get("/", (res) => {
+app.get("/", (req, res) => {
     res.json({ message: "Welcome to locker app." });
 });
 
