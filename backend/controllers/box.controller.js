@@ -4,6 +4,7 @@ const Box = db.box;
 exports.create = (req, res) => {
 
     const box = {
+        id: req.body.id,
         description: req.body.description,
         imgUrl: req.body.color,
     };
@@ -71,7 +72,7 @@ exports.update = (req, res) => {
     Box.update(req.body, { where: {id: id}})
     .then(() => {
         console.log("Box updated");
-        res.send({message: "Book updated"});
+        res.send({message: "Box updated"});
     })
 };
 
