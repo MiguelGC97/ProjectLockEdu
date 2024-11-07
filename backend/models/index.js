@@ -13,8 +13,7 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-// db.locker = require("./locker.model.js")(sequelize, Sequelize);
-
+db.locker = require("./locker.model.js")(sequelize, Sequelize);
 db.box = require("./box.model.js")(sequelize, Sequelize);
 
 // db.user = require("./user.model.js")(sequelize, Sequelize);
