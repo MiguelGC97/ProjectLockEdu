@@ -1,26 +1,34 @@
 const db = require("../models");
 const Box = db.box;
 
-exports.create = (req, res) => {
+// exports.create = (req, res) => {
 
-    const box = {
-        id: req.body.id,
-        description: req.body.description,
-        imgUrl: req.body.color,
-    };
+//     const box = {
+//         id: req.body.id,
+//         description: req.body.description,
+//         imgUrl: req.body.color,
+//     };
 
-    Box.create(box)
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "An error ocurred while creating the box"
-            });
-        });
+//     Box.create(box)
+//         .then(data => {
+//             res.send(data);
+//         })
+//         .catch(err => {
+//             res.status(500).send({
+//                 message:
+//                     err.message || "An error ocurred while creating the box"
+//             });
+//         });
+// };
+
+exports.addBox = async (req, res) => {
+    try {
+        const boxes = await Box.create(req.body);
+        res.status(201).json({ data: boxes })
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
-
 
 exports.findAll = (req, res) => {
     Box.findAll()
