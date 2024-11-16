@@ -1,8 +1,9 @@
-const { Sequelize } = require("sequelize");
-const User = require("../models/user.model");
-const { Op } = require("sequelize");
+const db = require("../models");
+const User = db.user;
+const Op = db.Sequelize.Op;
 const utils = require("../utils");
 const  bcrypt  =  require('bcryptjs');
+
 
 exports.getAll = async (req, res) => {
   try {
