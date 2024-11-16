@@ -1,12 +1,16 @@
-﻿'use strict';
+﻿const dbConfig = require("../config/db.config.js");
+const Sequelize = require("sequelize");
+const { Op } = require("sequelize");
+// const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
+//     host: dbConfig.HOST,
+//     dialect: dbConfig.dialect,
+//     operatorAliases: false,
 
-const fs = require('fs');  //D--imports archive system module  who exist to interact with the archive system we use it in the filter
-const path = require('path');
-const Sequelize = require('sequelize');
-const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.js')[env];
+//     pool: dbConfig.pool
+// });
+
 const db = {};
+
 
 let sequelize;
 if (config.use_env_variable) {
@@ -15,23 +19,38 @@ if (config.use_env_variable) {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
-fs //D-- filter that iterates the archive system and automates routes
-  .readdirSync(__dirname)
-  .filter(file => {
-    return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
-  })
-  .forEach(file => {
-    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
-    db[model.name] = model;
-  });
 
-Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
-});
-
-db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+db.sequelize = sequelize;
+
+db.locker = require("./locker.model.js")(sequelize, Sequelize);
+db.box = require("./box.model.js")(sequelize, Sequelize);
+// db.type = require("./type.model.js")(sequelize, Sequelize);
+// db.item = require("./item.model.js")(sequelize, Sequelize);
+db.user = require("./user.model.js")(sequelize, Sequelize);
+
+// Locker.hasMany(Box);
+// Box.belongsTo(Locker);
+
+//Box.hasMany(Item);
+//Item.belongsTo(Box);
+
+//Box.hasMany(Incident);
+//Incident.belongsTo(Box);
+
+//Type.hasMany(Item);
+//Item.belongsTo(Type);
+
+//User.hasMany(Incident);
+//Incident.belongsTo(User);
+
+//User.hasMany(Booking);
+//Booking.belongsTo(User);
+
+//Item.belongsToMany(Booking, { through: 'ItemBookings' /* options */ });
+//Booking.belongsToMany(Item, { through: 'ItemBookings' /* options */ });
+
+//User.belongsToMany(Incident, { thorugh: 'UserIncidents' /* options */ });
+//Incident.belongsToMany(User, { thorugh: 'UserIncidents' /* options */ });
 
 module.exports = db;

@@ -1,77 +1,69 @@
-const jwt = require('jsonwebtoken');
-const utils = require('../utils');
-const bcrypt = require('bcryptjs');
-
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 const db = require("../models");
+const utils = require("../utils");
 const User = db.user;
 
-exports.signin = (req, res) => {
-  const user = req.body.username;
-  const pwd = req.body.password;
-
-  // return 400 status if username/password is not exist
+const validateSigninInput = (user, pwd) => {
   if (!user || !pwd) {
-    return res.status(400).json({
-      error: true,
-      message: "Username or Password required."
-    });
+    throw new Error("Username or Password required.");
   }
-
-  // return 401 status if the credential is not match.
-  User.findOne({ where: { username: user } })
-    .then(data => {
-      const result = bcrypt.compareSync(pwd, data.password);
-      if(!result) return  res.status(401).send('Password not valid!');
-
-      // generate token
-      const token = utils.generateToken(data);
-      // get basic user details
-      const userObj = utils.getCleanUser(data);
-      // return the token along with user details
-      return res.json({ user: userObj, access_token: token });
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving tutorials."
-      });
-    });
 };
 
-exports.isAuthenticated = (req, res, next) => {
-  // check header or url parameters or post parameters for token
-  // var token = req.body.token || req.query.token;
-  var token = req.token;
-  if (!token) {
-    return res.status(400).json({
-      error: true,
-      message: "Token is required."
-    });
+const authenticateUser = async (user, pwd) => {
+  const data = await User.findOne({ where: { username: user } });
+  if (!data || !bcrypt.compareSync(pwd, data.password)) {
+    throw new Error("Invalid username or password.");
   }
-  // check token that was passed by decoding token using secret
-  // .env should contain a line like JWT_SECRET=V3RY#1MP0RT@NT$3CR3T#
-  jwt.verify(token, process.env.JWT_SECRET, function (err, user) {
-    if (err) return res.status(401).json({
-      error: true,
-      message: "Invalid token."
-    });
+  return data;
+};
 
-    User.findByPk(user.id)
-      .then(data => {
-        // return 401 status if the userId does not match.
-        if (!user.id) {
-          return res.status(401).json({
-            error: true,
-            message: "Invalid user."
-          });
-        }
-        // get basic user details
-        next();
-      })
-      .catch(err => {
-        res.status(500).send({
-          message: "Error retrieving User with id=" + id
-        });
-      });
-  });
+// Función principal de inicio de sesión
+exports.signin = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    validateSigninInput(username, password); // Validar entrada
+    const user = await authenticateUser(username, password); // Autenticar usuario
+
+    const token = utils.generateToken(user); // Generar token
+    const userObj = utils.getCleanUser(user); // Obtener detalles del usuario
+
+    res.json({ user: userObj, access_token: token });
+  } catch (err) {
+    const status = err.message.includes("required") ? 400 : 401;
+    res.status(status).json({ error: true, message: err.message });
+  }
+};
+
+// Función para verificar el token JWT
+const verifyToken = (token) => {
+  if (!token) {
+    throw new Error("Token is required.");
+  }
+  return jwt.verify(token, process.env.JWT_SECRET);
+};
+
+// Función para buscar el usuario en la base de datos por ID
+const findUserById = async (id) => {
+  const user = await User.findByPk(id);
+  if (!user) {
+    throw new Error("Invalid user.");
+  }
+  return user;
+};
+
+// Middleware de autenticación
+exports.isAuthenticated = async (req, res, next) => {
+  try {
+    const token = req.token;
+
+    const decoded = verifyToken(token); // Verificar token
+    await findUserById(decoded.id); // Verificar usuario
+
+    next(); // Continuar al siguiente middleware
+  } catch (err) {
+    const status = err.message === "Invalid token." ? 401 : 500;
+    res.status(status).json({ error: true, message: err.message });
+  }
 };

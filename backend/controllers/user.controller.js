@@ -1,6 +1,5 @@
 const db = require("../models");
 const User = db.user;
-const Op = db.Sequelize.Op;
 const utils = require("../utils");
 const  bcrypt  =  require('bcryptjs');
 
