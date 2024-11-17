@@ -1,27 +1,30 @@
-﻿const dbConfig = require("../config/db.config.js");
+﻿const dbConfig = require("../config/config.js");
 const Sequelize = require("sequelize");
 const { Op } = require("sequelize");
-// const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
-//     host: dbConfig.HOST,
-//     dialect: dbConfig.dialect,
-//     operatorAliases: false,
-
-//     pool: dbConfig.pool
-// });
 
 const db = {};
 
-
 let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
-}
 
+try {
+  if (dbConfig.use_env_variable) {
+    sequelize = new Sequelize(process.env[dbConfig.use_env_variable], dbConfig);
+  } else {
+    sequelize = new Sequelize(
+      dbConfig.DB,
+      dbConfig.USER,
+      dbConfig.PASSWORD,
+      dbConfig
+    );
+  }
+} catch (error) {
+  console.error("Error Sequelize is not able to iniciate:", error.message);
+  process.exit(1);
+}
 
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
+db.Op = Op;
 
 db.locker = require("./locker.model.js")(sequelize, Sequelize);
 db.box = require("./box.model.js")(sequelize, Sequelize);

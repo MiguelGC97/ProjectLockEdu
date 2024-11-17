@@ -11,7 +11,7 @@ const db = require("./models");
 
 // const cors = require('cors'); // Si decides usar CORS, descomenta esta línea
 
-const sequelize = require("./config/db.config");
+// const sequelize = require("./config/config.js");
 
 
 db.sequelize.sync({ force: true }).then(() => {
@@ -65,6 +65,7 @@ app.use(function (req, res, next) {
 
 require("./routes/locker.routes")(app);
 require("./routes/box.routes")(app);
+require("./routes/user.routes")(app);
 
 
 const PORT = process.env.DB_PORT || 8080;
