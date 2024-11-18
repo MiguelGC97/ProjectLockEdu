@@ -3,11 +3,11 @@ module.exports = app => {
 
     var router = require("express").Router();
 
-    router.post("/", boxes.create);
+    router.post("/", boxes.addBox);
 
-    router.get("/", boxes.findAll);
+    router.get("/", boxes.getAll);
 
-    router.get("/:id", boxes.findOne);
+    router.get("/:id", boxes.getOne);
 
     router.put("/:id", boxes.update);
 
