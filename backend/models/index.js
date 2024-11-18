@@ -30,7 +30,7 @@ db.locker = require("./locker.model.js")(sequelize, Sequelize);
 db.box = require("./box.model.js")(sequelize, Sequelize);
 db.type = require("./type.model.js")(sequelize, Sequelize);
 // db.item = require("./item.model.js")(sequelize, Sequelize);
-// db.user = require("./user.model.js")(sequelize, Sequelize);
+db.user = require("./user.model.js")(sequelize, Sequelize);
 
 // Locker.hasMany(Box);
 // Box.belongsTo(Locker);
