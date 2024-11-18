@@ -53,21 +53,6 @@ exports.update = async (req, res) => {
   }
 };
 
-// exports.delete = (req, res) => {
-//   const id = req.params.id;
-
-//   Box.destroy({ where: { id: id } })
-//     .then(() => {
-//       console.log("Box erased");
-//       res.send({ message: "Box erased" });
-//     })
-//     .catch((err) => {
-//       res.status(500).send({
-//         message: err.message || "Some error ocurred while deleting the box",
-//       });
-//     });
-// };
-
 exports.delete = async (req, res) => {
   const deleting = await Box.destroy({ where: { id: req.params.id } });
   const status = deleting ? 200 : 404;
