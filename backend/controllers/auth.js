@@ -48,7 +48,7 @@ const verifyToken = (token) => {
 const findUserById = async (id) => {
   const user = await User.findByPk(id);
   if (!user) {
-    throw new Error("Invalid user.");
+    throw new Error("user not found.");
   }
   return user;
 };

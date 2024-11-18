@@ -1,8 +1,8 @@
 const db = require("../models");
 const User = db.user;
 const utils = require("../utils");
-const  bcrypt  =  require('bcryptjs');
-
+const bcrypt = require("bcryptjs");
+const { Op } = require("sequelize");
 
 exports.getAll = async (req, res) => {
   try {
@@ -25,12 +25,76 @@ exports.getByUsername = async (req, res) => {
   }
 };
 
+exports.findOne = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const data = await User.findByPk(id);
+    if (data) {
+      res.send(data);
+    } else {
+      res.status(404).send({
+        message: `User with id=${id} not found.`,
+      });
+    }
+  } catch (err) {
+    res.status(500).send({
+      message: `Error retrieving User with id=${id}.`,
+    });
+  }
+};
+
 exports.addNewUser = async (req, res) => {
   try {
-    const users = await User.create(req.body);
-    res.status(201).json({ data: users });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    // Validate request
+    if (!req.body.password || !req.body.username) {
+      return res.status(400).send({
+        message: "Content can not be empty!",
+      });
+    }
+
+    // Create a User object
+    let user = {
+      name: req.body.name,
+      surname: req.body.surname,
+      password: req.body.password,
+      username: req.body.username,
+      avatar: req.body.avatar,
+    };
+
+    // Check if a user with the same username already exists
+    const existingUser = await User.findOne({
+      where: { username: user.username },
+    });
+    if (existingUser) {
+      const isPasswordValid = bcrypt.compareSync(
+        user.password,
+        existingUser.password
+      );
+      if (!isPasswordValid) {
+        return res.status(401).send("Password not valid!");
+      }
+
+      // Generate token and return user data
+      const token = utils.generateToken(existingUser);
+      const userObj = utils.getCleanUser(existingUser);
+      return res.json({ user: userObj, access_token: token });
+    }
+
+    // If user does not exist, hash password and save new user
+    user.password = bcrypt.hashSync(req.body.password);
+
+    const newUser = await User.create(user);
+
+    // Generate token and return user data
+    const token = utils.generateToken(newUser);
+    const userObj = utils.getCleanUser(newUser);
+    return res.json({ user: userObj, access_token: token });
+  } catch (err) {
+    // Handle errors
+    res.status(500).send({
+      message: err.message || "Some error occurred while creating the User.",
+    });
   }
 };
 
@@ -45,19 +109,23 @@ exports.update = async (req, res) => {
   try {
     const id = req.params.id;
 
+
+    if (req.body.password) {
+
+      req.body.password = await bcrypt.hash(req.body.password, 10); //hash the new password 
+    }
+
     const [updated] = await User.update(req.body, { where: { id } });
 
     if (updated) {
       res.status(200).json({
-        message: "Usuario actualizado",
+        message: "User updated",
         data: req.body,
       });
     } else {
-      res.status(404).json({ message: "Usuario no encontrado" });
+      res.status(404).json({ message: "User not found" });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
-
-
