@@ -3,9 +3,9 @@
 
     var router = require("express").Router();
 
-    router.post("/", lockers.create);
+    router.post("/", lockers.addLocker);
 
-    router.get("/", lockers.findAll);
+    router.get("/", lockers.getAll);
 
     router.put("/:id", lockers.update);
 

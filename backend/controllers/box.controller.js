@@ -24,7 +24,7 @@ exports.getOne = async (req, res) => {
     const id = req.params.id;
     const boxes = await Box.findByPk(id);
 
-    if (!box) {
+    if (!boxes) {
       return res.status(404).json({ error: "Box not found" });
     }
 

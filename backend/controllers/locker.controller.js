@@ -24,7 +24,7 @@ exports.getOne = async (req, res) => {
     const id = req.params.id;
     const lockers = await Locker.findByPk(id);
 
-    if (!Locker) {
+    if (!lockers) {
       return res.status(404).json({ error: "Locker not found" });
     }
 
