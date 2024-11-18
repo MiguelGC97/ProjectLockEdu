@@ -1,36 +1,35 @@
-
 const { DataTypes } = require("sequelize");
-const db = require("../config/db.config");
 
-// Definir el modelo User
-const User = db.define(
+
+module.exports = (sequelize) => {
+  const User = sequelize.define(
     "user",
     {
-        id: { 
-            type: DataTypes.INTEGER, 
-            primaryKey: true, 
-            autoIncrement: true 
-        },
-        username: { 
-            type: DataTypes.STRING, 
-            allowNull: false 
-        },
-        email: { 
-            type: DataTypes.STRING, 
-            allowNull: false 
-        },
-        password: { 
-            type: DataTypes.STRING, 
-            allowNull: false 
-        },
-        token: { 
-            type: DataTypes.STRING 
-        },
-    },
-    {
-        freezeTableName: true, 
-        timestamps: false,     
-    }
-);
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      surname: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      username: {
+        type: DataTypes.STRING,
+      },
+      avatar: {
+        type: DataTypes.STRING,
+      }
+    });
+   
 
-module.exports = User;
+  return User;
+};

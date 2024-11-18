@@ -1,17 +1,22 @@
 module.exports = app => {
     const users = require("../controllers/user.controller.js");
+    const auth = require("../controllers/auth.js");
 
     var router = require("express").Router();
 
-    router.post("/", users.create);
+    router.post("/", users.addNewUser);
 
-    router.get("/", users.findAll);
+    router.get("/", auth.isAuthenticated, users.getAll);
 
-    router.get("/:id", users.findOne);
+    router.get("/:id", auth.isAuthenticated, users.findOne);
 
-    router.put("/:id", users.update);
+    router.get("/username/:username", auth.isAuthenticated, users.getByUsername); 
 
-    router.delete("/:id", users.delete);
+    router.put("/:id", auth.isAuthenticated, users.update);
+
+    router.delete("/:id", auth.isAuthenticated, users.delete);
+
+    router.post("/signin", auth.signin);
 
     app.use("/api/users", router);
 
