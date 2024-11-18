@@ -1,67 +1,63 @@
 ﻿const db = require("../models");
 const Locker = db.locker;
 
-exports.create = (req, res) => {
-
-    console.log(req.body);
-
-    const locker = {
-        id: req.body.id,
-        number: req.body.number,
-        description: req.body.description,
-        location: req.body.location
-
-    };
-
-    console.log('Locker:', locker);
-
-    Locker.create(locker).then(data => {
-        res.send(data);
-    }).catch(err => {
-        res.status(500).send({ message: err.message || "An error occurred while creating the locker." });
-    });
+exports.addLocker = async (req, res) => {
+  try {
+    const lockers = await Locker.create(req.body);
+    res.status(201).json({ data: lockers });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
-
-exports.findAll = (req, res) => {
-
-    Locker.findAll().then((data) => {
-        res.send(data);
-    }).catch(err => {
-        res.status(500).send({ message: err.message || "An error occurred while retrieving all lockers." });
-    });
-
+exports.getAll = async (req, res) => {
+  try {
+    const lockers = await Locker.findAll();
+    res.status(200).json({ data: lockers });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
-
-exports.update = (req, res) => {
-
+exports.getOne = async (req, res) => {
+  try {
     const id = req.params.id;
+    const lockers = await Locker.findByPk(id);
 
-    if (!id) {
-        return res.status(400).send({
-            message: "Not a valid ID"
-        });
+    if (!Locker) {
+      return res.status(404).json({ error: "Locker not found" });
     }
 
-    Locker.update(req.body, { where: { id: id } })
-        .then(() => {
-            console.log("Locker updated");
-            res.send({ message: "Locker updated" });
-        })
-
+    res.status(200).json({ data: lockers });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
-
-exports.delete = (req, res) => {
-
+exports.update = async (req, res) => {
+  try {
     const id = req.params.id;
-    Locker.destroy({ where: { id: id } }).then(() => {
-        console.log("Locker erased");
-        res.send({ message: "Locker was erased." });
-    })
 
+    const [updated] = await Locker.update(req.body, { where: { id } });
 
+    if (updated) {
+      res.status(200).json({
+        message: "Locker updated",
+        data: req.body,
+      });
+    } else {
+      res.status(404).json({ message: "Locker not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.delete = async (req, res) => {
+  const deleting = await Locker.destroy({ where: { id: req.params.id } });
+  const status = deleting ? 200 : 404;
+  const message = deleting ? "Locker deleted" : "Locker not found";
+  res.status(status).json({ message });
 };
 
 
