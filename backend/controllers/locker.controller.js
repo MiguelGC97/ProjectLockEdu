@@ -13,7 +13,7 @@ exports.addLocker = async (req, res) => {
 exports.getAll = async (req, res) => {
   try {
     const lockers = await Locker.findAll();
-    res.status(200).json({ data: lockers });
+    res.status(200).json(lockers);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
