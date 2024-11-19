@@ -3,9 +3,10 @@
 module.exports = (sequelize) => {
     const Locker = sequelize.define('lockers', {
         id: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: false,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true,
         },
         description: DataTypes.STRING,
         number: {
