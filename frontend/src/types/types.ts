@@ -1,6 +1,6 @@
 ﻿//for Locker component
 export interface Locker {
-  id: string;
+  id: number;
   description: string;
   number: number;
   location: string;

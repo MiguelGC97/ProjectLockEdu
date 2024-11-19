@@ -5,26 +5,46 @@ import './Lockers.module.css';
 
 import { useEffect, useState } from 'react';
 import instance from '@/services/api';
+import { baseUrl } from '@/services/api';
 import { Locker, LockersProps } from '@/types/types';
 import { LockersContext } from './context';
 
 const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
   const [lockers, setLockers] = useState<Locker[]>([]);
 
-  useEffect((): any => {
-    fetch('/assets/lockers.json')
+  // useEffect((): any => {
+  //   fetch('/assets/lockers.json')
+  //     .then((response) => {
+  //       if (!response.ok) {
+  //         throw new Error('Network response was not ok');
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       const fetchedLockers: Locker[] = data;
+  //       setLockers(fetchedLockers); //skipped the sorting function, but there needs to be one.
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error fetching objects:', error);
+  //     });
+  // }, []);
+
+  useEffect(() => {
+    //it fetches the filteredbookings using the axios instance (provisionally this will be commented and we will use the hardcoded filteredNotifications.json in the assets folder )
+    // the response.data will be called reservations for the sake of distinction
+    instance
+      .get(baseUrl)
       .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
+        // const fetchedLockers: Locker[] = response.data;
+        // const sortedReservations = sortBookings(reservations);
+        if (Array.isArray(response.data)) {
+          setLockers(response.data); // Actualiza solo si es un array
+        } else {
+          console.error('Error: Los datos recibidos no son un array', response.data);
         }
-        return response.json();
-      })
-      .then((data) => {
-        const fetchedLockers: Locker[] = data;
-        setLockers(fetchedLockers); //skipped the sorting function, but there needs to be one.
       })
       .catch((error) => {
-        console.error('Error fetching objects:', error);
+        console.error('Error fetching filtered lockers:', error);
       });
   }, []);
 
