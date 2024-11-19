@@ -7,6 +7,8 @@ const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT || 4000;
 const db = require("./models");
+const cors = require('cors');
+app.use(cors({ origin: 'http://localhost:5173' }));
 
 
 // const cors = require('cors'); // Si decides usar CORS, descomenta esta línea
