@@ -9,7 +9,7 @@ export interface Locker {
 export interface BoxType {
   id: number;
   description: string;
-  imgUrl: string;
+  filename: string;
   locker_id: number;
 }
 
