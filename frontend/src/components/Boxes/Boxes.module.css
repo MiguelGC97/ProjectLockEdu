@@ -35,3 +35,13 @@ Text {
 ::-webkit-scrollbar-thumb:hover {
   background: #b30000;
 }
+
+Input {
+  font-family: inherit;
+}
+
+a {
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}

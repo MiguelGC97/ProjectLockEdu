@@ -1,11 +1,13 @@
 // Home.page.tsx
 import { useState } from 'react';
-import { Divider, Flex, useMantineTheme } from '@mantine/core';
+import { Flex, useMantineTheme } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Banner } from '@/components/Banner/Banner';
+import Boxes from '@/components/Boxes/Boxes';
 import Lockers from '@/components/Lockers/Lockers';
 import MobileMenu from '@/components/MobileMenu/MobileMenu';
 import { Notifications } from '@/components/Notifications/Notifications';
+import Objects from '@/components/Objects/Objects';
 import { Pending } from '@/components/Pending/Pending';
 import { SideMenu } from '@/components/SideMenu/SideMenu';
 import UserBar from '@/components/UserBar/UserBar';
@@ -19,10 +21,13 @@ const Home: React.FC = () => {
   const [selectedBox, setSelectedBox] = useState<BoxType | null>(null);
 
   const handleLockerClick = (locker: Locker) => {
+    console.log('Locker selected:', locker); // Debugging log
     setSelectedLocker(locker);
+    console.log('Updated selectedLocker state:', selectedLocker); // This may not immediately reflect the updated state due to React's asynchronous state update
   };
 
   const handleBoxClick = (box: BoxType) => {
+    console.log('Box clicked:', box);
     setSelectedBox(box);
   };
 
@@ -72,8 +77,17 @@ const Home: React.FC = () => {
                       <Pending />
                     </Flex>
                   </Flex>
-                  {/* Pass the onLockerClick prop */}
-                  <Lockers onLockerClick={handleLockerClick} />
+                  {!selectedLocker ? (
+                    <Lockers onLockerClick={handleLockerClick} />
+                  ) : !selectedBox ? (
+                    <Boxes
+                      locker={selectedLocker}
+                      onBoxClick={handleBoxClick}
+                      onReturn={handleReturnToLockers}
+                    />
+                  ) : (
+                    <Objects box={selectedBox} onReturn={handleReturnToBoxes} />
+                  )}
                 </Flex>
               </Flex>
             </Flex>
@@ -92,8 +106,6 @@ const Home: React.FC = () => {
                     <Notifications />
                     <Pending />
                   </Flex>
-                </Flex>
-                <div>
                   {!selectedLocker ? (
                     <Lockers onLockerClick={handleLockerClick} />
                   ) : !selectedBox ? (
@@ -105,7 +117,7 @@ const Home: React.FC = () => {
                   ) : (
                     <Objects box={selectedBox} onReturn={handleReturnToBoxes} />
                   )}
-                </div>
+                </Flex>
               </Flex>
             </Flex>
           </Flex>
