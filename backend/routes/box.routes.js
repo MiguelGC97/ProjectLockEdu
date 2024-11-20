@@ -3,7 +3,7 @@ module.exports = app => {
 
     var router = require("express").Router();
 
-    router.post("/", boxes.addBox);
+    router.post("/", upload.single('file'), boxes.addBox);
 
     router.get("/", boxes.getAll);
 
