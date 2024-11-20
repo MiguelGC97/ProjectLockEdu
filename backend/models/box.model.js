@@ -3,12 +3,13 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
     const Box = sequelize.define('boxes', {
         id: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: false,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true,
         },
         description: DataTypes.STRING,
-        imgUrl: DataTypes.STRING,
+        filename: DataTypes.STRING,
     });
 
     return Box;
