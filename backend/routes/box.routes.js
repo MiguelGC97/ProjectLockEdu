@@ -1,6 +1,8 @@
 module.exports = app => {
     const boxes = require("../controllers/box.controller.js");
 
+    const upload = require('../multer/upload');
+
     var router = require("express").Router();
 
     router.post("/", upload.single('file'), boxes.addBox);
