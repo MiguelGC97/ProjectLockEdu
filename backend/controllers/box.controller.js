@@ -3,7 +3,14 @@ const Box = db.box;
 
 exports.addBox = async (req, res) => {
   try {
-    const boxes = await Box.create(req.body);
+    // const boxes = await Box.create(req.body);
+    const boxData = {
+      description: req.body.description,
+      filename: req.file ? req.file.filename : "",
+    };
+
+    const boxes = await Box.create(boxData);
+
     res.status(201).json({ data: boxes });
   } catch (error) {
     res.status(500).json({ error: error.message });
