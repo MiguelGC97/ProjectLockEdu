@@ -8,10 +8,12 @@ const app = express();
 const port = process.env.PORT || 4000;
 const db = require("./models");
 const cors = require('cors');
+const path = require('path');
+
 app.use(cors({ origin: 'http://localhost:5173' }));
 
-
-// const cors = require('cors'); // Si decides usar CORS, descomenta esta línea
+//public directory
+app.use(express.static(path.join(__dirname, 'public')));
 
 // const sequelize = require("./config/config.js");
 
