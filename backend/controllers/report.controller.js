@@ -36,19 +36,30 @@ exports.findone = async (req, res) => {
 
 exports.createReport = async (req, res) => {
   try {
+    if (!req.body.content) {
+      return res.status(400).send({
+        message: "Content can not be empty!",
+      });
+    }
+
+    let report = {
+      content: req.body.content,
+      isSolved: false,
+    };
+
     const newReport = await Report.create(report);
 
-    const token = utils.generateToken(newReport);
-    const reportObj = utils.getCleanUser(newReport);
-    return res.json({ user: reportObj, access_token: token });
-  } catch {
-    err;
+    // Generate token and return data
+    const token = utils.generateTokenReport(newReport);
+    const reportObj = utils.getCleanReport(newReport);
+    return res.json({ report: reportObj, access_token: token });
+  } catch (err) {
+    
+    res.status(500).send({
+      message: err.message || "Some error occurred while creating the report.",
+    });
   }
-  res.status(500).send({
-    message: err.message || "Some error occurred while creating the Report.",
-  });
 };
-
 
 exports.resolveReport = async (req, res) => {
   try {
@@ -75,69 +86,107 @@ exports.resolveReport = async (req, res) => {
 };
 
 exports.updateDescription = async (req, res) => {
+  const date = req.params.createdAt;
+  let newDate = limitDate(date);
+
+  if (canUpdate(newDate) == true) {
+    const id = req.params.id;
+
     try {
-      const id = req.params.id;
-      const timePassed =res.params.createdAt;
-      
-        //Split time passed
+      const [updated] = await Report.update(req.body.description, {
+        where: { id },
+      });
 
-        let date = [
-
-            {year: 0, month: 0 , day: 0,hour: 0,min: 0}
-        ]
-
-        let months = [
-            {month: '01', name:'January', days:31},
-            {month:'02', name:'February', days:28},
-            {month:'03', name:'March', days:31},
-            {month:'04', name:'April', days:30},
-            {month:'05', name:'May', days:31},
-            {month:'06', name:'June', days:30},
-            {month:'07', name:'July', days:31},
-            {month:'08', name:'August', days:31},
-            {month:'09', name:'September', days:30},
-            {month:'10', name:'October', days:31},
-            {month:'11', name:'November', days:30},
-            {month:'12', name:'December', days:31},
-            ]
-            
-
-           function manyDays(date){
-
-                let days = 0;
-                for (let i = 0; i < months.length; i++) {
-                    
-                    if(months[i].month == date.month){
-
-                         days = months[i].days;
-                    }
-                }
-                    return days;
-            }
-            
-            function limitTime(date){
-                let days = manyDays(date);
-
-                if(date.min >= 50){
-                    //52%10==2
-                    date.min == (data.min%10);
-
-                }
-
-                if(date.hour == 23 && date.min <= 50){
-                    date.hour == '00';
-                    date.min == '00';
-                }
-
-                //comprobar el dia para ver si esta a final de mes o no
-                if (days)
-            }
-            
-
-            function updatePermited{}
-
-            }catch{
-
-
-            }
+      if (updated) {
+        res.status(200).json({
+          message: "User updated",
+          data: req.body,
+        });
+      } else {
+        res.status(404).json({ message: "User not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  } else {
+    res.status(403).json({
+      message: "You have exceeded the time limit to update your message",
+    });
+  }
 };
+
+// exports.updateDescription = async (req, res) => {
+//   try {
+//     const id = req.params.id;
+//     const timePassed = res.params.createdAt;
+
+//     //Split time passed
+
+//     let canUpdate = false;
+//     let date = [{ year: 0, month: 0, day: 0, hour: 0, min: 0 }];
+
+//     let months = [
+//       { month: "01", name: "January", days: 31 },
+//       { month: "02", name: "February", days: 28 },
+//       { month: "03", name: "March", days: 31 },
+//       { month: "04", name: "April", days: 30 },
+//       { month: "05", name: "May", days: 31 },
+//       { month: "06", name: "June", days: 30 },
+//       { month: "07", name: "July", days: 31 },
+//       { month: "08", name: "August", days: 31 },
+//       { month: "09", name: "September", days: 30 },
+//       { month: "10", name: "October", days: 31 },
+//       { month: "11", name: "November", days: 30 },
+//       { month: "12", name: "December", days: 31 },
+//     ];
+
+//     function manyDays(date) {
+//       let days = 0;
+//       for (let i = 0; i < months.length; i++) {
+//         if (months[i].month == date.month) {
+//           days = months[i].days;
+//         }
+//       }
+//       return days;
+//     }
+
+//     function limitTime(date) {
+//       let days = manyDays(date);
+
+//       if (date.min >= 50) {
+//         //52%10==2
+//         date.min == data.min % 10;
+//       } else {
+//         date.min == date.min + 10;
+//       }
+
+//       if (date.hour == 23 && date.min >= 50) {
+//         date.hour == "00"; //hour restarts
+
+//         switch (days == date.day) {
+//           case 30:
+//             date.month++;
+//             break;
+//           case 31:
+//             let isDecember = false;
+//             for (let i = 0; i < months.length; i++) {
+//               if (months[i].month == date.month) {
+//                 if (months[i].name == "December") {
+//                   date.year++;
+//                   date.month = "01";
+//                 } else {
+//                   date.month++;
+//                 }
+//               }
+//             }
+//             break;
+//           case 28:
+//             date.month++;
+//             break;
+//         }
+//       }
+//     }
+
+//     function updatePermited() {}
+//   } catch {}
+// }

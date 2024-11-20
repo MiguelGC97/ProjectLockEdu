@@ -8,7 +8,7 @@ module.exports = app => {
 
     router.get("/", auth.isAuthenticated, reports.getAll);
 
-    router.get("/:id", auth.isAuthenticated, reports.findOne);
+    // router.get("/:id", auth.isAuthenticated, reports.findOne);
 
     // router.get("/username/:username", auth.isAuthenticated, reports.getByUsername); 
 

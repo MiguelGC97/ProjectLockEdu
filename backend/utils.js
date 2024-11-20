@@ -23,6 +23,22 @@ function generateToken(user) {
   });
 }
 
+function generateTokenReport(report) {
+
+  if (!report) return null;
+
+  var r = {
+    id: report.id,
+    content: report.content,
+    isSolved: report.isSolved,
+  };
+
+ 
+  return jwt.sign(r, process.env.JWT_SECRET, {
+    expiresIn: 60 * 60 * 24, // expires in 24 hours
+  });
+}
+
 // return basic user details
 function getCleanUser(user) {
   if (!user) return null;
@@ -38,7 +54,38 @@ function getCleanUser(user) {
   };
 }
 
+function getCleanReport(report) {
+  if (!report) return null;
+
+  return {
+    id: report.id,
+    content: report.content,
+    isSolved: report.isSolved,
+  };
+}
+
+function limitDate(date) {
+  const newDate = new Date(date.replace(" ", "T"));
+  newDate.setMinutes(newDate.getMinutes() + 10);
+
+  return newDate;
+}
+
+function canUpdate(newDate) {
+  const now = new Date();
+
+  if (now <= newDate) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 module.exports = {
   generateToken,
   getCleanUser,
+  getCleanReport,
+  limitDate,
+  canUpdate,
+  generateTokenReport,
 };
