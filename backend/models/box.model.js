@@ -6,7 +6,11 @@ module.exports = (sequelize) => {
             type: DataTypes.INTEGER,
             allowNull: false,
             primaryKey: true,
-            autoIncrement: true,
+            autoIncrement: true
+        },
+        locker_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
         },
         description: DataTypes.STRING,
         filename: DataTypes.STRING,

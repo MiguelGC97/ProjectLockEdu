@@ -4,47 +4,25 @@ import { Box, Button, Center, Flex, Input, ScrollArea, Stack, Text, Title } from
 import './Lockers.module.css';
 
 import { useEffect, useState } from 'react';
-import instance from '@/services/api';
-import { baseUrl } from '@/services/api';
+import instance, { baseUrl } from '@/services/api';
 import { Locker, LockersProps } from '@/types/types';
 import { LockersContext } from './context';
 
 const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
   const [lockers, setLockers] = useState<Locker[]>([]);
 
-  // useEffect((): any => {
-  //   fetch('/assets/lockers.json')
-  //     .then((response) => {
-  //       if (!response.ok) {
-  //         throw new Error('Network response was not ok');
-  //       }
-  //       return response.json();
-  //     })
-  //     .then((data) => {
-  //       const fetchedLockers: Locker[] = data;
-  //       setLockers(fetchedLockers); //skipped the sorting function, but there needs to be one.
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error fetching objects:', error);
-  //     });
-  // }, []);
-
   useEffect(() => {
-    //it fetches the filteredbookings using the axios instance (provisionally this will be commented and we will use the hardcoded filteredNotifications.json in the assets folder )
-    // the response.data will be called reservations for the sake of distinction
     instance
-      .get(baseUrl)
+      .get(`${baseUrl}/lockers`)
       .then((response) => {
-        // const fetchedLockers: Locker[] = response.data;
-        // const sortedReservations = sortBookings(reservations);
         if (Array.isArray(response.data)) {
-          setLockers(response.data); // Actualiza solo si es un array
+          setLockers(response.data);
         } else {
-          console.error('Error: Los datos recibidos no son un array', response.data);
+          console.error('Data is not an array', response.data);
         }
       })
       .catch((error) => {
-        console.error('Error fetching filtered lockers:', error);
+        console.error('Error fetching lockers:', error);
       });
   }, []);
 
@@ -66,12 +44,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
           </Center>
           {/* Search input for lockers */}
           <Center>
-            <Input
-              w="20vw"
-              size="lg"
-              placeholder="Busque un objecto"
-              rightSection={<IconSearch />}
-            />
+            <Input w="20vw" size="lg" placeholder="Busca un objeto" rightSection={<IconSearch />} />
           </Center>
         </Stack>
         <ScrollArea p="lg" m="md" h="62vh" scrollbarSize={16}>
@@ -83,7 +56,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
                     <Flex gap="10vw" justify="center" align="center">
                       <Flex direction="column" gap="1vh" justify="center">
                         <Title size="xl" c="white">
-                          Armario {locker.id}
+                          Armario 0{locker.number}
                         </Title>
                         <Flex gap="md" justify="flex-start">
                           <Flex gap={5}>
@@ -132,7 +105,10 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
                     </Flex>
                     <Center>
                       <Button
-                        onClick={() => onLockerClick(locker)}
+                        onClick={() => {
+                          console.log('Locker clicked:', locker);
+                          onLockerClick(locker);
+                        }}
                         size="md"
                         maw="8vw"
                         bg="myPurple.3"

@@ -32,8 +32,12 @@ db.type = require("./type.model.js")(sequelize, Sequelize);
 // db.item = require("./item.model.js")(sequelize, Sequelize);
 db.user = require("./user.model.js")(sequelize, Sequelize);
 
-// Locker.hasMany(Box);
-// Box.belongsTo(Locker);
+//Associations
+db.locker.hasMany(db.box);
+db.box.belongsTo(db.locker, {
+  foreignKey: 'locker_id',
+  allowNull: false
+});
 
 //Box.hasMany(Item);
 //Item.belongsTo(Box);
