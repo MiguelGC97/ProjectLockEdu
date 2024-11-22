@@ -9,7 +9,16 @@ module.exports = (sequelize) => {
             autoIncrement: true
         },
         description: DataTypes.STRING,
-        state: DataTypes.STRING,
+        state: {
+            type: DataTypes.ENUM('pending', 'withdrawn', 'returned'),
+            allowNull: false,
+            validate: {
+                isIn: {
+                    args: [['pending', 'withdrawn', 'returned']],
+                    msg: 'Not a valid value (pending, withdrawn, returned)'
+                }
+            }
+        },
     });
 
     return Booking;

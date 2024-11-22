@@ -54,6 +54,25 @@ exports.update = async (req, res) => {
   }
 };
 
+exports.changeState = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const state = req.params.state;
+
+    const [updated] = await Booking.update(state, { where: { id } });
+
+    if (updated) {
+      res.status(200).json({
+        message: "Booking state changed",
+        data: req.body,
+      });
+    } else {
+      res.status(404).json({ message: "Booking not found" });
+    }
+  }
+}
+
 exports.delete = async (req, res) => {
   const deleting = await Booking.destroy({ where: { id: req.params.id } });
   const status = deleting ? 200 : 404;
