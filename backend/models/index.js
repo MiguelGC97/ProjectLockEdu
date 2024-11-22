@@ -29,15 +29,41 @@ db.Op = Op;
 db.locker = require("./locker.model.js")(sequelize, Sequelize);
 db.box = require("./box.model.js")(sequelize, Sequelize);
 db.type = require("./type.model.js")(sequelize, Sequelize);
-// db.item = require("./item.model.js")(sequelize, Sequelize);
+db.item = require("./item.model.js")(sequelize, Sequelize);
 db.user = require("./user.model.js")(sequelize, Sequelize);
 
-//Associations
-db.locker.hasMany(db.box);
-db.box.belongsTo(db.locker, {
-  foreignKey: 'locker_id',
-  allowNull: false
+//Locker-box Association
+db.locker.hasMany(db.box, {
+  foreignKey: 'lockerId',
+  sourceKey: 'id',
 });
+db.box.belongsTo(db.locker, {
+  foreignKey: 'lockerId',
+  targetKey: 'id',
+});
+
+//Type-object association
+db.type.hasMany(db.item, {
+  foreignKey: 'typeId',
+  sourceKey: 'id',
+});
+db.item.belongsTo(db.type, {
+  foreignKey: 'typeId',
+  targetKey: 'id',
+});
+
+//Box-item association
+db.box.hasMany(db.item, {
+  foreignKey: 'boxId',
+  sourceKey: 'id',
+});
+db.item.belongsTo(db.box, {
+  foreignKey: 'boxId',
+  targetKey: 'id',
+});
+
+
+
 
 //Box.hasMany(Item);
 //Item.belongsTo(Box);

@@ -32,7 +32,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
       .get(`${baseUrl}/boxes`)
       .then((response) => {
         if (Array.isArray(response.data.data)) {
-          setBoxes(response.data.data.filter((b) => b.locker_id === locker.id));
+          setBoxes(response.data.data.filter((b) => b.lockerId === locker.id));
         } else {
           setError('Unexpected response format');
         }

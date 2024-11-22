@@ -1,20 +1,24 @@
-const { DataTypes } = require('sequelize');
+﻿const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    const Box = sequelize.define('boxes', {
+    const Item = sequelize.define('items', {
         id: {
             type: DataTypes.INTEGER,
             allowNull: false,
             primaryKey: true,
             autoIncrement: true
         },
-        lockerId: {
+        typeId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+        boxId: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
         description: DataTypes.STRING,
-        filename: DataTypes.STRING,
+        state: DataTypes.ENUM('retrieved', 'returned'),
     });
 
-    return Box;
+    return Item;
 }

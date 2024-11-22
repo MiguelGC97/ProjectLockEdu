@@ -57,8 +57,17 @@ const Home: React.FC = () => {
                       <Pending />
                     </Flex>
                   </Flex>
-                  {/* Pass the onLockerClick prop */}
-                  <Lockers onLockerClick={handleLockerClick} />
+                  {!selectedLocker ? (
+                    <Lockers onLockerClick={handleLockerClick} />
+                  ) : !selectedBox ? (
+                    <Boxes
+                      locker={selectedLocker}
+                      onBoxClick={handleBoxClick}
+                      onReturn={handleReturnToLockers}
+                    />
+                  ) : (
+                    <Objects box={selectedBox} onReturn={handleReturnToBoxes} />
+                  )}
                 </Flex>
               </Flex>
             </Flex>

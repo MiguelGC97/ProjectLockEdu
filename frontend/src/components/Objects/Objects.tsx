@@ -12,10 +12,10 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import instance, { baseUrl } from '@/services/api';
-import { BoxType, ObjectsProps, ObjectType } from '@/types/types';
+import { BoxType, Item, ObjectsProps } from '@/types/types';
 
 const Objects: React.FC<ObjectsProps> = ({ box, onReturn }) => {
-  const [objects, setObjects] = useState<ObjectType[]>([]);
+  const [objects, setObjects] = useState<Item[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const theme = useMantineTheme();
@@ -25,9 +25,9 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn }) => {
       setLoading(true);
       setError(null);
       try {
-        const response = await instance.get(`${baseUrl}/objects`);
+        const response = await instance.get(`${baseUrl}/items`);
         if (Array.isArray(response.data.data)) {
-          setObjects(response.data.data.filter((o) => o.box_id === box.id));
+          setObjects(response.data.data.filter((o) => o.boxId === box.id));
         } else {
           setError('Unexpected response format');
         }

@@ -4,13 +4,17 @@ export interface Locker {
   description: string;
   number: number;
   location: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface BoxType {
   id: number;
   description: string;
   filename: string;
-  locker_id: number;
+  lockerId: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface LockersProps {
@@ -25,8 +29,8 @@ export interface BoxesProps {
 
 export interface Booking {
   id: number;
-  object_id: number;
-  user_id: number;
+  objectId: number;
+  userId: number;
   description: string;
   checkOutTime: string;
   checkInTime: string;
@@ -45,19 +49,12 @@ export interface Booking {
   };
 }
 
-export interface Object {
-  id: string;
+export interface Item {
+  id: number;
   description: string;
   state: string;
-  box_id: string;
-  type_id: string;
-}
-
-export interface ObjectType {
-  id: number;
-  name: string;
-  description: string;
-  box_id: number;
+  boxId: number;
+  typeId: number;
   createdAt: string;
   updatedAt: string;
 }

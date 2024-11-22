@@ -3,8 +3,12 @@ const Box = db.box;
 
 exports.addBox = async (req, res) => {
   try {
-    // const boxes = await Box.create(req.body);
+    if (!req.body.locker_id) {
+      return res.status(400).json({ error: "locker_id is required" });
+    }
+
     const boxData = {
+      locker_id: req.body.locker_id,
       description: req.body.description,
       filename: req.file ? req.file.filename : "",
     };
@@ -13,6 +17,7 @@ exports.addBox = async (req, res) => {
 
     res.status(201).json({ data: boxes });
   } catch (error) {
+    console.error("Error creating box:", error);
     res.status(500).json({ error: error.message });
   }
 };
