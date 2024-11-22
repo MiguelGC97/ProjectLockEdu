@@ -71,6 +71,7 @@ require("./routes/locker.routes")(app);
 require("./routes/box.routes")(app);
 require("./routes/user.routes")(app);
 require("./routes/type.routes")(app);
+require("./routes/booking.routes")(app);
 
 
 const PORT = process.env.DB_PORT || 8080;
