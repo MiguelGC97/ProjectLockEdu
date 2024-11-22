@@ -27,7 +27,9 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn }) => {
       try {
         const response = await instance.get(`${baseUrl}/items`);
         if (Array.isArray(response.data.data)) {
-          setObjects(response.data.data.filter((o) => o.boxId === box.id));
+          setObjects(
+            response.data.data.filter((o) => o.boxId === box.id && o.state === 'returned')
+          );
         } else {
           setError('Unexpected response format');
         }
@@ -71,12 +73,13 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn }) => {
       w="34.5vw"
     >
       <Stack my="4vh" gap="xl">
-        <Flex align="center" justify="space-between" px="1vw">
-          <Button variant="outline" leftIcon={<IconArrowLeft />} onClick={onReturn}>
-            Return to Boxes
-          </Button>
+        <Flex gap="33%">
+          <a>
+            <IconArrowLeft color="white" size="30px" onClick={onReturn} />
+          </a>
+
           <Title fw="600" c="white">
-            Objects
+            Casilla C0{box.id}
           </Title>
         </Flex>
       </Stack>
@@ -103,7 +106,7 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn }) => {
             ))
           ) : (
             <Center>
-              <Text>No objects found in this box.</Text>
+              <Text c="white">No hay ningun objeto en esta casilla.</Text>
             </Center>
           )}
         </Flex>
