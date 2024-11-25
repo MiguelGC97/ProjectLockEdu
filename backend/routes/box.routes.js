@@ -1,18 +1,17 @@
-module.exports = app => {
-    const boxes = require("../controllers/box.controller.js");
+module.exports = (app) => {
+  const boxes = require("../controllers/box.controller.js");
 
-    var router = require("express").Router();
+  var router = require("express").Router();
 
-    router.post("/", boxes.addBox);
+  router.post("/", boxes.addBox);
 
-    router.get("/", boxes.getAll);
+  router.get("/", boxes.getAll);
 
-    router.get("/:id", boxes.getOne);
+  router.get("/:id", boxes.getOne);
 
-    router.put("/:id", boxes.update);
+  router.put("/:id", boxes.update);
 
-    router.delete("/:id", boxes.delete);
+  router.delete("/:id", boxes.delete);
 
-    app.use("/api/boxes", router);
-    
-}
+  app.use("/api/boxes", router);
+};

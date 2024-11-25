@@ -60,6 +60,7 @@ exports.addNewUser = async (req, res) => {
       password: req.body.password,
       username: req.body.username,
       avatar: req.body.avatar,
+      role: req.body.role,
     };
 
     // Check if a user with the same username already exists
@@ -109,10 +110,8 @@ exports.update = async (req, res) => {
   try {
     const id = req.params.id;
 
-
     if (req.body.password) {
-
-      req.body.password = await bcrypt.hash(req.body.password, 10); //hash the new password 
+      req.body.password = await bcrypt.hash(req.body.password, 10); //hash the new password
     }
 
     const [updated] = await User.update(req.body, { where: { id } });

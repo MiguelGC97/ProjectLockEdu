@@ -51,6 +51,7 @@ function getCleanUser(user) {
     password: user.password,
     email: user.email,
     avatar: user.avatar,
+    role: user.role,
   };
 }
 

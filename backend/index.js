@@ -4,8 +4,9 @@ const jwt = require('jsonwebtoken');
 const express = require('express');
 const bodyParser = require('body-parser');
 
+
 const app = express();
-const port = process.env.PORT || 4000;
+// const port = process.env.PORT || 4000;
 const db = require("./models");
 
 
@@ -67,7 +68,9 @@ require("./routes/locker.routes")(app);
 require("./routes/box.routes")(app);
 require("./routes/user.routes")(app);
 require("./routes/report.routes")(app);
-
+require("./routes/teacher.routes")(app);
+require("./routes/incidentManager.routes")(app);
+require("./routes/admin.routes")(app);
 
 const PORT = process.env.DB_PORT || 8080;
 

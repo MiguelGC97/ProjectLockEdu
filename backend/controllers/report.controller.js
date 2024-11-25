@@ -1,5 +1,6 @@
 const db = require("../models");
 const Report = db.report;
+const User = db.user;
 const utils = require("../utils");
 const bcrypt = require("bcryptjs");
 const { Op, AccessDeniedError } = require("sequelize");
@@ -13,7 +14,32 @@ exports.getAll = async (req, res) => {
   }
 };
 
-//exports.getByUsername hacer un join para poder tomar la información de users
+exports.getReportByUsername = async (req, res) => {
+  try {
+    const username = req.params.username;
+
+    // Buscar al usuario por username incluyendo los reportes relacionados
+    const user = await User.findOne({
+      where: { username: { [db.Op.like]: `%${username}%` } },
+      include: [
+        {
+          model: Report,
+          through: { attributes: [] }, // Evitar incluir datos de la tabla intermedia
+        },
+      ],
+    });
+
+    // Si no se encuentra el usuario, devolver error 404
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Devolver los reportes asociados al usuario
+    res.status(200).json({ username: user.username, reports: user.reports });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 exports.findone = async (req, res) => {
   const id = req.params.id;
@@ -44,7 +70,8 @@ exports.createReport = async (req, res) => {
 
     let report = {
       content: req.body.content,
-      isSolved: false,
+      isSolved: req.body.isSolved ?? false,
+      teacherId: req.body.teacherId,
     };
 
     const newReport = await Report.create(report);
@@ -54,7 +81,6 @@ exports.createReport = async (req, res) => {
     const reportObj = utils.getCleanReport(newReport);
     return res.json({ report: reportObj, access_token: token });
   } catch (err) {
-    
     res.status(500).send({
       message: err.message || "Some error occurred while creating the report.",
     });

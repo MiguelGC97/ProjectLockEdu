@@ -28,13 +28,50 @@ db.Op = Op;
 
 db.locker = require("./locker.model.js")(sequelize, Sequelize);
 db.box = require("./box.model.js")(sequelize, Sequelize);
-// db.type = require("./type.model.js")(sequelize, Sequelize);
+db.type = require("./type.model.js")(sequelize, Sequelize);
 // db.item = require("./item.model.js")(sequelize, Sequelize);
 db.user = require("./user.model.js")(sequelize, Sequelize);
 db.report = require("./report.model.js")(sequelize, Sequelize);
+db.teacher = require("./teacher.model.js")(sequelize);
+db.incidentManager = require("./incidentManager.model.js")(sequelize);
+db.admin = require("./admin.model.js")(sequelize);
 
-// Locker.hasMany(Box);
-// Box.belongsTo(Locker);
+//Associations
+db.locker.hasMany(db.box);
+db.box.belongsTo(db.locker, {
+  foreignKey: "locker_id",
+  allowNull: false,
+});
+
+db.user.belongsToMany(db.report, {
+  through: "userReports",
+  foreignKey: "user_id",
+  otherKey: "report_id",
+});
+
+db.report.belongsToMany(db.user, {
+  through: "userReports",
+  foreignKey: "report_id",
+  otherKey: "user_id",
+});
+
+db.teacher.belongsTo(db.user, {
+  foreignKey: "userId",
+  as: "user",
+  onDelete: "CASCADE",
+});
+
+db.incidentManager.belongsTo(db.user, {
+  foreignKey: "userId",
+  as: "user",
+  onDelete: "CASCADE",
+});
+
+db.admin.belongsTo(db.user, {
+  foreignKey: "userId",
+  as: "user",
+  onDelete: "CASCADE",
+});
 
 //Box.hasMany(Item);
 //Item.belongsTo(Box);

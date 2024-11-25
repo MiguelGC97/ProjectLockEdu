@@ -1,24 +1,22 @@
-module.exports = app => {
-    const reports = require("../controllers/report.controller.js");
-    const auth = require("../controllers/auth.js");
+module.exports = (app) => {
+  const users = require("../controllers/user.controller.js");
+  const auth = require("../controllers/auth.js");
 
-    var router = require("express").Router();
+  var router = require("express").Router();
 
-    router.post("/", reports.createReport);
+  router.post("/", users.addNewUser);
 
-    router.get("/", auth.isAuthenticated, reports.getAll);
+  router.get("/", auth.isAuthenticated, users.getAll);
 
-    // router.get("/:id", auth.isAuthenticated, reports.findOne);
+  router.get("/:id", auth.isAuthenticated, users.findOne);
 
-    // router.get("/username/:username", auth.isAuthenticated, reports.getByUsername); 
+  router.get("/username/:username", auth.isAuthenticated, users.getByUsername);
 
-    router.put("/:id", auth.isAuthenticated, reports.resolveReport);
-    
-    router.put("manage/:id", auth.isAuthenticated, reports.resolveReport);
+  router.put("/:id", auth.isAuthenticated, users.update);
 
+  router.delete("/:id", auth.isAuthenticated, users.delete);
 
-    app.use("/api/reports", router);
+  router.post("/signin", auth.signin);
 
-
-    
-}
+  app.use("/api/users", router);
+};

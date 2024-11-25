@@ -4,8 +4,8 @@ module.exports = (sequelize) => {
   const Report = sequelize.define("reports", {
     id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
       primaryKey: true,
+      autoIncrement: true,
     },
 
     content: {
@@ -14,9 +14,9 @@ module.exports = (sequelize) => {
     },
 
     isSolved: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-      },
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
   });
 
   return Report;
