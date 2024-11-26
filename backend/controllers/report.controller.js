@@ -14,6 +14,7 @@ exports.getAll = async (req, res) => {
   }
 };
 
+
 exports.getReportByUsername = async (req, res) => {
   try {
     const username = req.params.username;
