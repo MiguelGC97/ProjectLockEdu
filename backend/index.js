@@ -75,6 +75,8 @@ db.sequelize.sync({ force: true }).then(async () => {
   console.log("Database synced: tables dropped and recreated.");
 
   await runSeeders(); // Run seeders after syncing database
+require("./routes/booking.routes")(app);
+
 
   const PORT = process.env.DB_PORT || 8080;
   app.listen(PORT, () => {
