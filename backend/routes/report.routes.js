@@ -6,11 +6,11 @@ module.exports = (app) => {
 
   router.post("/", reports.createReport);
 
-  //   router.get("/", auth.isAuthenticated, reports.getAll);
+  router.get("/", auth.isAuthenticated, reports.getAll);
 
-  router.post("/:username", reports.getReportByUsername);
+  router.get("/:username", auth.isAuthenticated, reports.getReportByUsername);
 
-  //   router.put("/:id", auth.isAuthenticated, reports.resolveReport);
+  router.put("/:id", auth.isAuthenticated, reports.resolveReport);
 
   app.use("/api/reports", router);
 };

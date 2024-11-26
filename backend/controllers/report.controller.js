@@ -30,12 +30,12 @@ exports.getReportByUsername = async (req, res) => {
       ],
     });
 
-    // Si no se encuentra el usuario, devolver error 404
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Devolver los reportes asociados al usuario
+
     res.status(200).json({ username: user.username, reports: user.reports });
   } catch (error) {
     res.status(500).json({ error: error.message });

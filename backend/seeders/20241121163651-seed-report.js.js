@@ -8,11 +8,15 @@ module.exports = {
         content:
           "Hola me gustaría reportar una incidencia sobre un ordenador roto es el número de serie 1234567X",
         isSolved: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
       {
         content:
           "Hola esto es una incidencia sobre una grimpadora en malfuncionamiento",
         isSolved: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     ]);
   },

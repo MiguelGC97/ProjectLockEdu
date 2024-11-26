@@ -1,10 +1,10 @@
 module.exports = (app) => {
-  const incidentManagers = require("../controllers/incidentManager.controller.js");
-
+  const managers = require("../controllers/incidentManager.controller.js");
+  const auth = require("../controllers/auth.js");
+  
   var router = require("express").Router();
 
-  router.post("/", incidentManagers.createIncidentManager);
-  router.get("/", incidentManagers.getIncidentManager);
+  router.put("/modificateProfile/:id", auth.isAuthenticated, managers.updateManagerUsername, managers.updateManagerPassword);
 
   app.use("/api/incidentManager", router);
 };

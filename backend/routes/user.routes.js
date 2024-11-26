@@ -20,7 +20,7 @@ module.exports = (app) => {
 
   router.post("/admin", users.createAdmin);
 
-  router.post("/admin/delete/:id", users.deleteAdmin);
+  router.post("/admin/delete/:id", auth.isAuthenticated, users.deleteAdmin);
 
   router.post("/signin", auth.signin);
 

@@ -94,4 +94,6 @@ db.admin.belongsTo(db.user, {
 //User.belongsToMany(Incident, { thorugh: 'UserIncidents' /* options */ });
 //Incident.belongsToMany(User, { thorugh: 'UserIncidents' /* options */ });
 
+
+
 module.exports = db;
