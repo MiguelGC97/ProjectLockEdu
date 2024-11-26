@@ -8,12 +8,12 @@ const user = {
 
 export default function UserBar() {
   return (
-    <Flex miw={100} mih={20} justify="flex-end" px="xl" py="md" gap="4vw">
-      <Flex direction="column" gap="-1vw">
+    <Flex miw={100} mih={20} justify="flex-end" px="xl" py="md" gap="2vw">
+      <Flex direction="column" align="flex-end" gap="-1vw">
         <Text c="white" size="lg" fw={600}>
           {user.name}
         </Text>
-        <Text c="white" ml="2vw" size="lg" fw={300}>
+        <Text c="white" ml="" size="lg" fw={300}>
           {user.email}
         </Text>
       </Flex>

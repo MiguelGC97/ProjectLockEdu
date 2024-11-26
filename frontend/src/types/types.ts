@@ -63,3 +63,7 @@ export interface ObjectsProps {
   box: BoxType;
   onReturn: () => void;
 }
+
+interface BookingFormProps {
+  items: { id: number }[]; // This is the array of selected item ids.
+}

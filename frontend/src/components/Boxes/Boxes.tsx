@@ -1,5 +1,6 @@
 ﻿import { useEffect, useState } from 'react';
 import { IconArrowLeft, IconSearch } from '@tabler/icons-react';
+import { useLocation } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -19,10 +20,15 @@ import { BoxesProps, BoxType } from '@/types/types';
 import './Boxes.module.css';
 
 const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
-  const [boxes, setBoxes] = useState<BoxType[]>([]);
+  const location = useLocation();
+  const { boxId, selectedValues } = location.state || {};
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [boxes, setBoxes] = useState<BoxType[]>([]);
   const theme = useMantineTheme();
+
+  console.log('Box ID:', boxId); // box.id passed from Objects component
+  console.log('Selected Values:', selectedValues);
 
   useEffect(() => {
     setLoading(true); // Set loading state before starting the request
