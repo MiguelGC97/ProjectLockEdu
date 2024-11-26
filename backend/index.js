@@ -53,6 +53,7 @@ require("./routes/box.routes")(app);
 require("./routes/user.routes")(app);
 require("./routes/type.routes")(app);
 require("./routes/item.routes")(app);
+require("./routes/booking.routes")(app);
 
 // Function to run seeders
 async function runSeeders() {
@@ -75,7 +76,6 @@ db.sequelize.sync({ force: true }).then(async () => {
   console.log("Database synced: tables dropped and recreated.");
 
   await runSeeders(); // Run seeders after syncing database
-require("./routes/booking.routes")(app);
 
 
   const PORT = process.env.DB_PORT || 8080;
