@@ -70,8 +70,10 @@ exports.changeState = async (req, res) => {
     } else {
       res.status(404).json({ message: "Booking not found" });
     }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-}
+};
 
 exports.delete = async (req, res) => {
   const deleting = await Booking.destroy({ where: { id: req.params.id } });
