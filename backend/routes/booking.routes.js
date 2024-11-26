@@ -5,6 +5,8 @@ module.exports = app => {
 
     router.post("/", bookings.addBooking);
 
+    router.post("/:id/items", bookings.addItemToBooking);
+
     router.get("/", bookings.getAll);
 
     router.get("/:id", bookings.getOne);

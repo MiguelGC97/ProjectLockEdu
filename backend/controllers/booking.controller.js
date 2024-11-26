@@ -1,5 +1,6 @@
 const db = require("../models");
 const Booking = db.booking;
+const Item = db.item;
 
 exports.addBooking = async (req, res) => {
   try {
@@ -70,6 +71,30 @@ exports.changeState = async (req, res) => {
     } else {
       res.status(404).json({ message: "Booking not found" });
     }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.addItemToBooking = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const itemId = req.body.itemId;
+
+    const bookings = await Booking.findByPk(id);
+
+    if (!bookings) {
+      return res.status(404).json({ message: 'Booking not found' });
+    }
+
+    const items = await Item.findByPk(itemId);
+    if (!items) {
+      return res.status(404).json({ error: 'Item not found' });
+    }
+
+    await bookings.addItem(items);
+
+    res.status(200).json({ message: 'Item added to booking successfully' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
