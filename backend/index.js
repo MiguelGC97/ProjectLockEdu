@@ -25,6 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //middleware that checks if JWT token exists and verifies it if it does exist.
 //In all future routes, this helps to know if the request is authenticated or not.
+
 app.use(function (req, res, next) {
   // check header or url parameters or post parameters for token
   var token = req.headers["authorization"];
@@ -69,6 +70,7 @@ require("./routes/incidentManager.routes")(app);
 require("./routes/admin.routes")(app);
 
 // Function to run seeders
+
 async function runSeeders() {
   const seeders = [
     // require("./seeders/20241121192833-seed-lockers.js"),
@@ -87,6 +89,7 @@ async function runSeeders() {
 }
 
 // Sync database and start server
+
 db.sequelize
   .sync({ force: true })
   .then(async () => {

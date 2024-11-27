@@ -1,7 +1,6 @@
 const db = require("../models");
 
-const Admin = db.admin;
-const User = db.user;
+const Admin = db.user;
 const Teacher = db.teacher;
 const IncidentManager = db.incidentManager;
 

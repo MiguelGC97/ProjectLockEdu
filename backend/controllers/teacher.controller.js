@@ -1,5 +1,5 @@
 const db = require("../models");
-const Teacher = db.teacher;
+const Teacher = db.user;
 const bcrypt = require("bcryptjs");
 
 
