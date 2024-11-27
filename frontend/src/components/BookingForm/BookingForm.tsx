@@ -1,5 +1,7 @@
 ﻿import { useEffect, useState } from 'react';
 import { IconArrowLeft } from '@tabler/icons-react';
+import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -18,25 +20,41 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { useObjectsContext } from '@/components/Objects/context';
 import instance, { baseUrl } from '@/services/api';
 import { BookingFormProps, BoxType, Item } from '@/types/types';
 
 import './BookingForm.module.css';
 
-const BookingForm: React.FC<BookingFormProps> = ({ items }) => {
-  const allObjects: Item[] = useObjectsContext();
-  const [loading, setLoading] = useState(false);
+const BookingForm: React.FC<BookingFormProps> = (box, items) => {
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [value, setValue] = useState<number[]>([]);
+  const [filteredObjects, setFilteredObjects] = useState<Item[]>([]);
   const theme = useMantineTheme();
-  const [opened, { open, close }] = useDisclosure(false);
 
-  const selectedItems: Item[] = allObjects.filter(
-    (object: Item) => items.some((item: Item) => item.id === object.id) // Check if the item's id matches the selected id
-  );
-
-  useEffect(() => {}, []);
+  if (!Array.isArray(items)) {
+    console.error('Expected items to be an array, but got:', items);
+    return <div>Items data is invalid.</div>; // Or handle the error appropriately
+  }
+  useEffect(() => {
+    instance
+      .get(`${baseUrl}/items`)
+      .then((response) => {
+        if (Array.isArray(response.data.data)) {
+          const all = response.data.data;
+          const filtered = all.filter((object: Item) => {
+            const str = object.boxId.toString();
+            const inc = items.includes(str);
+            return inc;
+          });
+          setFilteredObjects(filtered);
+        } else {
+          console.error('Data is not an array', response.data);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching items:', error);
+      });
+  }, [box]);
 
   if (loading) {
     return (
@@ -55,10 +73,10 @@ const BookingForm: React.FC<BookingFormProps> = ({ items }) => {
   }
 
   return (
-    <ObjectsProvider>
-      <Modal opened={opened} onClose={close} title="Authentication" centered size="55rem">
+    <>
+      {/* <Modal opened={opened} onClose={close} title="Authentication" centered size="55rem">
         <Text>¿Estás seguro de que quieres hacer esta reserva?</Text>
-      </Modal>
+      </Modal> */}
       <Box
         style={{
           backgroundColor: theme.colors.myPurple[4],
@@ -73,11 +91,11 @@ const BookingForm: React.FC<BookingFormProps> = ({ items }) => {
         <Stack mb="2vh" gap="xl">
           <Flex gap="29%">
             <a>
-              <IconArrowLeft color="white" size="30px" onClick={onReturn} />
+              <IconArrowLeft color="white" size="30px" />
             </a>
 
             <Title fw="600" c="white">
-              Casilla C0{box.id}
+              {' '}
             </Title>
           </Flex>
         </Stack>
@@ -94,11 +112,11 @@ const BookingForm: React.FC<BookingFormProps> = ({ items }) => {
           <ScrollArea h="36vh" scrollbarSize={16} mb="xl">
             <Flex direction="column" gap="sm" py="xl" mb="md">
               <Stack mt="md">
-                {selectedItems.length > 0 ? (
+                {filteredObjects.length > 0 ? (
                   <div>
                     <h3>You have selected the following objects:</h3>
                     <ul>
-                      {selectedItems.map((object) => (
+                      {filteredObjects.map((object) => (
                         <li key={object.id}>
                           {/* Space to display the object description */}
                           {object.description}
@@ -126,22 +144,13 @@ const BookingForm: React.FC<BookingFormProps> = ({ items }) => {
             >
               Cancelar
             </Button>
-            <Button
-              onClick={handleSubmit}
-              disabled={value.length > 0 ? null : 'true'}
-              size="md"
-              maw="8vw"
-              bg="myPurple.4"
-              radius="xl"
-              mx="auto"
-              mt="1vh"
-            >
+            <Button size="md" maw="8vw" bg="myPurple.4" radius="xl" mx="auto" mt="1vh">
               Confirmar reserva
             </Button>
           </Flex>
         </Flex>
       </Box>
-    <ObjectsProvider/>
+    </>
   );
 };
 

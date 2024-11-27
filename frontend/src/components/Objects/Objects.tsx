@@ -26,23 +26,13 @@ import './Objects.module.css';
 
 import { ObjectsContext } from './context';
 
-const Objects: React.FC<ObjectsProps> = ({ box, onReturn }) => {
+const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => {
   const [objects, setObjects] = useState<Item[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [value, setValue] = useState<string[]>([]);
   const theme = useMantineTheme();
   const [opened, { open, close }] = useDisclosure(false);
-  const navigate = useNavigate();
-
-  const handleNavigateToBookingForm = () => {
-    navigate('/booking-form', {
-      state: {
-        boxId: box.id,
-        selectedValues: value,
-      },
-    });
-  };
 
   useEffect(() => {
     const fetchObjects = async () => {
@@ -169,8 +159,8 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn }) => {
             <Flex mx="auto" gap="2vw" maw="90%">
               <Button
                 onClick={() => {
-                  handleNavigateToBookingForm();
-                  console.log('Selected checkboxes:', value);
+                  onCreateBooking(box, value);
+                  console.log(value);
                 }}
                 disabled={value.length === 0}
                 size="md"

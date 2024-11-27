@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Flex, useMantineTheme } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Banner } from '@/components/Banner/Banner';
+import BookingForm from '@/components/BookingForm/BookingForm';
 import Boxes from '@/components/Boxes/Boxes';
 import Lockers from '@/components/Lockers/Lockers';
 import MobileMenu from '@/components/MobileMenu/MobileMenu';
@@ -19,6 +20,8 @@ const Home: React.FC = () => {
   const matches2 = useMediaQuery('(max-width: 93em)');
   const [selectedLocker, setSelectedLocker] = useState<Locker | null>(null);
   const [selectedBox, setSelectedBox] = useState<BoxType | null>(null);
+  const [createBooking, setCreateBooking] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<string[] | null>(null);
 
   const handleLockerClick = (locker: Locker) => {
     console.log('Locker selected:', locker); // Debugging log
@@ -34,6 +37,12 @@ const Home: React.FC = () => {
   const handleReturnToLockers = () => {
     setSelectedLocker(null);
     setSelectedBox(null);
+  };
+
+  const handleCreateBookingClick = (box: BoxType, items: string[]) => {
+    setCreateBooking(true);
+    setSelectedBox(box);
+    setSelectedItems(items);
   };
 
   const handleReturnToBoxes = () => {
@@ -94,9 +103,15 @@ const Home: React.FC = () => {
                       onBoxClick={handleBoxClick}
                       onReturn={handleReturnToLockers}
                     />
-                  ) : (
-                    <Objects box={selectedBox} onReturn={handleReturnToBoxes} />
-                  )}
+                  ) : selectedBox && !createBooking ? (
+                    <Objects
+                      box={selectedBox}
+                      onReturn={handleReturnToBoxes}
+                      onCreateBooking={handleCreateBookingClick}
+                    />
+                  ) : selectedBox && selectedItems && createBooking ? (
+                    <BookingForm box={selectedBox} items={selectedItems} />
+                  ) : null}
                 </Flex>
               </Flex>
             </Flex>
@@ -123,8 +138,14 @@ const Home: React.FC = () => {
                       onBoxClick={handleBoxClick}
                       onReturn={handleReturnToLockers}
                     />
+                  ) : !createBooking ? (
+                    <Objects
+                      box={selectedBox}
+                      onReturn={handleReturnToBoxes}
+                      onCreateBooking={handleCreateBookingClick}
+                    />
                   ) : (
-                    <Objects box={selectedBox} onReturn={handleReturnToBoxes} />
+                    <BookingForm box={selectedBox} items={selectedItems} />
                   )}
                 </Flex>
               </Flex>
