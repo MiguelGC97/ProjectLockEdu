@@ -19,14 +19,12 @@ import {
   Title,
   useMantineTheme,
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import instance, { baseUrl } from '@/services/api';
 import { BookingFormProps, BoxType, Item } from '@/types/types';
 
 import './BookingForm.module.css';
 
-const BookingForm: React.FC<BookingFormProps> = (box, items) => {
-  const [loading, setLoading] = useState(true);
+const BookingForm: React.FC<BookingFormProps> = ({ box, items }) => {
   const [error, setError] = useState<string | null>(null);
   const [filteredObjects, setFilteredObjects] = useState<Item[]>([]);
   const theme = useMantineTheme();
@@ -40,29 +38,37 @@ const BookingForm: React.FC<BookingFormProps> = (box, items) => {
       .get(`${baseUrl}/items`)
       .then((response) => {
         if (Array.isArray(response.data.data)) {
-          const all = response.data.data;
-          const filtered = all.filter((object: Item) => {
-            const str = object.boxId.toString();
-            const inc = items.includes(str);
-            return inc;
+          const filtered1 = response.data.data.filter((object: Item) => {
+            // Check if the object's boxId matches the box.id from props
+            return object.boxId === box.id;
           });
-          setFilteredObjects(filtered);
+          const filtered2 = filtered1.filter((object: Item) => {
+            const str = object.id ? object.id.toString() : ''; // Ensure boxId is converted safely
+            console.log('Checking object with boxId:', str); // Debugging the boxId value
+            console.log('Items array:', items); // Debugging the items array
+            console.log('Is in items:', items.includes(str)); // Check if str is in items
+            return items.includes(str.trim()); // Trim any extra spaces
+          });
+
+          console.log('Filtered objects:', filtered2); // Check the result
+          setFilteredObjects(filtered2);
         } else {
-          console.error('Data is not an array', response.data);
+          console.error('Data is not an array', response.data.data);
         }
       })
       .catch((error) => {
         console.error('Error fetching items:', error);
+        setError('Failed to fetch items.');
       });
   }, [box]);
 
-  if (loading) {
-    return (
-      <Center>
-        <LoadingOverlay />
-      </Center>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <Center>
+  //       <LoadingOverlay />
+  //     </Center>
+  //   );
+  // }
 
   if (error) {
     return (

@@ -21,7 +21,7 @@ const Home: React.FC = () => {
   const [selectedLocker, setSelectedLocker] = useState<Locker | null>(null);
   const [selectedBox, setSelectedBox] = useState<BoxType | null>(null);
   const [createBooking, setCreateBooking] = useState(false);
-  const [selectedItems, setSelectedItems] = useState<string[] | null>(null);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
   const handleLockerClick = (locker: Locker) => {
     console.log('Locker selected:', locker); // Debugging log
@@ -74,9 +74,15 @@ const Home: React.FC = () => {
                       onBoxClick={handleBoxClick}
                       onReturn={handleReturnToLockers}
                     />
-                  ) : (
-                    <Objects box={selectedBox} onReturn={handleReturnToBoxes} />
-                  )}
+                  ) : selectedBox && !createBooking ? (
+                    <Objects
+                      box={selectedBox}
+                      onReturn={handleReturnToBoxes}
+                      onCreateBooking={handleCreateBookingClick}
+                    />
+                  ) : createBooking ? (
+                    <BookingForm box={selectedBox} items={selectedItems} />
+                  ) : null}
                 </Flex>
               </Flex>
             </Flex>
@@ -109,7 +115,7 @@ const Home: React.FC = () => {
                       onReturn={handleReturnToBoxes}
                       onCreateBooking={handleCreateBookingClick}
                     />
-                  ) : selectedBox && selectedItems && createBooking ? (
+                  ) : createBooking ? (
                     <BookingForm box={selectedBox} items={selectedItems} />
                   ) : null}
                 </Flex>
@@ -138,15 +144,15 @@ const Home: React.FC = () => {
                       onBoxClick={handleBoxClick}
                       onReturn={handleReturnToLockers}
                     />
-                  ) : !createBooking ? (
+                  ) : selectedBox && !createBooking ? (
                     <Objects
                       box={selectedBox}
                       onReturn={handleReturnToBoxes}
                       onCreateBooking={handleCreateBookingClick}
                     />
-                  ) : (
+                  ) : createBooking ? (
                     <BookingForm box={selectedBox} items={selectedItems} />
-                  )}
+                  ) : null}
                 </Flex>
               </Flex>
             </Flex>

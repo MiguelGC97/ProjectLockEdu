@@ -62,7 +62,7 @@ export interface Item {
 export interface ObjectsProps {
   box: BoxType;
   onReturn: () => void;
-  onCreateBooking: (box: BoxType, items: any) => void;
+  onCreateBooking: (box: BoxType, items: string[]) => void;
 }
 
 export interface BookingFormProps {
