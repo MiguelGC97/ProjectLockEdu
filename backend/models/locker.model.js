@@ -1,4 +1,4 @@
-﻿const { DataTypes } = require('sequelize');
+﻿const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
     const Locker = sequelize.define('lockers', {
@@ -19,7 +19,5 @@ module.exports = (sequelize) => {
         },
     });
 
-    return Locker;
-}
-
-
+  return Locker;
+};

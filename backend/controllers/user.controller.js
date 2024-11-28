@@ -1,5 +1,8 @@
 const db = require("../models");
+
 const User = db.user;
+const Admin = db.admin;
+
 const utils = require("../utils");
 const bcrypt = require("bcryptjs");
 const { Op } = require("sequelize");
@@ -60,6 +63,7 @@ exports.addNewUser = async (req, res) => {
       password: req.body.password,
       username: req.body.username,
       avatar: req.body.avatar,
+      role: req.body.role,
     };
 
     // Check if a user with the same username already exists
@@ -109,10 +113,8 @@ exports.update = async (req, res) => {
   try {
     const id = req.params.id;
 
-
     if (req.body.password) {
-
-      req.body.password = await bcrypt.hash(req.body.password, 10); //hash the new password 
+      req.body.password = await bcrypt.hash(req.body.password, 10); //hash the new password
     }
 
     const [updated] = await User.update(req.body, { where: { id } });
@@ -128,4 +130,54 @@ exports.update = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+};
+
+//Admin
+
+exports.createAdmin = async (req, res) => {
+  const { name, surname, username, password, avatar } = req.body;
+
+  try {
+    if (!username || !password) {
+      return res.status(400).json({ message: "data required" });
+    }
+
+    const existingUser = await User.findOne({ where: { username } });
+    if (existingUser) {
+      return res.status(400).json({
+        message: "The user you try to register is already registered",
+      });
+    }
+
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    const user = await User.create({
+      name,
+      surname,
+      username,
+      password: hashedPassword,
+      avatar,
+      role: "ADMIN",
+    });
+
+    const admin = await Admin.create({
+      userId: user.id,
+    });
+
+    const token = utils.generateToken(user);
+
+    res.status(201).json({
+      admin: { id: admin.id },
+      user: utils.getCleanUser(user),
+      access_token: token,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.deleteAdmin = async (req, res) => {
+  const deleting = await Admin.destroy({ where: { id: req.params.id } });
+  const status = deleting ? 200 : 404;
+  const message = deleting ? "User deleted" : "User not found";
+  res.status(status).json({ message });
 };

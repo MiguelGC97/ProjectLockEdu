@@ -59,5 +59,3 @@ exports.delete = async (req, res) => {
   const message = deleting ? "Locker deleted" : "Locker not found";
   res.status(status).json({ message });
 };
-
-
