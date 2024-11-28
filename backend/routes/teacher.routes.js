@@ -1,7 +1,8 @@
 module.exports = (app) => {
-  const teachers = require("../controllers/teacher.controller.js");
+  const users = require("../controllers/user.controller.js");
   const auth = require("../middlewares/auth.js");
-
+  const permissions = require("../middlewares/permissions.js");
+  
   var router = require("express").Router();
 
   router.put("modificateProfile/:id", auth.isAuthenticated, teachers.updateTeacherUsername, teachers.updateTeacherPassword);

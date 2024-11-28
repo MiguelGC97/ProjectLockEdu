@@ -1,7 +1,6 @@
 const db = require("../models");
 
 const User = db.user;
-const Admin = db.admin;
 
 const utils = require("../utils");
 const bcrypt = require("bcryptjs");
@@ -132,52 +131,48 @@ exports.update = async (req, res) => {
   }
 };
 
-//Admin
-
-exports.createAdmin = async (req, res) => {
-  const { name, surname, username, password, avatar } = req.body;
-
+exports.updatePassword = async (req, res) => {
   try {
-    if (!username || !password) {
-      return res.status(400).json({ message: "data required" });
+    const id = req.params.id;
+
+    if (req.body.password) {
+      req.body.password = await bcrypt.hash(req.body.password, 10); //hash the new password
     }
 
-    const existingUser = await User.findOne({ where: { username } });
-    if (existingUser) {
-      return res.status(400).json({
-        message: "The user you try to register is already registered",
+    //Dr3am-- could be good if we create some email user connection so you send a email and get a link to change both email and password
+
+    const [updated] = await User.update(req.body.password, { where: { id } });
+
+    if (updated) {
+      res.status(200).json({
+        message: "Profile updated",
+        data: req.body,
       });
+    } else {
+      res.status(404).json({ message: "User not found" });
     }
-
-    const hashedPassword = bcrypt.hashSync(password, 10);
-    const user = await User.create({
-      name,
-      surname,
-      username,
-      password: hashedPassword,
-      avatar,
-      role: "ADMIN",
-    });
-
-    const admin = await Admin.create({
-      userId: user.id,
-    });
-
-    const token = utils.generateToken(user);
-
-    res.status(201).json({
-      admin: { id: admin.id },
-      user: utils.getCleanUser(user),
-      access_token: token,
-    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
-exports.deleteAdmin = async (req, res) => {
-  const deleting = await Admin.destroy({ where: { id: req.params.id } });
-  const status = deleting ? 200 : 404;
-  const message = deleting ? "User deleted" : "User not found";
-  res.status(status).json({ message });
+exports.updateUsername = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    //Dr3am-- could be good if we create some email user connection so you send a email and get a link to change both email and password
+
+    const [updated] = await User.update(req.body.username, { where: { id } });
+
+    if (updated) {
+      res.status(200).json({
+        message: "Profile updated",
+        data: req.body,
+      });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };

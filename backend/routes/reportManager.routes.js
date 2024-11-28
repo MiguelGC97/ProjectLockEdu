@@ -1,6 +1,7 @@
 module.exports = (app) => {
-  const managers = require("../controllers/reportManager.controller.js");
+  const users = require("../controllers/user.controller.js");
   const auth = require("../middlewares/auth.js");
+  const permissions = require("../middlewares/permissions.js");
   
   var router = require("express").Router();
 

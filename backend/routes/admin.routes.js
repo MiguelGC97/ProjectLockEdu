@@ -1,11 +1,19 @@
 module.exports = (app) => {
-  const admins = require("../controllers/admin.controller.js");
-  const teachers = require("../controllers/teacher.controller.js");
-  const managers = require("../controllers/reportManager.controller.js");
+
+  const users = require("../controllers/user.controller.js");
   const auth = require("../middlewares/auth.js");
+  const permissions = require("../middlewares/permissions.js");
   //const users = require("../controllers/user.controller.js")
 
   var router = require("express").Router();
+
+
+
+  router.get("/", auth.isAuthenticated, permissions.authorize(["ADMIN"]), users.getAll);
+
+//UN ADMIN PUEDE VER TODOS LOS USUARIOS, CREAR USUARIOS (FORMULARIO), ASIGNAR ROLES?, BORRAR ACTUALIZAR USUARIOS,  CREAR Y MANEJAR ARMARIO, ASIGNAR CAJAS AL ARMARIO, AÑADIR OBJETOS AL ARMARIO, 
+
+
 
   router.post("/teacher", admins.createTeacher);
   router.put("/teacher/modificateProfile/:id", auth.isAuthenticated, teachers.updateTeacherUsername, teachers.updateTeacherPassword);
