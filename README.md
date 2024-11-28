@@ -213,6 +213,8 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 [product-screenshot]: images/home-page.png
+[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[React-url]: https://react.dev/
 [Node.js]: https://img.shields.io/badge/Node.js-303030?style=for-the-badge&logo=node.js&logoColor=3C873A
 [Node-url]: https://nodejs.org/
 [Express.js]: https://img.shields.io/badge/Express-DEDEDE?style=for-the-badge&logo=express&logoColor=212121
