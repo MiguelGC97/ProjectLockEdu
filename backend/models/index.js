@@ -63,7 +63,17 @@ db.item.belongsTo(db.box, {
   targetKey: 'id',
 });
 
-
+//Booking-item association
+db.booking.belongsToMany(db.item, { 
+  through: 'BookingItems',
+  foreignKey: 'bookingId',
+  otherKey: 'itemId',
+});
+db.item.belongsToMany(db.booking, { 
+  through: 'BookingItems',
+  foreignKey: 'itemId',
+  otherKey: 'bookingId',
+});
 
 
 //Box.hasMany(Item);
