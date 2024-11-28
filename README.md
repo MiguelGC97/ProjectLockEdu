@@ -19,18 +19,11 @@
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
 
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
-
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
   <a href="https://github.com/MiguelGC97/ProjectLockEdu/">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="images/logo.png" alt="Logo" width="100%" height="100%">
   </a>
 
   <h3 align="center">Proyecto LockEDU</h3>
@@ -105,7 +98,6 @@ This app was built with:
 
 - [![React][React.js]][React-url]
 - [![Node.js][Node.js]][Node-url]
-- [![Express][Express.js]][Express-url]
 - [![Sequelize][Sequelize.org]][Sequelize-url]
 - [![MySQL][Mysql.com]][Mysql-url]
 - [![Mantine][Mantine.dev]][Mysql-url]
