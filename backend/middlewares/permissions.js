@@ -12,7 +12,7 @@ exports.authorize = (allowedRoles) => {
       }
 
       if (!allowedRoles.includes(userRole)) {
-        return res.status(403).json({ message: "You do not have permission to perform this action." });
+        return res.status(403).json({ message: "You shall not pass." });
       }
 
       next();

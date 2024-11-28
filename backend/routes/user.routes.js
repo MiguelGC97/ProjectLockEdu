@@ -1,6 +1,7 @@
 module.exports = (app) => {
   const users = require("../controllers/user.controller.js");
   const auth = require("../middlewares/auth.js");
+  const permissions = require("../middlewares/permissions.js");
 
   //dr3am--was thinking about doing a general findAll that shows all the data included the ones in the tables teacher, Admin and Manager. logic to elect the table dependant of user role.
 
@@ -8,7 +9,7 @@ module.exports = (app) => {
 
   router.post("/", users.addNewUser);
 
-  router.get("/", auth.isAuthenticated, users.getAll);
+  router.get("/", auth.isAuthenticated, permissions.authorize(["TEACHER"]), users.getAll);
 
   router.get("/:id", auth.isAuthenticated, users.findOne);
 
