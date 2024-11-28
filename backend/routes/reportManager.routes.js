@@ -1,6 +1,6 @@
 module.exports = (app) => {
-  const managers = require("../controllers/incidentManager.controller.js");
-  const auth = require("../controllers/auth.js");
+  const managers = require("../controllers/reportManager.controller.js");
+  const auth = require("../middlewares/auth.js");
   
   var router = require("express").Router();
 
