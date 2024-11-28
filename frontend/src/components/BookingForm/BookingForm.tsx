@@ -38,20 +38,21 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items }) => {
       .get(`${baseUrl}/items`)
       .then((response) => {
         if (Array.isArray(response.data.data)) {
-          const filtered1 = response.data.data.filter((object: Item) => {
-            // Check if the object's boxId matches the box.id from props
-            return object.boxId === box.id;
-          });
-          const filtered2 = filtered1.filter((object: Item) => {
-            const str = object.id ? object.id.toString() : ''; // Ensure boxId is converted safely
-            console.log('Checking object with boxId:', str); // Debugging the boxId value
-            console.log('Items array:', items); // Debugging the items array
-            console.log('Is in items:', items.includes(str)); // Check if str is in items
-            return items.includes(str.trim()); // Trim any extra spaces
-          });
+          const filtered = response.data.data
+            .filter((object: Item) => {
+              // Check if the object's boxId matches the box.id from props
+              return object.boxId === box.id;
+            })
+            .filter((object: Item) => {
+              const str = object.id ? object.id.toString() : ''; // Ensure boxId is converted safely
+              console.log('Checking object with boxId:', str); // Debugging the boxId value
+              console.log('Items array:', items); // Debugging the items array
+              console.log('Is in items:', items.includes(str)); // Check if str is in items
+              return items.includes(str.trim()); // Trim any extra spaces
+            });
 
-          console.log('Filtered objects:', filtered2); // Check the result
-          setFilteredObjects(filtered2);
+          console.log('Filtered objects:', filtered); // Check the result
+          setFilteredObjects(filtered);
         } else {
           console.error('Data is not an array', response.data.data);
         }
