@@ -1,8 +1,8 @@
 module.exports = (app) => {
   const admins = require("../controllers/admin.controller.js");
   const teachers = require("../controllers/teacher.controller.js");
-  const managers = require("../controllers/incidentManager.controller.js");
-  const auth = require("../controllers/auth.js");
+  const managers = require("../controllers/reportManager.controller.js");
+  const auth = require("../middlewares/auth.js");
   //const users = require("../controllers/user.controller.js")
 
   var router = require("express").Router();

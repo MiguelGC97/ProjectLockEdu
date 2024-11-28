@@ -59,7 +59,14 @@ exports.isAuthenticated = async (req, res, next) => {
     const token = req.token;
 
     const decoded = verifyToken(token); // Verificar token
-    await findUserById(decoded.id); // Verificar usuario
+    const user = await findUserById(decoded.id); // Verificar usuario
+
+    // Añadir información del usuario autenticado al objeto req
+    req.user = {
+      id: user.id,
+      username: user.username,
+      role: user.role,
+    };
 
     next(); // Continuar al siguiente middleware
   } catch (err) {
