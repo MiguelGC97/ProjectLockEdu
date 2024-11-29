@@ -156,23 +156,23 @@ exports.updatePassword = async (req, res) => {
   }
 };
 
-exports.updateUsername = async (req, res) => {
-  try {
-    const id = req.params.id;
+// exports.updateUsername = async (req, res) => {
+//   try {
+//     const id = req.params.id;
 
-    //Dr3am-- could be good if we create some email user connection so you send a email and get a link to change both email and password
+//     //Dr3am-- could be good if we create some email user connection so you send a email and get a link to change both email and password
 
-    const [updated] = await User.update(req.body.username, { where: { id } });
+//     const [updated] = await User.update(req.body.username, { where: { id } });
 
-    if (updated) {
-      res.status(200).json({
-        message: "Profile updated",
-        data: req.body,
-      });
-    } else {
-      res.status(404).json({ message: "User not found" });
-    }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+//     if (updated) {
+//       res.status(200).json({
+//         message: "Profile updated",
+//         data: req.body,
+//       });
+//     } else {
+//       res.status(404).json({ message: "User not found" });
+//     }
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };

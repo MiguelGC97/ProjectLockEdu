@@ -5,7 +5,7 @@ module.exports = (app) => {
   
   var router = require("express").Router();
 
-  router.put("modificateProfile/:id", auth.isAuthenticated, teachers.updateTeacherUsername, teachers.updateTeacherPassword);
-
+  router.get("/", auth.isAuthenticated, permissions.authorize(["TEACHER"]), users.updatePassword);
+  
   app.use("/api/teacher", router);
 };
