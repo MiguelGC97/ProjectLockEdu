@@ -1,10 +1,11 @@
 module.exports = (app) => {
-  const managers = require("../controllers/reportManager.controller.js");
+  const users = require("../controllers/user.controller.js");
   const auth = require("../middlewares/auth.js");
+  const permissions = require("../middlewares/permissions.js");
   
   var router = require("express").Router();
 
-  router.put("/modificateProfile/:id", auth.isAuthenticated, managers.updateManagerUsername, managers.updateManagerPassword);
+  router.get("/", auth.isAuthenticated, permissions.authorize(["TEACHER"]), users.updatePassword);
 
   app.use("/api/incidentManager", router);
 };
