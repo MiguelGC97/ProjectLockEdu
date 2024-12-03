@@ -1,3 +1,4 @@
+const { where } = require("sequelize");
 const db = require("../models");
 const Booking = db.booking;
 const Item = db.item;
@@ -8,6 +9,37 @@ exports.addBooking = async (req, res) => {
 
     res.status(201).json({ data: bookings });
   } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.newBooking = async (req, res) => {
+  const t = await db.sequelize.transaction();
+  try {
+    const { description, checkOut, checkIn, state, itemIds } = req.body;
+
+    const userId = req.user.id;
+
+    if (!userId || !checkOut || !checkIn || !state || !Array.isArray(itemIds) || itemIds.length === 0) {
+      return res.status(400).json({ message: "Missing required booking data"});
+    }
+
+    if (checkIn >= checkOut) {
+      return res.status(400).json({ message: "Check-in must be earlier than check-out" });
+    }
+
+    const booking = await Booking.create(
+      { userId, description, checkOut, checkIn, state },
+      { transaction: t }
+    );
+
+    const items = await Item.getAllAvailable(itemIds);
+    await booking.addItem(items, { transaction: t });
+
+    await t.commit();
+    res.status(201).json({ message: "Booking created successfully", data: booking });
+  } catch (error) {
+    await t.rollback();
     res.status(500).json({ error: error.message });
   }
 };
@@ -70,14 +102,18 @@ exports.changeState = async (req, res) => {
   try {
     const id = req.params.id;
 
-    const state = req.params.state;
+    const { state } = req.body;
 
-    const [updated] = await Booking.update(state, { where: { id } });
+    if (!state) {
+      return res.status(400).json({ message: "State is required" });
+    }
+
+    const [updated] = await Booking.update({ state }, { where: { id } });
 
     if (updated) {
       res.status(200).json({
         message: "Booking state changed",
-        data: req.body,
+        data: { id, state },
       });
     } else {
       res.status(404).json({ message: "Booking not found" });

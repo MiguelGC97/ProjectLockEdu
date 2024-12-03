@@ -5,7 +5,7 @@ module.exports = app => {
 
     var router = require("express").Router();
 
-    router.post("/", auth.isAuthenticated, permissions.authorize(["TEACHER"]), bookings.addBooking);
+    router.post("/", auth.isAuthenticated, permissions.authorize(["TEACHER"]), bookings.newBooking);
 
     router.post("/:id/items", bookings.addItemToBooking);
 

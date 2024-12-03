@@ -19,9 +19,9 @@ module.exports = (app) => {
 
   router.delete("/:id", auth.isAuthenticated, users.delete);
 
-  router.post("/admin", users.createAdmin);
+  // router.post("/admin", users.createAdmin);
 
-  router.post("/admin/delete/:id", auth.isAuthenticated, users.deleteAdmin);
+  // router.post("/admin/delete/:id", auth.isAuthenticated, users.deleteAdmin);
 
   router.post("/signin", auth.signin);
 
