@@ -1,17 +1,17 @@
 module.exports = app => {
     const bookings = require("../controllers/booking.controller.js");
+    const auth = require("../middlewares/auth.js");
+    const permissions = require("../middlewares/permissions.js");
 
     var router = require("express").Router();
 
-    router.post("/", bookings.addBooking);
+    router.post("/", auth.isAuthenticated, permissions.authorize(["TEACHER"]), bookings.addBooking);
 
     router.post("/:id/items", bookings.addItemToBooking);
 
-    router.get("/", bookings.getAll);
+    router.get("/", auth.isAuthenticated, bookings.getAll);
 
     router.get("/:id", bookings.getOne);
-
-    router.put("/:id", bookings.update);
 
     router.delete("/:id", bookings.delete);
 

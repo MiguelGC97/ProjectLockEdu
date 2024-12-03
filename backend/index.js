@@ -1,4 +1,4 @@
-﻿require('dotenv').config();
+require('dotenv').config();
 
 const jwt = require('jsonwebtoken');
 const express = require('express');
@@ -37,7 +37,7 @@ app.use(function (req, res, next) {
     if (err) {
       return res.status(401).json({
         error: true,
-        message: "Invalid user."
+        message: "Invalid user.",
       });
     } else {
       req.user = user;

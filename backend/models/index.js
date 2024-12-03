@@ -76,6 +76,8 @@ db.item.belongsToMany(db.booking, {
 });
 
 
+//Box.hasMany(Item);
+//Item.belongsTo(Box);
 
 //Box.hasMany(Incident);
 //Incident.belongsTo(Box);
@@ -94,5 +96,7 @@ db.item.belongsToMany(db.booking, {
 
 //User.belongsToMany(Incident, { thorugh: 'UserIncidents' /* options */ });
 //Incident.belongsToMany(User, { thorugh: 'UserIncidents' /* options */ });
+
+
 
 module.exports = db;

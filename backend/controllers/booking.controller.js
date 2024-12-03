@@ -21,6 +21,17 @@ exports.getAll = async (req, res) => {
   }
 };
 
+exports.getAllbyUserId = async (req, res) => {
+  try {
+
+    const id = req.params.id;
+    const bookings = await Booking.findAll({ where:{ userId:id } });
+    res.status(200).json({ data: bookings });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 exports.getOne = async (req, res) => {
   try {
     const id = req.params.id;
