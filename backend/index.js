@@ -1,4 +1,4 @@
-﻿require('dotenv').config();
+require('dotenv').config();
 
 const jwt = require('jsonwebtoken');
 const express = require('express');
@@ -37,7 +37,7 @@ app.use(function (req, res, next) {
     if (err) {
       return res.status(401).json({
         error: true,
-        message: "Invalid user."
+        message: "Invalid user.",
       });
     } else {
       req.user = user;
@@ -53,6 +53,7 @@ require("./routes/box.routes")(app);
 require("./routes/user.routes")(app);
 require("./routes/type.routes")(app);
 require("./routes/item.routes")(app);
+require("./routes/booking.routes")(app);
 
 // Function to run seeders
 async function runSeeders() {
@@ -75,6 +76,7 @@ db.sequelize.sync({ force: true }).then(async () => {
   console.log("Database synced: tables dropped and recreated.");
 
   await runSeeders(); // Run seeders after syncing database
+
 
   const PORT = process.env.DB_PORT || 8080;
   app.listen(PORT, () => {

@@ -1,4 +1,4 @@
-﻿const { DataTypes } = require('sequelize');
+﻿const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
     const Type = sequelize.define('types', {
@@ -15,6 +15,5 @@ module.exports = (sequelize) => {
         },
     });
 
-    return Type;
-}
-
+  return Type;
+};

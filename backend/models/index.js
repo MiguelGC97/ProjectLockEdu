@@ -31,6 +31,7 @@ db.box = require("./box.model.js")(sequelize, Sequelize);
 db.type = require("./type.model.js")(sequelize, Sequelize);
 db.item = require("./item.model.js")(sequelize, Sequelize);
 db.user = require("./user.model.js")(sequelize, Sequelize);
+db.booking = require("./booking.model.js")(sequelize, Sequelize);
 
 //Locker-box Association
 db.locker.hasMany(db.box, {
@@ -62,7 +63,17 @@ db.item.belongsTo(db.box, {
   targetKey: 'id',
 });
 
-
+//Booking-item association
+db.booking.belongsToMany(db.item, { 
+  through: 'BookingItems',
+  foreignKey: 'bookingId',
+  otherKey: 'itemId',
+});
+db.item.belongsToMany(db.booking, { 
+  through: 'BookingItems',
+  foreignKey: 'itemId',
+  otherKey: 'bookingId',
+});
 
 
 //Box.hasMany(Item);
@@ -85,5 +96,7 @@ db.item.belongsTo(db.box, {
 
 //User.belongsToMany(Incident, { thorugh: 'UserIncidents' /* options */ });
 //Incident.belongsToMany(User, { thorugh: 'UserIncidents' /* options */ });
+
+
 
 module.exports = db;

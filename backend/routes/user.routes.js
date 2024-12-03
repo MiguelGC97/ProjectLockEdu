@@ -1,25 +1,29 @@
-module.exports = app => {
-    const users = require("../controllers/user.controller.js");
-    const auth = require("../controllers/auth.js");
+module.exports = (app) => {
+  const users = require("../controllers/user.controller.js");
+  const auth = require("../middlewares/auth.js");
+  const permissions = require("../middlewares/permissions.js");
 
-    var router = require("express").Router();
+  //dr3am--was thinking about doing a general findAll that shows all the data included the ones in the tables teacher, Admin and Manager. logic to elect the table dependant of user role.
 
-    router.post("/", users.addNewUser);
+  var router = require("express").Router();
 
-    router.get("/", auth.isAuthenticated, users.getAll);
+  router.post("/", users.addNewUser);
 
-    router.get("/:id", auth.isAuthenticated, users.findOne);
+  router.get("/", auth.isAuthenticated, permissions.authorize(["TEACHER"]), users.getAll);
 
-    router.get("/username/:username", auth.isAuthenticated, users.getByUsername); 
+  router.get("/:id", auth.isAuthenticated, users.findOne);
 
-    router.put("/:id", auth.isAuthenticated, users.update);
+  router.get("/username/:username", auth.isAuthenticated, users.getByUsername);
 
-    router.delete("/:id", auth.isAuthenticated, users.delete);
+  router.put("/:id", auth.isAuthenticated, users.update);
 
-    router.post("/signin", auth.signin);
+  router.delete("/:id", auth.isAuthenticated, users.delete);
 
-    app.use("/api/users", router);
+  router.post("/admin", users.createAdmin);
 
+  router.post("/admin/delete/:id", auth.isAuthenticated, users.deleteAdmin);
 
-    
-}
+  router.post("/signin", auth.signin);
+
+  app.use("/api/users", router);
+};
