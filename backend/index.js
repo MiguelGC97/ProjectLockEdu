@@ -12,6 +12,8 @@ const port = process.env.PORT || 4000;
 
 app.use(cors({ origin: 'http://localhost:5173' }));
 
+app.use(express.urlencoded({ extended: true }));
+
 // Public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
