@@ -3,16 +3,6 @@ const Booking = db.booking;
 const Item = db.item;
 const { Op } = require("sequelize");
 
-// exports.addBooking = async (req, res) => {
-//   try {
-//     const bookings = await Booking.create(req.body);
-
-//     res.status(201).json({ data: bookings });
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// };
-
 exports.newBooking = async (req, res) => {
   const t = await db.sequelize.transaction();
   try {
@@ -20,18 +10,8 @@ exports.newBooking = async (req, res) => {
 
     const userId = req.user.id;
 
-    // if (!userId || !checkOut || !checkIn || !state || !Array.isArray(itemIds) || itemIds.length === 0) {
-    //   return res.status(400).json({ message: "Missing required booking data"});
-    // }
-
-    // if (checkIn >= checkOut) {
-    //   return res.status(400).json({ message: "Check-in must be earlier than check-out" });
-    // }
-
-    // Inicializar un array para campos faltantes
     const missingFields = [];
 
-    // Validar cada campo y agregar al array si falta
     if (!userId) missingFields.push("userId");
     if (!checkOut) missingFields.push("checkOut");
     if (!checkIn) missingFields.push("checkIn");
@@ -40,13 +20,13 @@ exports.newBooking = async (req, res) => {
     if (!Array.isArray(itemIds)) {
       return res.status(400).json({ message: "itemIds must be an array" });
     }
-    
-    // Si hay campos faltantes, responder con un mensaje detallado
+
     if (missingFields.length > 0) {
       return res.status(400).json({
         message: `Missing required booking data: ${missingFields.join(", ")}`,
       });
     }
+
 
     const booking = await Booking.create(
       { userId, description, checkOut, checkIn, state },
@@ -61,6 +41,13 @@ exports.newBooking = async (req, res) => {
         state: "available",
       },
     });
+
+    if (availableItems.length === 0) {
+      await t.rollback();
+      return res.status(404).json({
+        message: "No available items found for the provided IDs",
+      });
+    }
 
     await booking.addItem(availableItems, { transaction: t });
 
@@ -148,30 +135,6 @@ exports.changeState = async (req, res) => {
     } else {
       res.status(404).json({ message: "Booking not found" });
     }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-exports.addItemToBooking = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const itemId = req.body.itemId;
-
-    const bookings = await Booking.findByPk(id);
-
-    if (!bookings) {
-      return res.status(404).json({ message: 'Booking not found' });
-    }
-
-    const items = await Item.findByPk(itemId);
-    if (!items) {
-      return res.status(404).json({ error: 'Item not found' });
-    }
-
-    await bookings.addItem(items);
-
-    res.status(200).json({ message: 'Item added to booking successfully' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
