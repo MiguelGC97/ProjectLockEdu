@@ -1,4 +1,4 @@
-// Home.page.tsx
+﻿// Home.page.tsx
 import { useState } from 'react';
 import { Flex, useMantineTheme } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
@@ -14,7 +14,7 @@ import { SideMenu } from '@/components/SideMenu/SideMenu';
 import UserBar from '@/components/UserBar/UserBar';
 import { BoxType, Locker } from '@/types/types';
 
-const Home: React.FC = () => {
+const Profile: React.FC = () => {
   const theme = useMantineTheme();
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [selectedLocker, setSelectedLocker] = useState<Locker | null>(null);
@@ -78,4 +78,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default Profile;

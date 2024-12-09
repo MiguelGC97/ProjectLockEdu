@@ -13,7 +13,7 @@ import { SideMenu } from '@/components/SideMenu/SideMenu';
 import UserBar from '@/components/UserBar/UserBar';
 import { BoxType, Locker } from '@/types/types';
 
-const History: React.FC = () => {
+const Notifications: React.FC = () => {
   const theme = useMantineTheme();
   const matches = useMediaQuery('(min-width: 85em)');
   const matches2 = useMediaQuery('(max-width: 93em)');
@@ -136,4 +136,4 @@ const History: React.FC = () => {
   );
 };
 
-export default History;
+export default Notifications;

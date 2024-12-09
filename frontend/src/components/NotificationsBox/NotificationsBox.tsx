@@ -1,6 +1,6 @@
 ﻿import { Box, Center, Divider, Flex, ScrollArea, Text, Title } from '@mantine/core';
 
-import './Notifications.module.css';
+import './NotificationsBox.module.css';
 
 import { useEffect, useState } from 'react';
 import { useMediaQuery } from '@mantine/hooks';
@@ -35,7 +35,7 @@ function formatTime(timeString: string): string {
   return `${hours}:${minutes}`;
 }
 
-export function Notifications() {
+export function NotificationsBox() {
   const [bookings, setBookings] = useState<Booking[]>([]);
 
   const matches = useMediaQuery('(min-width: 85em)');
