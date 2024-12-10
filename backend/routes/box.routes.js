@@ -1,6 +1,8 @@
 module.exports = app => {
   const boxes = require("../controllers/box.controller.js");
 
+  const auth = require("../middlewares/auth.js");
+  
   const upload = require('../multer/upload');
 
   var router = require("express").Router();
