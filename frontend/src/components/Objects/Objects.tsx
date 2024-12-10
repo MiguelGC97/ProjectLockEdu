@@ -1,6 +1,5 @@
 ﻿import { useEffect, useState } from 'react';
 import { IconArrowLeft } from '@tabler/icons-react';
-import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -8,7 +7,6 @@ import {
   Checkbox,
   Divider,
   Flex,
-  Group,
   Image,
   LoadingOverlay,
   Modal,
@@ -20,7 +18,7 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import instance, { baseUrl } from '@/services/api';
-import { BoxType, Item, ObjectsProps } from '@/types/types';
+import { Item, ObjectsProps } from '@/types/types';
 
 import './Objects.module.css';
 
