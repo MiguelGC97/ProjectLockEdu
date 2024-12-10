@@ -19,6 +19,8 @@ const Home: React.FC = () => {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [selectedLocker, setSelectedLocker] = useState<Locker | null>(null);
   const [selectedBox, setSelectedBox] = useState<BoxType | null>(null);
+  const [createBooking, setCreateBooking] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
   const handleLockerClick = (locker: Locker) => {
     console.log('Locker selected:', locker); // Debugging log
@@ -34,6 +36,12 @@ const Home: React.FC = () => {
   const handleReturnToLockers = () => {
     setSelectedLocker(null);
     setSelectedBox(null);
+  };
+
+  const handleCreateBookingClick = (box: BoxType, items: string[]) => {
+    setCreateBooking(true);
+    setSelectedBox(box);
+    setSelectedItems(items);
   };
 
   const handleReturnToBoxes = () => {

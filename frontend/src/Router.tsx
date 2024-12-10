@@ -1,3 +1,4 @@
+// Router.tsx
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import History from './pages/History.page';
 import Home from './pages/Home.page';

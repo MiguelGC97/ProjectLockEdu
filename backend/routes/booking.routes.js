@@ -7,12 +7,12 @@ module.exports = app => {
 
     router.post("/", auth.isAuthenticated, permissions.authorize(["TEACHER"]), bookings.newBooking);
 
-    router.get("/", auth.isAuthenticated, permissions.authorize(["TEACHER", "ADMIN"]),bookings.getAll);
+    router.get("/", auth.isAuthenticated, permissions.authorize(["TEACHER", "ADMIN"]), bookings.getAll);
 
-    router.get("/:id", auth.isAuthenticated, permissions.authorize(["TEACHER", "ADMIN"]),bookings.getOne);
+    router.get("/:id", auth.isAuthenticated, permissions.authorize(["TEACHER", "ADMIN"]), bookings.getOne);
 
-    router.delete("/:id", auth.isAuthenticated, permissions.authorize(["TEACHER", "ADMIN"]),bookings.delete);
+    router.delete("/:id", auth.isAuthenticated, permissions.authorize(["TEACHER", "ADMIN"]), bookings.delete);
 
     app.use("/api/bookings", router);
-    
+
 }
