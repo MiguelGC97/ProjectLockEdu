@@ -1,5 +1,12 @@
-﻿import { useState } from 'react';
-import { IconLogout, IconMessageReport, IconSettings, IconUser } from '@tabler/icons-react';
+﻿﻿import { useState } from 'react';
+import {
+  IconCalendarTime,
+  IconLogout,
+  IconMessageReport,
+  IconSettings,
+  IconUser,
+} from '@tabler/icons-react';
+import { useNavigate } from 'react-router-dom';
 import { Center, Flex, Image, rem, Stack, Tooltip, UnstyledButton } from '@mantine/core';
 import classes from './SideMenu.module.css';
 
@@ -8,9 +15,10 @@ interface NavbarLinkProps {
   label: string;
   active?: boolean;
   onClick?(): void;
+  to?: string; // Add a to prop for the route path
 }
 
-function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
+function NavbarLink({ icon: Icon, label, active, onClick, to }: NavbarLinkProps) {
   return (
     <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
       <UnstyledButton onClick={onClick} className={classes.link} data-active={active || undefined}>
@@ -21,25 +29,32 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
 }
 
 const menuData = [
-  { icon: IconUser, label: 'Perfil' },
-  { icon: IconMessageReport, label: 'Incidencias' },
-  { icon: IconSettings, label: 'Configuraciones' },
+  { icon: IconUser, label: 'Perfil', to: '/' },
+  { icon: IconCalendarTime, label: 'Historial de reservas', to: '/historial-reservas' },
+  { icon: IconMessageReport, label: 'Incidencias', to: '/incidencias' },
+  { icon: IconSettings, label: 'Configuraciones', to: '/configuraciones' },
 ];
 
 export function SideMenu() {
   const [active, setActive] = useState(0);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const iconLinks = menuData.map((link, index) => (
     <NavbarLink
       {...link}
       key={link.label}
       active={index === active}
-      onClick={() => setActive(index)}
+      onClick={() => {
+        setActive(index);
+        if (link.to) {
+          navigate(link.to); // Navigate to the page when clicked
+        }
+      }}
     />
   ));
 
   return (
-    <nav className={classes.navbar}>
+    <div mah="100vh" className={classes.navbar}>
       <Center>
         <Image w="60px" src="/assets/logoApp.png" />
       </Center>
@@ -50,9 +65,9 @@ export function SideMenu() {
         </Stack>
       </div>
 
-      <Flex direction="column" justify="flex-end" align="flex-end" h="60vh">
-        <NavbarLink icon={IconLogout} label="Salir" />
+      <Flex direction="column" justify="flex-end" mb="6vh" align="flex-end" h="55vh">
+        <NavbarLink icon={IconLogout} label="Salir" onClick={() => console.log('Logout')} />
       </Flex>
-    </nav>
+    </div>
   );
 }
