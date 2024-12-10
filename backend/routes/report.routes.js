@@ -4,7 +4,7 @@ module.exports = (app) => {
 
   var router = require("express").Router();
 
-  router.post("/", reports.createReport);
+  router.post("/", auth.isAuthenticated, reports.createReport);
 
   router.get("/", auth.isAuthenticated, reports.getAll);
 

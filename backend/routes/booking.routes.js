@@ -14,5 +14,5 @@ module.exports = app => {
     router.delete("/:id", auth.isAuthenticated, permissions.authorize(["TEACHER", "ADMIN"]),bookings.delete);
 
     app.use("/api/bookings", router);
-    
+
 }

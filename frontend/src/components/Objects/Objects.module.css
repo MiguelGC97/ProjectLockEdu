@@ -39,3 +39,7 @@ Text {
 Input {
   font-family: inherit;
 }
+
+Image {
+  cursor: pointer;
+}
