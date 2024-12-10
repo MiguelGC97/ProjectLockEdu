@@ -75,6 +75,15 @@ db.item.belongsToMany(db.booking, {
   otherKey: 'bookingId',
 });
 
+//Booking-user association
+db.user.hasMany(db.booking, {
+  foreignKey: 'userId',
+  sourceKey: 'id',
+});
+db.booking.belongsTo(db.user, {
+  foreignKey: 'userId',
+  targetKey: 'id',
+});
 
 //Box.hasMany(Item);
 //Item.belongsTo(Box);

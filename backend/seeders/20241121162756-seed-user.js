@@ -24,7 +24,7 @@ module.exports = {
         surname: "Soares",
         username: "saraS@gmail.com",
         password: hashedPassword2,
-        avatar: "imgen",
+        avatar: "imagen",
         role: "TEACHER",
         createdAt: new Date(),
         updatedAt: new Date(),
