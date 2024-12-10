@@ -53,10 +53,9 @@ const Home: React.FC = () => {
     <>
       {matches ? (
         matches2 ? (
-          <Flex style={{ backgroundColor: theme.colors.myPurple[6] }}>
-            <Flex w="100%" gap="lg">
-              <SideMenu />
-              <Flex direction="column" w="100%">
+          <Flex pl="1.5%" style={{ backgroundColor: theme.colors.myPurple[6] }}>
+            <Flex maw="auto" gap="lg">
+              <Flex direction="column" maw="100%">
                 <UserBar />
                 <Flex gap="lg" wrap="wrap">
                   <Flex maw={800} gap="lg" direction="column">
@@ -88,9 +87,8 @@ const Home: React.FC = () => {
             </Flex>
           </Flex>
         ) : (
-          <Flex style={{ backgroundColor: theme.colors.myPurple[6] }}>
-            <Flex w="100%" gap="lg">
-              <SideMenu />
+          <Flex pl="1.5%" style={{ backgroundColor: theme.colors.myPurple[6] }}>
+            <Flex maw="100%" gap="lg">
               <Flex direction="column" w="100%">
                 <UserBar />
                 <Flex gap="lg" wrap="wrap">
@@ -124,8 +122,8 @@ const Home: React.FC = () => {
           </Flex>
         )
       ) : (
-        <Flex style={{ backgroundColor: theme.colors.white }}>
-          <Flex w="100%" gap="lg">
+        <Flex pl="1.5%" style={{ backgroundColor: theme.colors.white }}>
+          <Flex maw="100%" gap="lg">
             <MobileMenu />
             <Flex direction="column" w="100%">
               <UserBar />

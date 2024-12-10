@@ -1,19 +1,19 @@
 module.exports = app => {
-    const boxes = require("../controllers/box.controller.js");
+  const boxes = require("../controllers/box.controller.js");
 
-    const upload = require('../multer/upload');
+  const upload = require('../multer/upload');
 
   var router = require("express").Router();
 
-    router.post("/", upload.single('file'), boxes.addBox);
+  router.post("/", auth.isAuthenticated, upload.single('file'), boxes.addBox);
 
-  router.get("/", boxes.getAll);
+  router.get("/", auth.isAuthenticated, boxes.getAll);
 
-  router.get("/:id", boxes.getOne);
+  router.get("/:id", auth.isAuthenticated, boxes.getOne);
 
-  router.put("/:id", boxes.update);
+  router.put("/:id", auth.isAuthenticated, boxes.update);
 
-  router.delete("/:id", boxes.delete);
+  router.delete("/:id", auth.isAuthenticated, boxes.delete);
 
   app.use("/api/boxes", router);
 };

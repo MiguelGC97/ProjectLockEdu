@@ -9,10 +9,10 @@ module.exports = app => {
 
     router.get("/", auth.isAuthenticated, bookings.getAll);
 
-    router.get("/:id", bookings.getOne);
+    router.get("/:id", auth.isAuthenticated, bookings.getOne);
 
-    router.delete("/:id", bookings.delete);
+    router.delete("/:id", auth.isAuthenticated, bookings.delete);
 
     app.use("/api/bookings", router);
-    
+
 }

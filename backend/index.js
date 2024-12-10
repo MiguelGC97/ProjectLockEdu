@@ -61,7 +61,8 @@ async function runSeeders() {
     require('./seeders/20241121192833-seed-lockers.js'),
     require('./seeders/20241121192910-seed-boxes.js'),
     require('./seeders/20241121192926-seed-types.js'),
-    require('./seeders/20241121192941-seed-items.js')
+    require('./seeders/20241121192941-seed-items.js'),
+    require('./seeders/20241121162756-seed-user.js')
   ];
 
   console.log("Running seeders...");

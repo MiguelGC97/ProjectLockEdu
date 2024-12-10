@@ -3,16 +3,17 @@ module.exports = app => {
 
     var router = require("express").Router();
 
-    router.post("/", types.addType);
+    router.post("/", auth.isAuthenticated, types.addType);
 
-    router.get("/", types.getAll);
+    router.get("/", auth.isAuthenticated, types.getAll);
 
-    router.get("/:id", types.getOne);
+    router.get("/:id", auth.isAuthenticated, types.getOne);
 
-    router.put("/:id", types.update);
+    router.put("/:id", auth.isAuthenticated, types.update);
 
-    router.delete("/:id", types.delete);
+    router.delete("/:id", auth.isAuthenticated, types.delete);
 
     app.use("/api/types", router);
-    
+
 }
+

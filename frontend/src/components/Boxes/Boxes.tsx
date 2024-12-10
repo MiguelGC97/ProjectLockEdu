@@ -26,6 +26,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
   const [error, setError] = useState<string | null>(null);
   const [boxes, setBoxes] = useState<BoxType[]>([]);
   const theme = useMantineTheme();
+  import { fetchBoxes } from '@/services/fetch';
 
   console.log('Box ID:', boxId); // box.id passed from Objects component
   console.log('Selected Values:', selectedValues);
@@ -34,22 +35,13 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
     setLoading(true); // Set loading state before starting the request
     setError(null); // Clear previous errors
 
-    // Fetch boxes using .then()
-    instance
-      .get(`${baseUrl}/boxes`)
-      .then((response) => {
-        if (Array.isArray(response.data.data)) {
-          setBoxes(response.data.data.filter((b) => b.lockerId === locker.id));
-        } else {
-          setError('Unexpected response format');
-        }
-      })
-      .catch((error) => {
-        setError('Failed to fetch boxes.');
-      })
-      .finally(() => {
-        setLoading(false); // Set loading state to false after the request is finished
-      });
+    const loadBoxes = async () => {
+      const data = await fetchBoxes();
+      setBoxes(data.filter((b) => b.lockerId === locker.id));
+    };
+
+    loadBoxes();
+    setLoading(false);
   }, [locker]); // Dependency array ensures this effect runs when `locker` changes;
 
   if (loading) {

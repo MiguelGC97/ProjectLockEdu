@@ -3,12 +3,12 @@
 
     var router = require("express").Router();
 
-    router.post("/", items.addItem);
+    router.post("/", auth.isAuthenticated, items.addItem);
 
-    router.get("/", items.getAll);
+    router.get("/", auth.isAuthenticated, items.getAll);
 
-    router.delete("/:id", items.delete);
+    router.delete("/:id", auth.isAuthenticated, items.delete);
 
-    app.use("/api/items", router);
+    app.use("/api/items", auth.isAuthenticated, router);
 
 }
