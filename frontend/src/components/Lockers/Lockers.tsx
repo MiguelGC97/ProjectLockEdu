@@ -9,12 +9,12 @@ import { Locker, LockersProps } from '@/types/types';
 import { LockersContext } from './context';
 
 const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
-  const [lockers, setLockers] = useState<Locker[]>([]);
+  const [lockers, setLockers] = useState<Locker[] | undefined>();
 
   useEffect(() => {
     const loadLockers = async () => {
       const data = await fetchLockers(); // Wait for the promise to resolve
-      setLockers(data); // Set the lockers once the data is fetched
+      setLockers(data || []); // Set the lockers once the data is fetched
     };
     loadLockers(); // Call the async function
   }, []);
@@ -42,7 +42,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
         </Stack>
         <ScrollArea p="lg" m="md" h="62vh" scrollbarSize={16}>
           <Flex direction="column" gap="sm">
-            {lockers.map((locker) => {
+            {lockers?.map((locker) => {
               return (
                 <Box h="auto" bg="myPurple.6" style={{ borderRadius: 20 }} p="sm">
                   <Flex direction="column" gap="lg" p="sm">

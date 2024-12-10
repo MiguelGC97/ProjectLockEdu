@@ -19,6 +19,8 @@ import { BoxesProps, BoxType } from '@/types/types';
 
 import './Boxes.module.css';
 
+import { fetchBoxes } from '@/services/fetch';
+
 const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
   const location = useLocation();
   const { boxId, selectedValues } = location.state || {};
@@ -26,7 +28,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
   const [error, setError] = useState<string | null>(null);
   const [boxes, setBoxes] = useState<BoxType[]>([]);
   const theme = useMantineTheme();
-  import { fetchBoxes } from '@/services/fetch';
+  
 
   console.log('Box ID:', boxId); // box.id passed from Objects component
   console.log('Selected Values:', selectedValues);

@@ -1,18 +1,18 @@
 ﻿import instance, { baseUrl } from '@/services/api';
 import { BoxType, Locker } from '@/types/types';
 
-// function to fetch lockers
 export async function fetchLockers(): Promise<Locker[]> {
   try {
     const response = await instance.get(`${baseUrl}/lockers`);
-    if (Array.isArray(response.data)) {
+    if (response.status >= 200 && response.status < 300 && Array.isArray(response.data)) {
       return response.data;
     } else {
-      console.error('Data is not an array', response.data);
+      console.error('Unexpected response format', response.data);
+      return [];
     }
-  } catch (error) {
-    console.error('Error fetching lockers:', error);
-    return []; // handle error by returning an empty array
+  } catch (error: any) {
+    console.error('Error fetching lockers:', error.message);
+    return []; // Devuelve un arreglo vacío para evitar romper la app.
   }
 }
 
