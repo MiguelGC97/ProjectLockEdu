@@ -1,7 +1,7 @@
 ﻿import { IconTrash } from '@tabler/icons-react';
 import { Box, Center, Divider, Flex, Group, ScrollArea, Table, Text, Title } from '@mantine/core';
 
-import './Pending.module.css';
+import './ReportsBox.module.css';
 
 const pendingReservations = [
   {
@@ -192,7 +192,7 @@ const pendingReservations = [
   },
 ];
 
-export function Pending() {
+export function ReportsBox() {
   const rows = pendingReservations.map((p) => (
     <Table.Tr c="white">
       <Table.Td>{p.box}</Table.Td>

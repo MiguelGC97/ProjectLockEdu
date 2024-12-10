@@ -16,7 +16,7 @@ import {
 } from '@mantine/core';
 import instance, { baseUrl } from '@/services/api';
 import { BoxesProps, BoxType } from '@/types/types';
-
+import { fetchBoxes } from '@/services/fetch';
 import './Boxes.module.css';
 
 const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
@@ -26,7 +26,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
   const [error, setError] = useState<string | null>(null);
   const [boxes, setBoxes] = useState<BoxType[]>([]);
   const theme = useMantineTheme();
-  import { fetchBoxes } from '@/services/fetch';
+  
 
   console.log('Box ID:', boxId); // box.id passed from Objects component
   console.log('Selected Values:', selectedValues);
