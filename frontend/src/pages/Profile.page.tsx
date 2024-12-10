@@ -1,12 +1,11 @@
 ﻿// Home.page.tsx
 import { useState } from 'react';
-import { Flex, useMantineTheme } from '@mantine/core';
+import { Flex, Text, useMantineTheme } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Banner } from '@/components/Banner/Banner';
 import BottomTabs from '@/components/BottomTabs/BottomTabs';
 import Boxes from '@/components/Boxes/Boxes';
 import Lockers from '@/components/Lockers/Lockers';
-import MobileMenu from '@/components/MobileMenu/MobileMenu';
 import { NotificationsBox } from '@/components/NotificationsBox/NotificationsBox';
 import Objects from '@/components/Objects/Objects';
 import { Pending } from '@/components/Pending/Pending';
@@ -43,7 +42,10 @@ const Profile: React.FC = () => {
   return (
     <>
       {isMobile ? (
-        <BottomTabs />
+        <>
+          <BottomTabs />
+          <Text>Profile</Text>
+        </>
       ) : (
         <Flex style={{ backgroundColor: theme.colors.myPurple[6] }}>
           <Flex w="100%" gap="lg">
