@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Flex, useMantineTheme } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Banner } from '@/components/Banner/Banner';
+import BookingForm from '@/components/BookingForm/BookingForm';
 import Boxes from '@/components/Boxes/Boxes';
 import Lockers from '@/components/Lockers/Lockers';
 import MobileMenu from '@/components/MobileMenu/MobileMenu';
@@ -19,6 +20,8 @@ const Home: React.FC = () => {
   const matches2 = useMediaQuery('(max-width: 93em)');
   const [selectedLocker, setSelectedLocker] = useState<Locker | null>(null);
   const [selectedBox, setSelectedBox] = useState<BoxType | null>(null);
+  const [createBooking, setCreateBooking] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
   const handleLockerClick = (locker: Locker) => {
     console.log('Locker selected:', locker); // Debugging log
@@ -36,6 +39,12 @@ const Home: React.FC = () => {
     setSelectedBox(null);
   };
 
+  const handleCreateBookingClick = (box: BoxType, items: string[]) => {
+    setCreateBooking(true);
+    setSelectedBox(box);
+    setSelectedItems(items);
+  };
+
   const handleReturnToBoxes = () => {
     setSelectedBox(null);
   };
@@ -44,10 +53,9 @@ const Home: React.FC = () => {
     <>
       {matches ? (
         matches2 ? (
-          <Flex style={{ backgroundColor: theme.colors.myPurple[6] }}>
-            <Flex w="100%" gap="lg">
-              <SideMenu />
-              <Flex direction="column" w="100%">
+          <Flex pl="1.5%" style={{ backgroundColor: theme.colors.myPurple[6] }}>
+            <Flex maw="auto" gap="lg">
+              <Flex direction="column" maw="100%">
                 <UserBar />
                 <Flex gap="lg" wrap="wrap">
                   <Flex maw={800} gap="lg" direction="column">
@@ -65,17 +73,22 @@ const Home: React.FC = () => {
                       onBoxClick={handleBoxClick}
                       onReturn={handleReturnToLockers}
                     />
-                  ) : (
-                    <Objects box={selectedBox} onReturn={handleReturnToBoxes} />
-                  )}
+                  ) : selectedBox && !createBooking ? (
+                    <Objects
+                      box={selectedBox}
+                      onReturn={handleReturnToBoxes}
+                      onCreateBooking={handleCreateBookingClick}
+                    />
+                  ) : createBooking ? (
+                    <BookingForm box={selectedBox} items={selectedItems} />
+                  ) : null}
                 </Flex>
               </Flex>
             </Flex>
           </Flex>
         ) : (
-          <Flex style={{ backgroundColor: theme.colors.myPurple[6] }}>
-            <Flex w="100%" gap="lg">
-              <SideMenu />
+          <Flex pl="1.5%" style={{ backgroundColor: theme.colors.myPurple[6] }}>
+            <Flex maw="100%" gap="lg">
               <Flex direction="column" w="100%">
                 <UserBar />
                 <Flex gap="lg" wrap="wrap">
@@ -94,17 +107,23 @@ const Home: React.FC = () => {
                       onBoxClick={handleBoxClick}
                       onReturn={handleReturnToLockers}
                     />
-                  ) : (
-                    <Objects box={selectedBox} onReturn={handleReturnToBoxes} />
-                  )}
+                  ) : selectedBox && !createBooking ? (
+                    <Objects
+                      box={selectedBox}
+                      onReturn={handleReturnToBoxes}
+                      onCreateBooking={handleCreateBookingClick}
+                    />
+                  ) : createBooking ? (
+                    <BookingForm box={selectedBox} items={selectedItems} />
+                  ) : null}
                 </Flex>
               </Flex>
             </Flex>
           </Flex>
         )
       ) : (
-        <Flex style={{ backgroundColor: theme.colors.white }}>
-          <Flex w="100%" gap="lg">
+        <Flex pl="1.5%" style={{ backgroundColor: theme.colors.white }}>
+          <Flex maw="100%" gap="lg">
             <MobileMenu />
             <Flex direction="column" w="100%">
               <UserBar />
@@ -123,9 +142,15 @@ const Home: React.FC = () => {
                       onBoxClick={handleBoxClick}
                       onReturn={handleReturnToLockers}
                     />
-                  ) : (
-                    <Objects box={selectedBox} onReturn={handleReturnToBoxes} />
-                  )}
+                  ) : selectedBox && !createBooking ? (
+                    <Objects
+                      box={selectedBox}
+                      onReturn={handleReturnToBoxes}
+                      onCreateBooking={handleCreateBookingClick}
+                    />
+                  ) : createBooking ? (
+                    <BookingForm box={selectedBox} items={selectedItems} />
+                  ) : null}
                 </Flex>
               </Flex>
             </Flex>

@@ -4,7 +4,7 @@ import { Box, Button, Center, Flex, Input, ScrollArea, Stack, Text, Title } from
 import './Lockers.module.css';
 
 import { useEffect, useState } from 'react';
-import instance, { baseUrl } from '@/services/api';
+import { fetchLockers } from '@/services/fetch';
 import { Locker, LockersProps } from '@/types/types';
 import { LockersContext } from './context';
 
@@ -12,18 +12,11 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
   const [lockers, setLockers] = useState<Locker[]>([]);
 
   useEffect(() => {
-    instance
-      .get(`${baseUrl}/lockers`)
-      .then((response) => {
-        if (Array.isArray(response.data)) {
-          setLockers(response.data);
-        } else {
-          console.error('Data is not an array', response.data);
-        }
-      })
-      .catch((error) => {
-        console.error('Error fetching lockers:', error);
-      });
+    const loadLockers = async () => {
+      const data = await fetchLockers(); // Wait for the promise to resolve
+      setLockers(data); // Set the lockers once the data is fetched
+    };
+    loadLockers(); // Call the async function
   }, []);
 
   return (
@@ -33,7 +26,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
         px="1vw"
         mb="lg"
         h="86vh"
-        w="34.5vw"
+        w="34vw"
         style={{ borderBottomLeftRadius: 40, borderBottomRightRadius: 40 }}
       >
         <Stack my="4vh" gap="xl">
