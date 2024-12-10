@@ -14,7 +14,7 @@ import {
   Title,
   useMantineTheme,
 } from '@mantine/core';
-import instance, { baseUrl } from '@/services/api';
+import { fetchBoxes } from '@/services/fetch';
 import { BoxesProps, BoxType } from '@/types/types';
 
 import './Boxes.module.css';
@@ -24,9 +24,8 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
   const { boxId, selectedValues } = location.state || {};
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [boxes, setBoxes] = useState<BoxType[]>([]);
+  const [boxes, setBoxes] = useState<BoxType[]>();
   const theme = useMantineTheme();
-  import { fetchBoxes } from '@/services/fetch';
 
   console.log('Box ID:', boxId); // box.id passed from Objects component
   console.log('Selected Values:', selectedValues);
@@ -37,7 +36,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
 
     const loadBoxes = async () => {
       const data = await fetchBoxes();
-      setBoxes(data.filter((b) => b.lockerId === locker.id));
+      setBoxes(data?.filter((b) => b.lockerId === locker.id));
     };
 
     loadBoxes();
@@ -89,7 +88,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
       </Stack>
       <ScrollArea p="lg" m="md" h="62vh" scrollbarSize={16}>
         <Flex direction="column" gap="sm">
-          {boxes.map((box) => (
+          {boxes?.map((box) => (
             <Box
               key={box.id}
               onClick={() => onBoxClick(box)}
