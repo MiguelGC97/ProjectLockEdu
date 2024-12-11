@@ -6,7 +6,7 @@ module.exports = (app) => {
 
   router.post("/", auth.isAuthenticated, reports.createReport);
 
-  router.get("/", auth.isAuthenticated, reports.getAll);
+  router.get("/", reports.getAll);
 
   router.get("/:username", auth.isAuthenticated, reports.getReportByUsername);
 
