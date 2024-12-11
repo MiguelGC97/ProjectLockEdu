@@ -49,6 +49,12 @@ const Home: React.FC = () => {
     setSelectedBox(null);
   };
 
+  const handleReturnToBox = () => {
+    setCreateBooking(false);
+    setSelectedBox(null);
+    setSelectedItems([]);
+  };
+
   return (
     <>
       {matches ? (
@@ -80,7 +86,11 @@ const Home: React.FC = () => {
                       onCreateBooking={handleCreateBookingClick}
                     />
                   ) : createBooking ? (
-                    <BookingForm box={selectedBox} items={selectedItems} />
+                    <BookingForm 
+                      box={selectedBox} 
+                      items={selectedItems}
+                      onReturnToBox={handleReturnToBox}
+                    />
                   ) : null}
                 </Flex>
               </Flex>
@@ -114,7 +124,11 @@ const Home: React.FC = () => {
                       onCreateBooking={handleCreateBookingClick}
                     />
                   ) : createBooking ? (
-                    <BookingForm box={selectedBox} items={selectedItems} />
+                    <BookingForm 
+                      box={selectedBox} 
+                      items={selectedItems} 
+                      onReturnToBox={handleReturnToBox}
+                    />
                   ) : null}
                 </Flex>
               </Flex>
@@ -149,7 +163,11 @@ const Home: React.FC = () => {
                       onCreateBooking={handleCreateBookingClick}
                     />
                   ) : createBooking ? (
-                    <BookingForm box={selectedBox} items={selectedItems} />
+                    <BookingForm 
+                    box={selectedBox} 
+                    items={selectedItems}
+                    onReturnToBox={handleReturnToBox}
+                    />
                   ) : null}
                 </Flex>
               </Flex>

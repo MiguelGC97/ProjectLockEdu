@@ -9,9 +9,9 @@ module.exports = app => {
 
   router.post("/", auth.isAuthenticated, upload.single('file'), boxes.addBox);
 
-  router.get("/", auth.isAuthenticated, boxes.getAll);
+  router.get("/", boxes.getAll);
 
-  router.get("/:id", auth.isAuthenticated, boxes.getOne);
+  router.get("/:id", boxes.getOne);
 
   router.put("/:id", auth.isAuthenticated, boxes.update);
 

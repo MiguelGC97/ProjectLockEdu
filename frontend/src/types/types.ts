@@ -30,11 +30,11 @@ export interface BoxesProps {
 export interface Booking {
   id: number;
   objectId: number;
-  userId: number;
+  //userId: number;
   description: string;
   checkOutTime: string;
   checkInTime: string;
-  type: 'recogida' | 'devolución';
+  state: 'pending' | 'withdrawn' | 'returned';
   Object: {
     id: number;
     name: string;
@@ -68,4 +68,5 @@ export interface ObjectsProps {
 export interface BookingFormProps {
   box: BoxType;
   items: string[]; // This is the array of selected item ids.
+  onReturnToBox: () => void;
 }

@@ -41,8 +41,10 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
       try {
         const response = await instance.get(`${baseUrl}/items`);
         if (Array.isArray(response.data.data)) {
+          console.log('Response data:', response.data);
           setObjects(
-            response.data.data.filter((o: any) => o.boxId === box.id && o.state === 'returned')
+            // response.data.data.filter((o: any) => o.boxId === box.id && o.state === 'available')
+            response.data.data
           );
         } else {
           setError('Unexpected response format');
