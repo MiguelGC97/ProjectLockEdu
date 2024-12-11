@@ -16,7 +16,7 @@ import {
 } from '@mantine/core';
 import { fetchBoxes } from '@/services/fetch';
 import { BoxesProps, BoxType } from '@/types/types';
-
+import { fetchBoxes } from '@/services/fetch';
 import './Boxes.module.css';
 
 const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {

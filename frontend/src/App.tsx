@@ -11,6 +11,7 @@ import './App.module.css';
 
 import BookingHistory from './pages/BookingHistory.page';
 import Settings from './pages/Settings.page';
+import LoginPage  from './pages/LoginPage.page';
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
             <Route path="/incidencias" element={<Reports />} />
             <Route path="/historial-reservas" element={<BookingHistory />} />
             <Route path="/configuraciones" element={<Settings />} />
+            <Route path="/login" element={<LoginPage />} />
           </Routes>
         </Flex>
       </Router>
