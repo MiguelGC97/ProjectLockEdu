@@ -16,6 +16,7 @@ const Reports: React.FC = () => {
     <>
       {isMobile ? (<></>) : (<>
       <Flex p="xl" direction="column" w="100%">
+        
         <UserBar/>
         <ReportsBox/>
         <ReportForm/>
