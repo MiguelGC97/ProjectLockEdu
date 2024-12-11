@@ -29,11 +29,9 @@ exports.getReportByUsername = async (req, res) => {
       ],
     });
 
-
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-
 
     res.status(200).json({ username: user.username, reports: user.reports });
   } catch (error) {
@@ -140,3 +138,26 @@ exports.updateDescription = async (req, res) => {
     });
   }
 };
+
+exports.updateStatus = async (req, res) => {
+  
+    const id = req.params.id;
+
+    try {
+      const [updated] = await Report.update(req.body.isSolved, {
+        where: { id },
+      });
+
+      if (updated) {
+        res.status(200).json({
+          message: "state updated",
+          data: req.body,
+        });
+      } else {
+        res.status(404).json({ message: "report not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  
+  };

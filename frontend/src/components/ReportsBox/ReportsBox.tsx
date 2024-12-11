@@ -1,208 +1,33 @@
-﻿import { IconTrash } from '@tabler/icons-react';
-import { Box, Center, Divider, Flex, Group, ScrollArea, Table, Text, Title } from '@mantine/core';
+﻿import { Box, Center, Divider, Flex, Group, ScrollArea, Table, Text, Title } from '@mantine/core';
 
 import './ReportsBox.module.css';
 
-const pendingReservations = [
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-];
+import { Incidence } from '@/types/types';
+import { fetchIncidences } from '@/services/fetch';
+import { useEffect, useState } from 'react';
 
 export function ReportsBox() {
-  const rows = pendingReservations.map((p) => (
-    <Table.Tr c="white">
-      <Table.Td>{p.box}</Table.Td>
-      <Table.Td>{p.date}</Table.Td>
+
+  const [incidences, setIncidences] = useState<Incidence[]>([]);
+
+  useEffect(() => {
+    const loadIncidences = async () => {
+      const data = await fetchIncidences();
+      setIncidences(data);
+    };
+
+    loadIncidences();
+  }, []);
+
+
+  const rows = incidences.map((report) => (
+    <Table.Tr key={report.id}>
+      
+      <Table.Td>{new Date(report.createdAt).toLocaleDateString()}</Table.Td>
       <Table.Td>
-        {p.checkOutHour}-{p.checkInHour}
-      </Table.Td>
-      <Table.Td c="red">
-        {'             '}
-        <IconTrash />
+        <Text color={report.isSolved ? 'green' : 'red'} fw="bold">
+          {report.isSolved ? 'Resuelto' : 'Pendiente'}
+        </Text>
       </Table.Td>
     </Table.Tr>
   ));
@@ -210,7 +35,7 @@ export function ReportsBox() {
   return (
     <Box bg="transparent" h="60vh" bd="1px solid myPurple.1" style={{ borderRadius: 40 }}>
       <Center>
-        <h2>Reservas pendientes</h2>
+        <h2>Incidencias</h2>
       </Center>
       <Divider size="xs" color="myPurple.1" />
 
@@ -231,7 +56,7 @@ export function ReportsBox() {
                 </Table.Th>
                 <Table.Th>
                   <Text c="white" fw={700}>
-                    Horario
+                    Estado
                   </Text>
                 </Table.Th>
                 <Table.Th> </Table.Th>

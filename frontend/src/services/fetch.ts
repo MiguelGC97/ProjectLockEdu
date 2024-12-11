@@ -1,5 +1,5 @@
 ﻿import instance, { baseUrl } from '@/services/api';
-import { BoxType, Locker } from '@/types/types';
+import { BoxType, Incidence, Locker } from '@/types/types';
 
 // function to fetch lockers
 export async function fetchLockers(): Promise<Locker[]> {
@@ -31,3 +31,20 @@ export async function fetchBoxes(): Promise<BoxType[]> {
     return [];
   }
 }
+
+// function to fetch incidences
+export async function fetchIncidences(): Promise<Incidence[]> {
+  try {
+    const response = await instance.get(`${baseUrl}/reports`);
+    if (Array.isArray(response.data)) {
+      return response.data;
+    } else {
+      console.error('Data is not an array', response.data);
+      return []; 
+    }
+  } catch (error) {
+    console.error('Error fetching Incidences:', error);
+    return []; 
+  }
+}
+
