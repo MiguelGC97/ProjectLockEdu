@@ -69,4 +69,5 @@ export interface BookingFormProps {
   box: BoxType;
   items: string[]; // This is the array of selected item ids.
   onReturnToBox: () => void;
+  onReturn: () => void;
 }

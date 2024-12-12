@@ -29,9 +29,10 @@ dayjs.extend(customParseFormat);
 
 import './BookingForm.module.css';
 
-const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox }) => {
+const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, onReturn }) => {
   const [error, setError] = useState<string | null>(null);
   const [filteredObjects, setFilteredObjects] = useState<Item[]>([]);
+  const [confirmedBooking, setConfirmedBooking] = useState<any | null>(null);
   const [pickupDate, setPickupDate] = useState<Date | null>(null);
   const [returnDate, setReturnDate] = useState<Date | null>(null);
   const theme = useMantineTheme();
@@ -61,27 +62,34 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox }) 
     const description = "Reserva de prueba";
     const state = "pending";
     const itemIds = filteredObjects.map((object) => object.id.toString());
+    const userId = 1;
 
     const bookingData = {
       description,
       checkIn: returnDate ? dayjs(returnDate).toISOString() : null,
       checkOut: pickupDate ? dayjs(pickupDate).toISOString() : null,
       state,
-      itemIds
+      itemIds,
+      userId,
     };
+
+    console.log('Sent data', bookingData);
 
     try {
       const response = await instance.post(`${baseUrl}/bookings`, bookingData);
-      console.log('Reserva creada con éxito:', response.data);
+      console.log('Booking created:', response.data);
+
+      setConfirmedBooking({
+        box,
+        items: filteredObjects,
+        pickupDate,
+        returnDate,
+        ...response.data,
+      });
     } catch (error) {
       console.error('Error al crear la reserva:', error);
       setError('Hubo un error al crear la reserva. Intenta de nuevo.');
     }
-  };
-
-  const extractItemIds = () => {
-    const itemIds = filteredObjects.map((object) => object.id.toString());
-    return itemIds;
   };
 
   if (!Array.isArray(items)) {
@@ -132,6 +140,33 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox }) 
       <Center>
         <Text color="red">{error}</Text>
       </Center>
+    );
+  }
+
+  if (confirmedBooking) {
+    return (
+      <Box
+        style={{
+          backgroundColor: theme.colors.myPurple[4],
+          borderRadius: 20,
+          padding: '2rem',
+          color: 'white',
+        }}
+      >
+        <Title order={3}>Reserva Confirmada</Title>
+        <Text>Locker: {confirmedBooking.box.name}</Text>
+        <Text>Pickup Date: {dayjs(confirmedBooking.pickupDate).format('YYYY-MM-DD HH:mm')}</Text>
+        <Text>Return Date: {dayjs(confirmedBooking.returnDate).format('YYYY-MM-DD HH:mm')}</Text>
+        <Text>Items Reservados:</Text>
+        <ul>
+          {confirmedBooking.items.map((item: Item) => (
+            <li key={item.id}>{item.description}</li>
+          ))}
+        </ul>
+        <Button onClick={onReturnToBox} mt="lg">
+          Volver
+        </Button>
+      </Box>
     );
   }
 

@@ -90,6 +90,7 @@ const Home: React.FC = () => {
                       box={selectedBox} 
                       items={selectedItems}
                       onReturnToBox={handleReturnToBox}
+                      onReturn={handleReturnToLockers}
                     />
                   ) : null}
                 </Flex>

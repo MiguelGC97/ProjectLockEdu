@@ -5,9 +5,9 @@ module.exports = app => {
 
     var router = require("express").Router();
 
-    router.post("/", auth.isAuthenticated, permissions.authorize(["TEACHER"]), bookings.newBooking);
+    router.post("/", bookings.newBooking);
 
-    router.get("/", auth.isAuthenticated, permissions.authorize(["TEACHER", "ADMIN"]),bookings.getAll);
+    router.get("/", bookings.getAll);
 
     router.get("/:id", auth.isAuthenticated, permissions.authorize(["TEACHER", "ADMIN"]),bookings.getOne);
 
