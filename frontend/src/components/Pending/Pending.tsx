@@ -1,211 +1,73 @@
 ﻿import { IconTrash } from '@tabler/icons-react';
+import { useEffect, useState } from 'react';
 import { Box, Center, Divider, Flex, Group, ScrollArea, Table, Text, Title } from '@mantine/core';
 
 import './Pending.module.css';
 
-const pendingReservations = [
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-];
+import { BookingHistoryProps, Booking } from '@/types/types';
+import { fetchBookingsByUserId } from '@/services/fetch';
 
-export function Pending() {
-  const rows = pendingReservations.map((p) => (
-    <Table.Tr c="white">
-      <Table.Td>{p.box}</Table.Td>
-      <Table.Td>{p.date}</Table.Td>
-      <Table.Td>
-        {p.checkOutHour}-{p.checkInHour}
-      </Table.Td>
-      <Table.Td c="red">
-        {'             '}
-        <IconTrash />
-      </Table.Td>
-    </Table.Tr>
-  ));
+const Pending: React.FC<BookingHistoryProps> = ({ locker, box, booking}) => {
+
+  const [bookings, setBookings] = useState<Booking[]>();
+
+  const userId = 1;
+
+  useEffect(() => {
+    const loadBookings = async () => {
+      const data = await fetchBookingsByUserId(userId);
+      setBookings(data);
+      console.log(data);
+    }
+    loadBookings();
+  }, [])
+
+  // const rows = bookings?.map((b) => (
+  //   <Table.Tr key={b.id} c="white">
+  //     {/* <Table.Td>{b.box}</Table.Td>
+  //     <Table.Td>{b.date}</Table.Td> */}
+  //     <Table.Td>
+  //       {b.checkOutTime}-{b.checkInTime}
+  //     </Table.Td>
+  //     <Table.Td c="red">
+  //       {'             '}
+  //       <IconTrash />
+  //     </Table.Td>
+  //   </Table.Tr>
+  // ));
+
+  export function Pending() {
+    const rows = bookings?.map((b) => (
+      <Table.Tr c="white">
+        {/* <Table.Td>{p.box}</Table.Td>
+        <Table.Td>{p.date}</Table.Td> */}
+        <Table.Td>
+          {b.checkOutTime}-{b.checkInTime}
+        </Table.Td>
+        <Table.Td c="red">
+          {'             '}
+          <IconTrash />
+        </Table.Td>
+      </Table.Tr>
+    ));
+
+// export function Pending() {
+//   const rows = pendingReservations.map((p) => (
+//     <Table.Tr c="white">
+//       <Table.Td>{p.box}</Table.Td>
+//       <Table.Td>{p.date}</Table.Td>
+//       <Table.Td>
+//         {p.checkOutHour}-{p.checkInHour}
+//       </Table.Td>
+//       <Table.Td c="red">
+//         {'             '}
+//         <IconTrash />
+//       </Table.Td>
+//     </Table.Tr>
+//   ));
+
+
+
 
   return (
     <Box bg="transparent" h="60vh" bd="1px solid myPurple.1" style={{ borderRadius: 40 }}>

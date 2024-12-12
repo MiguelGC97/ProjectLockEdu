@@ -22,7 +22,7 @@ import {
 import { DateTimePicker } from '@mantine/dates';
 import dayjs from 'dayjs';
 import instance, { baseUrl } from '@/services/api';
-import { BookingFormProps, BoxType, Item, Booking } from '@/types/types';
+import { BookingFormProps, BoxType, Item} from '@/types/types';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 dayjs.extend(customParseFormat);

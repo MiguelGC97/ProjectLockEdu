@@ -27,7 +27,6 @@ exports.newBooking = async (req, res) => {
       });
     }
 
-
     const booking = await Booking.create(
       { userId, description, checkOut, checkIn, state },
       { transaction: t }
@@ -53,8 +52,9 @@ exports.newBooking = async (req, res) => {
 
     await t.commit();
 
-    res.status(201).json({ message: "Booking created successfully", data: booking });
-
+    res
+      .status(201)
+      .json({ message: "Booking created successfully", data: booking });
   } catch (error) {
     await t.rollback();
     res.status(500).json({ error: error.message });
@@ -72,9 +72,22 @@ exports.getAll = async (req, res) => {
 
 exports.getAllbyUserId = async (req, res) => {
   try {
-
     const id = req.params.id;
-    const bookings = await Booking.findAll({ where:{ userId:id } });
+    const bookings = await Booking.findAll({ where: { userId: id } });
+    res.status(200).json({ data: bookings });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getAllbyUserIdAndState = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const state = req.params.state;
+
+    const bookings = await Booking.findAll({
+      where: { userId: userId, state: state },
+    });
     res.status(200).json({ data: bookings });
   } catch (error) {
     res.status(500).json({ error: error.message });

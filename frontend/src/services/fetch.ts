@@ -1,5 +1,5 @@
 ﻿import instance, { baseUrl } from '@/services/api';
-import { BoxType, Locker, Item } from '@/types/types';
+import { BoxType, Locker, Item, Booking } from '@/types/types';
 
 export async function fetchLockers(): Promise<Locker[]> {
   try {
@@ -33,17 +33,39 @@ export async function fetchBoxes(): Promise<BoxType[]> {
 }
 
 // 
-export async function fetchItems(): Promise<Item[]> {
+export async function fetchItems(): Promise<Item[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/items`);
     if (Array.isArray(response.data.data)) {
       return response.data.data;
-    } else {
-      console.error('Data is not an array', response.data.data);
-      return [];
     }
   } catch (error) {
     console.error('Error fetching items:', error);
     return [];
   }
 }
+
+export async function fetchBookingsByUserId(userId: number): Promise<Booking[] | undefined> {
+  try {
+    const response = await instance.get(`${baseUrl}/bookings/users/${userId}`);
+    if (Array.isArray(response.data.data)) {
+      return response.data.data;
+    }
+  } catch (error) {
+    console.error('Error fetching bookings', error);
+    return [];
+  }
+}
+
+// const urlencoded = new URLSearchParams();
+
+// const requestOptions = {
+//   method: "GET",
+//   body: urlencoded,
+//   redirect: "follow"
+// };
+
+// fetch("http://localhost:8080/api/bookings/users/1", requestOptions)
+//   .then((response) => response.text())
+//   .then((result) => console.log(result))
+//   .catch((error) => console.error(error));

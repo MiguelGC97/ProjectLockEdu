@@ -30,7 +30,7 @@ export interface BoxesProps {
 export interface Booking {
   id: number;
   objectId: number;
-  //userId: number;
+  userId: number;
   description: string;
   checkOutTime: string;
   checkInTime: string;
@@ -70,4 +70,10 @@ export interface BookingFormProps {
   items: string[]; // This is the array of selected item ids.
   onReturnToBox: () => void;
   onReturn: () => void;
+}
+
+export interface BookingHistoryProps {
+  locker: Locker;
+  box: BoxType;
+  booking: Booking;
 }
