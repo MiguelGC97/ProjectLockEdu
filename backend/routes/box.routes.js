@@ -15,5 +15,7 @@ module.exports = app => {
 
   router.delete("/:id", auth.isAuthenticated, boxes.delete);
 
+  router.get("/locker/:id", boxes.getAllbyLockerId);
+
   app.use("/api/boxes", router);
 };

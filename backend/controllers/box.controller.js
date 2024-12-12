@@ -46,6 +46,17 @@ exports.getOne = async (req, res) => {
   }
 };
 
+exports.getAllbyLockerId = async (req, res) => {
+  try {
+
+    const id = req.params.id;
+    const boxes = await Box.findAll({ where:{ lockerId:id } });
+    res.status(200).json({ data: boxes });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 exports.update = async (req, res) => {
   try {
     const id = req.params.id;

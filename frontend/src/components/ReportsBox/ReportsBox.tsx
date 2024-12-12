@@ -68,7 +68,6 @@ export function ReportsBox() {
         <Flex align="center" gap="md">
           <Avatar
             src={report.user?.avatar}
-            // || 'https://vivolabs.es/wp-content/uploads/2022/03/perfil-mujer-vivo.png'
             alt={report.user?.name}
             radius="xl"
             size="lg"

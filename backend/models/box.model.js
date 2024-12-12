@@ -8,10 +8,10 @@ module.exports = (sequelize) => {
             primaryKey: true,
             autoIncrement: true
         },
-        lockerId: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
+        // lockerId: {
+        //     type: DataTypes.INTEGER,
+        //     allowNull: false,
+        // }, PREGUNTAR A SARA
         description: DataTypes.STRING,
         filename: DataTypes.STRING,
     });

@@ -3,6 +3,8 @@ import { Box, NativeSelect, Textarea, Button, createTheme, MantineProvider } fro
 import { fetchBoxes, fetchLockers } from '@/services/fetch';
 import { Boxs, Locker } from '@/types/types'; 
 import classes from './ReportForm.module.css';
+import { fetchFormIncident } from '@/services/fetch';
+
 
 const theme = createTheme({
 
@@ -65,36 +67,24 @@ export function ReportForm() {
       alert('Por favor, complete todos los campos.');
       return;
     }
-
+  
     const reportData = {
       content: description,
       isSolved: false,
-      teacherId: 1, //tengo que crear la logica para que esto se haga dependiendo del teacher
-      boxId: selectedBox, // Incluye el ID de la casilla
+      teacherId: 1, // Ajusta según sea necesario
+      boxId: parseInt(selectedBox, 10), // Convertir a número si es necesario
     };
-
+  
     try {
-      const response = await fetch('/api/reports', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(reportData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Error al crear el reporte');
-      }
-
-      const result = await response.json();
-      console.log('Reporte creado:', result);
+      const response = await fetchFormIncident(reportData);
+      console.log('Reporte creado:', response);
       alert('Reporte creado exitosamente');
     } catch (error) {
       console.error('Error al enviar reporte:', error);
       alert('Error al crear el reporte');
     }
   };
-
+    
   return (
     <MantineProvider theme={theme}>
       <Box bg="#4F51B3" style={{ borderRadius: '20px' }} p="xl">

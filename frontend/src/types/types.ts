@@ -75,7 +75,7 @@ export interface Incidence {
   content: string;
   isSolved: boolean;
   createdAt: string;
-  boxId: number;user: {
+  boxId: number; user: {
     avatar: string;
     name: string;
   };
@@ -84,5 +84,6 @@ export interface Incidence {
 
 export interface Boxs {
   id: number;
-  description:string;
-  };
+  description: string;
+  createdAt: string;
+};

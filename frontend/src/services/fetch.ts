@@ -2,7 +2,7 @@
 import { BoxType, Incidence, Locker } from '@/types/types';
 
 // function to fetch lockers
-export async function fetchLockers(): Promise<Locker[]| undefined> {
+export async function fetchLockers(): Promise<Locker[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/lockers`);
     if (Array.isArray(response.data)) {
@@ -17,7 +17,7 @@ export async function fetchLockers(): Promise<Locker[]| undefined> {
 }
 
 // Function to fetch boxes
-export async function fetchBoxes(): Promise<BoxType[]| undefined> {
+export async function fetchBoxes(): Promise<BoxType[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/boxes`);
     if (Array.isArray(response.data.data)) {
@@ -38,11 +38,29 @@ export async function fetchIncidences(): Promise<Incidence[] | undefined> {
     const response = await instance.get(`${baseUrl}/reports`);
     if (Array.isArray(response.data.data)) {
       return response.data.data;
-    } 
+    }
 
   } catch (error) {
     console.error('Error fetching Incidences:', error);
-    return []; 
+    return [];
   }
 }
+
+//function to send data from incidences
+
+export async function fetchFormIncident(reportData: {
+  content: string;
+  isSolved: boolean;
+  teacherId: number;
+  boxId: number;
+}): Promise<any> {
+  try {
+    const response = await instance.post(`${baseUrl}/reports`, reportData);
+    return response.data; // Retorna la respuesta completa del backend
+  } catch (error) {
+    console.error('Error sending report data', error);
+    throw error; // Lanza el error para que el componente pueda manejarlo
+  }
+}
+
 
