@@ -7,12 +7,20 @@ const { Op, AccessDeniedError } = require("sequelize");
 
 exports.getAll = async (req, res) => {
   try {
-    const reports = await Report.findAll();
+    const reports = await Report.findAll({
+      include: [
+        {
+          model: db.user, 
+          attributes: ['name', 'avatar'], 
+        },
+      ],
+    });
     res.status(200).json({ data: reports });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 exports.getReportByUsername = async (req, res) => {
   try {

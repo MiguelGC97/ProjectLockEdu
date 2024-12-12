@@ -75,5 +75,9 @@ export interface Incidence {
   content: string;
   isSolved: boolean;
   createdAt: string;
-  boxId: number;
+  boxId: number;user: {
+    avatar: string;
+    name: string;
+  };
+
 }

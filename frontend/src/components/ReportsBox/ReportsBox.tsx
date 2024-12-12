@@ -41,14 +41,15 @@ export function ReportsBox() {
       >
         <Flex align="center" gap="md">
           <Avatar
-            src="https://via.placeholder.com/150" 
-            alt="Usuario"
+            src={report.user?.avatar}
+            // || 'https://vivolabs.es/wp-content/uploads/2022/03/perfil-mujer-vivo.png'
+            alt={report.user?.name}
             radius="xl"
             size="lg"
           />
           <Box>
-            <Text fw="bold">Comentario:</Text>
-            <Text>{report.content}</Text>
+           
+            <Text color ='white'>{report.content}</Text>
           </Box>
         </Flex>
       </Accordion.Panel>

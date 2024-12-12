@@ -24,7 +24,7 @@ module.exports = {
         surname: "Soares",
         username: "saraS@gmail.com",
         password: hashedPassword2,
-        avatar: "imgen",
+        avatar: "https://vivolabs.es/wp-content/uploads/2022/03/perfil-mujer-vivo.png",
         role: "TEACHER",
         createdAt: new Date(),
         updatedAt: new Date(),
