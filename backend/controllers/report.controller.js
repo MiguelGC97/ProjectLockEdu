@@ -78,6 +78,7 @@ exports.createReport = async (req, res) => {
       content: req.body.content,
       isSolved: req.body.isSolved ?? false,
       teacherId: req.body.teacherId,
+      boxId:req.body.boxId,
     };
 
     const newReport = await Report.create(report);

@@ -57,14 +57,20 @@ export function ReportForm() {
 
   const boxOptions = boxes.map((box) => ({
     value: box.id.toString(),
-    label: box.name || `Box ${box.id}`,
+    label: box.description || `Box ${box.id}`,
   }));
 
   const handleSubmit = async () => {
+    if (!selectedLocker || !selectedBox || !description) {
+      alert('Por favor, complete todos los campos.');
+      return;
+    }
+
     const reportData = {
       content: description,
       isSolved: false,
-      teacherId: 1, // Cambia esto según el contexto
+      teacherId: 1, //tengo que crear la logica para que esto se haga dependiendo del teacher
+      boxId: selectedBox, // Incluye el ID de la casilla
     };
 
     try {
@@ -126,7 +132,7 @@ export function ReportForm() {
         mt="md"
         style={{
           display: 'flex',
-          justifyContent: 'flex-end', // Mueve el botón a la derecha
+          justifyContent: 'flex-end', 
         }}
       >
         <Button
@@ -134,8 +140,9 @@ export function ReportForm() {
           color="#3C3D85"
           radius="xl"
           style={{
-            padding: '10px 20px', // Ajusta el padding del botón
+            padding: '10px 20px', 
           }}
+          onClick={handleSubmit}
         >
           Enviar
         </Button>
