@@ -64,12 +64,12 @@ db.item.belongsTo(db.box, {
 });
 
 //Booking-item association
-db.booking.belongsToMany(db.item, { 
+db.booking.belongsToMany(db.item, {
   through: 'BookingItems',
   foreignKey: 'bookingId',
   otherKey: 'itemId',
 });
-db.item.belongsToMany(db.booking, { 
+db.item.belongsToMany(db.booking, {
   through: 'BookingItems',
   foreignKey: 'itemId',
   otherKey: 'bookingId',
