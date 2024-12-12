@@ -1,14 +1,12 @@
-﻿import { Box, Center, Divider, Flex, Group, ScrollArea, Table, Text, Title } from '@mantine/core';
+﻿import './ReportsBox.module.css';
 
-import './ReportsBox.module.css';
-
-import { Incidence } from '@/types/types';
-import { fetchIncidences } from '@/services/fetch';
 import { useEffect, useState } from 'react';
+import { Accordion, Box, Center, Divider, Flex, ScrollArea, Table, Text, Avatar } from '@mantine/core';
+import { fetchIncidences } from '@/services/fetch';
+import { Incidence } from '@/types/types';
 
 export function ReportsBox() {
-
-  const [incidences, setIncidences] = useState<Incidence[]>([]);
+  const [incidences, setIncidences] = useState<Incidence[]>();
 
   useEffect(() => {
     const loadIncidences = async () => {
@@ -19,17 +17,42 @@ export function ReportsBox() {
     loadIncidences();
   }, []);
 
-
-  const rows = incidences.map((report) => (
-    <Table.Tr key={report.id}>
-      
-      <Table.Td>{new Date(report.createdAt).toLocaleDateString()}</Table.Td>
-      <Table.Td>
-        <Text color={report.isSolved ? 'green' : 'red'} fw="bold">
-          {report.isSolved ? 'Resuelto' : 'Pendiente'}
-        </Text>
-      </Table.Td>
-    </Table.Tr>
+  const rows = incidences?.map((report) => (
+    <Accordion.Item key={report.id} value={`casilla-${report.boxId}`}>
+      <Accordion.Control>
+        <Flex justify="space-between" align="center">
+          <Box style={{ width: '33.33%', textAlign: 'center', color :"white" }}>Casilla {report.boxId}</Box>
+          <Box style={{ width: '33.33%', textAlign: 'center',   color :"white" }}>
+            {new Date(report.createdAt).toLocaleDateString()}
+          </Box>
+          <Box style={{ width: '33.33%', textAlign: 'center' }}>
+            <Text color={report.isSolved ? 'green' : 'red'} fw="bold">
+              {report.isSolved ? 'Resuelto' : 'Pendiente'}
+            </Text>
+          </Box>
+        </Flex>
+      </Accordion.Control>
+      <Accordion.Panel
+        style={{
+          backgroundColor: '#3C3D85',
+          padding: '1rem',
+          
+        }}
+      >
+        <Flex align="center" gap="md">
+          <Avatar
+            src="https://via.placeholder.com/150" 
+            alt="Usuario"
+            radius="xl"
+            size="lg"
+          />
+          <Box>
+            <Text fw="bold">Comentario:</Text>
+            <Text>{report.content}</Text>
+          </Box>
+        </Flex>
+      </Accordion.Panel>
+    </Accordion.Item>
   ));
 
   return (
@@ -43,27 +66,27 @@ export function ReportsBox() {
         <Flex direction="column" gap="xl">
           <Table horizontalSpacing="sm" verticalSpacing="sm">
             <Table.Thead c="white">
-              <Table.Tr size="xl">
-                <Table.Th>
+              <Table.Tr>
+                <Table.Th style={{ textAlign: 'center', width: '33.33%' }}>
                   <Text c="white" fw={700}>
                     Casilla
                   </Text>
                 </Table.Th>
-                <Table.Th>
+                <Table.Th style={{ textAlign: 'center', width: '33.33%' }}>
                   <Text c="white" fw={700}>
                     Fecha
                   </Text>
                 </Table.Th>
-                <Table.Th>
+                <Table.Th style={{ textAlign: 'center', width: '33.33%' }}>
                   <Text c="white" fw={700}>
                     Estado
                   </Text>
                 </Table.Th>
-                <Table.Th> </Table.Th>
+                <Table.Th></Table.Th>
               </Table.Tr>
             </Table.Thead>
-            <Table.Tbody>{rows}</Table.Tbody>
           </Table>
+          <Accordion>{rows}</Accordion>
         </Flex>
       </ScrollArea>
     </Box>

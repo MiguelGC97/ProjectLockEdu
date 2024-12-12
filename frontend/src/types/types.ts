@@ -75,4 +75,5 @@ export interface Incidence {
   content: string;
   isSolved: boolean;
   createdAt: string;
+  boxId: number;
 }

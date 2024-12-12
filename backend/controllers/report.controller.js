@@ -139,25 +139,25 @@ exports.updateDescription = async (req, res) => {
   }
 };
 
-exports.updateStatus = async (req, res) => {
+// exports.updateStatus = async (req, res) => {
   
-    const id = req.params.id;
+//     const id = req.params.id;
 
-    try {
-      const [updated] = await Report.update(req.body.isSolved, {
-        where: { id },
-      });
+//     try {
+//       const [updated] = await Report.update(req.body.isSolved, {
+//         where: { id },
+//       });
 
-      if (updated) {
-        res.status(200).json({
-          message: "state updated",
-          data: req.body,
-        });
-      } else {
-        res.status(404).json({ message: "report not found" });
-      }
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
+//       if (updated) {
+//         res.status(200).json({
+//           message: "state updated",
+//           data: req.body,
+//         });
+//       } else {
+//         res.status(404).json({ message: "report not found" });
+//       }
+//     } catch (error) {
+//       res.status(500).json({ error: error.message });
+//     }
   
-  };
+//   };
