@@ -1,7 +1,18 @@
 ﻿import './ReportsBox.module.css';
 
 import { useEffect, useState } from 'react';
-import { Accordion, Box, Center, Divider, Flex, ScrollArea, Table, Text, Avatar } from '@mantine/core';
+import styled from '@emotion/styled';
+import {
+  Accordion,
+  Avatar,
+  Box,
+  Center,
+  Divider,
+  Flex,
+  ScrollArea,
+  Table,
+  Text,
+} from '@mantine/core';
 import { fetchIncidences } from '@/services/fetch';
 import { Incidence } from '@/types/types';
 
@@ -17,12 +28,28 @@ export function ReportsBox() {
     loadIncidences();
   }, []);
 
+  const StyledAccordion = styled(Accordion)`
+    
+  
+  .mantine-Accordion-control {
+      &:hover {
+        background-color: #4f51b3;
+        color: white;
+      }
+      &.mantine-Accordion-control-active {
+        background-color: #4f51b3};
+        color: white;
+      }
+    }
+  `;
   const rows = incidences?.map((report) => (
     <Accordion.Item key={report.id} value={`casilla-${report.boxId}`}>
       <Accordion.Control>
         <Flex justify="space-between" align="center">
-          <Box style={{ width: '33.33%', textAlign: 'center', color :"white" }}>Casilla {report.boxId}</Box>
-          <Box style={{ width: '33.33%', textAlign: 'center',   color :"white" }}>
+          <Box style={{ width: '33.33%', textAlign: 'center', color: 'white' }}>
+            Casilla {report.boxId}
+          </Box>
+          <Box style={{ width: '33.33%', textAlign: 'center', color: 'white' }}>
             {new Date(report.createdAt).toLocaleDateString()}
           </Box>
           <Box style={{ width: '33.33%', textAlign: 'center' }}>
@@ -36,7 +63,6 @@ export function ReportsBox() {
         style={{
           backgroundColor: '#3C3D85',
           padding: '1rem',
-          
         }}
       >
         <Flex align="center" gap="md">
@@ -48,8 +74,7 @@ export function ReportsBox() {
             size="lg"
           />
           <Box>
-           
-            <Text color ='white'>{report.content}</Text>
+            <Text color="white">{report.content}</Text>
           </Box>
         </Flex>
       </Accordion.Panel>
@@ -87,7 +112,7 @@ export function ReportsBox() {
               </Table.Tr>
             </Table.Thead>
           </Table>
-          <Accordion>{rows}</Accordion>
+          <StyledAccordion>{rows}</StyledAccordion>
         </Flex>
       </ScrollArea>
     </Box>

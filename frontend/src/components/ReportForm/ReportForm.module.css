@@ -12,7 +12,7 @@ Text {
 }
 
 .label {
-  background-color: var(--mantine-color-blue-light);
+ color: #ffffff;
 }
 
 .input {

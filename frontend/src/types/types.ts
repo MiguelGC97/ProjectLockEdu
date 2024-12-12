@@ -81,3 +81,8 @@ export interface Incidence {
   };
 
 }
+
+export interface Boxs {
+  id: number;
+  description:string;
+  };
