@@ -10,7 +10,9 @@ module.exports = (app) => {
 
   router.get("/:username",  reports.getReportByUsername);
 
-  router.patch("/update/:id", reports.updateDescription);
+  router.get("/user/:userId", reports.getReportByUserId);
+
+  router.put("/update/:id", reports.updateDescription);
 
   // router.put("/:id",  reports.resolveReport);
  

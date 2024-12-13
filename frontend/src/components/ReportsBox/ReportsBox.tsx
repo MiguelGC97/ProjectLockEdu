@@ -34,21 +34,16 @@ export function ReportsBox() {
 
   const handleEditClick = (incidence: Incidence) => {
     setCurrentIncidence(incidence);
-    setNewContent(incidence.content); // Cargar contenido actual
+    setNewContent(incidence.content); 
     setModalOpened(true);
   };
 
   const handleSave = async () => {
     if (currentIncidence) {
-      try {
-        await updateIncidenceContent(currentIncidence.id, newContent);
-        setModalOpened(false);
-        // Recargar o actualizar el estado local de las incidencias
-        setIncidences(incidences?.map(inc => inc.id === currentIncidence?.id ? { ...inc, content: newContent } : inc));
-      } catch (error) {
-        console.error('Error updating Incidence:', error);
-        // Puedes mostrar un mensaje de error adecuado aquí
-      }
+      await updateIncidenceContent(currentIncidence.id, newContent);
+      console.log(currentIncidence.id, newContent)
+      setModalOpened(false);
+      setIncidences(incidences?.map(inc => inc.id === currentIncidence?.id ? { ...inc, content: newContent } : inc));
     }
   };
 
@@ -105,13 +100,16 @@ export function ReportsBox() {
   ));
 
   return (
-    <Box bg="transparent" h="60vh" bd="1px solid myPurple.1" style={{ borderRadius: 40 }}>
+    <Box bg="transparent" h="80vh" bd="1px solid myPurple.1" w="100%"  style={{
+      borderRadius: '40px',
+      borderTopRightRadius: '0', 
+    }} >
       <Center>
         <h2>Incidencias</h2>
       </Center>
       <Divider size="xs" color="myPurple.1" />
 
-      <ScrollArea p="lg" m="md" h="50vh" scrollbarSize={16}>
+      <ScrollArea p="lg" m="md" h="70vh" scrollbarSize={16}>
         <Flex direction="column" gap="xl">
           <Table horizontalSpacing="sm" verticalSpacing="sm">
             <Table.Thead c="white">
@@ -139,12 +137,13 @@ export function ReportsBox() {
         </Flex>
       </ScrollArea>
 
-      {/* Modal para editar contenido */}
+     
       <Modal
         opened={modalOpened}
         onClose={() => setModalOpened(false)}
-        title="Editar Contenido"
         centered
+  
+              
       >
         <Textarea
           value={newContent}
@@ -154,7 +153,7 @@ export function ReportsBox() {
           maxRows={10}
         />
         <Flex justify="flex-end" mt="md">
-          <Button onClick={handleSave} color="blue">
+          <Button onClick={handleSave} color="#4F51B3">
             Guardar
           </Button>
         </Flex>

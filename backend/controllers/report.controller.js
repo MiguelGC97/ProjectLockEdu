@@ -24,15 +24,16 @@ exports.getAll = async (req, res) => {
 
 exports.getReportByUsername = async (req, res) => {
   try {
-    const username = req.params.username;
+    const { username } = req.params; // Extraer el username correctamente
 
-    // Buscar al usuario por username incluyendo los reportes relacionados
+    // Buscar al usuario por username, incluyendo los reportes relacionados
     const user = await User.findOne({
-      where: { username: { [db.Op.like]: `%${username}%` } },
+      where: { username: { [Op.like]: `%${username}%` } },
       include: [
         {
           model: Report,
-          through: { attributes: [] }, // Evitar incluir datos de la tabla intermedia
+          as: "reports", // Alias definido en la relación
+          attributes: ["id", "content", "isSolved"], // Campos a incluir
         },
       ],
     });
@@ -41,7 +42,39 @@ exports.getReportByUsername = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200).json({ username: user.username, reports: user.reports });
+    res.status(200).json({
+      username: user.username,
+      reports: user.reports,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+exports.getReportByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params; 
+
+  
+    const user = await User.findByPk(userId, {
+      include: [
+        {
+          model: Report,
+          as: "reports", 
+          attributes: ["id", "content", "isSolved"], 
+        },
+      ],
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      username: user.username,
+      reports: user.reports,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -154,7 +187,7 @@ exports.createReport = async (req, res) => {
 
 exports.updateDescription = async (req, res) => {
   const id = req.params.id;
-  const { content } = req.body.content;
+  const { content } = req.body;
 
   try {
     const [updated] = await Report.update({ content }, {

@@ -46,6 +46,35 @@ export async function fetchIncidences(): Promise<Incidence[] | undefined> {
   }
 }
 
+// function to fetch incidences by username
+export async function fetchIncidencesByUsername(username:string): Promise<Incidence[] | undefined> {
+  try {
+    const response = await instance.get(`${baseUrl}/reports/${username}`);
+    if (Array.isArray(response.data.data)) {
+      return response.data.data;
+    }
+
+  } catch (error) {
+    console.error('Error fetching Incidences:', error);
+    return [];
+  }
+}
+
+// function to fetch incidences by userId
+
+export async function fetchIncidencesByUserId(userId: string): Promise<Incidence[] | undefined> {
+  try {
+    const response = await instance.get(`${baseUrl}/reports/user/${userId}`);
+    if (Array.isArray(response.data.reports)) {
+      return response.data.reports; // Solo devolvemos los reportes
+    }
+  } catch (error) {
+    console.error("Error fetching incidences by user ID:", error);
+    return [];
+  }
+}
+
+
 //function to send data from incidences- we need to collect the right data
 
 export async function fetchFormIncident(reportData: {

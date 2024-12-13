@@ -1,4 +1,5 @@
 ﻿import { useEffect, useState } from 'react';
+import { IconArrowLeft } from '@tabler/icons-react';
 import { Box, Button, createTheme, MantineProvider, NativeSelect, Textarea } from '@mantine/core';
 import { fetchBoxesByLocker, fetchFormIncident, fetchLockers } from '@/services/fetch';
 import { Boxs, Locker } from '@/types/types';
@@ -63,15 +64,14 @@ export function ReportForm() {
     const reportData = {
       content: description,
       isSolved: false,
-      teacherId: 1, // Ajusta según sea necesario
-      boxId: parseInt(selectedBox, 10), // Convertir a número si es necesario
+      teacherId: 1, // i need to get the logic for this to work with the auth token so it knows which user is connected
+      boxId: parseInt(selectedBox, 10),
     };
 
     try {
       const response = await fetchFormIncident(reportData);
       alert('Reporte creado exitosamente');
     } catch (error) {
-      
       console.error('Error al enviar reporte:', error);
       alert('Error al crear el reporte');
     }
@@ -89,12 +89,38 @@ export function ReportForm() {
 
   return (
     <MantineProvider theme={theme}>
-      <Box bg="#4F51B3" style={{ borderRadius: '20px' }} p="xl">
+      <Box
+        bg="#4F51B3"
+        style={{
+          borderRadius: '20px',
+          borderTopLeftRadius: '0',
+          borderTopRightRadius: '0',
+        }}
+        p="xl"
+        w="60em"
+      >
+        <Box display="flex" alignItems="center" mb="md">
+          <Box>
+            <IconArrowLeft size={30} color="white" />
+          </Box>
+          <Box style={{ flexGrow: 1 }}>
+            <h2 style={{ color: 'white', margin: 0, textAlign: 'center' }}>
+              Formulario de Incidencias
+            </h2>
+          </Box>
+        </Box>
+
         <NativeSelect
           mt="md"
           label="Armario"
           data={lockerOptions}
           value={selectedLocker}
+          styles={{
+            input: {
+              color: 'white',
+              backgroundColor: '#2A2B44',
+            },
+          }}
           onChange={(e) => handleLockerChange(e.currentTarget.value)}
         />
 
@@ -103,6 +129,12 @@ export function ReportForm() {
           label="Casilla"
           data={boxOptions}
           value={selectedBox}
+          styles={{
+            input: {
+              color: 'white',
+              backgroundColor: '#2A2B44',
+            },
+          }}
           onChange={(e) => setSelectedBox(e.currentTarget.value)}
           disabled={!selectedLocker}
         />
@@ -115,8 +147,10 @@ export function ReportForm() {
           onChange={(e) => setDescription(e.currentTarget.value)}
           styles={{
             input: {
-              maxHeight: '200px',
+              height: '300px',
               overflow: 'auto',
+              color: 'white',
+              backgroundColor: '#2A2B44',
             },
           }}
         />
