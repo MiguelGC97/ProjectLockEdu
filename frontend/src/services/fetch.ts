@@ -1,7 +1,8 @@
 ﻿import instance, { baseUrl } from '@/services/api';
-import { BoxType, Locker, Item, Booking } from '@/types/types';
+import { BoxType, Incidence, Item, Locker, Booking } from '@/types/types';
 
-export async function fetchLockers(): Promise<Locker[]> {
+// function to fetch lockers
+export async function fetchLockers(): Promise<Locker[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/lockers`);
     if (response.status >= 200 && response.status < 300 && Array.isArray(response.data)) {
@@ -17,17 +18,27 @@ export async function fetchLockers(): Promise<Locker[]> {
 }
 
 // Function to fetch boxes
-export async function fetchBoxes(): Promise<BoxType[]> {
+export async function fetchBoxes(): Promise<BoxType[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/boxes`);
     if (Array.isArray(response.data.data)) {
       return response.data.data;
-    } else {
-      console.error('Data is not an array', response.data.data);
-      return [];
     }
   } catch (error) {
     console.error('Error fetching boxes:', error);
+    return [];
+  }
+}
+
+// function to fetch incidences
+export async function fetchIncidences(): Promise<Incidence[] | undefined> {
+  try {
+    const response = await instance.get(`${baseUrl}/reports`);
+    if (Array.isArray(response.data.data)) {
+      return response.data.data;
+    }
+  } catch (error) {
+    console.error('Error fetching Incidences:', error);
     return [];
   }
 }

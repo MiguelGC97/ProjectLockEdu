@@ -1,5 +1,6 @@
 module.exports = app => {
     const types = require("../controllers/type.controller.js");
+    const auth = require("../middlewares/auth.js");
 
     const auth = require("../middlewares/auth.js");
 

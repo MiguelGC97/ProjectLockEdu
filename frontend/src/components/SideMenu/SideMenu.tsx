@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import {
   IconCalendarTime,
   IconLogout,
@@ -8,6 +8,7 @@ import {
 } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import { Center, Flex, Image, rem, Stack, Tooltip, UnstyledButton } from '@mantine/core';
+import { useAuth } from '@/hooks/AuthProvider';
 import classes from './SideMenu.module.css';
 
 interface NavbarLinkProps {
@@ -29,7 +30,7 @@ function NavbarLink({ icon: Icon, label, active, onClick, to }: NavbarLinkProps)
 }
 
 const menuData = [
-  { icon: IconUser, label: 'Perfil', to: '/' },
+  { icon: IconUser, label: 'Perfil', to: '/perfil' },
   { icon: IconCalendarTime, label: 'Historial de reservas', to: '/historial-reservas' },
   { icon: IconMessageReport, label: 'Incidencias', to: '/incidencias' },
   { icon: IconSettings, label: 'Configuraciones', to: '/configuraciones' },
@@ -38,6 +39,11 @@ const menuData = [
 export function SideMenu() {
   const [active, setActive] = useState(0);
   const navigate = useNavigate(); // Initialize useNavigate
+  const { logout } = useAuth(); // Get the logout function from AuthContext
+
+  const handleLogout = () => {
+    logout(); // Clear user state and navigate to login page
+  };
 
   const iconLinks = menuData.map((link, index) => (
     <NavbarLink
@@ -66,7 +72,7 @@ export function SideMenu() {
       </div>
 
       <Flex direction="column" justify="flex-end" mb="6vh" align="flex-end" h="55vh">
-        <NavbarLink icon={IconLogout} label="Salir" onClick={() => console.log('Logout')} />
+        <NavbarLink icon={IconLogout} label="Salir" onClick={handleLogout} />
       </Flex>
     </div>
   );

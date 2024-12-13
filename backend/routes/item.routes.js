@@ -1,5 +1,6 @@
 ﻿module.exports = app => {
     const items = require("../controllers/item.controller.js");
+    const auth = require("../middlewares/auth.js");
 
     const auth = require("../middlewares/auth.js");
 

@@ -67,3 +67,33 @@ export interface BookingHistoryProps {
   box: BoxType;
   booking: Booking;
 }
+
+export interface Incidence {
+  id: number;
+  content: string;
+  isSolved: boolean;
+  createdAt: string;
+  boxId: number;
+  user: {
+    avatar: string;
+    name: string;
+  };
+}
+
+//enum for roles
+
+enum roles {
+  TEACHER,
+  ADMIN,
+  MANAGER,
+}
+//type for user -- created primarily for AuthProvider
+export interface UserType {
+  id: number;
+  name: string;
+  surname: string;
+  password: string;
+  username: string;
+  avatar: string;
+  role: roles;
+}

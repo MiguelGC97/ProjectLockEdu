@@ -1,4 +1,4 @@
-﻿// Home.page.tsx
+// Home.page.tsx
 import { Flex, useMantineTheme } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Banner } from '@/components/Banner/Banner';

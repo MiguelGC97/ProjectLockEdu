@@ -4,10 +4,10 @@ import { Flex, useMantineTheme } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Banner } from '@/components/Banner/Banner';
 import BookingForm from '@/components/BookingForm/BookingForm';
+import BottomTabs from '@/components/BottomTabs/BottomTabs';
 import Boxes from '@/components/Boxes/Boxes';
 import Lockers from '@/components/Lockers/Lockers';
-import MobileMenu from '@/components/MobileMenu/MobileMenu';
-import { Notifications } from '@/components/Notifications/Notifications';
+import { NotificationsBox } from '@/components/NotificationsBox/NotificationsBox';
 import Objects from '@/components/Objects/Objects';
 import  Pending from '@/components/Pending/Pending';
 import { SideMenu } from '@/components/SideMenu/SideMenu';
@@ -16,8 +16,7 @@ import { BoxType, Locker } from '@/types/types';
 
 const Home: React.FC = () => {
   const theme = useMantineTheme();
-  const matches = useMediaQuery('(min-width: 85em)');
-  const matches2 = useMediaQuery('(max-width: 93em)');
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const [selectedLocker, setSelectedLocker] = useState<Locker | null>(null);
   const [selectedBox, setSelectedBox] = useState<BoxType | null>(null);
   const [createBooking, setCreateBooking] = useState(false);
@@ -57,47 +56,12 @@ const Home: React.FC = () => {
 
   return (
     <>
-      {matches ? (
-        matches2 ? (
-          <Flex pl="1.5%" style={{ backgroundColor: theme.colors.myPurple[6] }}>
-            <Flex maw="auto" gap="lg">
-              <Flex direction="column" maw="100%">
-                <UserBar />
-                <Flex gap="lg" wrap="wrap">
-                  <Flex maw={800} gap="lg" direction="column">
-                    <Banner />
-                    <Flex miw={600} maw="auto" gap="lg">
-                      <Notifications />
-                      <Pending />
-                    </Flex>
-                  </Flex>
-                  {!selectedLocker ? (
-                    <Lockers onLockerClick={handleLockerClick} />
-                  ) : !selectedBox ? (
-                    <Boxes
-                      locker={selectedLocker}
-                      onBoxClick={handleBoxClick}
-                      onReturn={handleReturnToLockers}
-                    />
-                  ) : selectedBox && !createBooking ? (
-                    <Objects
-                      box={selectedBox}
-                      onReturn={handleReturnToBoxes}
-                      onCreateBooking={handleCreateBookingClick}
-                    />
-                  ) : createBooking ? (
-                    <BookingForm 
-                      box={selectedBox} 
-                      items={selectedItems}
-                      onReturnToBox={handleReturnToBox}
-                      onReturn={handleReturnToLockers}
-                    />
-                  ) : null}
-                </Flex>
-              </Flex>
-            </Flex>
-          </Flex>
-        ) : (
+      {isMobile ? (
+        <BottomTabs />
+      ) : (
+        <>
+          {' '}
+          <SideMenu />
           <Flex pl="1.5%" style={{ backgroundColor: theme.colors.myPurple[6] }}>
             <Flex maw="100%" gap="lg">
               <Flex direction="column" w="100%">
@@ -106,7 +70,7 @@ const Home: React.FC = () => {
                   <Flex gap="lg" direction="column">
                     <Banner />
                     <Flex miw={800} w={1100} gap="lg">
-                      <Notifications />
+                      <NotificationsBox />
                       <Pending />
                     </Flex>
                   </Flex>
@@ -136,47 +100,7 @@ const Home: React.FC = () => {
               </Flex>
             </Flex>
           </Flex>
-        )
-      ) : (
-        <Flex pl="1.5%" style={{ backgroundColor: theme.colors.white }}>
-          <Flex maw="100%" gap="lg">
-            <MobileMenu />
-            <Flex direction="column" w="100%">
-              <UserBar />
-              <Flex gap="lg" wrap="wrap">
-                <Flex gap="lg" direction="column">
-                  <Banner />
-                  <Flex miw={800} w={1100} gap="lg">
-                    <Notifications />
-                    <Pending />
-                  </Flex>
-                  {!selectedLocker ? (
-                    <Lockers onLockerClick={handleLockerClick} />
-                  ) : !selectedBox ? (
-                    <Boxes
-                      locker={selectedLocker}
-                      onBoxClick={handleBoxClick}
-                      onReturn={handleReturnToLockers}
-                    />
-                  ) : selectedBox && !createBooking ? (
-                    <Objects
-                      box={selectedBox}
-                      onReturn={handleReturnToBoxes}
-                      onCreateBooking={handleCreateBookingClick}
-                    />
-                  ) : createBooking ? (
-                    <BookingForm 
-                    box={selectedBox} 
-                    items={selectedItems}
-                    onReturnToBox={handleReturnToBox}
-                    onReturn={handleReturnToLockers}
-                    />
-                  ) : null}
-                </Flex>
-              </Flex>
-            </Flex>
-          </Flex>
-        </Flex>
+        </>
       )}
     </>
   );
