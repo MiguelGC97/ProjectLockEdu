@@ -69,3 +69,15 @@ export interface BookingFormProps {
   box: BoxType;
   items: string[]; // This is the array of selected item ids.
 }
+
+export interface Incidence {
+  id: number;
+  content: string;
+  isSolved: boolean;
+  createdAt: string;
+  boxId: number;
+  user: {
+    avatar: string;
+    name: string;
+  };
+}

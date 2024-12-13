@@ -1,5 +1,5 @@
 ﻿import instance, { baseUrl } from '@/services/api';
-import { BoxType, Item, Locker } from '@/types/types';
+import { BoxType, Incidence, Item, Locker } from '@/types/types';
 
 // function to fetch lockers
 export async function fetchLockers(): Promise<Locker[] | undefined> {
@@ -36,6 +36,19 @@ export async function fetchItems(): Promise<Item[] | undefined> {
     }
   } catch (error) {
     console.error('Error fetching objects:', error);
+    return [];
+  }
+}
+
+// function to fetch incidences
+export async function fetchIncidences(): Promise<Incidence[] | undefined> {
+  try {
+    const response = await instance.get(`${baseUrl}/reports`);
+    if (Array.isArray(response.data.data)) {
+      return response.data.data;
+    }
+  } catch (error) {
+    console.error('Error fetching Incidences:', error);
     return [];
   }
 }
