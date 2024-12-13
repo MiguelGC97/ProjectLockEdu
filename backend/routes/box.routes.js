@@ -1,14 +1,13 @@
 module.exports = app => {
   const boxes = require("../controllers/box.controller.js");
   const auth = require("../middlewares/auth.js");
-
   const upload = require('../multer/upload');
 
   var router = require("express").Router();
 
   router.post("/", auth.isAuthenticated, upload.single('file'), boxes.addBox);
 
-  router.get("/", auth.isAuthenticated, boxes.getAll);
+  router.get("/", boxes.getAll);
 
   router.get("/:id", auth.isAuthenticated, boxes.getOne);
 

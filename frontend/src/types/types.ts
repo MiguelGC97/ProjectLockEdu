@@ -70,6 +70,18 @@ export interface BookingFormProps {
   items: string[]; // This is the array of selected item ids.
 }
 
+export interface Incidence {
+  id: number;
+  content: string;
+  isSolved: boolean;
+  createdAt: string;
+  boxId: number;
+  user: {
+    avatar: string;
+    name: string;
+  };
+}
+
 //enum for roles
 
 enum roles {

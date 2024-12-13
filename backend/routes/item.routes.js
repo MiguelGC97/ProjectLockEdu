@@ -6,10 +6,10 @@
 
     router.post("/", auth.isAuthenticated, items.addItem);
 
-    router.get("/", auth.isAuthenticated, items.getAll);
+    router.get("/", items.getAll);
 
     router.delete("/:id", auth.isAuthenticated, items.delete);
 
-    app.use("/api/items", auth.isAuthenticated, router);
+    app.use("/api/items", router);
 
 }
