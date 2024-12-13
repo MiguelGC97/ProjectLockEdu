@@ -12,7 +12,8 @@ import Objects from '@/components/Objects/Objects';
 import  Pending from '@/components/Pending/Pending';
 import { SideMenu } from '@/components/SideMenu/SideMenu';
 import UserBar from '@/components/UserBar/UserBar';
-import { BoxType, Locker } from '@/types/types';
+import { BoxType, Locker, Booking } from '@/types/types';
+import { fetchBookingsByUserIdAndState } from '@/services/fetch';
 
 const Home: React.FC = () => {
   const theme = useMantineTheme();
@@ -21,6 +22,7 @@ const Home: React.FC = () => {
   const [selectedBox, setSelectedBox] = useState<BoxType | null>(null);
   const [createBooking, setCreateBooking] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [pendingBookings, setPendingBookings] = useState<Booking[]>([]);
 
   const handleLockerClick = (locker: Locker) => {
     console.log('Locker selected:', locker); // Debugging log
@@ -52,6 +54,12 @@ const Home: React.FC = () => {
     setCreateBooking(false);
     setSelectedBox(null);
     setSelectedItems([]);
+  };
+
+  const updatePendingBookings = async () => {
+    // Fetch the latest pending bookings after creating a new booking
+    const data = await fetchBookingsByUserIdAndState(1, 'pending');
+    setPendingBookings(data);
   };
 
   return (
@@ -94,6 +102,7 @@ const Home: React.FC = () => {
                       items={selectedItems} 
                       onReturnToBox={handleReturnToBox}
                       onReturn={handleReturnToLockers}
+                      onBookingCreated={updatePendingBookings}
                     />
                   ) : null}
                 </Flex>

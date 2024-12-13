@@ -32,42 +32,36 @@ const Pending: React.FC<BookingHistoryProps> = ({ locker, box, booking }) => {
     return `${hours}:${minutes}`;
   }
 
-  // const rows = bookings?.map((b) => (
-  //   <Table.Tr key={b.id} c="white">
-  //     <Table.Td>
-  //       {b.items.map((i) => (
-  //         <div key={i.id}>{i.box.description}</div>
-  //       ))}
-  //     </Table.Td>
+  function formatDate(timeString: string): string {
+    const date = new Date(timeString);
 
-  //     <Table.Td>
-  //       {formatTime(b.checkOut)}-{formatTime(b.checkIn)}
-  //     </Table.Td>
-  //     <Table.Td c="red">
-  //       {'             '}
-  //       <IconTrash />
-  //     </Table.Td>
-  //   </Table.Tr>
-  // ));
+    return date.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+    });
+  }
 
   const rows = bookings?.map((b) => {
-    // Acceder a las IDs del locker y del box, y formatearlas
     const lockerId = b.items[0]?.box.locker.id;
     const boxId = b.items[0]?.box.id;
 
-    // Formatear la cadena como "A0(lockerId)-C0(boxId)"
     const lockerBoxInfo = lockerId && boxId ? `A0${lockerId}-C0${boxId}` : '';
 
     return (
       <Table.Tr key={b.id} c="white">
         <Table.Td>
-          {/* Mostrar el formato deseado */}
           {lockerBoxInfo}
         </Table.Td>
 
         <Table.Td>
-          {formatTime(b.checkOut)} - {formatTime(b.checkIn)}
+          {formatDate(b.checkOut)}
         </Table.Td>
+
+        <Table.Td>
+          {formatTime(b.checkOut)}
+        </Table.Td>
+
         <Table.Td c="red">
           {'             '}
           <IconTrash />

@@ -29,7 +29,7 @@ dayjs.extend(customParseFormat);
 
 import './BookingForm.module.css';
 
-const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, onReturn }) => {
+const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, onReturn, onBookingCreated }) => {
   const [error, setError] = useState<string | null>(null);
   const [filteredObjects, setFilteredObjects] = useState<Item[]>([]);
   const [confirmedBooking, setConfirmedBooking] = useState<any | null>(null);
@@ -86,6 +86,10 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
         returnDate,
         ...response.data,
       });
+
+      if (onBookingCreated) {
+        onBookingCreated();  // Actualiza las reservas pendientes
+      }
     } catch (error) {
       console.error('Error al crear la reserva:', error);
       setError('Hubo un error al crear la reserva. Intenta de nuevo.');

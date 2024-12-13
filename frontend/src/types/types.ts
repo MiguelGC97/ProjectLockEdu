@@ -60,6 +60,7 @@ export interface BookingFormProps {
   items: string[]; // This is the array of selected item ids.
   onReturnToBox: () => void;
   onReturn: () => void;
+  onBookingCreated: () => void;
 }
 
 export interface BookingHistoryProps {
