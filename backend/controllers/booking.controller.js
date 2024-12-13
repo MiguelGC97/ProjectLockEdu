@@ -1,6 +1,8 @@
 const db = require("../models");
 const Booking = db.booking;
 const Item = db.item;
+const Box = db.box;
+const Locker = db.locker;
 const { Op } = require("sequelize");
 
 exports.newBooking = async (req, res) => {
@@ -80,6 +82,20 @@ exports.getAllbyUserId = async (req, res) => {
   }
 };
 
+// exports.getAllbyUserIdAndState = async (req, res) => {
+//   try {
+//     const userId = req.params.userId;
+//     const state = req.params.state;
+
+//     const bookings = await Booking.findAll({
+//       where: { userId: userId, state: state },
+//     });
+//     res.status(200).json({ data: bookings });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
 exports.getAllbyUserIdAndState = async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -87,7 +103,26 @@ exports.getAllbyUserIdAndState = async (req, res) => {
 
     const bookings = await Booking.findAll({
       where: { userId: userId, state: state },
+      include: [
+        {
+          model: Item,
+          include: [
+            {
+              model: Box,
+              include: [
+                {
+                  model: Locker,
+                  attributes: ['id', 'description'], 
+                },
+              ],
+              attributes: ['id', 'description'], 
+            },
+          ],
+          attributes: ['id',], 
+        },
+      ], 
     });
+
     res.status(200).json({ data: bookings });
   } catch (error) {
     res.status(500).json({ error: error.message });

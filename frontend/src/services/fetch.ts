@@ -57,6 +57,19 @@ export async function fetchBookingsByUserId(userId: number): Promise<Booking[] |
   }
 }
 
+export async function fetchBookingsByUserIdAndState(userId: number, state: string): Promise<Booking[] | undefined> {
+  try {
+    const response = await instance.get(`${baseUrl}/bookings/users/${userId}/state/${state}`);
+    if (Array.isArray(response.data.data)) {
+      console.log(JSON.stringify(response.data.data, null, 2));
+      return response.data.data;
+    }
+  } catch (error) {
+    console.error('Error fetching bookings', error);
+    return [];
+  }
+}
+
 // const urlencoded = new URLSearchParams();
 
 // const requestOptions = {

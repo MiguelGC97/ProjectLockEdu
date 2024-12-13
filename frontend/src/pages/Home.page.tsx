@@ -9,7 +9,7 @@ import Lockers from '@/components/Lockers/Lockers';
 import MobileMenu from '@/components/MobileMenu/MobileMenu';
 import { Notifications } from '@/components/Notifications/Notifications';
 import Objects from '@/components/Objects/Objects';
-import { Pending } from '@/components/Pending/Pending';
+import  Pending from '@/components/Pending/Pending';
 import { SideMenu } from '@/components/SideMenu/SideMenu';
 import UserBar from '@/components/UserBar/UserBar';
 import { BoxType, Locker } from '@/types/types';

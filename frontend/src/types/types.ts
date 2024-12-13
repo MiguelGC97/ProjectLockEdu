@@ -15,6 +15,7 @@ export interface BoxType {
   lockerId: number;
   createdAt: string;
   updatedAt: string;
+  locker: Locker;
 }
 
 export interface LockersProps {
@@ -29,24 +30,12 @@ export interface BoxesProps {
 
 export interface Booking {
   id: number;
-  objectId: number;
+  items: Item[];
   userId: number;
   description: string;
-  checkOutTime: string;
-  checkInTime: string;
+  checkOut: string;
+  checkIn: string;
   state: 'pending' | 'withdrawn' | 'returned';
-  Object: {
-    id: number;
-    name: string;
-    Box: {
-      id: number;
-      name: string;
-      Locker: {
-        name: string;
-        location: string;
-      };
-    };
-  };
 }
 
 export interface Item {
@@ -57,6 +46,7 @@ export interface Item {
   typeId: number;
   createdAt: string;
   updatedAt: string;
+  box: BoxType;
 }
 
 export interface ObjectsProps {

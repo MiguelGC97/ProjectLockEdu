@@ -5,29 +5,43 @@ import { Box, Center, Divider, Flex, Group, ScrollArea, Table, Text, Title } fro
 import './Pending.module.css';
 
 import { BookingHistoryProps, Booking } from '@/types/types';
-import { fetchBookingsByUserId } from '@/services/fetch';
+import { fetchBookingsByUserIdAndState } from '@/services/fetch';
 
-const Pending: React.FC<BookingHistoryProps> = ({ locker, box, booking}) => {
+const Pending: React.FC<BookingHistoryProps> = ({ locker, box, booking }) => {
 
   const [bookings, setBookings] = useState<Booking[]>();
 
   const userId = 1;
+  const state = "pending";
 
   useEffect(() => {
     const loadBookings = async () => {
-      const data = await fetchBookingsByUserId(userId);
+      const data = await fetchBookingsByUserIdAndState(userId, state);
       setBookings(data);
       console.log(data);
     }
     loadBookings();
   }, [])
 
+  function formatTime(timeString: string): string {
+    // function for formatting the timestamp to display only the hours and minutes in the notification
+    const date = new Date(timeString);
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+
+    return `${hours}:${minutes}`;
+  }
+
   // const rows = bookings?.map((b) => (
   //   <Table.Tr key={b.id} c="white">
-  //     {/* <Table.Td>{b.box}</Table.Td>
-  //     <Table.Td>{b.date}</Table.Td> */}
   //     <Table.Td>
-  //       {b.checkOutTime}-{b.checkInTime}
+  //       {b.items.map((i) => (
+  //         <div key={i.id}>{i.box.description}</div>
+  //       ))}
+  //     </Table.Td>
+
+  //     <Table.Td>
+  //       {formatTime(b.checkOut)}-{formatTime(b.checkIn)}
   //     </Table.Td>
   //     <Table.Td c="red">
   //       {'             '}
@@ -36,38 +50,31 @@ const Pending: React.FC<BookingHistoryProps> = ({ locker, box, booking}) => {
   //   </Table.Tr>
   // ));
 
-  export function Pending() {
-    const rows = bookings?.map((b) => (
-      <Table.Tr c="white">
-        {/* <Table.Td>{p.box}</Table.Td>
-        <Table.Td>{p.date}</Table.Td> */}
+  const rows = bookings?.map((b) => {
+    // Acceder a las IDs del locker y del box, y formatearlas
+    const lockerId = b.items[0]?.box.locker.id;
+    const boxId = b.items[0]?.box.id;
+
+    // Formatear la cadena como "A0(lockerId)-C0(boxId)"
+    const lockerBoxInfo = lockerId && boxId ? `A0${lockerId}-C0${boxId}` : '';
+
+    return (
+      <Table.Tr key={b.id} c="white">
         <Table.Td>
-          {b.checkOutTime}-{b.checkInTime}
+          {/* Mostrar el formato deseado */}
+          {lockerBoxInfo}
+        </Table.Td>
+
+        <Table.Td>
+          {formatTime(b.checkOut)} - {formatTime(b.checkIn)}
         </Table.Td>
         <Table.Td c="red">
           {'             '}
           <IconTrash />
         </Table.Td>
       </Table.Tr>
-    ));
-
-// export function Pending() {
-//   const rows = pendingReservations.map((p) => (
-//     <Table.Tr c="white">
-//       <Table.Td>{p.box}</Table.Td>
-//       <Table.Td>{p.date}</Table.Td>
-//       <Table.Td>
-//         {p.checkOutHour}-{p.checkInHour}
-//       </Table.Td>
-//       <Table.Td c="red">
-//         {'             '}
-//         <IconTrash />
-//       </Table.Td>
-//     </Table.Tr>
-//   ));
-
-
-
+    );
+  });
 
   return (
     <Box bg="transparent" h="60vh" bd="1px solid myPurple.1" style={{ borderRadius: 40 }}>
@@ -106,3 +113,5 @@ const Pending: React.FC<BookingHistoryProps> = ({ locker, box, booking}) => {
     </Box>
   );
 }
+
+export default Pending;
