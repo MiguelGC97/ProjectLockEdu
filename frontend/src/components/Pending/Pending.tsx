@@ -89,12 +89,12 @@ const Pending: React.FC<BookingHistoryProps> = ({ locker, box, booking }) => {
                 </Table.Th>
                 <Table.Th>
                   <Text c="white" fw={700}>
-                    Fecha
+                    Fecha de recogida
                   </Text>
                 </Table.Th>
                 <Table.Th>
                   <Text c="white" fw={700}>
-                    Horario
+                    Hora de recogida
                   </Text>
                 </Table.Th>
                 <Table.Th> </Table.Th>

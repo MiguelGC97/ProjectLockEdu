@@ -22,7 +22,7 @@ import {
 import { DateTimePicker } from '@mantine/dates';
 import dayjs from 'dayjs';
 import instance, { baseUrl } from '@/services/api';
-import { BookingFormProps, BoxType, Item} from '@/types/types';
+import { BookingFormProps, BoxType, Item } from '@/types/types';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 dayjs.extend(customParseFormat);
@@ -179,18 +179,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
       {/* <Modal opened={opened} onClose={close} title="Authentication" centered size="55rem">
         <Text>¿Estás seguro de que quieres hacer esta reserva?</Text>
       </Modal> */}
-      <Box
-        style={{
-          backgroundColor: theme.colors.myPurple[4],
-          borderBottomLeftRadius: 40,
-          borderBottomRightRadius: 40,
-        }}
-        p="3%"
-        mb="lg"
-        h="86vh"
-        w="34.5vw"
-      >
-        <Stack mb="2vh" gap="xl">
+
+      {/*<Stack mb="2vh" gap="xl">
           <Flex gap="29%">
             <a>
               <IconArrowLeft color="white" size="30px" onClick={() => {
@@ -205,21 +195,15 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
         </Stack>
         <Flex
           direction="column"
-          style={{
-            border: '1px solid #DBDCEC',
-            borderBottomLeftRadius: 30,
-            borderBottomRightRadius: 30,
-            backgroundColor: theme.colors.myPurple[6],
-          }}
           pb="xl"
         >
 
 
 
-          <ScrollArea h="36vh" scrollbarSize={16} mb="xl">
+          <ScrollArea h="36vh" scrollbarSize={16} mb="xl"> */}
 
-            {/* DateTimePicker para la selección de fecha */}
-            <Stack mb="lg" mx="auto" maw="90%">
+      {/* DateTimePicker para la selección de fecha */}
+      {/* <Flex mb="lg" mx="auto" maw="90%">
               <DateTimePicker
                 size="xs"
                 radius="xs"
@@ -232,7 +216,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
               {pickupDate && (
                 <Text>Selected date: {pickupDate.toLocaleString()}</Text>
               )}
-            </Stack>
+            </Flex>
 
             <Stack mb="lg" mx="auto" maw="90%">
               <DateTimePicker
@@ -256,9 +240,9 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
                     <h3>You have selected the following objects:</h3>
                     <ul>
                       {filteredObjects.map((object) => (
-                        <li key={object.id}>
-                          {/* Space to display the object description */}
-                          {object.description}
+                        <li key={object.id}> */}
+      {/* Space to display the object description */}
+      {/* {object.description}
                         </li>
                       ))}
                     </ul>
@@ -291,6 +275,33 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
               Confirmar
             </Button>
           </Flex>
+        </Flex>*/}
+      <Box
+        style={{
+          backgroundColor: theme.colors.myPurple[4],
+          borderBottomLeftRadius: 40,
+          borderBottomRightRadius: 40,
+        }}
+        p="3%"
+        mb="lg"
+        h="86vh"
+        w="34.5vw"
+      >
+        <Flex direction="column" justify="center" align="center" p="5%" h="100%" w="100%">
+          <ScrollArea h="80%" w="100%">
+            <Flex direction="column" justify="center" align="center" h="100%" w="100%" gap="20">
+              <DateTimePicker w="70%" c="white"
+                valueFormat="DD MMM YYYY hh:mm A"
+                label="Selecciona una fecha de recogida"
+                placeholder="Pick date and time"
+              />
+              <DateTimePicker w="70%" c="white"
+                valueFormat="DD MMM YYYY hh:mm A"
+                label="Selecciona una fecha de recogida"
+                placeholder="Pick date and time"
+              />
+            </Flex>
+          </ScrollArea>
         </Flex>
       </Box>
     </>
