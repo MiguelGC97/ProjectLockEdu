@@ -10,7 +10,7 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
-import { useAuth } from '@/hooks/authProvider';
+import { useAuth } from '@/hooks/AuthProvider';
 import { login as loginService } from '@/services/authService';
 import classes from '../App.module.css';
 
@@ -56,7 +56,7 @@ const Login: React.FC = () => {
         {/* Username field */}
         <TextInput
           label="Correo eletrónico"
-          placeholder="hello@gmail.com"
+          placeholder="Escribe tu correo"
           size="md"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
@@ -65,7 +65,7 @@ const Login: React.FC = () => {
         {/* Password field */}
         <PasswordInput
           label="Contraseña"
-          placeholder="Your password"
+          placeholder="Escribe tu contraseña"
           mt="md"
           size="md"
           value={password}
