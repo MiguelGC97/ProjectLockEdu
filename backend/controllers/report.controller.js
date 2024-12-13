@@ -47,21 +47,23 @@ exports.getReportByUsername = async (req, res) => {
   }
 };
 
-exports.findone = async (req, res) => {
+
+exports.findOne = async (req, res) => {
   const id = req.params.id;
 
   try {
     const data = await Report.findByPk(id);
     if (data) {
-      res.send(data);
+      res.status(200).json(data);
     } else {
       res.status(404).send({
         message: `Report with id = ${id} not found`,
       });
     }
-  } catch {
+  } catch (error) {
     res.status(500).send({
       message: `Error retrieving Report with id= ${id}`,
+      error: error.message,
     });
   }
 };
@@ -94,59 +96,106 @@ exports.createReport = async (req, res) => {
   }
 };
 
-exports.resolveReport = async (req, res) => {
+// exports.resolveReport = async (req, res) => {
+//   try {
+//     const id = req.params.id;
+//     const [updated] = await Report.update((req.isSolved = true), {
+//       where: { id },
+//     });
+
+//     if (updated) {
+//       res.status(200).json({
+//         message: "Report resolved",
+//       });
+//     } else {
+//       res.status(404).json({
+//         message: "The report you are trying to update can't be found",
+//       });
+//     }
+//   } catch {
+//     err;
+//   }
+//   {
+//     res.status(500).json({ err: error.message });
+//   }
+// };
+
+// exports.updateDescription = async (req, res) => {
+//   const date = req.params.createdAt;
+//   let newDate = limitDate(date);
+
+//   if (canUpdate(newDate) == true) {
+//     const id = req.params.id;
+
+//     try {
+//       const [updated] = await Report.update(req.body.content, {
+//         where: { id },
+//       });
+
+//       if (updated) {
+//         res.status(200).json({
+//           message: "description updated",
+//           data: req.body,
+//         });
+//       } else {
+//         res.status(404).json({ message: "report not found" });
+//       }
+//     } catch (error) {
+//       res.status(500).json({ error: error.message });
+//     }
+//   } else {
+//     res.status(403).json({
+//       message: "You have exceeded the time limit to update your message",
+//     });
+//   }
+// };
+
+
+
+exports.updateDescription = async (req, res) => {
+  const id = req.params.id;
+  const { content } = req.body.content;
+
   try {
-    const id = req.params.id;
-    const [updated] = await Report.update((req.isSolved = true), {
+    const [updated] = await Report.update({ content }, {
       where: { id },
     });
 
     if (updated) {
       res.status(200).json({
-        message: "Report resolved",
+        message: "Incidence content updated",
+        data: { content },
       });
     } else {
-      res.status(404).json({
-        message: "The report you are trying to update can't be found",
-      });
+      res.status(404).json({ message: "Incidence not found" });
     }
-  } catch {
-    err;
-  }
-  {
-    res.status(500).json({ err: error.message });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
 
-exports.updateDescription = async (req, res) => {
-  const date = req.params.createdAt;
-  let newDate = limitDate(date);
 
-  if (canUpdate(newDate) == true) {
-    const id = req.params.id;
+// exports.updateDescription = async (req, res) => {
+//   const { id } = req.params.id;
+//   const { content } = req.body.content;
 
-    try {
-      const [updated] = await Report.update(req.body.description, {
-        where: { id },
-      });
+//   try {
+//     // Buscar el reporte por ID
+//     const report = await Report.findByPk(id);
 
-      if (updated) {
-        res.status(200).json({
-          message: "User updated",
-          data: req.body,
-        });
-      } else {
-        res.status(404).json({ message: "User not found" });
-      }
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  } else {
-    res.status(403).json({
-      message: "You have exceeded the time limit to update your message",
-    });
-  }
-};
+//     if (!report) {
+//       return res.status(404).json({ message: "Report not found" });
+//     }
+
+//     // Actualizar solo el contenido del reporte
+//     report.content = content;
+//     await report.save();
+
+//     return res.status(200).json(report);
+//   } catch (error) {
+//     return res.status(500).json({ message: error.message });
+//   }
+// };
 
 // exports.updateStatus = async (req, res) => {
   

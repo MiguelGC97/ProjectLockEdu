@@ -4,13 +4,15 @@ module.exports = (app) => {
 
   var router = require("express").Router();
 
-  router.post("/", auth.isAuthenticated, reports.createReport);
+  router.post("/",  reports.createReport);
 
   router.get("/", reports.getAll);
 
-  router.get("/:username", auth.isAuthenticated, reports.getReportByUsername);
+  router.get("/:username",  reports.getReportByUsername);
 
-  router.put("/:id", auth.isAuthenticated, reports.resolveReport);
+  router.patch("/update/:id", reports.updateDescription);
 
-  app.use("/api/reports", router);
+  // router.put("/:id",  reports.resolveReport);
+ 
+  app.use("/api/reports", router);  
 };

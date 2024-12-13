@@ -1,13 +1,10 @@
 ﻿import { useEffect, useState } from 'react';
-import { Box, NativeSelect, Textarea, Button, createTheme, MantineProvider } from '@mantine/core';
-import { fetchBoxes, fetchLockers } from '@/services/fetch';
-import { Boxs, Locker } from '@/types/types'; 
+import { Box, Button, createTheme, MantineProvider, NativeSelect, Textarea } from '@mantine/core';
+import { fetchBoxesByLocker, fetchFormIncident, fetchLockers } from '@/services/fetch';
+import { Boxs, Locker } from '@/types/types';
 import classes from './ReportForm.module.css';
-import { fetchFormIncident } from '@/services/fetch';
-
 
 const theme = createTheme({
-
   components: {
     Input: {
       classNames: {
@@ -39,18 +36,46 @@ export function ReportForm() {
       }
     };
 
-    const loadBoxes = async () => {
+    loadLockers();
+  }, []);
+
+  const handleLockerChange = async (lockerId: string) => {
+    setSelectedLocker(lockerId);
+    setSelectedBox('');
+    if (lockerId) {
       try {
-        const data = await fetchBoxes();
+        const data = await fetchBoxesByLocker(lockerId);
         setBoxes(data);
       } catch (error) {
-        console.error('Error fetching boxes:', error);
+        console.error('Error fetching boxes for locker:', error);
       }
+    } else {
+      setBoxes([]);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!description) {
+      alert('Por favor, complete todos los campos.');
+      return;
+    }
+
+    const reportData = {
+      content: description,
+      isSolved: false,
+      teacherId: 1, // Ajusta según sea necesario
+      boxId: parseInt(selectedBox, 10), // Convertir a número si es necesario
     };
 
-    loadLockers();
-    loadBoxes();
-  }, []);
+    try {
+      const response = await fetchFormIncident(reportData);
+      alert('Reporte creado exitosamente');
+    } catch (error) {
+      
+      console.error('Error al enviar reporte:', error);
+      alert('Error al crear el reporte');
+    }
+  };
 
   const lockerOptions = lockers.map((locker) => ({
     value: locker.id.toString(),
@@ -62,29 +87,6 @@ export function ReportForm() {
     label: box.description || `Box ${box.id}`,
   }));
 
-  const handleSubmit = async () => {
-    if (!selectedLocker || !selectedBox || !description) {
-      alert('Por favor, complete todos los campos.');
-      return;
-    }
-  
-    const reportData = {
-      content: description,
-      isSolved: false,
-      teacherId: 1, // Ajusta según sea necesario
-      boxId: parseInt(selectedBox, 10), // Convertir a número si es necesario
-    };
-  
-    try {
-      const response = await fetchFormIncident(reportData);
-      console.log('Reporte creado:', response);
-      alert('Reporte creado exitosamente');
-    } catch (error) {
-      console.error('Error al enviar reporte:', error);
-      alert('Error al crear el reporte');
-    }
-  };
-    
   return (
     <MantineProvider theme={theme}>
       <Box bg="#4F51B3" style={{ borderRadius: '20px' }} p="xl">
@@ -93,15 +95,16 @@ export function ReportForm() {
           label="Armario"
           data={lockerOptions}
           value={selectedLocker}
-          onChange={(e) => setSelectedLocker(e.currentTarget.value)}
+          onChange={(e) => handleLockerChange(e.currentTarget.value)}
         />
 
         <NativeSelect
           mt="md"
-          label ="Casilla"
+          label="Casilla"
           data={boxOptions}
           value={selectedBox}
           onChange={(e) => setSelectedBox(e.currentTarget.value)}
+          disabled={!selectedLocker}
         />
 
         <Textarea
@@ -118,26 +121,26 @@ export function ReportForm() {
           }}
         />
 
-<Box
-        mt="md"
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-end', 
-        }}
-      >
-        <Button
-          variant="filled"
-          color="#3C3D85"
-          radius="xl"
+        <Box
+          mt="md"
           style={{
-            padding: '10px 20px', 
+            display: 'flex',
+            justifyContent: 'flex-end',
           }}
-          onClick={handleSubmit}
         >
-          Enviar
-        </Button>
+          <Button
+            variant="filled"
+            color="#3C3D85"
+            radius="xl"
+            style={{
+              padding: '10px 20px',
+            }}
+            onClick={handleSubmit}
+          >
+            Enviar
+          </Button>
+        </Box>
       </Box>
-    </Box>
-  </MantineProvider>
+    </MantineProvider>
   );
 }

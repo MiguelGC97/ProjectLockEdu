@@ -46,7 +46,7 @@ export async function fetchIncidences(): Promise<Incidence[] | undefined> {
   }
 }
 
-//function to send data from incidences
+//function to send data from incidences- we need to collect the right data
 
 export async function fetchFormIncident(reportData: {
   content: string;
@@ -56,11 +56,41 @@ export async function fetchFormIncident(reportData: {
 }): Promise<any> {
   try {
     const response = await instance.post(`${baseUrl}/reports`, reportData);
-    return response.data; // Retorna la respuesta completa del backend
+    return response.data.data;
   } catch (error) {
     console.error('Error sending report data', error);
-    throw error; // Lanza el error para que el componente pueda manejarlo
+    throw error;
   }
 }
 
 
+//function to update the incidences - implement the timer
+
+export async function updateIncidenceContent(
+  id: number,
+  content: string
+): Promise<any> {
+  try {
+    await instance.put(`${baseUrl}/reports/update/${id}`, { content });
+  } catch (error) {
+    console.log (content);
+    console.error('Error updating Incidence:', error);
+    throw error;
+  }
+}
+
+
+//function to fetchBoxesByLocker
+
+export async function fetchBoxesByLocker(lockerId: string): Promise<BoxType[] | undefined> {
+  try {
+    const response = await instance.get(`${baseUrl}/boxes/locker/${lockerId}`);
+    if (Array.isArray(response.data.data)) {
+      return response.data.data;
+    }
+
+  } catch (error) {
+    console.error(`Error fetching boxes for locker ${lockerId}:`, error);
+    return [];
+  }
+}

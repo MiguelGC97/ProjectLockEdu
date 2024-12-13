@@ -1,7 +1,4 @@
-﻿import './ReportsBox.module.css';
-
-import { useEffect, useState } from 'react';
-import styled from '@emotion/styled';
+﻿import { useEffect, useState } from 'react';
 import {
   Accordion,
   Avatar,
@@ -12,12 +9,19 @@ import {
   ScrollArea,
   Table,
   Text,
+  Modal,
+  Textarea,
+  Button,
 } from '@mantine/core';
-import { fetchIncidences } from '@/services/fetch';
+import styled from '@emotion/styled';
+import { fetchIncidences, updateIncidenceContent } from '@/services/fetch';
 import { Incidence } from '@/types/types';
 
 export function ReportsBox() {
   const [incidences, setIncidences] = useState<Incidence[]>();
+  const [modalOpened, setModalOpened] = useState(false);
+  const [currentIncidence, setCurrentIncidence] = useState<Incidence | null>(null);
+  const [newContent, setNewContent] = useState<string>('');
 
   useEffect(() => {
     const loadIncidences = async () => {
@@ -28,20 +32,39 @@ export function ReportsBox() {
     loadIncidences();
   }, []);
 
+  const handleEditClick = (incidence: Incidence) => {
+    setCurrentIncidence(incidence);
+    setNewContent(incidence.content); // Cargar contenido actual
+    setModalOpened(true);
+  };
+
+  const handleSave = async () => {
+    if (currentIncidence) {
+      try {
+        await updateIncidenceContent(currentIncidence.id, newContent);
+        setModalOpened(false);
+        // Recargar o actualizar el estado local de las incidencias
+        setIncidences(incidences?.map(inc => inc.id === currentIncidence?.id ? { ...inc, content: newContent } : inc));
+      } catch (error) {
+        console.error('Error updating Incidence:', error);
+        // Puedes mostrar un mensaje de error adecuado aquí
+      }
+    }
+  };
+
   const StyledAccordion = styled(Accordion)`
-    
-  
-  .mantine-Accordion-control {
+    .mantine-Accordion-control {
       &:hover {
         background-color: #4f51b3;
         color: white;
       }
       &.mantine-Accordion-control-active {
-        background-color: #4f51b3};
+        background-color: #4f51b3;
         color: white;
       }
     }
   `;
+
   const rows = incidences?.map((report) => (
     <Accordion.Item key={report.id} value={`casilla-${report.boxId}`}>
       <Accordion.Control>
@@ -64,6 +87,7 @@ export function ReportsBox() {
           backgroundColor: '#3C3D85',
           padding: '1rem',
         }}
+        onClick={() => handleEditClick(report)} // Abrir modal al hacer clic en el contenido del panel
       >
         <Flex align="center" gap="md">
           <Avatar
@@ -114,6 +138,27 @@ export function ReportsBox() {
           <StyledAccordion>{rows}</StyledAccordion>
         </Flex>
       </ScrollArea>
+
+      {/* Modal para editar contenido */}
+      <Modal
+        opened={modalOpened}
+        onClose={() => setModalOpened(false)}
+        title="Editar Contenido"
+        centered
+      >
+        <Textarea
+          value={newContent}
+          onChange={(e) => setNewContent(e.currentTarget.value)}
+          autosize
+          minRows={5}
+          maxRows={10}
+        />
+        <Flex justify="flex-end" mt="md">
+          <Button onClick={handleSave} color="blue">
+            Guardar
+          </Button>
+        </Flex>
+      </Modal>
     </Box>
   );
 }

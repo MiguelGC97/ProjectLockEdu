@@ -25,7 +25,6 @@ function generateToken(user) {
 }
 
 function generateTokenReport(report) {
-
   if (!report) return null;
 
   var r = {
@@ -34,7 +33,6 @@ function generateTokenReport(report) {
     isSolved: report.isSolved,
   };
 
- 
   return jwt.sign(r, process.env.JWT_SECRET, {
     expiresIn: 60 * 60 * 24, // expires in 24 hours
   });

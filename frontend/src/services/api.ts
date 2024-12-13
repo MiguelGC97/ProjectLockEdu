@@ -10,4 +10,9 @@ const instance = axios.create({
   },
 });
 
+const token = localStorage.getItem('./middlewares/auth'); 
+if (token) {
+  instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+}
+
 export default instance;
