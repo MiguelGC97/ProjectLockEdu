@@ -1,5 +1,6 @@
 // Home.page.tsx
 import { useState } from 'react';
+import { motion } from 'motion/react';
 import { Flex, useMantineTheme } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Banner } from '@/components/Banner/Banner';
@@ -53,8 +54,10 @@ const Home: React.FC = () => {
       {isMobile ? (
         <BottomTabs />
       ) : (
-        <>
-          {' '}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, transition: { duration: 1.5 } }}
+        >
           <SideMenu />
           <Flex pl="1.5%" style={{ backgroundColor: theme.colors.myPurple[6] }}>
             <Flex maw="100%" gap="lg">
@@ -89,7 +92,7 @@ const Home: React.FC = () => {
               </Flex>
             </Flex>
           </Flex>
-        </>
+        </motion.div>
       )}
     </>
   );

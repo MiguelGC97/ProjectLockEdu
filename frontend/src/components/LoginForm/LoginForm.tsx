@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { IconAt, IconKey } from '@tabler/icons-react';
+import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import {
   Anchor,
@@ -59,75 +60,84 @@ const LoginForm: React.FC = () => {
       h="auto"
       style={{ backgroundColor: theme.colors.myPurple[9] }}
     >
-      <Flex radius={0} align="center" justify="center" px="auto" direction="column" gap="-5">
-        <Image w="50%" src="/assets/logo-login.png" />
-        <Text color="white" mt="md" mb={50}>
-          Inicia sesión con tus credenciales
-        </Text>
-
-        {/* Username field */}
-        <TextInput
-          leftSection={<IconAt />}
-          radius="xl"
-          c="white"
-          miw="40%"
-          label="Correo eletrónico"
-          placeholder="Escribe tu correo"
-          size="md"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-
-        {/* Password field */}
-        <PasswordInput
-          leftSection={<IconKey />}
-          radius="xl"
-          c="white"
-          label="Contraseña"
-          placeholder="Escribe tu contraseña"
-          miw="40%"
-          mt="md"
-          size="md"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
-        {/* Remember Me checkbox */}
-        <Checkbox
-          color="myPurple.3"
-          c="white"
-          label="Mantenerme conectado"
-          mt="xl"
-          size="md"
-          checked={rememberMe}
-          onChange={(e) => setRememberMe(e.target.checked)}
-        />
-
-        {/* Error message if login fails */}
-        {error && (
-          <Text c="red" size="sm" align="center" mt="md">
-            {error}
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{
+          opacity: 1,
+          x: 0,
+          transition: { duration: 1.5 },
+        }}
+      >
+        <Flex align="center" justify="center" px="auto" direction="column" gap="-5">
+          <Image w="50%" src="/assets/logo-login.png" />
+          <Text color="white" mt="md" mb={50}>
+            Inicia sesión con tus credenciales
           </Text>
-        )}
 
-        {/* Login button */}
-        <Button
-          miw="40%"
-          color="myPurple.4"
-          radius="xl"
-          mt="xl"
-          size="md"
-          fw={400}
-          onClick={handleSubmit}
-        >
-          Acceder a mi cuenta
-        </Button>
+          {/* Username field */}
+          <TextInput
+            leftSection={<IconAt />}
+            radius="xl"
+            c="white"
+            miw="40%"
+            label="Correo eletrónico"
+            placeholder="Escribe tu correo"
+            size="md"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
 
-        {/* Link to the registration page (optional) */}
-        <Anchor c="white" href="" size="sm" mt="md" align="center" block>
-          ¿Olvidaste tu contraseña?
-        </Anchor>
-      </Flex>
+          {/* Password field */}
+          <PasswordInput
+            leftSection={<IconKey />}
+            radius="xl"
+            c="white"
+            label="Contraseña"
+            placeholder="Escribe tu contraseña"
+            miw="40%"
+            mt="md"
+            size="md"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          {/* Remember Me checkbox */}
+          <Checkbox
+            color="myPurple.3"
+            c="white"
+            label="Mantenerme conectado"
+            mt="xl"
+            size="md"
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
+          />
+
+          {/* Error message if login fails */}
+          {error && (
+            <Text c="red" size="sm" align="center" mt="md">
+              {error}
+            </Text>
+          )}
+
+          {/* Login button */}
+          <Button
+            miw="40%"
+            color="myPurple.4"
+            radius="xl"
+            mt="xl"
+            size="md"
+            fw={400}
+            onClick={handleSubmit}
+          >
+            Acceder a mi cuenta
+          </Button>
+
+          {/* Link to the registration page (optional) */}
+          <Anchor c="white" href="" size="sm" mt="md" align="center" block>
+            ¿Olvidaste tu contraseña?
+          </Anchor>
+        </Flex>
+      </motion.div>
     </Flex>
   );
 };
