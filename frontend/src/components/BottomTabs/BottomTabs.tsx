@@ -1,7 +1,7 @@
 ﻿import { useState } from 'react';
 import { IconBell, IconHistory, IconUser } from '@tabler/icons-react';
 import { Flex, Tabs, Text } from '@mantine/core';
-import { Pending } from '../Pending/Pending';
+import Pending from '../Pending/Pending';
 
 import './BottomTabs.module.css';
 
