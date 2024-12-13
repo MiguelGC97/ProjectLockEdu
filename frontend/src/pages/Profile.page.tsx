@@ -10,6 +10,7 @@ import Lockers from '@/components/Lockers/Lockers';
 import { NotificationsBox } from '@/components/NotificationsBox/NotificationsBox';
 import Objects from '@/components/Objects/Objects';
 import { Pending } from '@/components/Pending/Pending';
+import { SideMenu } from '@/components/SideMenu/SideMenu';
 import UserBar from '@/components/UserBar/UserBar';
 import { BoxType, Locker } from '@/types/types';
 
@@ -56,6 +57,7 @@ const Profile: React.FC = () => {
         </>
       ) : (
         <Flex pl="1.5%" style={{ backgroundColor: theme.colors.myPurple[6] }}>
+          <SideMenu />
           <Flex maw="100%" gap="lg">
             <Flex direction="column" w="100%">
               <UserBar />

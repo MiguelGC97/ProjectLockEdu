@@ -10,6 +10,7 @@ import Lockers from '@/components/Lockers/Lockers';
 import { NotificationsBox } from '@/components/NotificationsBox/NotificationsBox';
 import Objects from '@/components/Objects/Objects';
 import { Pending } from '@/components/Pending/Pending';
+import { SideMenu } from '@/components/SideMenu/SideMenu';
 import UserBar from '@/components/UserBar/UserBar';
 import { BoxType, Locker } from '@/types/types';
 
@@ -52,39 +53,43 @@ const Home: React.FC = () => {
       {isMobile ? (
         <BottomTabs />
       ) : (
-        <Flex pl="1.5%" style={{ backgroundColor: theme.colors.myPurple[6] }}>
-          <Flex maw="100%" gap="lg">
-            <Flex direction="column" w="100%">
-              <UserBar />
-              <Flex gap="lg" wrap="wrap">
-                <Flex gap="lg" direction="column">
-                  <Banner />
-                  <Flex miw={800} w={1100} gap="lg">
-                    <NotificationsBox />
-                    <Pending />
+        <>
+          {' '}
+          <SideMenu />
+          <Flex pl="1.5%" style={{ backgroundColor: theme.colors.myPurple[6] }}>
+            <Flex maw="100%" gap="lg">
+              <Flex direction="column" w="100%">
+                <UserBar />
+                <Flex gap="lg" wrap="wrap">
+                  <Flex gap="lg" direction="column">
+                    <Banner />
+                    <Flex miw={800} w={1100} gap="lg">
+                      <NotificationsBox />
+                      <Pending />
+                    </Flex>
                   </Flex>
+                  {!selectedLocker ? (
+                    <Lockers onLockerClick={handleLockerClick} />
+                  ) : !selectedBox ? (
+                    <Boxes
+                      locker={selectedLocker}
+                      onBoxClick={handleBoxClick}
+                      onReturn={handleReturnToLockers}
+                    />
+                  ) : selectedBox && !createBooking ? (
+                    <Objects
+                      box={selectedBox}
+                      onReturn={handleReturnToBoxes}
+                      onCreateBooking={handleCreateBookingClick}
+                    />
+                  ) : createBooking ? (
+                    <BookingForm box={selectedBox} items={selectedItems} />
+                  ) : null}
                 </Flex>
-                {!selectedLocker ? (
-                  <Lockers onLockerClick={handleLockerClick} />
-                ) : !selectedBox ? (
-                  <Boxes
-                    locker={selectedLocker}
-                    onBoxClick={handleBoxClick}
-                    onReturn={handleReturnToLockers}
-                  />
-                ) : selectedBox && !createBooking ? (
-                  <Objects
-                    box={selectedBox}
-                    onReturn={handleReturnToBoxes}
-                    onCreateBooking={handleCreateBookingClick}
-                  />
-                ) : createBooking ? (
-                  <BookingForm box={selectedBox} items={selectedItems} />
-                ) : null}
               </Flex>
             </Flex>
           </Flex>
-        </Flex>
+        </>
       )}
     </>
   );

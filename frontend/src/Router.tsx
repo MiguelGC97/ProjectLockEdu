@@ -2,17 +2,17 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import History from './pages/History.page';
 import Home from './pages/Home.page';
+import Login from './pages/Login.page';
 import Notifications from './pages/Notifications.page';
-import Profile from './pages/Profile.page';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Home />,
+    element: <Login />,
   },
   {
     path: '/perfil',
-    element: <Profile />,
+    element: <Home />,
   },
   {
     path: '/notificaciones',

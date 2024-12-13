@@ -2,8 +2,9 @@ import '@mantine/core/styles.css';
 
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Flex, MantineProvider } from '@mantine/core';
-import { SideMenu } from './components/SideMenu/SideMenu';
+import AuthProvider from './hooks/AuthProvider';
 import Home from './pages/Home.page';
+import Login from './pages/Login.page';
 import Reports from './pages/Reports.page';
 import { theme } from './theme';
 
@@ -16,15 +17,17 @@ export default function App() {
   return (
     <MantineProvider theme={theme}>
       <Router>
-        <Flex maw="100vw" mah="100vh" style={{ backgroundColor: theme.colors.myPurple[6] }}>
-          <SideMenu />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/incidencias" element={<Reports />} />
-            <Route path="/historial-reservas" element={<BookingHistory />} />
-            <Route path="/configuraciones" element={<Settings />} />
-          </Routes>
-        </Flex>
+        <AuthProvider>
+          <Flex maw="100vw" mah="100vh" style={{ backgroundColor: theme.colors.myPurple[6] }}>
+            <Routes>
+              <Route path="/" element={<Login />} />
+              <Route path="/perfil" element={<Home />} />
+              <Route path="/incidencias" element={<Reports />} />
+              <Route path="/historial-reservas" element={<BookingHistory />} />
+              <Route path="/configuraciones" element={<Settings />} />
+            </Routes>
+          </Flex>
+        </AuthProvider>
       </Router>
     </MantineProvider>
   );

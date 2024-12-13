@@ -6,14 +6,14 @@ const User = db.user;
 
 const validateSigninInput = (user, pwd) => {
   if (!user || !pwd) {
-    throw new Error("Username or Password required.");
+    throw new Error("Los campos no pueden estar vacíos.");
   }
 };
 
 const authenticateUser = async (user, pwd) => {
   const data = await User.findOne({ where: { username: user } });
   if (!data || !bcrypt.compareSync(pwd, data.password)) {
-    throw new Error("Invalid username or password.");
+    throw new Error("Correo o contraseña inválido.");
   }
   return data;
 };

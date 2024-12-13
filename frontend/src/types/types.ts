@@ -69,3 +69,21 @@ export interface BookingFormProps {
   box: BoxType;
   items: string[]; // This is the array of selected item ids.
 }
+
+//enum for roles
+
+enum roles {
+  TEACHER,
+  ADMIN,
+  MANAGER,
+}
+//type for user -- created primarily for AuthProvider
+export interface UserType {
+  id: number;
+  name: string;
+  surname: string;
+  password: string;
+  username: string;
+  avatar: string;
+  role: roles;
+}
