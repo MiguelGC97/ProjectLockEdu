@@ -176,16 +176,6 @@ These are the technologies and tools you need to use this application.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- USAGE EXAMPLES - NEEDS TO BE WRITTEN -->
-
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 <!-- LICENSE -->
 
 ## License
@@ -198,7 +188,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 ## Authors
 
-- **Yamiley del Mar Henriquez** - _Initial work_ - [Dr3am-dev](https://github.com/Dr3am-dev)
+- **Yamiley del Mar Henriquez** - _Initial work_ - [Dr3am-dev](https://github.com/Dr3am-dev) or [Yamivc](https://github.com/Yamivc)
 - **Miguel Angel Gutierrez** - _Initial work_ - [MiguelGC97](https://github.com/MiguelGC97)
 - **Sarah Soares** - _Initial work_ - [scsoares](https://github.com/scsoares)
 
