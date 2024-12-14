@@ -4,15 +4,12 @@ import './NotificationsBox.module.css';
 
 import { useEffect, useState } from 'react';
 import { useMediaQuery } from '@mantine/hooks';
-import instance from '@/services/api';
 import { Booking } from '@/types/types';
-
-//this interface defines the values types of Booking object for later usage in the component
 
 function sortBookings(bookings: Booking[]): Booking[] {
   const now = Date.now();
 
-  //logic to sort the bookings by the closest notification time
+  // Logic to sort the bookings by the closest notification time
   return bookings.sort((a, b) => {
     const aCheckInTime = new Date(a.checkInTime).getTime();
     const aCheckOutTime = new Date(a.checkOutTime).getTime();
@@ -27,7 +24,7 @@ function sortBookings(bookings: Booking[]): Booking[] {
 }
 
 function formatTime(timeString: string): string {
-  // function for formatting the timestamp to display only the hours and minutes in the notification
+  // Function for formatting the timestamp to display only the hours and minutes in the notification
   const date = new Date(timeString);
   const hours = date.getHours().toString().padStart(2, '0');
   const minutes = date.getMinutes().toString().padStart(2, '0');
@@ -37,28 +34,12 @@ function formatTime(timeString: string): string {
 
 export function NotificationsBox() {
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(true); // Add loading state
+  const [error, setError] = useState<string | null>(null); // Add error state
 
-  const matches = useMediaQuery('(min-width: 85em)');
-  const matches2 = useMediaQuery('(max-width: 93em)');
-
-  // useEffect(() => {
-  //   //it fetches the filteredbookings using the axios instance (provisionally this will be commented and we will use the hardcoded filteredNotifications.json in the assets folder )
-  //   // the response.data will be called reservations for the sake of distinction
-  //   instance
-  //     .get('../../assets/filteredBookings.json')
-  //     .then((response) => {
-  //       const reservations: Booking[] = response.data;
-  //       const sortedReservations = sortBookings(reservations);
-  //       console.log(sortedReservations);
-  //       setBookings(sortedReservations); //sets the sorted reservations in state
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error fetching filtered bookings:', error);
-  //     });
-  // }, []);
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   useEffect(() => {
-    //for testing purposes, let's use fetch to retrieve filtered bookings in json file
     fetch('/assets/filteredBookings.json')
       .then((response) => {
         if (!response.ok) {
@@ -69,156 +50,38 @@ export function NotificationsBox() {
       .then((data) => {
         const reservations: Booking[] = data;
         const sortedReservations = sortBookings(reservations);
-        setBookings(sortedReservations); //sets the sorted reservations in state
+        setBookings(sortedReservations);
+        setLoading(false); // Stop loading once data is fetched
       })
       .catch((error) => {
-        console.error('Error fetching filtered bookings:', error);
+        setError('Error fetching filtered bookings.');
+        setLoading(false);
       });
   }, []);
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   return (
     <>
-      {matches ? (
-        matches2 ? (
-          //component for small desktops - max 1440
-          <Box bg="transparent" h="60vh" bd="1px solid myPurple.1" style={{ borderRadius: 40 }}>
-            <Center>
-              <h2>Notificaciones</h2>
-            </Center>
-            <Divider size="xs" color="myPurple.1" />
-
-            <ScrollArea p="lg" m="md" h="50vh" scrollbarSize={16}>
-              <Flex direction="column" gap="sm">
-                {bookings.map((sb) => {
-                  const lockerName = sb.Object.Box.Locker.name;
-                  const boxName = sb.Object.Box.name;
-                  const lockerLocation = sb.Object.Box.Locker.location;
-
-                  return (
-                    <Box
-                      h="auto"
-                      bg={
-                        sb.type === 'recogida'
-                          ? 'rgba(34, 139, 230, .20)'
-                          : 'rgba(231, 175, 46, .20)'
-                      }
-                      style={{ borderRadius: 20 }}
-                      p="md"
-                      bd={`1px solid ${sb.type === 'recogida' ? 'rgba(34, 139, 230)' : 'rgba(231, 175, 46)'}`}
-                    >
-                      <Flex gap="xl" justify="center" align="center">
-                        <Flex gap="sm" direction="column" justify="center">
-                          <Text fw={700} c="white">
-                            Recordatorio de {sb.type}:
-                          </Text>
-                          <Flex gap="md" justify="flex-start">
-                            <Flex gap={5}>
-                              <Text c="white" fw={700}>
-                                Casilla:
-                              </Text>{' '}
-                              <Text c="white">
-                                {lockerName}
-                                {boxName}
-                              </Text>
-                            </Flex>
-                            <Flex gap={5}>
-                              <Text c="white" fw={700}>
-                                Ubicación:
-                              </Text>{' '}
-                              <Text c="white">{lockerLocation}</Text>
-                            </Flex>
-                          </Flex>
-                        </Flex>
-                        <Title
-                          fw={600}
-                          c={sb.type === 'recogida' ? 'rgba(34, 139, 230)' : 'rgba(231, 175, 46)'}
-                        >
-                          {sb.type === 'recogida'
-                            ? formatTime(sb.checkOutTime)
-                            : formatTime(sb.checkOutTime)}
-                        </Title>
-                      </Flex>
-                    </Box>
-                  );
-                })}
-              </Flex>
-            </ScrollArea>
-          </Box>
-        ) : (
-          //component for big desktops - min 1440
-          <Box bg="transparent" h="60vh" bd="1px solid myPurple.1" style={{ borderRadius: 40 }}>
-            <Center>
-              <h2>Notificaciones</h2>
-            </Center>
-            <Divider size="xs" color="myPurple.1" />
-
-            <ScrollArea p="lg" m="md" h="50vh" scrollbarSize={16}>
-              <Flex direction="column" gap="sm">
-                {bookings.map((sb) => {
-                  const lockerName = sb.Object.Box.Locker.name;
-                  const boxName = sb.Object.Box.name;
-                  const lockerLocation = sb.Object.Box.Locker.location;
-
-                  return (
-                    <Box
-                      h="auto"
-                      bg={
-                        sb.type === 'recogida'
-                          ? 'rgba(34, 139, 230, .20)'
-                          : 'rgba(231, 175, 46, .20)'
-                      }
-                      style={{ borderRadius: 20 }}
-                      p="md"
-                      bd={`1px solid ${sb.type === 'recogida' ? 'rgba(34, 139, 230)' : 'rgba(231, 175, 46)'}`}
-                    >
-                      <Flex gap="xl" justify="center" align="center">
-                        <Flex gap="sm" direction="column" justify="center">
-                          <Text fw={700} c="white">
-                            Recordatorio de {sb.type}:
-                          </Text>
-                          <Flex gap="md" justify="flex-start">
-                            <Flex gap={5}>
-                              <Text c="white" fw={700}>
-                                Casilla:
-                              </Text>{' '}
-                              <Text c="white">
-                                {lockerName}
-                                {boxName}
-                              </Text>
-                            </Flex>
-                            <Flex gap={5}>
-                              <Text c="white" fw={700}>
-                                Ubicación:
-                              </Text>{' '}
-                              <Text c="white">{lockerLocation}</Text>
-                            </Flex>
-                          </Flex>
-                        </Flex>
-                        <Title
-                          fw={600}
-                          c={sb.type === 'recogida' ? 'rgba(34, 139, 230)' : 'rgba(231, 175, 46)'}
-                        >
-                          {sb.type === 'recogida'
-                            ? formatTime(sb.checkOutTime)
-                            : formatTime(sb.checkOutTime)}
-                        </Title>
-                      </Flex>
-                    </Box>
-                  );
-                })}
-              </Flex>
-            </ScrollArea>
-          </Box>
-        )
-      ) : (
-        //component for mobile and tablet -- needs to be changed
-        <Box bg="transparent" h="50vh" bd="1px solid myPurple.1" style={{ borderRadius: 40 }}>
+      {!isMobile ? (
+        <Box
+          bg="transparent"
+          h="55vh"
+          w="30vw"
+          bd="1px solid myPurple.1"
+          style={{ borderRadius: 40 }}
+        >
           <Center>
             <h2>Notificaciones</h2>
           </Center>
           <Divider size="xs" color="myPurple.1" />
-
-          <ScrollArea p="lg" m="md" h="50vh" scrollbarSize={16}>
+          <ScrollArea p="lg" m="md" h="70%" scrollbarSize={16}>
             <Flex direction="column" gap="sm">
               {bookings.map((sb) => {
                 const lockerName = sb.Object.Box.Locker.name;
@@ -227,6 +90,7 @@ export function NotificationsBox() {
 
                 return (
                   <Box
+                    key={sb.id} // Add key for unique identification of list items
                     h="auto"
                     bg={
                       sb.type === 'recogida' ? 'rgba(34, 139, 230, .20)' : 'rgba(231, 175, 46, .20)'
@@ -246,8 +110,7 @@ export function NotificationsBox() {
                               Casilla:
                             </Text>{' '}
                             <Text c="white">
-                              {lockerName}
-                              {boxName}
+                              {lockerName} {boxName}
                             </Text>
                           </Flex>
                           <Flex gap={5}>
@@ -262,9 +125,7 @@ export function NotificationsBox() {
                         fw={600}
                         c={sb.type === 'recogida' ? 'rgba(34, 139, 230)' : 'rgba(231, 175, 46)'}
                       >
-                        {sb.type === 'recogida'
-                          ? formatTime(sb.checkOutTime)
-                          : formatTime(sb.checkOutTime)}
+                        {formatTime(sb.checkOutTime)}
                       </Title>
                     </Flex>
                   </Box>
@@ -273,6 +134,8 @@ export function NotificationsBox() {
             </Flex>
           </ScrollArea>
         </Box>
+      ) : (
+        <div>Hola</div>
       )}
     </>
   );

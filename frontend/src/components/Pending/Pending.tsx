@@ -46,150 +46,6 @@ const pendingReservations = [
     checkOutHour: '16:00',
     checkInHour: '18:00',
   },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
-  {
-    box: 'C02A03',
-    date: '28/05/2024',
-    checkOutHour: '16:00',
-    checkInHour: '18:00',
-  },
 ];
 
 export function Pending() {
@@ -208,17 +64,17 @@ export function Pending() {
   ));
 
   return (
-    <Box bg="transparent" h="60vh" bd="1px solid myPurple.1" style={{ borderRadius: 40 }}>
+    <Box bg="transparent" h="55vh" w="26vw" bd="1px solid myPurple.1" style={{ borderRadius: 40 }}>
       <Center>
         <h2>Reservas pendientes</h2>
       </Center>
       <Divider size="xs" color="myPurple.1" />
 
-      <ScrollArea p="lg" m="md" h="50vh" scrollbarSize={16}>
+      <ScrollArea p="lg" m="md" h="70%" scrollbarSize={16}>
         <Flex direction="column" gap="xl">
           <Table horizontalSpacing="sm" verticalSpacing="sm">
             <Table.Thead c="white">
-              <Table.Tr size="xl">
+              <Table.Tr size="sm">
                 <Table.Th>
                   <Text c="white" fw={700}>
                     Casilla

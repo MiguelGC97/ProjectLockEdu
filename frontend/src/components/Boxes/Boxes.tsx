@@ -66,10 +66,10 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
         borderBottomLeftRadius: 40,
         borderBottomRightRadius: 40,
       }}
-      px="1vw"
+      px="0.5vw"
       mb="lg"
-      h="86vh"
-      w="34.5vw"
+      h="100%"
+      w="auto"
     >
       <Stack my="4vh" gap="xl">
         <Flex gap="33%">
@@ -86,7 +86,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
           <Input w="20vw" size="lg" placeholder="Busca un objeto" rightSection={<IconSearch />} />
         </Center>
       </Stack>
-      <ScrollArea p="lg" m="md" h="62vh" scrollbarSize={16}>
+      <ScrollArea p="lg" m="md" h="65%" scrollbarSize={16}>
         <Flex direction="column" gap="sm">
           {boxes?.map((box) => (
             <Box
@@ -98,8 +98,9 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
                 backgroundColor: theme.colors.myPurple[6],
               }}
               p="lg"
+              w="28vw"
             >
-              <Flex w="100%" align="center" justify="space-between">
+              <Flex w="80%" align="center" justify="space-between">
                 <Stack>
                   <Title size="xl" c="white">
                     Casilla C{box.id}

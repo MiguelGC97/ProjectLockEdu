@@ -37,3 +37,8 @@ Input {
     Greycliff CF,
     var(--mantine-font-family);
 }
+
+.imageLogin {
+  max-width: 55%;
+  height: 100vh;
+}

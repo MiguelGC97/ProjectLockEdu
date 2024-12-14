@@ -1,6 +1,6 @@
 ﻿.card {
   diplay: flex;
-  height: rem(220px);
+  height: 25vh;
   width: 100%;
   background-size: cover;
   background-position: center;
@@ -22,12 +22,10 @@
 
 .title {
   color: var(--mantine-color-white);
-  margin-bottom: calc(var(--mantine-spacing-xs) / 2);
 }
 
 .description {
   color: var(--mantine-color-white);
-  max-width: rem(220px);
 }
 
 .overlay {

@@ -23,10 +23,10 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
     <LockersContext.Provider value={lockers}>
       <Box
         bg="myPurple.4"
-        px="1vw"
+        px="0.5vw"
         mb="lg"
-        h="86vh"
-        w="34vw"
+        h="100%"
+        w="auto"
         style={{ borderBottomLeftRadius: 40, borderBottomRightRadius: 40 }}
       >
         <Stack my="4vh" gap="xl">
@@ -40,7 +40,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
             <Input w="20vw" size="lg" placeholder="Busca un objeto" rightSection={<IconSearch />} />
           </Center>
         </Stack>
-        <ScrollArea p="lg" m="md" h="62vh" scrollbarSize={16}>
+        <ScrollArea p="lg" m="md" h="65%" scrollbarSize={16}>
           <Flex direction="column" gap="sm">
             {lockers.map((locker) => {
               return (

@@ -6,7 +6,7 @@ export default function UserBar() {
   const { user } = useAuth();
 
   return (
-    <Flex miw={100} mih={20} justify="flex-end" px="xl" py="md" gap="2vw">
+    <Flex miw="100%" mih="12vh" justify="flex-end" py="md" gap="2vw">
       <Flex direction="column" align="flex-end" gap="-1vw">
         <Text c="white" size="lg" fw={600}>
           {user?.name} {user?.surname}

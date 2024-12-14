@@ -71,7 +71,7 @@ export function SideMenu() {
         </Stack>
       </div>
 
-      <Flex direction="column" justify="flex-end" mb="6vh" align="flex-end" h="55vh">
+      <Flex direction="column" justify="flex-end" mb="6vh" align="flex-end" h="35vh">
         <NavbarLink icon={IconLogout} label="Salir" onClick={handleLogout} />
       </Flex>
     </div>

@@ -1,6 +1,5 @@
 // Home.page.tsx
 import { useState } from 'react';
-import { motion } from 'motion/react';
 import { Flex, useMantineTheme } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Banner } from '@/components/Banner/Banner';
@@ -54,45 +53,40 @@ const Home: React.FC = () => {
       {isMobile ? (
         <BottomTabs />
       ) : (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1, transition: { duration: 1.5 } }}
-        >
-          <SideMenu />
-          <Flex pl="1.5%" style={{ backgroundColor: theme.colors.myPurple[6] }}>
-            <Flex maw="100%" gap="lg">
-              <Flex direction="column" w="100%">
-                <UserBar />
-                <Flex gap="lg" wrap="wrap">
-                  <Flex gap="lg" direction="column">
-                    <Banner />
-                    <Flex miw={800} w={1100} gap="lg">
-                      <NotificationsBox />
-                      <Pending />
-                    </Flex>
+        <>
+          <Flex gap="20" w="100vw">
+            <SideMenu />
+            <Flex direction="column" style={{ backgroundColor: theme.colors.myPurple[6] }}>
+              <UserBar />
+              <Flex gap="lg" wrap="wrap" h="83vh">
+                <Flex gap="lg" w="57vw" direction="column">
+                  <Banner />
+                  <Flex miw="100%" w="100%" gap="sm">
+                    <NotificationsBox />
+                    <Pending />
                   </Flex>
-                  {!selectedLocker ? (
-                    <Lockers onLockerClick={handleLockerClick} />
-                  ) : !selectedBox ? (
-                    <Boxes
-                      locker={selectedLocker}
-                      onBoxClick={handleBoxClick}
-                      onReturn={handleReturnToLockers}
-                    />
-                  ) : selectedBox && !createBooking ? (
-                    <Objects
-                      box={selectedBox}
-                      onReturn={handleReturnToBoxes}
-                      onCreateBooking={handleCreateBookingClick}
-                    />
-                  ) : createBooking ? (
-                    <BookingForm box={selectedBox} items={selectedItems} />
-                  ) : null}
                 </Flex>
+                {!selectedLocker ? (
+                  <Lockers onLockerClick={handleLockerClick} />
+                ) : !selectedBox ? (
+                  <Boxes
+                    locker={selectedLocker}
+                    onBoxClick={handleBoxClick}
+                    onReturn={handleReturnToLockers}
+                  />
+                ) : selectedBox && !createBooking ? (
+                  <Objects
+                    box={selectedBox}
+                    onReturn={handleReturnToBoxes}
+                    onCreateBooking={handleCreateBookingClick}
+                  />
+                ) : createBooking ? (
+                  <BookingForm box={selectedBox} items={selectedItems} />
+                ) : null}
               </Flex>
             </Flex>
           </Flex>
-        </motion.div>
+        </>
       )}
     </>
   );
