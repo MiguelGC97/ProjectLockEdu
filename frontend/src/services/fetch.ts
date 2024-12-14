@@ -52,3 +52,16 @@ export async function fetchIncidences(): Promise<Incidence[] | undefined> {
     return [];
   }
 }
+
+// function to fetch incidences by user id
+export async function fetchIncidencesByUserId(id: number): Promise<Incidence[] | undefined> {
+  try {
+    const response = await instance.get(`${baseUrl}/reports`);
+    if (Array.isArray(response.data.data)) {
+      return response.data.data;
+    }
+  } catch (error) {
+    console.error('Error fetching Incidences:', error);
+    return [];
+  }
+}

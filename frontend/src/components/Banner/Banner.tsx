@@ -1,7 +1,10 @@
 ﻿import { Card, Overlay } from '@mantine/core';
+import { useAuth } from '@/hooks/AuthProvider';
 import classes from './Banner.module.css';
 
 export function Banner() {
+  const { user } = useAuth();
+
   return (
     <Card radius="none" className={classes.card}>
       <Overlay
@@ -11,7 +14,7 @@ export function Banner() {
       />
 
       <div className={classes.content}>
-        <h1 className={classes.title}>¡Hola Pepito!</h1>
+        <h1 className={classes.title}>¡Hola {user?.name}!</h1>
       </div>
     </Card>
   );
