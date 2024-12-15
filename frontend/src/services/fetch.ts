@@ -19,7 +19,6 @@ export async function fetchLockers(): Promise<Locker[] | undefined> {
 
 // Function to fetch boxes
 export async function fetchBoxes(): Promise<BoxType[] | undefined> {
-export async function fetchBoxes(): Promise<BoxType[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/boxes`);
     if (Array.isArray(response.data.data)) {
@@ -73,7 +72,6 @@ export async function fetchIncidencesByUserId(userId: string): Promise<Incidence
   }
 }
 
-
 //function to send data from incidences- we need to collect the right data
 
 export async function fetchFormIncident(reportData: {
@@ -93,7 +91,6 @@ export async function fetchFormIncident(reportData: {
 
 
 //function to update the incidences - implement the timer
-
 export async function updateIncidenceContent(
   id: number,
   content: string
@@ -109,7 +106,6 @@ export async function updateIncidenceContent(
 
 
 //function to fetchBoxesByLocker
-
 export async function fetchBoxesByLocker(lockerId: string): Promise<BoxType[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/boxes/locker/${lockerId}`);
@@ -123,18 +119,6 @@ export async function fetchBoxesByLocker(lockerId: string): Promise<BoxType[] | 
   }
 }
 
-// function to fetch incidences
-export async function fetchIncidences(): Promise<Incidence[] | undefined> {
-  try {
-    const response = await instance.get(`${baseUrl}/reports`);
-    if (Array.isArray(response.data.data)) {
-      return response.data.data;
-    }
-  } catch (error) {
-    console.error('Error fetching Incidences:', error);
-    return [];
-  }
-}
 
 // 
 export async function fetchItems(): Promise<Item[] | undefined> {
