@@ -1,6 +1,6 @@
 // Router.tsx
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import History from './pages/History.page';
+import History from './pages/BookingsHistory.page';
 import Home from './pages/Home.page';
 import Login from './pages/Login.page';
 import Notifications from './pages/Notifications.page';
