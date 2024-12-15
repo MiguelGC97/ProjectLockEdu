@@ -92,7 +92,7 @@ exports.getAllbyUserId = async (req, res) => {
               attributes: ['id', 'description'],
             },
           ],
-          attributes: ['id', 'state'],
+          attributes: ['id', 'state', 'description'],
         },
       ],
     });
