@@ -19,7 +19,9 @@ import {
   Title,
   useMantineTheme,
 } from '@mantine/core';
-import { DateTimePicker } from '@mantine/dates';
+import { DateTimePicker, DatesProvider } from '@mantine/dates';
+import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
 import dayjs from 'dayjs';
 import instance, { baseUrl } from '@/services/api';
 import { BookingFormProps, BoxType, Item } from '@/types/types';
@@ -240,9 +242,9 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
                     <h3>You have selected the following objects:</h3>
                     <ul>
                       {filteredObjects.map((object) => (
-                        <li key={object.id}> */}
-      {/* Space to display the object description */}
-      {/* {object.description}
+                        <li key={object.id}> 
+      
+       {object.description}
                         </li>
                       ))}
                     </ul>
@@ -289,20 +291,67 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
       >
         <Flex direction="column" justify="center" align="center" p="5%" h="100%" w="100%">
           <ScrollArea h="80%" w="100%">
-            <Flex direction="column" justify="center" align="center" h="100%" w="100%" gap="20">
-              <DateTimePicker w="70%" c="white"
-                valueFormat="DD MMM YYYY hh:mm A"
-                label="Selecciona una fecha de recogida"
-                placeholder="Pick date and time"
-              />
+            <Flex direction="column" justify="center" align="center" h="100%" w="100%" gap="10">
+              <DatesProvider settings={{ consistentWeeks: true }}>
+                <DateTimePicker w="70%" c="white"
+                  valueFormat="DD MMM YYYY hh:mm A"
+                  label="Selecciona una fecha de recogida"
+                  placeholder="Pick date and time"
+                  size="sm"
+                  classNames={{
+                    input: 'custom-input',
+                  }}
+                />
+              </DatesProvider>
               <DateTimePicker w="70%" c="white"
                 valueFormat="DD MMM YYYY hh:mm A"
                 label="Selecciona una fecha de recogida"
                 placeholder="Pick date and time"
               />
             </Flex>
+
+            <Flex direction="column" gap="sm" py="xl" mb="md" align="center" justify="center" c="white">
+              <Stack mt="md">
+                {filteredObjects.length > 0 ? (
+                  <div>
+                    <h3>Lo que vas a reservar:</h3>
+                    <ul>
+                      {filteredObjects.map((object) => (
+                        <li key={object.id}>
+                          {object.description}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : (
+                  <p>No objects selected.</p>
+                )}
+              </Stack>
+            </Flex>
           </ScrollArea>
+
+          <Flex mx="auto" gap="2vw" maw="90%">
+            <Button
+              onClick={() => {
+                null;
+              }}
+              size="md"
+              maw="8vw"
+              bg="myPurple.6"
+              radius="xl"
+              mx="auto"
+              mt="1vh"
+            >
+              Cancelar
+            </Button>
+            <Button size="md" maw="8vw" bg="myPurple.6" radius="xl" mx="auto" mt="1vh"
+              onClick={handleBookingConfirmation}
+            >
+              Confirmar
+            </Button>
+          </Flex>
         </Flex>
+
       </Box>
     </>
   );
