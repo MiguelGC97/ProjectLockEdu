@@ -22,25 +22,57 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
     loadBookings();
   }, [])
 
+  function formatTime(timeString: string): string {
+    // function for formatting the timestamp to display only the hours and minutes in the notification
+    const date = new Date(timeString);
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
 
-  const rows = bookings?.map((b) => (
-    <Table.Tr key={b.id} c="white">
-      {/* <Table.Td>{b.box}</Table.Td>
-      <Table.Td>{b.date}</Table.Td> */}
-      <Table.Td>
-        {b.checkOutTime}-{b.checkInTime}
-      </Table.Td>
-      <Table.Td c="red">
-        {'             '}
-        <IconTrash />
-      </Table.Td>
-    </Table.Tr>
-  ));
+    return `${hours}:${minutes}`;
+  }
+
+  function formatDate(timeString: string): string {
+    const date = new Date(timeString);
+
+    return date.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+    });
+  }
+
+  const rows = bookings?.map((b) => {
+    const lockerId = b.items[0]?.box.locker.id;
+    const boxId = b.items[0]?.box.id;
+
+    const lockerBoxInfo = lockerId && boxId ? `A0${lockerId}-C0${boxId}` : '';
+
+    return (
+      <Table.Tr key={b.id} c="white">
+        <Table.Td>
+          {lockerBoxInfo}
+        </Table.Td>
+
+        <Table.Td>
+          {formatDate(b.checkOut)} - {formatDate(b.checkIn)}
+        </Table.Td>
+
+        <Table.Td>
+          {formatTime(b.checkOut)}
+        </Table.Td>
+
+        <Table.Td c="red">
+          {'             '}
+          <IconTrash />
+        </Table.Td>
+      </Table.Tr>
+    );
+  });
 
   return (
     <Box bg="transparent" h="60vh" bd="1px solid myPurple.1" style={{ borderRadius: 40 }}>
       <Center>
-        <h2>Reservas pendientes</h2>
+        <h2>Historial de reservas</h2>
       </Center>
       <Divider size="xs" color="myPurple.1" />
 

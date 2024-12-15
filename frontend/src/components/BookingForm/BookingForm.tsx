@@ -296,7 +296,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
                 <DateTimePicker w="70%" c="white"
                   valueFormat="DD MMM YYYY hh:mm A"
                   label="Selecciona una fecha de recogida"
-                  placeholder="Pick date and time"
+                  placeholder="Selecciona una fecha de recogida"
                   size="sm"
                   classNames={{
                     input: 'custom-input',
@@ -305,8 +305,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
               </DatesProvider>
               <DateTimePicker w="70%" c="white"
                 valueFormat="DD MMM YYYY hh:mm A"
-                label="Selecciona una fecha de recogida"
-                placeholder="Pick date and time"
+                label="Selecciona una fecha de devolución"
+                placeholder="Selecciona una fecha de devolución"
               />
             </Flex>
 

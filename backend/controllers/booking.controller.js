@@ -75,26 +75,32 @@ exports.getAll = async (req, res) => {
 exports.getAllbyUserId = async (req, res) => {
   try {
     const id = req.params.id;
-    const bookings = await Booking.findAll({ where: { userId: id } });
+    const bookings = await Booking.findAll({
+      where: { userId: id },
+      include: [
+        {
+          model: Item,
+          include: [
+            {
+              model: Box,
+              include: [
+                {
+                  model: Locker,
+                  attributes: ['id', 'description'],
+                },
+              ],
+              attributes: ['id', 'description'],
+            },
+          ],
+          attributes: ['id', 'state'],
+        },
+      ],
+    });
     res.status(200).json({ data: bookings });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
-
-// exports.getAllbyUserIdAndState = async (req, res) => {
-//   try {
-//     const userId = req.params.userId;
-//     const state = req.params.state;
-
-//     const bookings = await Booking.findAll({
-//       where: { userId: userId, state: state },
-//     });
-//     res.status(200).json({ data: bookings });
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// };
 
 exports.getAllbyUserIdAndState = async (req, res) => {
   try {
@@ -112,15 +118,15 @@ exports.getAllbyUserIdAndState = async (req, res) => {
               include: [
                 {
                   model: Locker,
-                  attributes: ['id', 'description'], 
+                  attributes: ['id', 'description'],
                 },
               ],
-              attributes: ['id', 'description'], 
+              attributes: ['id', 'description'],
             },
           ],
-          attributes: ['id',], 
+          attributes: ['id',],
         },
-      ], 
+      ],
     });
 
     res.status(200).json({ data: bookings });
