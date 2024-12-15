@@ -65,35 +65,46 @@ db.item.belongsTo(db.box, {
 });
 
 //Booking-item association
-db.booking.belongsToMany(db.item, { 
+db.booking.belongsToMany(db.item, {
   through: 'BookingItems',
   foreignKey: 'bookingId',
   otherKey: 'itemId',
 });
-db.item.belongsToMany(db.booking, { 
+db.item.belongsToMany(db.booking, {
   through: 'BookingItems',
   foreignKey: 'itemId',
   otherKey: 'bookingId',
 });
 
-db.report.belongsTo(db.box,{
+//Booking-user association
+db.user.hasMany(db.booking, {
+  foreignKey: 'userId',
+  sourceKey: 'id',
+});
+db.booking.belongsTo(db.user, {
+  foreignKey: 'userId',
+  targetKey: 'id',
+});
+
+// reports relations
+db.report.belongsTo(db.box, {
   foreignKey: 'boxId',
   targetKey: 'id',
 })
 
-db.box.hasMany(db.report,{
+db.box.hasMany(db.report, {
   foreignKey: 'boxId',
   sourceKey: 'id',
 })
 
 db.report.belongsTo(db.user, {
-foreignKey: 'userId',
-targetKey: 'id'
+  foreignKey: 'userId',
+  targetKey: 'id'
 })
 
-db.user.hasMany(db.report,{
-foreignKey: 'userId',
-targetKey: 'id'
+db.user.hasMany(db.report, {
+  foreignKey: 'userId',
+  targetKey: 'id'
 })
 
 //Box.hasMany(Item);

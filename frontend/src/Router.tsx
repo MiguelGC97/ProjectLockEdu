@@ -1,26 +1,26 @@
 // Router.tsx
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import BookingHistory from './pages/BookingHistory.page';
+import History from './pages/History.page';
 import Home from './pages/Home.page';
-import Reports from './pages/Reports.page';
-import Settings from './pages/Settings.page';
+import Login from './pages/Login.page';
+import Notifications from './pages/Notifications.page';
 
 const router = createBrowserRouter([
   {
     path: '/',
+    element: <Login />,
+  },
+  {
+    path: '/perfil',
     element: <Home />,
   },
   {
-    path: '/incidencias',
-    element: <Reports />,
+    path: '/notificaciones',
+    element: <Notifications />,
   },
   {
     path: '/historial-reservas',
-    element: <BookingHistory />,
-  },
-  {
-    path: '/configuraciones',
-    element: <Settings />,
+    element: <History />,
   },
 ]);
 

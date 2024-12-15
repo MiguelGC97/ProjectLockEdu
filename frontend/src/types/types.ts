@@ -15,6 +15,7 @@ export interface BoxType {
   lockerId: number;
   createdAt: string;
   updatedAt: string;
+  locker: Locker;
 }
 
 export interface LockersProps {
@@ -29,24 +30,12 @@ export interface BoxesProps {
 
 export interface Booking {
   id: number;
-  objectId: number;
+  items: Item[];
   userId: number;
   description: string;
-  checkOutTime: string;
-  checkInTime: string;
-  type: 'recogida' | 'devolución';
-  Object: {
-    id: number;
-    name: string;
-    Box: {
-      id: number;
-      name: string;
-      Locker: {
-        name: string;
-        location: string;
-      };
-    };
-  };
+  checkOut: string;
+  checkIn: string;
+  state: 'pending' | 'withdrawn' | 'returned';
 }
 
 export interface Item {
@@ -57,6 +46,7 @@ export interface Item {
   typeId: number;
   createdAt: string;
   updatedAt: string;
+  box: BoxType;
 }
 
 export interface ObjectsProps {
@@ -68,6 +58,45 @@ export interface ObjectsProps {
 export interface BookingFormProps {
   box: BoxType;
   items: string[]; // This is the array of selected item ids.
+  onReturnToBox: () => void;
+  onReturn: () => void;
+  onBookingCreated: () => void;
+}
+
+export interface BookingHistoryProps {
+  locker: Locker;
+  box: BoxType;
+  booking: Booking;
+}
+
+export interface Incidence {
+  id: number;
+  content: string;
+  isSolved: boolean;
+  createdAt: string;
+  boxId: number;
+  user: {
+    avatar: string;
+    name: string;
+  };
+}
+
+//enum for roles
+
+enum roles {
+  TEACHER,
+  ADMIN,
+  MANAGER,
+}
+//type for user -- created primarily for AuthProvider
+export interface UserType {
+  id: number;
+  name: string;
+  surname: string;
+  password: string;
+  username: string;
+  avatar: string;
+  role: roles;
 }
 
 export interface Incidence {

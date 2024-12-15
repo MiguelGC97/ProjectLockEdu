@@ -1,30 +1,29 @@
 ﻿import instance, { baseUrl } from '@/services/api';
-import { BoxType, Incidence, Locker } from '@/types/types';
+import { BoxType, Incidence, Item, Locker, Booking } from '@/types/types';
 
 // function to fetch lockers
 export async function fetchLockers(): Promise<Locker[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/lockers`);
-    if (Array.isArray(response.data)) {
+    if (response.status >= 200 && response.status < 300 && Array.isArray(response.data)) {
       return response.data;
     } else {
-      console.error('Data is not an array', response.data);
+      console.error('Unexpected response format', response.data);
+      return [];
     }
-  } catch (error) {
-    console.error('Error fetching lockers:', error);
-    return []; // handle error by returning an empty array
+  } catch (error: any) {
+    console.error('Error fetching lockers:', error.message);
+    return []; // Devuelve un arreglo vacío para evitar romper la app.
   }
 }
 
 // Function to fetch boxes
 export async function fetchBoxes(): Promise<BoxType[] | undefined> {
+export async function fetchBoxes(): Promise<BoxType[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/boxes`);
     if (Array.isArray(response.data.data)) {
       return response.data.data;
-    } else {
-      console.error('Data is not an array', response.data.data);
-      return [];
     }
   } catch (error) {
     console.error('Error fetching boxes:', error);
@@ -123,3 +122,67 @@ export async function fetchBoxesByLocker(lockerId: string): Promise<BoxType[] | 
     return [];
   }
 }
+
+// function to fetch incidences
+export async function fetchIncidences(): Promise<Incidence[] | undefined> {
+  try {
+    const response = await instance.get(`${baseUrl}/reports`);
+    if (Array.isArray(response.data.data)) {
+      return response.data.data;
+    }
+  } catch (error) {
+    console.error('Error fetching Incidences:', error);
+    return [];
+  }
+}
+
+// 
+export async function fetchItems(): Promise<Item[] | undefined> {
+  try {
+    const response = await instance.get(`${baseUrl}/items`);
+    if (Array.isArray(response.data.data)) {
+      return response.data.data;
+    }
+  } catch (error) {
+    console.error('Error fetching items:', error);
+    return [];
+  }
+}
+
+export async function fetchBookingsByUserId(userId: number): Promise<Booking[] | undefined> {
+  try {
+    const response = await instance.get(`${baseUrl}/bookings/users/${userId}`);
+    if (Array.isArray(response.data.data)) {
+      return response.data.data;
+    }
+  } catch (error) {
+    console.error('Error fetching bookings', error);
+    return [];
+  }
+}
+
+export async function fetchBookingsByUserIdAndState(userId: number, state: string): Promise<Booking[] | undefined> {
+  try {
+    const response = await instance.get(`${baseUrl}/bookings/users/${userId}/state/${state}`);
+    if (Array.isArray(response.data.data)) {
+      console.log(JSON.stringify(response.data.data, null, 2));
+      return response.data.data;
+    }
+  } catch (error) {
+    console.error('Error fetching bookings', error);
+    return [];
+  }
+}
+
+// const urlencoded = new URLSearchParams();
+
+// const requestOptions = {
+//   method: "GET",
+//   body: urlencoded,
+//   redirect: "follow"
+// };
+
+// fetch("http://localhost:8080/api/bookings/users/1", requestOptions)
+//   .then((response) => response.text())
+//   .then((result) => console.log(result))
+//   .catch((error) => console.error(error));

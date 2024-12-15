@@ -1,0 +1,17 @@
+﻿.tab {
+  display: flex;
+  flex-direction: column;
+  border: none;
+}
+
+.tab-list {
+  outline: 0;
+}
+
+.panel {
+  background-color: #dedede;
+}
+
+.flex-panel {
+  background-color: #dedede;
+}

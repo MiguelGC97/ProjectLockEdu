@@ -1,7 +1,8 @@
 module.exports = app => {
     const types = require("../controllers/type.controller.js");
-    const auth = require("../middlewares/auth.js");
     
+    const auth = require("../middlewares/auth.js");
+
     var router = require("express").Router();
 
     router.post("/", auth.isAuthenticated, types.addType);

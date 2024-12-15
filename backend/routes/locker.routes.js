@@ -8,7 +8,7 @@
 
   router.post("/", auth.isAuthenticated, lockers.addLocker);
 
-  router.get("/", lockers.getAll);
+  router.get("/", lockers.getAll); //lembrar de poner auth.isAuthenticated aqui después (sarah)
 
   router.put("/:id", auth.isAuthenticated, lockers.update);
 

@@ -1,6 +1,5 @@
 ﻿import { useEffect, useState } from 'react';
 import { IconArrowLeft } from '@tabler/icons-react';
-import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -8,7 +7,6 @@ import {
   Checkbox,
   Divider,
   Flex,
-  Group,
   Image,
   LoadingOverlay,
   Modal,
@@ -19,15 +17,15 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import instance, { baseUrl } from '@/services/api';
-import { BoxType, Item, ObjectsProps } from '@/types/types';
+import { fetchItems } from '@/services/fetch';
+import { Item, ObjectsProps } from '@/types/types';
 
 import './Objects.module.css';
 
 import { ObjectsContext } from './context';
 
 const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => {
-  const [objects, setObjects] = useState<Item[]>([]);
+  const [objects, setObjects] = useState<Item[]>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [value, setValue] = useState<string[]>([]);
@@ -35,28 +33,13 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
   const [opened, { open, close }] = useDisclosure(false);
 
   useEffect(() => {
-    const fetchObjects = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await instance.get(`${baseUrl}/items`);
-        if (Array.isArray(response.data.data)) {
-          setObjects(
-            response.data.data.filter((o: any) => o.boxId === box.id && o.state === 'available')
-          );
-        } else {
-          setError('Unexpected response format');
-        }
-      } catch (err) {
-        setError('Failed to fetch objects.');
-        console.error('Error fetching objects:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const loadObjects = async () => {
+      const data = await fetchItems();
+      setObjects(data?.filter((o: any) => o.boxId === box.id && o.state === 'available'));
+    }
+    loadObjects();
+  }, [])
 
-    fetchObjects();
-  }, [box]);
 
   if (loading) {
     return (
@@ -127,8 +110,8 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
               <Flex direction="column" gap="sm" py="xl" mb="md">
                 <Checkbox.Group value={value} onChange={setValue}>
                   <Stack mt="md">
-                    {objects.length > 0 ? (
-                      objects.map((object) => (
+                    {objects?.length > 0 ? (
+                      objects?.map((object) => (
                         <>
                           <Flex
                             key={object.id}

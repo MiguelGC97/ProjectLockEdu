@@ -1,14 +1,16 @@
 const db = require("../models");
 const Booking = db.booking;
 const Item = db.item;
+const Box = db.box;
+const Locker = db.locker;
 const { Op } = require("sequelize");
 
 exports.newBooking = async (req, res) => {
   const t = await db.sequelize.transaction();
   try {
-    const { description, checkOut, checkIn, state, itemIds } = req.body;
+    const { description, checkOut, checkIn, state, itemIds, userId } = req.body;
 
-    const userId = req.user.id;
+    // const userId = req.user.id; volver a cambiar cuando se arregle el auth en el front
 
     const missingFields = [];
 
@@ -26,7 +28,6 @@ exports.newBooking = async (req, res) => {
         message: `Missing required booking data: ${missingFields.join(", ")}`,
       });
     }
-
 
     const booking = await Booking.create(
       { userId, description, checkOut, checkIn, state },
@@ -53,8 +54,9 @@ exports.newBooking = async (req, res) => {
 
     await t.commit();
 
-    res.status(201).json({ message: "Booking created successfully", data: booking });
-
+    res
+      .status(201)
+      .json({ message: "Booking created successfully", data: booking });
   } catch (error) {
     await t.rollback();
     res.status(500).json({ error: error.message });
@@ -72,9 +74,55 @@ exports.getAll = async (req, res) => {
 
 exports.getAllbyUserId = async (req, res) => {
   try {
-
     const id = req.params.id;
-    const bookings = await Booking.findAll({ where:{ userId:id } });
+    const bookings = await Booking.findAll({ where: { userId: id } });
+    res.status(200).json({ data: bookings });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// exports.getAllbyUserIdAndState = async (req, res) => {
+//   try {
+//     const userId = req.params.userId;
+//     const state = req.params.state;
+
+//     const bookings = await Booking.findAll({
+//       where: { userId: userId, state: state },
+//     });
+//     res.status(200).json({ data: bookings });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
+exports.getAllbyUserIdAndState = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const state = req.params.state;
+
+    const bookings = await Booking.findAll({
+      where: { userId: userId, state: state },
+      include: [
+        {
+          model: Item,
+          include: [
+            {
+              model: Box,
+              include: [
+                {
+                  model: Locker,
+                  attributes: ['id', 'description'], 
+                },
+              ],
+              attributes: ['id', 'description'], 
+            },
+          ],
+          attributes: ['id',], 
+        },
+      ], 
+    });
+
     res.status(200).json({ data: bookings });
   } catch (error) {
     res.status(500).json({ error: error.message });
