@@ -107,8 +107,7 @@ export function ReportsBox() {
 
   return (
     <Box bg="transparent" h="80vh" bd="1px solid myPurple.1" w="100%"  style={{
-      borderRadius: '40px',
-      borderTopRightRadius: '0', 
+     borderRadius: '83px 0 25px 25px'
     }} >
       <Center>
         <h2>Incidencias</h2>
