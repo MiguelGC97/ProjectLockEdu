@@ -1,15 +1,19 @@
-﻿module.exports = app => {
-    const items = require("../controllers/item.controller.js");
-    const auth = require("../middlewares/auth.js");
+﻿module.exports = (app) => {
+  const items = require("../controllers/item.controller.js");
+  const auth = require("../middlewares/auth.js");
 
-    var router = require("express").Router();
+  var router = require("express").Router();
 
-    router.post("/", auth.isAuthenticated, items.addItem);
+  router.post(
+    "/",
+    permissions.authorize(["ADMIN"]),
+    auth.isAuthenticated,
+    items.addItem
+  );
 
-    router.get("/", items.getAll);
+  router.get("/", items.getAll);
 
-    router.delete("/:id", auth.isAuthenticated, items.delete);
+  router.delete("/:id", auth.isAuthenticated, items.delete);
 
-    app.use("/api/items", router);
-
-}
+  app.use("/api/items", router);
+};

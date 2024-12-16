@@ -3,18 +3,35 @@
   const auth = require("../middlewares/auth.js");
   const permissions = require("../middlewares/permissions.js");
 
-
   var router = require("express").Router();
 
-  router.post("/", auth.isAuthenticated, lockers.addLocker);
+  router.post(
+    "/",
+    permissions.authorize(["ADMIN"]),
+    auth.isAuthenticated,
+    lockers.addLocker
+  );
 
-  router.get("/", lockers.getAll); //lembrar de poner auth.isAuthenticated aqui después (sarah)
+  router.get(
+    "/",
+    permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]),
+    auth.isAuthenticated,
+    lockers.getAll
+  );
 
-  router.put("/:id", auth.isAuthenticated, lockers.update);
+  router.put(
+    "/:id",
+    permissions.authorize(["ADMIN"]),
+    auth.isAuthenticated,
+    lockers.update
+  );
 
-  router.delete("/:id", auth.isAuthenticated, lockers.delete);
+  router.delete(
+    "/:id",
+    permissions.authorize(["ADMIN"]),
+    auth.isAuthenticated,
+    lockers.delete
+  );
 
   app.use("/api/lockers", router);
 };
-
-

@@ -1,21 +1,44 @@
-module.exports = app => {
-    const types = require("../controllers/type.controller.js");
-    
-    const auth = require("../middlewares/auth.js");
+module.exports = (app) => {
+  const types = require("../controllers/type.controller.js");
 
-    var router = require("express").Router();
+  const auth = require("../middlewares/auth.js");
 
-    router.post("/", auth.isAuthenticated, types.addType);
+  var router = require("express").Router();
 
-    router.get("/", auth.isAuthenticated, types.getAll);
+  router.post(
+    "/",
+    permissions.authorize(["ADMIN"]),
+    auth.isAuthenticated,
+    types.addType
+  );
 
-    router.get("/:id", auth.isAuthenticated, types.getOne);
+  router.get(
+    "/",
+    permissions.authorize(["ADMIN"]),
+    auth.isAuthenticated,
+    types.getAll
+  );
 
-    router.put("/:id", auth.isAuthenticated, types.update);
+  router.get(
+    "/:id",
+    permissions.authorize(["ADMIN"]),
+    auth.isAuthenticated,
+    types.getOne
+  );
 
-    router.delete("/:id", auth.isAuthenticated, types.delete);
+  router.put(
+    "/:id",
+    permissions.authorize(["ADMIN"]),
+    auth.isAuthenticated,
+    types.update
+  );
 
-    app.use("/api/types", router);
+  router.delete(
+    "/:id",
+    permissions.authorize(["ADMIN"]),
+    auth.isAuthenticated,
+    types.delete
+  );
 
-}
-
+  app.use("/api/types", router);
+};
