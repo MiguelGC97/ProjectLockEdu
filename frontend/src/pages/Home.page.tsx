@@ -79,7 +79,7 @@ const Home: React.FC = () => {
                     <Banner />
                     <Flex miw={800} w={1100} gap="lg">
                       <NotificationsBox />
-                      <Pending />
+                      <Pending bookings={pendingBookings} />
                     </Flex>
                   </Flex>
                   {!selectedLocker ? (

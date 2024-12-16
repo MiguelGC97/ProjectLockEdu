@@ -26,6 +26,7 @@ import dayjs from 'dayjs';
 import instance, { baseUrl } from '@/services/api';
 import { BookingFormProps, BoxType, Item } from '@/types/types';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { useAuth } from '@/hooks/AuthProvider';
 
 dayjs.extend(customParseFormat);
 
@@ -38,6 +39,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
   const [pickupDate, setPickupDate] = useState<Date | null>(null);
   const [returnDate, setReturnDate] = useState<Date | null>(null);
   const theme = useMantineTheme();
+  const { user } = useAuth();
 
 
 
@@ -64,7 +66,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
     const description = "Reserva de prueba";
     const state = "pending";
     const itemIds = filteredObjects.map((object) => object.id.toString());
-    const userId = 1;
+    const userId = user.id;
 
     const bookingData = {
       description,
@@ -90,11 +92,11 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
       });
 
       if (onBookingCreated) {
-        onBookingCreated();  // Actualiza las reservas pendientes
+        onBookingCreated();
       }
     } catch (error) {
       console.error('Error al crear la reserva:', error);
-      setError('Hubo un error al crear la reserva. Intenta de nuevo.');
+      setError('Hubo un error al crear la reserva. Inténtalo de nuevo.');
     }
   };
 
@@ -141,13 +143,15 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
   //   );
   // }
 
-  if (error) {
-    return (
-      <Center>
-        <Text color="red">{error}</Text>
-      </Center>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <Center>
+  //       <Text color="red">{error}</Text>
+  //     </Center>
+  //   );
+  // }
+
+  const renderError = error && <Text color="red">{error}</Text>;
 
   if (confirmedBooking) {
     return (
@@ -178,106 +182,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
 
   return (
     <>
-      {/* <Modal opened={opened} onClose={close} title="Authentication" centered size="55rem">
-        <Text>¿Estás seguro de que quieres hacer esta reserva?</Text>
-      </Modal> */}
-
-      {/*<Stack mb="2vh" gap="xl">
-          <Flex gap="29%">
-            <a>
-              <IconArrowLeft color="white" size="30px" onClick={() => {
-                onReturnToBox();
-              }} />
-            </a>
-
-            <Title fw="600" c="white">
-              {' '}
-            </Title>
-          </Flex>
-        </Stack>
-        <Flex
-          direction="column"
-          pb="xl"
-        >
-
-
-
-          <ScrollArea h="36vh" scrollbarSize={16} mb="xl"> */}
-
-      {/* DateTimePicker para la selección de fecha */}
-      {/* <Flex mb="lg" mx="auto" maw="90%">
-              <DateTimePicker
-                size="xs"
-                radius="xs"
-                label="Select a pickup date and time"
-                description="Choose a date and time for pickup"
-                placeholder="Pick pickup date"
-                value={pickupDate}  // Current selected date value
-                onChange={handlePickupDate}  // Updates date value to new selected
-              />
-              {pickupDate && (
-                <Text>Selected date: {pickupDate.toLocaleString()}</Text>
-              )}
-            </Flex>
-
-            <Stack mb="lg" mx="auto" maw="90%">
-              <DateTimePicker
-                size="xs"
-                radius="xs"
-                label="Select a return date and time"
-                description="Choose a date and time for returning"
-                placeholder="Pick return date"
-                value={returnDate}  // Current selected date value
-                onChange={handleReturnDate}  // Updates date value to new selected
-              />
-              {returnDate && (
-                <Text>Selected date: {returnDate.toLocaleString()}</Text>
-              )}
-            </Stack>
-
-            <Flex direction="column" gap="sm" py="xl" mb="md">
-              <Stack mt="md">
-                {filteredObjects.length > 0 ? (
-                  <div>
-                    <h3>You have selected the following objects:</h3>
-                    <ul>
-                      {filteredObjects.map((object) => (
-                        <li key={object.id}> 
-      
-       {object.description}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : (
-                  <p>No objects selected.</p>
-                )}
-              </Stack>
-            </Flex>
-          </ScrollArea>
-
-
-          <Flex mx="auto" gap="2vw" maw="90%">
-            <Button
-              onClick={() => {
-                null;
-              }}
-              size="md"
-              maw="8vw"
-              bg="myPurple.4"
-              radius="xl"
-              mx="auto"
-              mt="1vh"
-            >
-              Cancelar
-            </Button>
-            <Button size="md" maw="8vw" bg="myPurple.4" radius="xl" mx="auto" mt="1vh"
-            onClick={handleBookingConfirmation}
-            >
-              Confirmar
-            </Button>
-          </Flex>
-        </Flex>*/}
       <Box
         style={{
           backgroundColor: theme.colors.myPurple[4],
@@ -296,8 +200,10 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
                 <DateTimePicker w="70%" c="white"
                   valueFormat="DD MMM YYYY hh:mm A"
                   label="Selecciona una fecha de recogida"
-                  placeholder="Pick date and time"
+                  placeholder="Selecciona una fecha de recogida"
                   size="sm"
+                  value={pickupDate}
+                  onChange={handlePickupDate}
                   classNames={{
                     input: 'custom-input',
                   }}
@@ -305,8 +211,10 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
               </DatesProvider>
               <DateTimePicker w="70%" c="white"
                 valueFormat="DD MMM YYYY hh:mm A"
-                label="Selecciona una fecha de recogida"
-                placeholder="Pick date and time"
+                label="Selecciona una fecha de devolución"
+                placeholder="Selecciona una fecha de devolución"
+                value={returnDate}
+                onChange={handleReturnDate}
               />
             </Flex>
 
@@ -332,9 +240,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
 
           <Flex mx="auto" gap="2vw" maw="90%">
             <Button
-              onClick={() => {
-                null;
-              }}
+              onClick={onReturnToBox}
               size="md"
               maw="8vw"
               bg="myPurple.6"
@@ -344,8 +250,9 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
             >
               Cancelar
             </Button>
-            <Button size="md" maw="8vw" bg="myPurple.6" radius="xl" mx="auto" mt="1vh"
+            <Button size="md" maw="8vw" bg="myPurple.6"     radius="xl" mx="auto" mt="1vh"
               onClick={handleBookingConfirmation}
+              disabled={!pickupDate || !returnDate}
             >
               Confirmar
             </Button>

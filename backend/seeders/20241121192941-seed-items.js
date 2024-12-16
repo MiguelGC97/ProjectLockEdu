@@ -2,9 +2,9 @@
 module.exports = {
   async up(queryInterface) {
     await queryInterface.bulkInsert('items', [
-      { id: 1, typeId: 1, boxId: 1, description: 'Portátil Asus de casilla 1', state: 'available', createdAt: new Date(), updatedAt: new Date() },
-      { id: 2, typeId: 1, boxId: 1, description: 'Portátil Msi de casilla 1', state: 'available', createdAt: new Date(), updatedAt: new Date() },
-      { id: 3, typeId: 1, boxId: 1, description: 'Portátil Acer de casilla 1', state: 'available', createdAt: new Date(), updatedAt: new Date() },
+      { id: 1, typeId: 1, boxId: 1, description: 'Portátil Asus de casilla 1', state: 'booked', createdAt: new Date(), updatedAt: new Date() },
+      { id: 2, typeId: 1, boxId: 1, description: 'Portátil Msi de casilla 1', state: 'booked', createdAt: new Date(), updatedAt: new Date() },
+      { id: 3, typeId: 1, boxId: 1, description: 'Portátil Acer de casilla 1', state: 'booked', createdAt: new Date(), updatedAt: new Date() },
       { id: 4, typeId: 2, boxId: 1, description: 'Ratón de casilla 1', state: 'available', createdAt: new Date(), updatedAt: new Date() },
       { id: 5, typeId: 2, boxId: 1, description: 'Teclado de casilla 1', state: 'available', createdAt: new Date(), updatedAt: new Date() },
       { id: 6, typeId: 3, boxId: 1, description: 'Cable de casilla 1', state: 'available', createdAt: new Date(), updatedAt: new Date() },

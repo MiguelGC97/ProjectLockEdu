@@ -5,9 +5,11 @@ module.exports = (app) => {
 
     var router = require("express").Router();
 
-    router.post("/", bookings.newBooking);
+    router.post("/", auth.isAuthenticated,
+        permissions.authorize(["TEACHER", "ADMIN"]), bookings.newBooking);
 
-    router.get("/", bookings.getAll);
+    router.get("/", auth.isAuthenticated,
+        permissions.authorize(["TEACHER", "ADMIN"]), bookings.getAll);
 
     router.get(
         "/:id",
@@ -16,9 +18,18 @@ module.exports = (app) => {
         bookings.getOne
     );
 
-    router.get("/users/:id", bookings.getAllbyUserId);
+    router.get("/users/:id", auth.isAuthenticated,
+        permissions.authorize(["TEACHER", "ADMIN"]), bookings.getAllbyUserId);
 
-    router.get("/users/:userId/state/:state", bookings.getAllbyUserIdAndState);
+    router.get("/users/:userId/state/:state", auth.isAuthenticated,
+        permissions.authorize(["TEACHER", "ADMIN"]), bookings.getAllbyUserIdAndState);
+
+    router.put(
+        "/:id",
+        auth.isAuthenticated,
+        permissions.authorize(["TEACHER", "ADMIN"]),
+        bookings.changeState
+    );
 
     router.delete(
         "/:id",

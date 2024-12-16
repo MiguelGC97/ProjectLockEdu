@@ -166,15 +166,31 @@ export async function fetchBookingsByUserIdAndState(userId: number, state: strin
   }
 }
 
-// const urlencoded = new URLSearchParams();
+export async function updateBookingState(bookingId: number, state: string): Promise<any> {
+  try {
+    const response = await instance.put(`${baseUrl}/bookings/${bookingId}`, { state });
+    if (response.status >= 200 && response.status < 300) {
+      return response.data.data;
+    } else {
+      console.error('Error updating booking state:', response.data);
+      throw new Error('Error updating booking state');
+    }
+  } catch (error) {
+    console.error('Error updating booking state:', error);
+    throw error;
+  }
+}
 
-// const requestOptions = {
-//   method: "GET",
-//   body: urlencoded,
-//   redirect: "follow"
-// };
-
-// fetch("http://localhost:8080/api/bookings/users/1", requestOptions)
-//   .then((response) => response.text())
-//   .then((result) => console.log(result))
-//   .catch((error) => console.error(error));
+export async function deleteBookingById(bookingId: number): Promise<void> {
+  try {
+    const response = await instance.delete(`${baseUrl}/bookings/${bookingId}`);
+    if (response.status >= 200 && response.status < 300) {
+      console.log(`Booking ${bookingId} deleted`);
+    } else {
+      console.error('Unexpected error while trying to delete booking:', response.data);
+    }
+  } catch (error) {
+    console.error(`Error trying to delete booking ${bookingId}:`, error);
+    throw error; 
+  }
+}
