@@ -131,60 +131,29 @@ exports.createReport = async (req, res) => {
   }
 };
 
-// exports.resolveReport = async (req, res) => {
-//   try {
-//     const id = req.params.id;
-//     const [updated] = await Report.update((req.isSolved = true), {
-//       where: { id },
-//     });
+exports.resolveReport = async (req, res) => {
+  try {
+    const id = req.params.id;
 
-//     if (updated) {
-//       res.status(200).json({
-//         message: "Report resolved",
-//       });
-//     } else {
-//       res.status(404).json({
-//         message: "The report you are trying to update can't be found",
-//       });
-//     }
-//   } catch {
-//     err;
-//   }
-//   {
-//     res.status(500).json({ err: error.message });
-//   }
-// };
+    const { isSolved } = req.body;
 
-// exports.updateDescription = async (req, res) => {
-//   const date = req.params.createdAt;
-//   let newDate = limitDate(date);
+    if (!isSolved) {
+      return res.status(400).json({ message: "isSolved is required" });
+    }
 
-//   if (canUpdate(newDate) == true) {
-//     const id = req.params.id;
+    const [updated] = await Report.update({ isSolved }, { where: { id } });
 
-//     try {
-//       const [updated] = await Report.update(req.body.content, {
-//         where: { id },
-//       });
-
-//       if (updated) {
-//         res.status(200).json({
-//           message: "description updated",
-//           data: req.body,
-//         });
-//       } else {
-//         res.status(404).json({ message: "report not found" });
-//       }
-//     } catch (error) {
-//       res.status(500).json({ error: error.message });
-//     }
-//   } else {
-//     res.status(403).json({
-//       message: "You have exceeded the time limit to update your message",
-//     });
-//   }
-// };
-
+    if (updated) {
+      res.status(200).json({
+        isSolved: true,
+      });
+    } else {
+      res.status(404).json({ message: "report not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 
 exports.updateDescription = async (req, res) => {

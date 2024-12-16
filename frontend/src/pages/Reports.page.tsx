@@ -6,13 +6,12 @@ import { ReportsBox } from '@/components/ReportsBox/ReportsBox';
 import { SideMenu } from '@/components/SideMenu/SideMenu';
 import UserBarReport from '@/components/UserBarReport/UserBarReport';
 
-
 const Reports: React.FC = () => {
  
   const isMobile = useMediaQuery('(max-width: 768px)');
 
 
-  const [isReportFormVisible, setIsReportFormVisible] = useState(true);
+  const [isReportFormVisible, setIsReportFormVisible] = useState(false);
 
   const toggleReportFormVisibility = () => {
     setIsReportFormVisible((prevState) => !prevState);
