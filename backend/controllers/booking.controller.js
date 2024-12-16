@@ -8,9 +8,9 @@ const { Op } = require("sequelize");
 exports.newBooking = async (req, res) => {
   const t = await db.sequelize.transaction();
   try {
-    const { description, checkOut, checkIn, state, itemIds, userId } = req.body;
+    const { description, checkOut, checkIn, state, itemIds, } = req.body;
 
-    // const userId = req.user.id; volver a cambiar cuando se arregle el auth en el front
+    const userId = req.user.id;
 
     const missingFields = [];
 
