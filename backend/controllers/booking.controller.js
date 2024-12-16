@@ -52,6 +52,18 @@ exports.newBooking = async (req, res) => {
 
     await booking.addItem(availableItems, { transaction: t });
 
+    await Item.update(
+      { state: "booked" },
+      {
+        where: {
+          id: {
+            [Op.in]: itemIds,
+          },
+        },
+        transaction: t,
+      }
+    );
+
     await t.commit();
 
     res
