@@ -1,20 +1,21 @@
 import { useEffect, useState } from 'react';
+import styled from '@emotion/styled';
 import {
   Accordion,
   Avatar,
   Box,
+  Button,
   Center,
   Divider,
   Flex,
+  Modal,
   ScrollArea,
   Table,
   Text,
-  Modal,
   Textarea,
-  Button,
 } from '@mantine/core';
-import styled from '@emotion/styled';
-import { fetchIncidences, updateIncidenceContent } from '@/services/fetch';
+import { useAuth } from '@/hooks/AuthProvider';
+import { fetchIncidencesByUserId, updateIncidenceContent } from '@/services/fetch';
 import { Incidence } from '@/types/types';
 
 export function ReportsBox() {
@@ -23,9 +24,11 @@ export function ReportsBox() {
   const [currentIncidence, setCurrentIncidence] = useState<Incidence | null>(null);
   const [newContent, setNewContent] = useState<string>('');
 
+  const { user } = useAuth();
+
   useEffect(() => {
     const loadIncidences = async () => {
-      const data = await fetchIncidences();
+      const data = await fetchIncidencesByUserId(user.id);
       setIncidences(data);
     };
 
@@ -34,16 +37,19 @@ export function ReportsBox() {
 
   const handleEditClick = (incidence: Incidence) => {
     setCurrentIncidence(incidence);
-    setNewContent(incidence.content); 
+    setNewContent(incidence.content);
     setModalOpened(true);
   };
 
   const handleSave = async () => {
     if (currentIncidence) {
       await updateIncidenceContent(currentIncidence.id, newContent);
-      console.log(currentIncidence.id, newContent)
       setModalOpened(false);
-      setIncidences(incidences?.map(inc => inc.id === currentIncidence?.id ? { ...inc, content: newContent } : inc));
+      setIncidences(
+        incidences?.map((inc) =>
+          inc.id === currentIncidence?.id ? { ...inc, content: newContent } : inc
+        )
+      );
     }
   };
 
@@ -65,7 +71,7 @@ export function ReportsBox() {
       <Accordion.Control>
         <Flex justify="space-between" align="center">
           <Box style={{ width: '33.33%', textAlign: 'center', color: 'white' }}>
-            Casilla {report.boxId}
+            Casilla {report.boxId} {}
           </Box>
           <Box style={{ width: '33.33%', textAlign: 'center', color: 'white' }}>
             {new Date(report.createdAt).toLocaleDateString()}
@@ -82,7 +88,7 @@ export function ReportsBox() {
           backgroundColor: '#3C3D85',
           padding: '1rem',
         }}
-        onClick={() => handleEditClick(report)} // Abrir modal al hacer clic en el contenido del panel
+        onClick={() => handleEditClick(report)} 
       >
         <Flex align="center" gap="md">
           <Avatar
@@ -92,7 +98,7 @@ export function ReportsBox() {
             size="lg"
           />
           <Box>
-            <Text color="white">{report.content}</Text>
+            <Text c="white">{report.content}</Text>
           </Box>
         </Flex>
       </Accordion.Panel>

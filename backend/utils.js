@@ -24,6 +24,36 @@ function generateToken(user) {
   });
 }
 
+
+function formatDate(report) {
+  
+  if (!report.createdAt || typeof createdAt !== 'string') {
+    throw new Error("Not a valid format.");
+  }
+
+  
+  const isoDate = (report.createdAt).replace(" ", "T");
+
+  // create object date
+  const date = new Date(isoDate);
+  if (isNaN(date.getTime())) {
+    throw new Error("Date Invalid");
+  }
+
+  //new format "DD/MM/YYYY HH:mm"
+  const options = {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  };
+
+  return date.toLocaleString('es-ES', options);
+}
+
+
+
 function generateTokenReport(report) {
   if (!report) return null;
 
@@ -88,4 +118,5 @@ module.exports = {
   limitDate,
   canUpdate,
   generateTokenReport,
+  formatDate,
 };

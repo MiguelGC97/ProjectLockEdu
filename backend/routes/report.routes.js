@@ -10,13 +10,13 @@ module.exports = (app) => {
   router.get("/", reports.getAll);
 
 
-  router.get("/:username",  reports.getReportByUsername);
+  router.get("/:username",  auth.isAuthenticated, reports.getReportByUsername);
 
-  router.get("/user/:userId", reports.getReportByUserId);
+  router.get("/user/:userId",auth.isAuthenticated, reports.getReportByUserId);
 
-  router.put("/update/:id", reports.updateDescription);
+  router.put("/update/:id",auth.isAuthenticated, reports.updateDescription);
 
   // router.put("/:id",  reports.resolveReport);
  
-  app.use("/api/reports", router);  
+  app.use("/api/reports",auth.isAuthenticated, router);  
 };

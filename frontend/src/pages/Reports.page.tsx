@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { Flex, useMantineTheme } from '@mantine/core';
+import { Flex } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { ReportForm } from '@/components/ReportForm/ReportForm';
 import { ReportsBox } from '@/components/ReportsBox/ReportsBox';
 import { SideMenu } from '@/components/SideMenu/SideMenu';
 import UserBarReport from '@/components/UserBarReport/UserBarReport';
 
+
 const Reports: React.FC = () => {
-  const theme = useMantineTheme();
+ 
   const isMobile = useMediaQuery('(max-width: 768px)');
+
 
   const [isReportFormVisible, setIsReportFormVisible] = useState(true);
 
@@ -19,7 +21,7 @@ const Reports: React.FC = () => {
   return (
     <>
       {!isMobile && (
-        <Flex>
+        <Flex w="100%">
           <SideMenu />
           <Flex p="xl" direction="column" w="100%">
             <UserBarReport onToggleVisibility={toggleReportFormVisibility} />

@@ -60,11 +60,16 @@ export async function fetchIncidencesByUsername(username:string): Promise<Incide
 
 // function to fetch incidences by userId
 
-export async function fetchIncidencesByUserId(userId: string): Promise<Incidence[] | undefined> {
+export async function fetchIncidencesByUserId(userId: number): Promise<Incidence[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/reports/user/${userId}`);
-    if (Array.isArray(response.data.reports)) {
-      return response.data.reports; // Solo devolvemos los reportes
+    
+
+    if (Array.isArray(response.data.reports) && response.data.reports.length > 0) {
+      return response.data.reports; 
+    } else {
+      console.warn('No incidences found for the given user ID');
+      return [];
     }
   } catch (error) {
     console.error("Error fetching incidences by user ID:", error);
@@ -72,18 +77,21 @@ export async function fetchIncidencesByUserId(userId: string): Promise<Incidence
   }
 }
 
+
+
 //function to send data from incidences- we need to collect the right data
 
 export async function fetchFormIncident(reportData: {
   content: string;
   isSolved: boolean;
-  teacherId: number;
+  userId: number;
   boxId: number;
+  
 }): Promise<any> {
   try {
     const response = await instance.post(`${baseUrl}/reports`, reportData);
     return response.data.data;
-  } catch (error) {
+      } catch (error) {
     console.error('Error sending report data', error);
     throw error;
   }

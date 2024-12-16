@@ -1,3 +1,4 @@
+const { format } = require("sequelize/lib/utils");
 const db = require("../models");
 const Report = db.report;
 const User = db.user;
@@ -8,6 +9,9 @@ const { Op, AccessDeniedError } = require("sequelize");
 exports.getAll = async (req, res) => {
   try {
     const reports = await Report.findAll({
+     
+      //create a function to change data format
+
       include: [
         {
           model: db.user, 
@@ -51,7 +55,6 @@ exports.getReportByUsername = async (req, res) => {
   }
 };
 
-
 exports.getReportByUserId = async (req, res) => {
   try {
     const { userId } = req.params; 
@@ -62,13 +65,13 @@ exports.getReportByUserId = async (req, res) => {
         {
           model: Report,
           as: "reports", 
-          attributes: ["id", "content", "isSolved"], 
+          attributes: ["id", "content", "isSolved", "boxId", "userId","createdAt"], 
         },
       ],
     });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "User not found" + userId});
     }
 
     res.status(200).json({
@@ -79,7 +82,6 @@ exports.getReportByUserId = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 
 exports.findOne = async (req, res) => {
   const id = req.params.id;
@@ -112,7 +114,7 @@ exports.createReport = async (req, res) => {
     let report = {
       content: req.body.content,
       isSolved: req.body.isSolved ?? false,
-      teacherId: req.body.teacherId,
+      userId: req.body.userId,
       boxId:req.body.boxId,
     };
 

@@ -4,6 +4,7 @@ import { Box, Button, createTheme, MantineProvider, NativeSelect, Textarea } fro
 import { fetchBoxesByLocker, fetchFormIncident, fetchLockers } from '@/services/fetch';
 import { Boxs, Locker } from '@/types/types';
 import classes from './ReportForm.module.css';
+import { useAuth } from '@/hooks/AuthProvider';
 
 const theme = createTheme({
   components: {
@@ -26,6 +27,7 @@ export function ReportForm() {
   const [selectedLocker, setSelectedLocker] = useState('');
   const [selectedBox, setSelectedBox] = useState('');
   const [description, setDescription] = useState('');
+  const { user } = useAuth();
 
   useEffect(() => {
     const loadLockers = async () => {
@@ -64,7 +66,7 @@ export function ReportForm() {
     const reportData = {
       content: description,
       isSolved: false,
-      teacherId: 1, // i need to get the logic for this to work with the auth token so it knows which user is connected
+      userId: parseInt(user.id) , 
       boxId: parseInt(selectedBox, 10),
     };
 
@@ -88,6 +90,8 @@ export function ReportForm() {
   }));
 
   return (
+
+
     <MantineProvider theme={theme}>
       <Box
         bg="#4F51B3"
@@ -99,7 +103,7 @@ export function ReportForm() {
         p="xl"
         w="60em"
       >
-        <Box display="flex" alignItems="center" mb="md">
+        <Box display="flex" mb="md">
           <Box>
             <IconArrowLeft size={30} color="white" />
           </Box>
