@@ -9,19 +9,15 @@ module.exports = (app) => {
 
   router.post("/", users.addNewUser);
 
-  router.get("/", auth.isAuthenticated, permissions.authorize(["TEACHER"]), users.getAll);
+  router.get("/", auth.isAuthenticated, permissions.authorize(["TEACHER", "ADMIN"]), users.getAll);
 
-  router.get("/:id", auth.isAuthenticated, users.findOne);
+  router.get("/:id", auth.isAuthenticated, permissions.authorize(["ADMIN"]),  users.findOne);
 
-  router.get("/username/:username", auth.isAuthenticated, users.getByUsername);
+  router.get("/username/:username",permissions.authorize(["ADMIN"]), auth.isAuthenticated, users.getByUsername);
 
-  router.put("/:id", auth.isAuthenticated, users.update);
+  router.put("/:id", auth.isAuthenticated,permissions.authorize(["TEACHER","ADMIN"]), users.update);
 
-  router.delete("/:id", auth.isAuthenticated, users.delete);
-
-  // router.post("/admin", users.createAdmin);
-
-  // router.post("/admin/delete/:id", auth.isAuthenticated, users.deleteAdmin);
+  router.delete("/:id", auth.isAuthenticated,permissions.authorize(["ADMIN"]), users.delete);
 
   router.post("/signin", auth.signin);
 
