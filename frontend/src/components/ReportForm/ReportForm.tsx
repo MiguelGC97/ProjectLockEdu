@@ -134,6 +134,7 @@ export function ReportForm() {
         <NativeSelect
           mt="md"
           label="Armario"
+          placeholder ="seleccione su armario"
           data={lockerOptions}
           value={selectedLocker}
           styles={{
