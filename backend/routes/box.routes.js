@@ -1,47 +1,38 @@
 module.exports = (app) => {
   const boxes = require("../controllers/box.controller.js");
-
   const auth = require("../middlewares/auth.js");
-
   const upload = require("../multer/upload");
+  const permissions = require("../middlewares/permissions.js");
 
   var router = require("express").Router();
 
   router.post(
     "/",
-    permissions.authorize(["ADMIN"]),
     auth.isAuthenticated,
+    permissions.authorize(["ADMIN"]),
     upload.single("file"),
     boxes.addBox
   );
 
-  router.get(
-    "/",
-    permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]),
-    boxes.getAll
-  );
+  router.get("/", boxes.getAll);
 
-  router.get("/:id", permissions.authorize(["ADMIN", "TEACHER"]), boxes.getOne);
+  router.get("/:id", boxes.getOne);
 
   router.put(
     "/:id",
-    permissions.authorize(["ADMIN"]),
     auth.isAuthenticated,
+    permissions.authorize(["ADMIN"]),
     boxes.update
   );
 
   router.delete(
     "/:id",
-    permissions.authorize(["ADMIN"]),
     auth.isAuthenticated,
+    permissions.authorize(["ADMIN"]),
     boxes.delete
   );
 
-  router.get(
-    "/locker/:id",
-    permissions.authorize(["ADMIN"]),
-    boxes.getAllbyLockerId
-  );
+  router.get("/locker/:id", boxes.getAllbyLockerId);
 
   app.use("/api/boxes", router);
 };

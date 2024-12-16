@@ -7,43 +7,43 @@ module.exports = (app) => {
 
   router.post(
     "/",
-    permissions.authorize(["ADMIN", "TEACHER"]),
     auth.isAuthenticated,
+    permissions.authorize(["ADMIN", "TEACHER"]),
     reports.createReport
   );
 
   router.get(
     "/",
-    permissions.authorize(["ADMIN", "MANAGER", "TEACHER"]),
     auth.isAuthenticated,
+    permissions.authorize(["ADMIN", "MANAGER", "TEACHER"]),
     reports.getAll
   );
 
   router.get(
     "/:username",
-    permissions.authorize(["ADMIN", "MANAGER"]),
     auth.isAuthenticated,
+    permissions.authorize(["ADMIN", "MANAGER"]),
     reports.getReportByUsername
   );
 
   router.get(
     "/user/:userId",
-    permissions.authorize(["ADMIN", "MANAGER"]),
     auth.isAuthenticated,
+    permissions.authorize(["ADMIN", "MANAGER"]),
     reports.getReportByUserId
   );
 
   router.put(
     "/update/:id",
-    permissions.authorize(["ADMIN", "TEACHER"]),
     auth.isAuthenticated,
+    permissions.authorize(["ADMIN", "TEACHER"]),
     reports.updateDescription
   );
 
   router.put(
     "/resolve/:id",
-    permissions.authorize(["ADMIN", "MANAGER"]),
     auth.isAuthenticated,
+    permissions.authorize(["ADMIN", "MANAGER"]),
     reports.resolveReport
   );
 

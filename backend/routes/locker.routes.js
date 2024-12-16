@@ -7,29 +7,29 @@
 
   router.post(
     "/",
-    permissions.authorize(["ADMIN"]),
     auth.isAuthenticated,
+    permissions.authorize(["ADMIN"]),
     lockers.addLocker
   );
 
   router.get(
     "/",
-    permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]),
     auth.isAuthenticated,
+    permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]),
     lockers.getAll
   );
 
   router.put(
     "/:id",
-    permissions.authorize(["ADMIN"]),
     auth.isAuthenticated,
+    permissions.authorize(["ADMIN"]),
     lockers.update
   );
 
   router.delete(
     "/:id",
-    permissions.authorize(["ADMIN"]),
     auth.isAuthenticated,
+    permissions.authorize(["ADMIN"]),
     lockers.delete
   );
 
