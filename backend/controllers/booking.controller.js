@@ -207,8 +207,35 @@ exports.changeState = async (req, res) => {
 };
 
 exports.delete = async (req, res) => {
-  const deleting = await Booking.destroy({ where: { id: req.params.id } });
-  const status = deleting ? 200 : 404;
-  const message = deleting ? "Booking deleted" : "Booking not found";
-  res.status(status).json({ message });
+  const t = await db.sequelize.transaction(); 
+  try {
+    const bookingId = req.params.id;
+
+    // Finds items associated with booking
+    const booking = await Booking.findByPk(bookingId, {
+      include: [{ model: Item }],
+    });
+
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    // Changes items state
+    const itemIds = booking.items.map(item => item.id); 
+    await Item.update(
+      { state: "available" },
+      {
+        where: { id: { [Op.in]: itemIds } },
+        transaction: t,
+      }
+    );
+
+    await Booking.destroy({ where: { id: bookingId }, transaction: t });
+
+    await t.commit(); 
+    res.status(200).json({ message: "Booking deleted and items updated to available" });
+  } catch (error) {
+    await t.rollback();
+    res.status(500).json({ error: error.message });
+  }
 };

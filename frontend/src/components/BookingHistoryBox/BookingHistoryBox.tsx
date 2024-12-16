@@ -6,6 +6,7 @@ import './BookingHistoryBox.module.css';
 
 import { BookingHistoryProps, Booking, Item } from '@/types/types';
 import { fetchBookingsByUserId } from '@/services/fetch';
+import { deleteBookingById } from '@/services/fetch';
 import { useAuth } from '@/hooks/AuthProvider';
 
 const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking, }) => {
@@ -20,8 +21,6 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
       const data = await fetchBookingsByUserId(user.id);
 
       setBookings(data);
-      // const items:Item[] = data?.items;
-      // setItems(items);
       console.log(data);
     }
     loadBookings();
@@ -55,7 +54,7 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
     }
   };
 
-  // Bookings sorting
+  // Bookings sorting by state
   const sortedBookings = bookings?.sort((a, b) => {
     const order = { pending: 1, withdrawn: 2, returned: 3 };
     return (order[a.state] || 4) - (order[b.state] || 4);
@@ -79,6 +78,16 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
       day: 'numeric',
     });
   }
+
+  const handleDeleteBooking = async (bookingId: number) => {
+    try {
+      await deleteBookingById(bookingId);
+      setBookings((prevBookings) => prevBookings?.filter((b) => b.id !== bookingId));
+      console.log(`Booking ${bookingId} deleted`);
+    } catch (error) {
+      console.error(`Error trying to delete booking ${bookingId}:`, error);
+    }
+  };
 
   const rows = sortedBookings?.map((b) => {
     const lockerId = b.items[0]?.box.locker.id;
@@ -129,8 +138,11 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
         </Table.Td>
 
         <Table.Td c="red">
-          {'  '}
-          <IconTrash />
+        <IconTrash
+            onClick={() => handleDeleteBooking(b.id)}
+            style={{ cursor: 'pointer' }}
+            color="red"
+          />
         </Table.Td>
       </Table.Tr>
     );

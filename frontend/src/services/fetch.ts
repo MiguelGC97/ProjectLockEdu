@@ -158,15 +158,16 @@ export async function fetchBookingsByUserIdAndState(userId: number, state: strin
   }
 }
 
-// const urlencoded = new URLSearchParams();
-
-// const requestOptions = {
-//   method: "GET",
-//   body: urlencoded,
-//   redirect: "follow"
-// };
-
-// fetch("http://localhost:8080/api/bookings/users/1", requestOptions)
-//   .then((response) => response.text())
-//   .then((result) => console.log(result))
-//   .catch((error) => console.error(error));
+export async function deleteBookingById(bookingId: number): Promise<void> {
+  try {
+    const response = await instance.delete(`${baseUrl}/bookings/${bookingId}`);
+    if (response.status >= 200 && response.status < 300) {
+      console.log(`Booking ${bookingId} deleted`);
+    } else {
+      console.error('Unexpected error while trying to delete booking:', response.data);
+    }
+  } catch (error) {
+    console.error(`Error trying to delete booking ${bookingId}:`, error);
+    throw error; 
+  }
+}
