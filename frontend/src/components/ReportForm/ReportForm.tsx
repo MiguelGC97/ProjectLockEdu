@@ -27,6 +27,7 @@ export function ReportForm() {
   const [selectedLocker, setSelectedLocker] = useState('');
   const [selectedBox, setSelectedBox] = useState('');
   const [description, setDescription] = useState('');
+
   const { user } = useAuth();
 
   useEffect(() => {
@@ -57,8 +58,9 @@ export function ReportForm() {
     }
   };
 
+
   const handleSubmit = async () => {
-    if (!description) {
+    if (!selectedLocker || !selectedBox || !description) {
       alert('Por favor, complete todos los campos.');
       return;
     }
@@ -66,28 +68,43 @@ export function ReportForm() {
     const reportData = {
       content: description,
       isSolved: false,
-      userId: parseInt(user.id) , 
+      userId: parseInt(user.id),
       boxId: parseInt(selectedBox, 10),
     };
 
     try {
       const response = await fetchFormIncident(reportData);
       alert('Reporte creado exitosamente');
+
+      //clear form and toggle off.
+
+      setSelectedLocker('');
+      setSelectedBox('');
+      setDescription('');
+      
+
     } catch (error) {
       console.error('Error al enviar reporte:', error);
       alert('Error al crear el reporte');
     }
   };
 
-  const lockerOptions = lockers.map((locker) => ({
-    value: locker.id.toString(),
-    label: locker.description || `Locker ${locker.id}`,
-  }));
+  const lockerOptions = [
+    { value: '', label: '' },
+    ...lockers.map((locker) => ({
+      value: locker.id.toString(),
+      label: locker.description || `Locker ${locker.id}`,
+    })),
+  ];
 
-  const boxOptions = boxes.map((box) => ({
-    value: box.id.toString(),
-    label: box.description || `Box ${box.id}`,
-  }));
+  const boxOptions = [
+    { value: '', label: '' },
+    ...boxes.map((box) => ({
+      value: box.id.toString(),
+      label: box.description || `Box ${box.id}`,
+    })),
+  ];
+
 
   return (
 
@@ -174,6 +191,7 @@ export function ReportForm() {
               padding: '10px 20px',
             }}
             onClick={handleSubmit}
+            
           >
             Enviar
           </Button>
