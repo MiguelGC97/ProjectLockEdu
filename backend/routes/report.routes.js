@@ -16,7 +16,7 @@ module.exports = (app) => {
 
   router.put("/update/:id",auth.isAuthenticated, reports.updateDescription);
 
-  // router.put("/:id",  reports.resolveReport);
+  router.put("/resolve/:id", auth.isAuthenticated, reports.resolveReport);
  
   app.use("/api/reports",auth.isAuthenticated, router);  
 };
