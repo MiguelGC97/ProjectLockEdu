@@ -4,19 +4,20 @@ import { Box, Center, Divider, Flex, Group, ScrollArea, Table, Text, Title } fro
 
 import './Pending.module.css';
 
-import { BookingHistoryProps, Booking } from '@/types/types';
+import { BookingHistoryProps, Booking, PendingProps } from '@/types/types';
 import { fetchBookingsByUserIdAndState } from '@/services/fetch';
+import { useAuth } from '@/hooks/AuthProvider';
 
 const Pending: React.FC<BookingHistoryProps> = ({ locker, box, booking }) => {
 
   const [bookings, setBookings] = useState<Booking[]>();
 
-  const userId = 1;
+  const { user } = useAuth();
   const state = "pending";
 
   useEffect(() => {
     const loadBookings = async () => {
-      const data = await fetchBookingsByUserIdAndState(userId, state);
+      const data = await fetchBookingsByUserIdAndState(user.id, state);
       setBookings(data);
       console.log(data);
     }
@@ -62,10 +63,6 @@ const Pending: React.FC<BookingHistoryProps> = ({ locker, box, booking }) => {
           {formatTime(b.checkOut)}
         </Table.Td>
 
-        <Table.Td c="red">
-          {'             '}
-          <IconTrash />
-        </Table.Td>
       </Table.Tr>
     );
   });

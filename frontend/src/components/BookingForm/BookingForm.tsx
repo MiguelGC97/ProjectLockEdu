@@ -92,11 +92,11 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
       });
 
       if (onBookingCreated) {
-        onBookingCreated();  // Actualiza las reservas pendientes
+        onBookingCreated();
       }
     } catch (error) {
       console.error('Error al crear la reserva:', error);
-      setError('Hubo un error al crear la reserva. Intenta de nuevo.');
+      setError('Hubo un error al crear la reserva. Inténtalo de nuevo.');
     }
   };
 
@@ -143,13 +143,15 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
   //   );
   // }
 
-  if (error) {
-    return (
-      <Center>
-        <Text color="red">{error}</Text>
-      </Center>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <Center>
+  //       <Text color="red">{error}</Text>
+  //     </Center>
+  //   );
+  // }
+
+  const renderError = error && <Text color="red">{error}</Text>;
 
   if (confirmedBooking) {
     return (
@@ -238,9 +240,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
 
           <Flex mx="auto" gap="2vw" maw="90%">
             <Button
-              onClick={() => {
-                null;
-              }}
+              onClick={onReturnToBox}
               size="md"
               maw="8vw"
               bg="myPurple.6"
@@ -250,8 +250,9 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
             >
               Cancelar
             </Button>
-            <Button size="md" maw="8vw" bg="myPurple.6" radius="xl" mx="auto" mt="1vh"
+            <Button size="md" maw="8vw" bg="myPurple.6"     radius="xl" mx="auto" mt="1vh"
               onClick={handleBookingConfirmation}
+              disabled={!pickupDate || !returnDate}
             >
               Confirmar
             </Button>

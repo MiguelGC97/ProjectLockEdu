@@ -69,6 +69,13 @@ export interface BookingHistoryProps {
   booking: Booking;
 }
 
+export interface PendingProps {
+  bookings: Booking[];
+  locker?: Locker;
+  box?: BoxType;
+  booking?: Booking;
+}
+
 export interface Incidence {
   id: number;
   content: string;

@@ -24,6 +24,13 @@ module.exports = (app) => {
     router.get("/users/:userId/state/:state", auth.isAuthenticated,
         permissions.authorize(["TEACHER", "ADMIN"]), bookings.getAllbyUserIdAndState);
 
+    router.put(
+        "/:id",
+        auth.isAuthenticated,
+        permissions.authorize(["TEACHER", "ADMIN"]),
+        bookings.changeState
+    );
+
     router.delete(
         "/:id",
         auth.isAuthenticated,

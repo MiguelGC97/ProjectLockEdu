@@ -1,12 +1,11 @@
 ﻿import { IconTrash } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-import { Box, Center, Divider, Flex, Group, ScrollArea, Table, Text, Title } from '@mantine/core';
+import { Box, Button, Center, Divider, Flex, Group, ScrollArea, Table, Text, Title } from '@mantine/core';
 
 import './BookingHistoryBox.module.css';
 
 import { BookingHistoryProps, Booking, Item } from '@/types/types';
-import { fetchBookingsByUserId } from '@/services/fetch';
-import { deleteBookingById } from '@/services/fetch';
+import { fetchBookingsByUserId, updateBookingState, deleteBookingById } from '@/services/fetch';
 import { useAuth } from '@/hooks/AuthProvider';
 
 const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking, }) => {
@@ -89,6 +88,19 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
     }
   };
 
+  const handleUpdateState = async (bookingId: number, newState: "pending" | "withdrawn" | "returned") => {
+    try {
+      await updateBookingState(bookingId, newState);
+      setBookings((prevBookings) =>
+        prevBookings?.map((b) =>
+          b.id === bookingId ? { ...b, state: newState } : b
+        )
+      );
+    } catch (error) {
+      console.error(`Error updating booking ${bookingId}:`, error);
+    }
+  };
+
   const rows = sortedBookings?.map((b) => {
     const lockerId = b.items[0]?.box.locker.id;
     const boxId = b.items[0]?.box.id;
@@ -137,8 +149,33 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
           </Text>
         </Table.Td>
 
+        <Table.Td>
+          {b.state === 'pending' && (
+            <Button
+              onClick={() => handleUpdateState(b.id, 'withdrawn')}
+              size="md"
+              maw="8vw"
+              bg="myPurple.3"
+              radius="xl"
+            >
+              Recoger
+            </Button>
+          )}
+          {b.state === 'withdrawn' && (
+            <Button
+              onClick={() => handleUpdateState(b.id, 'returned')}
+              size="md"
+              maw="8vw"
+              bg="myPurple.3"
+              radius="xl"
+            >
+              Devolver
+            </Button>
+          )}
+        </Table.Td>
+
         <Table.Td c="red">
-        <IconTrash
+          <IconTrash
             onClick={() => handleDeleteBooking(b.id)}
             style={{ cursor: 'pointer' }}
             color="red"

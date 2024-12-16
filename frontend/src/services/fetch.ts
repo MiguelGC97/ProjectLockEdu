@@ -158,6 +158,21 @@ export async function fetchBookingsByUserIdAndState(userId: number, state: strin
   }
 }
 
+export async function updateBookingState(bookingId: number, state: string): Promise<any> {
+  try {
+    const response = await instance.put(`${baseUrl}/bookings/${bookingId}`, { state });
+    if (response.status >= 200 && response.status < 300) {
+      return response.data.data;
+    } else {
+      console.error('Error updating booking state:', response.data);
+      throw new Error('Error updating booking state');
+    }
+  } catch (error) {
+    console.error('Error updating booking state:', error);
+    throw error;
+  }
+}
+
 export async function deleteBookingById(bookingId: number): Promise<void> {
   try {
     const response = await instance.delete(`${baseUrl}/bookings/${bookingId}`);
