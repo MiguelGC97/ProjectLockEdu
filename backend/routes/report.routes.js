@@ -18,5 +18,5 @@ module.exports = (app) => {
 
   // router.put("/:id",  reports.resolveReport);
  
-  app.use("/api/reports",auth.isAuthenticated, router);  
+  app.use("/api/reports", router);  
 };

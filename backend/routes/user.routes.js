@@ -9,7 +9,7 @@ module.exports = (app) => {
 
   router.post("/", users.addNewUser);
 
-  router.get("/", auth.isAuthenticated, permissions.authorize(["TEACHER"]), users.getAll);
+  router.get("/", auth.isAuthenticated, permissions.authorize(["TEACHER", "ADMIN"]), users.getAll);
 
   router.get("/:id", auth.isAuthenticated, users.findOne);
 

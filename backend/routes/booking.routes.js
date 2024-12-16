@@ -18,7 +18,7 @@ module.exports = (app) => {
         bookings.getOne
     );
 
-    router.get("/users/:id", auth.isAuthenticated,
+    router.get("/users/:userId", auth.isAuthenticated,
         permissions.authorize(["TEACHER", "ADMIN"]), bookings.getAllbyUserId);
 
     router.get("/users/:userId/state/:state", auth.isAuthenticated,
