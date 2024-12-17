@@ -12,7 +12,7 @@ module.exports = (app) => {
   router.get(
     "/",
     auth.isAuthenticated,
-    permissions.authorize(["TEACHER", "ADMIN"]),
+    permissions.authorize(["ADMIN"]),
     users.getAll
   );
 
