@@ -34,35 +34,7 @@ exports.newBooking = async (req, res) => {
       { transaction: t }
     );
 
-    const availableItems = await Item.findAll({
-      where: {
-        id: {
-          [Op.in]: itemIds,
-        },
-        state: "available",
-      },
-    });
-
-    if (availableItems.length === 0) {
-      await t.rollback();
-      return res.status(404).json({
-        message: "No available items found for the provided IDs",
-      });
-    }
-
     await booking.addItem(availableItems, { transaction: t });
-
-    await Item.update(
-      { state: "booked" },
-      {
-        where: {
-          id: {
-            [Op.in]: itemIds,
-          },
-        },
-        transaction: t,
-      }
-    );
 
     await t.commit();
 
@@ -142,6 +114,42 @@ exports.getAllbyUserIdAndState = async (req, res) => {
     });
 
     res.status(200).json({ data: bookings });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getLatestCheckIn = async (req, res) => {
+  try {
+    const { itemIds } = req.body; // Recives an array fo Item ids
+
+    if (!Array.isArray(itemIds) || itemIds.length === 0) {
+      return res.status(400).json({ message: "itemIds can't be an empty array" });
+    }
+
+    const bookings = await Booking.findAll({
+      include: [
+        {
+          model: Item,
+          where: { id: { [Op.in]: itemIds } },
+          attributes: [],
+        },
+      ],
+      attributes: ['checkIn'],
+    });
+
+    if (bookings.length === 0) {
+      return res.status(200).json({});
+    }
+
+    const latestCheckIn = bookings.reduce((latest, booking) => {
+      if (!latest || new Date(booking.checkIn) > new Date(latest)) {
+        return booking.checkIn;
+      }
+      return latest;
+    }, null);
+
+    res.status(200).json({ latestCheckIn });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

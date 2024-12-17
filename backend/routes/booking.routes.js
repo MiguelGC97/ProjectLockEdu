@@ -40,6 +40,13 @@ module.exports = (app) => {
     bookings.getAllbyUserIdAndState
   );
 
+  router.get(
+    "/items",
+    auth.isAuthenticated,
+    permissions.authorize(["TEACHER", "ADMIN"]),
+    bookings.getLatestCheckIn
+  );
+
   router.put(
     "/:id",
     auth.isAuthenticated,

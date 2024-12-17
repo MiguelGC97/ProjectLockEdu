@@ -35,7 +35,7 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
   useEffect(() => {
     const loadObjects = async () => {
       const data = await fetchItems();
-      setObjects(data?.filter((o: any) => o.boxId === box.id && o.state === 'available'));
+      setObjects(data?.filter((o: any) => o.boxId === box.id));
     }
     loadObjects();
   }, [])

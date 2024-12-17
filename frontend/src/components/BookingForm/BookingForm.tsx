@@ -38,6 +38,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
   const [confirmedBooking, setConfirmedBooking] = useState<any | null>(null);
   const [pickupDate, setPickupDate] = useState<Date | null>(null);
   const [returnDate, setReturnDate] = useState<Date | null>(null);
+  const currentDate = dayjs();
   const theme = useMantineTheme();
   const { user } = useAuth();
 
@@ -151,7 +152,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
   //   );
   // }
 
-  const renderError = error && <Text color="red">{error}</Text>;
+  // const renderError = error && <Text color="red">{error}</Text>;
 
   if (confirmedBooking) {
     return (
@@ -202,17 +203,27 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
                   label="Selecciona una fecha de recogida"
                   placeholder="Selecciona una fecha de recogida"
                   size="sm"
+                  highlightToday
+                  minDate={currentDate.toDate()}
+                  required
+                  popoverProps={{
+                    position: 'bottom',
+                  }}
                   value={pickupDate}
                   onChange={handlePickupDate}
-                  classNames={{
-                    input: 'custom-input',
-                  }}
+
                 />
               </DatesProvider>
               <DateTimePicker w="70%" c="white"
                 valueFormat="DD MMM YYYY hh:mm A"
                 label="Selecciona una fecha de devolución"
                 placeholder="Selecciona una fecha de devolución"
+                minDate={pickupDate || dayjs().toDate()}
+                maxDate={pickupDate ? dayjs(pickupDate).add(14, 'day').toDate() : undefined}
+                required
+                popoverProps={{
+                  position: 'bottom',
+                }}
                 value={returnDate}
                 onChange={handleReturnDate}
               />
@@ -250,7 +261,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
             >
               Cancelar
             </Button>
-            <Button size="md" maw="8vw" bg="myPurple.6"     radius="xl" mx="auto" mt="1vh"
+            <Button size="md" maw="8vw" bg="myPurple.6" radius="xl" mx="auto" mt="1vh"
               onClick={handleBookingConfirmation}
               disabled={!pickupDate || !returnDate}
             >
