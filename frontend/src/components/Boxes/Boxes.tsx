@@ -26,9 +26,12 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
   const [error, setError] = useState<string | null>(null);
   const [boxes, setBoxes] = useState<BoxType[]>();
   const theme = useMantineTheme();
-  
 
-  console.log('Box ID:', boxId); // box.id passed from Objects component
+  const handleBoxClick = (box: BoxType) => {
+    setSelectedBox(box); // Establece la caja seleccionada
+  };
+
+  console.log(selectedBox); // box.id passed from Objects component
   console.log('Selected Values:', selectedValues);
 
   useEffect(() => {
@@ -92,7 +95,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
           {boxes?.map((box) => (
             <Box
               key={box.id}
-              onClick={() => onBoxClick(box)}
+              onClick={() => handleBoxClick(box)}
               style={{
                 cursor: 'pointer',
                 borderRadius: 20,

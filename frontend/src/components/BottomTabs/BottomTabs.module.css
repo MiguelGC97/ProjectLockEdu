@@ -15,3 +15,15 @@
 .flex-panel {
   background-color: #dedede;
 }
+
+.tabs-container {
+  position: relative;
+}
+
+.tabs-panel {
+  background-color: #dedede;
+  position: fixed;
+  bottom: 0%;
+  left: 0%;
+  z-indez: 1000;
+}

@@ -14,6 +14,7 @@ import {
   Title,
   useMantineTheme,
 } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { useAuth } from '@/hooks/AuthProvider';
 import { login as loginService } from '@/services/authService';
 import classes from '../../App.module.css';
@@ -26,6 +27,7 @@ const LoginForm: React.FC = () => {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,7 +72,7 @@ const LoginForm: React.FC = () => {
           leftSection={<IconAt />}
           radius="xl"
           c="white"
-          miw="40%"
+          miw={isMobile ? '80%' : '40%'}
           label="Correo eletrónico"
           placeholder="Escribe tu correo"
           size="md"
@@ -85,7 +87,7 @@ const LoginForm: React.FC = () => {
           c="white"
           label="Contraseña"
           placeholder="Escribe tu contraseña"
-          miw="40%"
+          miw={isMobile ? '80%' : '40%'}
           mt="md"
           size="md"
           value={password}
@@ -112,7 +114,7 @@ const LoginForm: React.FC = () => {
 
         {/* Login button */}
         <Button
-          miw="40%"
+          miw={isMobile ? '80%' : '40%'}
           color="myPurple.4"
           radius="xl"
           mt="xl"
