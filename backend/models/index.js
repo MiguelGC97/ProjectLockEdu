@@ -33,6 +33,7 @@ db.item = require("./item.model.js")(sequelize, Sequelize);
 db.user = require("./user.model.js")(sequelize, Sequelize);
 db.booking = require("./booking.model.js")(sequelize, Sequelize);
 db.report = require("./report.model.js")(sequelize, Sequelize);
+db.settings = require("./settings.model.js")(sequelize, Sequelize);
 
 //Locker-box Association
 db.locker.hasMany(db.box, {
