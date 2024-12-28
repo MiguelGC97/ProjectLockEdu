@@ -1,4 +1,4 @@
-﻿wrap// Home.page.tsx
+﻿// Home.page.tsx
 import { useState } from 'react';
 import { Flex, useMantineTheme } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
