@@ -95,28 +95,39 @@ function getCleanReport(report) {
 }
 
 function limitDate(date) {
-  const newDate = new Date(date.replace(" ", "T"));
-  newDate.setMinutes(newDate.getMinutes() + 10);
+  if (!(date instanceof Date) || isNaN(date.getTime())) {
+    throw new Error("Invalid date");
+  }
 
+  const newDate = new Date(date.getTime());
+  newDate.setMinutes(newDate.getMinutes() + 10);
   return newDate;
 }
 
-function canUpdate(newDate) {
-  const now = new Date();
 
-  if (now <= newDate) {
-    return true;
-  } else {
-    return false;
-  }
-}
+
+// function limitDate(date) {
+//   const newDate = new Date(date.replace(" ", "T"));
+//   newDate.setMinutes(newDate.getMinutes() + 10);
+
+//   return newDate;
+// }
+
+// function canUpdate(newDate) {
+//   const now = new Date();
+
+//   if (now <= newDate) {
+//     return true;
+//   } else {
+//     return false;
+//   }
+// }
 
 module.exports = {
   generateToken,
   getCleanUser,
   getCleanReport,
   limitDate,
-  canUpdate,
   generateTokenReport,
   formatDate,
 };

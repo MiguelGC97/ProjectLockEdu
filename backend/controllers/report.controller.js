@@ -9,13 +9,12 @@ const { Op, AccessDeniedError } = require("sequelize");
 exports.getAll = async (req, res) => {
   try {
     const reports = await Report.findAll({
-     
       //create a function to change data format
 
       include: [
         {
-          model: db.user, 
-          attributes: ['name', 'avatar'], 
+          model: db.user,
+          attributes: ["name", "avatar"],
         },
       ],
     });
@@ -24,7 +23,6 @@ exports.getAll = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 
 exports.getReportByUsername = async (req, res) => {
   try {
@@ -57,21 +55,27 @@ exports.getReportByUsername = async (req, res) => {
 
 exports.getReportByUserId = async (req, res) => {
   try {
-    const { userId } = req.params; 
+    const { userId } = req.params;
 
-  
     const user = await User.findByPk(userId, {
       include: [
         {
           model: Report,
-          as: "reports", 
-          attributes: ["id", "content", "isSolved", "boxId", "userId","createdAt"], 
+          as: "reports",
+          attributes: [
+            "id",
+            "content",
+            "isSolved",
+            "boxId",
+            "userId",
+            "createdAt",
+          ],
         },
       ],
     });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" + userId});
+      return res.status(404).json({ message: "User not found" + userId });
     }
 
     res.status(200).json({
@@ -115,7 +119,7 @@ exports.createReport = async (req, res) => {
       content: req.body.content,
       isSolved: req.body.isSolved ?? false,
       userId: req.body.userId,
-      boxId:req.body.boxId,
+      boxId: req.body.boxId,
     };
 
     const newReport = await Report.create(report);
@@ -155,29 +159,56 @@ exports.resolveReport = async (req, res) => {
   }
 };
 
-
 exports.updateDescription = async (req, res) => {
   const id = req.params.id;
-  const { content } = req.body;
+  const { content, createdAt } = req.body;
+
+  // Verificar que 'createdAt' existe y es una cadena
+  if (!createdAt || typeof createdAt !== "string") {
+    console.log("createdAt", createdAt);
+    return res.status(400).json({ message: "'createdAt' is required and must be a string" });
+  
+  }
 
   try {
-    const [updated] = await Report.update({ content }, {
-      where: { id },
-    });
+    // Ajustar el formato de 'createdAt'
+    const formattedDate = createdAt.replace(" ", "T");
+    const date = new Date(formattedDate);
 
-    if (updated) {
-      res.status(200).json({
-        message: "Incidence content updated",
-        data: { content },
-      });
+    // Verificar que la fecha sea válida
+    if (isNaN(date.getTime())) {
+      return res.status(400).json({ message: "Invalid 'createdAt' format" });
+    }
+
+    // Calcular la fecha límite sumando 10 minutos
+    const limitedDate = utils.limitDate(date);
+
+    // Obtener la fecha actual
+    const now = new Date();
+
+    // Comparar fechas
+    if (now.getTime() < limitedDate.getTime()) {
+      // Si está dentro del rango permitido, actualizar el contenido
+      const [updated] = await Report.update({ content }, { where: { id } });
+
+      if (updated > 0) {
+        res.status(200).json({
+          message: "Incidence content updated",
+          data: { content },
+        });
+      } else {
+        res.status(404).json({ message: "Incidence not found" });
+      }
     } else {
-      res.status(404).json({ message: "Incidence not found" });
+      // Si está fuera del rango permitido
+      res.status(403).json({ message: "You can't update this report after the time limit" });
     }
   } catch (error) {
+    // Manejo de errores
+    console.error("Error updating report:", error);
     res.status(500).json({ error: error.message });
   }
 };
-
 
 // exports.updateDescription = async (req, res) => {
 //   const { id } = req.params.id;
@@ -202,7 +233,7 @@ exports.updateDescription = async (req, res) => {
 // };
 
 // exports.updateStatus = async (req, res) => {
-  
+
 //     const id = req.params.id;
 
 //     try {
@@ -221,5 +252,5 @@ exports.updateDescription = async (req, res) => {
 //     } catch (error) {
 //       res.status(500).json({ error: error.message });
 //     }
-  
+
 //   };

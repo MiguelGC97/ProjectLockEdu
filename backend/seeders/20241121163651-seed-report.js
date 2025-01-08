@@ -65,7 +65,7 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
         boxId: 7,
-        userId: 2,
+        userId: 1,
       },
       {
         content:
@@ -74,7 +74,7 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
         boxId: 8,
-        userId: 2,
+        userId: 1,
       },
     ]);
   },
