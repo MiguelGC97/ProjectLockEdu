@@ -22,21 +22,17 @@ import { Item, ObjectsProps } from '@/types/types';
 
 import './Objects.module.css';
 
-const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => {
-  const [objects, setObjects] = useState<Item[]>();
+import { useAppContext } from '@/hooks/AppProvider';
+
+const Objects: React.FC<ObjectsProps> = ({ onReturn, onCreateBooking }) => {
+  const { objects, setObjects } = useAppContext();
+  const { selectedObjects, setSelectedObjects } = useAppContext();
+  const { selectedBox } = useAppContext();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [value, setValue] = useState<string[]>([]);
   const theme = useMantineTheme();
   const [opened, { open, close }] = useDisclosure(false);
-
-  useEffect(() => {
-    const loadObjects = async () => {
-      const data = await fetchItems();
-      setObjects(data?.filter((o: any) => o.boxId === box.id && o.state === 'available'));
-    };
-    loadObjects();
-  }, []);
 
   if (loading) {
     return (
@@ -81,7 +77,7 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
             </a>
 
             <Title fw="600" c="white">
-              Casilla C0{box.id}
+              Casilla C0{selectedBox.id}
             </Title>
           </Flex>
         </Stack>
@@ -138,8 +134,10 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
           <Flex mx="auto" gap="2vw" maw="90%">
             <Button
               onClick={() => {
-                onCreateBooking(box, value);
-                console.log(value);
+                const selectedItems = objects.filter((object) => value.includes(`${object.id}`));
+                setSelectedObjects(selectedItems);
+                onCreateBooking(selectedBox, selectedItems);
+                console.log(selectedItems);
               }}
               disabled={value.length === 0}
               size="md"

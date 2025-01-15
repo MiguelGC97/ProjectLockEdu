@@ -5,6 +5,7 @@ module.exports = (app) => {
 
   var router = require("express").Router();
 
+  // Create a new booking
   router.post(
     "/",
     auth.isAuthenticated,

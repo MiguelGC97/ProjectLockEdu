@@ -9,41 +9,31 @@ import Boxes from '@/components/Boxes/Boxes';
 import Lockers from '@/components/Lockers/Lockers';
 import { NotificationsBox } from '@/components/NotificationsBox/NotificationsBox';
 import Objects from '@/components/Objects/Objects';
-import  Pending from '@/components/Pending/Pending';
+import Pending from '@/components/Pending/Pending';
 import { SideMenu } from '@/components/SideMenu/SideMenu';
 import UserBar from '@/components/UserBar/UserBar';
-import { BoxType, Locker, Booking } from '@/types/types';
+import { useAppContext } from '@/hooks/AppProvider';
 import { fetchBookingsByUserIdAndState } from '@/services/fetch';
+import { Booking, BoxType, Locker } from '@/types/types';
 
 const Home: React.FC = () => {
   const theme = useMantineTheme();
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const [selectedLocker, setSelectedLocker] = useState<Locker | null>(null);
-  const [selectedBox, setSelectedBox] = useState<BoxType | null>(null);
+  const { selectedLocker, setSelectedLocker } = useAppContext();
+  const { selectedBox, setSelectedBox } = useAppContext();
+  const { selectedObjects, setSelectedObjects } = useAppContext();
   const [createBooking, setCreateBooking] = useState(false);
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [pendingBookings, setPendingBookings] = useState<Booking[]>([]);
-
-  const handleLockerClick = (locker: Locker) => {
-    console.log('Locker selected:', locker); // Debugging log
-    setSelectedLocker(locker);
-    console.log('Updated selectedLocker state:', selectedLocker); // This may not immediately reflect the updated state due to React's asynchronous state update
-  };
-
-  const handleBoxClick = (box: BoxType) => {
-    console.log('Box clicked:', box);
-    setSelectedBox(box);
-  };
 
   const handleReturnToLockers = () => {
     setSelectedLocker(null);
     setSelectedBox(null);
   };
 
-  const handleCreateBookingClick = (box: BoxType, items: string[]) => {
+  const handleCreateBookingClick = (box: BoxType, items: Item[]) => {
     setCreateBooking(true);
-    setSelectedBox(box);
-    setSelectedItems(items);
+    setSelectedObjects(items);
+    setSelectedBox(selectedBox);
   };
 
   const handleReturnToBoxes = () => {
@@ -53,7 +43,7 @@ const Home: React.FC = () => {
   const handleReturnToBox = () => {
     setCreateBooking(false);
     setSelectedBox(null);
-    setSelectedItems([]);
+    setSelectedObjects([]);
   };
 
   const updatePendingBookings = async () => {
@@ -83,23 +73,17 @@ const Home: React.FC = () => {
                     </Flex>
                   </Flex>
                   {!selectedLocker ? (
-                    <Lockers onLockerClick={handleLockerClick} />
+                    <Lockers />
                   ) : !selectedBox ? (
-                    <Boxes
-                      locker={selectedLocker}
-                      onBoxClick={handleBoxClick}
-                      onReturn={handleReturnToLockers}
-                    />
+                    <Boxes onReturn={handleReturnToLockers} />
                   ) : selectedBox && !createBooking ? (
                     <Objects
-                      box={selectedBox}
                       onReturn={handleReturnToBoxes}
                       onCreateBooking={handleCreateBookingClick}
                     />
                   ) : createBooking ? (
-                    <BookingForm 
-                      box={selectedBox} 
-                      items={selectedItems} 
+                    <BookingForm
+                      box={selectedBox}
                       onReturnToBox={handleReturnToBox}
                       onReturn={handleReturnToLockers}
                       onBookingCreated={updatePendingBookings}

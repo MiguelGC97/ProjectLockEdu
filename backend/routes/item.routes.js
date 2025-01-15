@@ -2,7 +2,7 @@
   const items = require("../controllers/item.controller.js");
   const auth = require("../middlewares/auth.js");
   const permissions = require("../middlewares/permissions.js");
-  
+
   var router = require("express").Router();
 
   router.post(
@@ -14,7 +14,9 @@
 
   router.get("/", items.getAll);
 
-  router.delete("/:id",permissions.authorize(["ADMIN"]), auth.isAuthenticated, items.delete);
+  router.get("/box/:id", items.getAllByBoxId);
+
+  router.delete("/:id", permissions.authorize(["ADMIN"]), auth.isAuthenticated, items.delete);
 
   app.use("/api/items", router);
 };

@@ -1,12 +1,10 @@
-﻿import { useEffect, useState } from 'react';
+﻿import { useState } from 'react';
 import { IconArrowLeft, IconSearch } from '@tabler/icons-react';
 import { useLocation } from 'react-router-dom';
 import {
   Box,
-  Button,
   Center,
   Flex,
-  Image,
   Input,
   ScrollArea,
   Stack,
@@ -14,38 +12,18 @@ import {
   Title,
   useMantineTheme,
 } from '@mantine/core';
-import { fetchBoxes } from '@/services/fetch';
 import { BoxesProps, BoxType } from '@/types/types';
 
 import './Boxes.module.css';
 
+import { useAppContext } from '@/hooks/AppProvider';
+
 const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
-  const location = useLocation();
-  const { boxId, selectedValues } = location.state || {};
+  const { setSelectedBox } = useAppContext();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [boxes, setBoxes] = useState<BoxType[]>();
+  const { boxes } = useAppContext();
   const theme = useMantineTheme();
-
-  const handleBoxClick = (box: BoxType) => {
-    setSelectedBox(box); // Establece la caja seleccionada
-  };
-
-  console.log(selectedBox); // box.id passed from Objects component
-  console.log('Selected Values:', selectedValues);
-
-  useEffect(() => {
-    setLoading(true); // Set loading state before starting the request
-    setError(null); // Clear previous errors
-
-    const loadBoxes = async () => {
-      const data = await fetchBoxes();
-      setBoxes(data?.filter((b) => b.lockerId === locker.id));
-    };
-
-    loadBoxes();
-    setLoading(false);
-  }, [locker]); // Dependency array ensures this effect runs when `locker` changes;
 
   if (loading) {
     return (
@@ -95,7 +73,10 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
           {boxes?.map((box) => (
             <Box
               key={box.id}
-              onClick={() => handleBoxClick(box)}
+              onClick={() => {
+                setSelectedBox(box);
+                onBoxClick(box);
+              }}
               style={{
                 cursor: 'pointer',
                 borderRadius: 20,

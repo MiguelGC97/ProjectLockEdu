@@ -19,6 +19,17 @@ exports.getAll = async (req, res) => {
     }
 };
 
+exports.getAllByBoxId = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const items = await Item.findAll({ where: { boxId: id } });
+        res.status(200).json({ data: items });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
 exports.delete = async (req, res) => {
     const deleting = await Item.destroy({ where: { id: req.params.id } });
     const status = deleting ? 200 : 404;

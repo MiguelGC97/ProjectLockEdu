@@ -23,14 +23,12 @@ export interface LockersProps {
 }
 
 export interface BoxesProps {
-  locker: Locker;
-  onBoxClick: (box: BoxType) => void;
   onReturn: () => void;
 }
 
 export interface Booking {
   id: number;
-  items: Item[];
+  itemIds: number[];
   userId: number;
   description: string;
   checkOut: string;
@@ -52,12 +50,11 @@ export interface Item {
 export interface ObjectsProps {
   box: BoxType;
   onReturn: () => void;
-  onCreateBooking: (box: BoxType, items: string[]) => void;
+  onCreateBooking: (box: BoxType, selected: Item[]) => void;
 }
 
 export interface BookingFormProps {
   box: BoxType;
-  items: string[]; // This is the array of selected item ids.
   onReturnToBox: () => void;
   onReturn: () => void;
   onBookingCreated: () => void;
@@ -111,15 +108,15 @@ export interface Incidence {
   content: string;
   isSolved: boolean;
   createdAt: string;
-  boxId: number; user: {
+  boxId: number;
+  user: {
     avatar: string;
     name: string;
   };
-
 }
 
 export interface Boxs {
   id: number;
   description: string;
   createdAt: string;
-};
+}

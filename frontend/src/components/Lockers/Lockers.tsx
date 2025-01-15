@@ -88,7 +88,6 @@ const Lockers: React.FC<{ onLockerClick: (locker: Locker) => void }> = ({ onLock
                     <Button
                       onClick={() => {
                         setSelectedLocker(locker); // establish the selected locker
-                        onLockerClick(locker); // we call the function that handles the click
                       }}
                       size="md"
                       maw="8vw"

@@ -1,5 +1,5 @@
 ﻿import instance, { baseUrl } from '@/services/api';
-import { BoxType, Incidence, Item, Locker, Booking } from '@/types/types';
+import { Booking, BoxType, Incidence, Item, Locker } from '@/types/types';
 
 // function to fetch lockers
 export async function fetchLockers(): Promise<Locker[] | undefined> {
@@ -7,9 +7,6 @@ export async function fetchLockers(): Promise<Locker[] | undefined> {
     const response = await instance.get(`${baseUrl}/lockers`);
     if (response.status >= 200 && response.status < 300 && Array.isArray(response.data)) {
       return response.data;
-    } else {
-      console.error('Unexpected response format', response.data);
-      return [];
     }
   } catch (error: any) {
     console.error('Error fetching lockers:', error.message);
@@ -37,7 +34,6 @@ export async function fetchIncidences(): Promise<Incidence[] | undefined> {
     if (Array.isArray(response.data.data)) {
       return response.data.data;
     }
-
   } catch (error) {
     console.error('Error fetching Incidences:', error);
     return [];
@@ -45,13 +41,14 @@ export async function fetchIncidences(): Promise<Incidence[] | undefined> {
 }
 
 // function to fetch incidences by username
-export async function fetchIncidencesByUsername(username:string): Promise<Incidence[] | undefined> {
+export async function fetchIncidencesByUsername(
+  username: string
+): Promise<Incidence[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/reports/${username}`);
     if (Array.isArray(response.data.data)) {
       return response.data.data;
     }
-
   } catch (error) {
     console.error('Error fetching Incidences:', error);
     return [];
@@ -63,21 +60,18 @@ export async function fetchIncidencesByUsername(username:string): Promise<Incide
 export async function fetchIncidencesByUserId(userId: number): Promise<Incidence[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/reports/user/${userId}`);
-    
 
     if (Array.isArray(response.data.reports) && response.data.reports.length > 0) {
-      return response.data.reports; 
+      return response.data.reports;
     } else {
       console.warn('No incidences found for the given user ID');
       return [];
     }
   } catch (error) {
-    console.error("Error fetching incidences by user ID:", error);
+    console.error('Error fetching incidences by user ID:', error);
     return [];
   }
 }
-
-
 
 //function to send data from incidences- we need to collect the right data
 
@@ -86,49 +80,41 @@ export async function fetchFormIncident(reportData: {
   isSolved: boolean;
   userId: number;
   boxId: number;
-  
 }): Promise<any> {
   try {
     const response = await instance.post(`${baseUrl}/reports`, reportData);
     return response.data.data;
-      } catch (error) {
+  } catch (error) {
     console.error('Error sending report data', error);
     throw error;
   }
 }
 
-
 //function to update the incidences - implement the timer
-export async function updateIncidenceContent(
-  id: number,
-  content: string
-): Promise<any> {
+export async function updateIncidenceContent(id: number, content: string): Promise<any> {
   try {
     await instance.put(`${baseUrl}/reports/update/${id}`, { content });
   } catch (error) {
-    console.log (content);
+    console.log(content);
     console.error('Error updating Incidence:', error);
     throw error;
   }
 }
 
-
 //function to fetchBoxesByLocker
-export async function fetchBoxesByLocker(lockerId: string): Promise<BoxType[] | undefined> {
+export async function fetchBoxesByLocker(lockerId: number): Promise<BoxType[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/boxes/locker/${lockerId}`);
     if (Array.isArray(response.data.data)) {
       return response.data.data;
     }
-
   } catch (error) {
     console.error(`Error fetching boxes for locker ${lockerId}:`, error);
     return [];
   }
 }
 
-
-// 
+//
 export async function fetchItems(): Promise<Item[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/items`);
@@ -137,6 +123,19 @@ export async function fetchItems(): Promise<Item[] | undefined> {
     }
   } catch (error) {
     console.error('Error fetching items:', error);
+    return [];
+  }
+}
+
+//function to fetchBoxesByLocker
+export async function fetchItemsByBox(boxId: number): Promise<Item[] | undefined> {
+  try {
+    const response = await instance.get(`${baseUrl}/items/box/${boxId}`);
+    if (Array.isArray(response.data.data)) {
+      return response.data.data;
+    }
+  } catch (error) {
+    console.error(`Error fetching boxes for locker ${boxId}:`, error);
     return [];
   }
 }
@@ -153,7 +152,10 @@ export async function fetchBookingsByUserId(userId: number): Promise<Booking[] |
   }
 }
 
-export async function fetchBookingsByUserIdAndState(userId: number, state: string): Promise<Booking[] | undefined> {
+export async function fetchBookingsByUserIdAndState(
+  userId: number,
+  state: string
+): Promise<Booking[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/bookings/users/${userId}/state/${state}`);
     if (Array.isArray(response.data.data)) {
@@ -191,6 +193,24 @@ export async function deleteBookingById(bookingId: number): Promise<void> {
     }
   } catch (error) {
     console.error(`Error trying to delete booking ${bookingId}:`, error);
-    throw error; 
+    throw error;
+  }
+}
+
+export async function createBooking(data: any): Promise<void> {
+  try {
+    const response = await instance.post(`${baseUrl}/bookings`, data);
+    console.log('Booking created:', response.data); // Successful response
+    return response.data; // Return the response data to the caller
+  } catch (error) {
+    // Check if error is an AxiosError (for better insight)
+    if (axios.isAxiosError(error)) {
+      // Log Axios error
+      console.error('Axios error details:', error.response?.data || error.message);
+    } else {
+      // General error handling
+      console.error('Unexpected error:', error);
+    }
+    throw error; // Re-throw the error for further handling by the calling function
   }
 }
