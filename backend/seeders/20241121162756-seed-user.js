@@ -39,6 +39,26 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        name: "John",
+        surname: "Doe",
+        username: "john.doe@gmail.com",
+        password: hashedPassword2,
+        avatar: "imagen",
+        role: "MANAGER",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        name: "Jane",
+        surname: "Smith",
+        username: "jane.smith@gmail.com",
+        password: hashedPassword1,
+        avatar: "imagen",
+        role: "MANAGER",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
     ]);
   },
 
