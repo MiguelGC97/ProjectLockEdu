@@ -14,6 +14,9 @@ app.use(cors({ origin: 'http://localhost:5173' }));
 
 app.use(express.urlencoded({ extended: true }));
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 // Public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
