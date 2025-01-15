@@ -1,5 +1,5 @@
 module.exports = (app) => {
-  const reportLogController = require("../controllers/reportLog.controller.js");
+  const reportLog = require("../controllers/reportLog.controller.js");
   const auth = require("../middlewares/auth.js");
   const permissions = require("../middlewares/permissions.js");
 
@@ -8,32 +8,32 @@ module.exports = (app) => {
   router.get(
     "/",
     auth.isAuthenticated,
-    permissions.authorize(["MANAGER", "TEACHER"]),
-    reportLogController.getAllReportLogs
+    permissions.authorize(["ADMIN", "MANAGER","TEACHER"]),
+    reportLog.getAllReportLogs
   );
   router.get(
     "/:id",
     auth.isAuthenticated,
-    permissions.authorize(["MANAGER", "TEACHER"]),
-    reportLogController.getReportLogById
+    permissions.authorize(["ADMIN", "MANAGER", "TEACHER"]),
+    reportLog.getReportLogById
   );
   router.post(
     "/",
     auth.isAuthenticated,
-    permissions.authorize(["MANAGER", "TEACHER"]),
-    reportLogController.createReportLog
+    permissions.authorize(["ADMIN", "MANAGER", "TEACHER"]),
+    reportLog.createReportLog
   );
   router.put(
     "/:id",
     auth.isAuthenticated,
-    permissions.authorize(["MANAGER", "TEACHER"]),
-    reportLogController.updateReportLog
+    permissions.authorize(["ADMIN", "MANAGER", "TEACHER"]),
+    reportLog.updateReportLog
   );
   router.delete(
     "/:id",
     auth.isAuthenticated,
-    permissions.authorize(["MANAGER", "TEACHER"]),
-    reportLogController.deleteReportLog
+    permissions.authorize(["ADMIN", "MANAGER", "TEACHER"]),
+    reportLog.deleteReportLog
   );
 
   app.use("/api/reportLog", router);

@@ -57,6 +57,7 @@ require("./routes/type.routes")(app);
 require("./routes/item.routes")(app);
 require("./routes/booking.routes")(app);
 require("./routes/report.routes")(app);
+require("./routes/reportLog.routes")(app);
 
 // Function to run seeders
 async function runSeeders() {
@@ -68,6 +69,7 @@ async function runSeeders() {
     require('./seeders/20241121162756-seed-user.js'),
     require('./seeders/20241121163651-seed-report.js'),
     require('./seeders/20241210162620-seed-bookings.js'),
+    require('./seeders/20250114162620-seed-reportLog'),
   ];
 
   console.log("Running seeders...");
