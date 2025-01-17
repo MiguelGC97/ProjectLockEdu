@@ -8,31 +8,31 @@ module.exports = (app) => {
   router.get(
     "/",
     auth.isAuthenticated,
-    permissions.authorize(["ADMIN", "MANAGER","TEACHER"]),
+    permissions.authorize(["ADMIN", "MANAGER"]),
     reportLog.getAllReportLogs
   );
   router.get(
     "/:id",
     auth.isAuthenticated,
-    permissions.authorize(["ADMIN", "MANAGER", "TEACHER"]),
+    permissions.authorize(["ADMIN", "MANAGER"]),
     reportLog.getReportLogById
   );
   router.post(
     "/",
     auth.isAuthenticated,
-    permissions.authorize(["ADMIN", "MANAGER", "TEACHER"]),
+    permissions.authorize(["ADMIN", "MANAGER"]),
     reportLog.createReportLog
   );
   router.put(
     "/:id",
     auth.isAuthenticated,
-    permissions.authorize(["ADMIN", "MANAGER", "TEACHER"]),
+    permissions.authorize(["ADMIN", "MANAGER"]),
     reportLog.updateReportLog
   );
   router.delete(
     "/:id",
     auth.isAuthenticated,
-    permissions.authorize(["ADMIN", "MANAGER", "TEACHER"]),
+    permissions.authorize(["ADMIN", "MANAGER"]),
     reportLog.deleteReportLog
   );
 
