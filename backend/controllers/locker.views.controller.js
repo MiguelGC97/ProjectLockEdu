@@ -3,7 +3,9 @@ const Locker = db.locker;
 
 exports.store = async (req, res) => {
     if (!req.body.description) {
-        return res.status(400).json({ message: "Description is required" });
+        return res.status(400).json({ message: "Se requiere la descripción del casillero." });
+    } else if (!req.body.location) {
+        return res.status(400).json({ message: "Se requiere la ubicación del casillero." });
     }
 
     const newLocker = {
