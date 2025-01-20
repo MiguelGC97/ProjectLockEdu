@@ -9,16 +9,26 @@ const path = require('path');
 const app = express();
 const db = require("./models");
 
+const session = require('express-session');
+const { store } = require('./controllers/reportLog.views.controller.js');
+const sequelizeStore = require('connect-session-sequelize')(session.Store);
 
 app.use(cors({ origin: 'http://localhost:5173' }));
 
 app.use(express.urlencoded({ extended: true }));
 
 app.set('view engine', 'ejs');
-// app.set('views', path.join(__dirname, 'views'));
 
 // Public directory
-// app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Session middleware 
+const sessionStore = new sequelizeStore({
+  db: db.sequelize,
+}); 
+
+db.sessionStore = sessionStore;
+db.session = session;
 
 // Middleware to check JWT token
 app.use(bodyParser.json());
@@ -99,3 +109,18 @@ db.sequelize.sync({ force: true }).then(async () => {
 }).catch((error) => {
   console.error("Error syncing database:", error);
 });
+
+db,sessionStore.sync();
+
+app.use(
+  db.session({
+    secret: process.env.SESSION_SECRET,
+    store: db.sessionStore,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { 
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours, time in milliseconds of how long the session will last   
+     },
+  })
+);  
+
