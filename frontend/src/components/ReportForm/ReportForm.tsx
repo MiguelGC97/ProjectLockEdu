@@ -1,10 +1,10 @@
 ﻿import { useEffect, useState } from 'react';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { Box, Button, createTheme, MantineProvider, NativeSelect, Textarea } from '@mantine/core';
-import { fetchBoxesByLocker, fetchFormIncident, fetchLockers } from '@/services/fetch';
+import { fetchBoxesByLocker, fetchFormIncident, fetchLockers } from '../../services/fetch';
 import { Boxs, Locker } from '@/types/types';
 import classes from './ReportForm.module.css';
-import { useAuth } from '@/hooks/AuthProvider';
+import { useAuth } from '../../hooks/AuthProvider';
 
 const theme = createTheme({
   components: {

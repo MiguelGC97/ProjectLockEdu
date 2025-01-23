@@ -1,4 +1,4 @@
-﻿import instance, { baseUrl } from '@/services/api';
+﻿import instance, { baseUrl } from './api';
 import { BoxType, Incidence, Item, Locker, Booking } from '@/types/types';
 
 // function to fetch lockers
