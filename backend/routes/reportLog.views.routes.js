@@ -13,5 +13,5 @@ module.exports = (app) => {
 
   router.post("/:id", reportLog.update);
 
-  app.use("/reportlog", router);
+  app.use("/reportLog", router);
 };

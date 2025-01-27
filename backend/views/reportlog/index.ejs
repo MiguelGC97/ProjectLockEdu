@@ -1,15 +1,20 @@
-//wiew to show the comments of the reportlog this is just a template    
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
-    <p>hola holita</p>
-    <% reportLog.forEach((r)=> { %>
-        <p><%= r.comment %></p>
-    <% }) %>
+    <%- include('../partials/sidemenu.ejs'); %>
+        <p>Listado de incidencias</p>
+        <% reportLog.forEach((rl)=> { %>
+            <p>
+                <%= rl.comment %>
+            </p>
+            <% }) %>
 </body>
+
 </html>

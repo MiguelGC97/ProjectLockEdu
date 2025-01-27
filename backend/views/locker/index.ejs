@@ -1,5 +1,4 @@
-﻿//view to show all lockers. this is just a template
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -9,12 +8,13 @@
 </head>
 
 <body>
-    <p>Listado de armarios</p>
-    <% lockers.forEach((locker)=> { %>
-        <p>
-            <%= locker.comment %>
-        </p>
-        <% }) %>
+    <%- include('../partials/sidemenu.ejs'); %>
+        <p>Listado de armarios</p>
+        <% lockers.forEach((locker)=> { %>
+            <p>
+                <%= locker.description %>
+            </p>
+            <% }) %>
 </body>
 
 </html>

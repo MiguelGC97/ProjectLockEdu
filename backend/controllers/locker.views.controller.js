@@ -31,7 +31,7 @@ exports.index = (req, res) => {
 const findAll = (req, res) => {
     Locker.findAll().then((data) => {
         console.log(data);
-        return res.render("locker/index", { lockers: data });
+        return res.render("locker/index", { lockers: data, activeRoute: "lockers" });
     });
 };
 
