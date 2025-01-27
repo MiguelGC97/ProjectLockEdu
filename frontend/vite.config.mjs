@@ -1,12 +1,11 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
-  plugins: [react(), tsconfigPaths()],
+  plugins: [react()],
   test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: './vitest.setup.mjs',
+    globals: true, // Enable globals like `describe`, `it`, `expect`
+    environment: 'jsdom', // Required for DOM testing
+    setupFiles: './vitest.setup.mjs', // Point to your setup file
   },
 });

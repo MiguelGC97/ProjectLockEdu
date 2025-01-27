@@ -8,13 +8,15 @@ const path = require('path');
 
 const app = express();
 const db = require("./models");
-const port = process.env.PORT || 4000;
+
 
 app.use(cors({ origin: 'http://localhost:5173' }));
 
 app.use(express.urlencoded({ extended: true }));
 
-// Public directory
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Middleware to check JWT token
@@ -58,6 +60,13 @@ require("./routes/item.routes")(app);
 require("./routes/booking.routes")(app);
 require("./routes/report.routes")(app);
 
+require("./routes/reportLog.routes")(app);
+
+require("./routes/reportLog.views.routes")(app);
+
+
+require("./routes/locker.views.routes")(app);
+
 // Function to run seeders
 async function runSeeders() {
   const seeders = [
@@ -68,6 +77,7 @@ async function runSeeders() {
     require('./seeders/20241121162756-seed-user.js'),
     require('./seeders/20241121163651-seed-report.js'),
     require('./seeders/20241210162620-seed-bookings.js'),
+    require('./seeders/20250114162620-seed-reportLog.js'),
   ];
 
   console.log("Running seeders...");

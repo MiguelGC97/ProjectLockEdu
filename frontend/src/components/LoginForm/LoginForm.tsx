@@ -14,8 +14,8 @@ import {
   Title,
   useMantineTheme,
 } from '@mantine/core';
-import { useAuth } from '@/hooks/AuthProvider';
-import { login as loginService } from '@/services/authService';
+import { useAuth } from '../../hooks/AuthProvider';
+import { login as loginService } from '../../services/authService';
 import classes from '../../App.module.css';
 
 const LoginForm: React.FC = () => {
@@ -67,6 +67,7 @@ const LoginForm: React.FC = () => {
 
         {/* Username field */}
         <TextInput
+          data-testid="username-input"
           leftSection={<IconAt />}
           radius="xl"
           c="white"
@@ -80,6 +81,7 @@ const LoginForm: React.FC = () => {
 
         {/* Password field */}
         <PasswordInput
+          data-testid="password-input"
           leftSection={<IconKey />}
           radius="xl"
           c="white"
@@ -105,13 +107,14 @@ const LoginForm: React.FC = () => {
 
         {/* Error message if login fails */}
         {error && (
-          <Text c="red" size="sm" align="center" mt="md">
+          <Text data-testid="login-error" c="red" size="sm" align="center" mt="md">
             {error}
           </Text>
         )}
 
         {/* Login button */}
         <Button
+          data-testid="submit-button"
           miw="40%"
           color="myPurple.4"
           radius="xl"
