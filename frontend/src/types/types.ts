@@ -1,0 +1,125 @@
+﻿//for Locker component
+export interface Locker {
+  id: number;
+  description: string;
+  number: number;
+  location: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BoxType {
+  id: number;
+  description: string;
+  filename: string;
+  lockerId: number;
+  createdAt: string;
+  updatedAt: string;
+  locker: Locker;
+}
+
+export interface LockersProps {
+  onLockerClick: (locker: Locker) => void;
+}
+
+export interface BoxesProps {
+  locker: Locker;
+  onBoxClick: (box: BoxType) => void;
+  onReturn: () => void;
+}
+
+export interface Booking {
+  id: number;
+  items: Item[];
+  userId: number;
+  description: string;
+  checkOut: string;
+  checkIn: string;
+  state: 'pending' | 'withdrawn' | 'returned';
+}
+
+export interface Item {
+  id: number;
+  description: string;
+  state: string;
+  boxId: number;
+  typeId: number;
+  createdAt: string;
+  updatedAt: string;
+  box: BoxType;
+}
+
+export interface ObjectsProps {
+  box: BoxType;
+  onReturn: () => void;
+  onCreateBooking: (box: BoxType, items: string[]) => void;
+}
+
+export interface BookingFormProps {
+  box: BoxType;
+  items: string[]; // This is the array of selected item ids.
+  onReturnToBox: () => void;
+  onReturn: () => void;
+  onBookingCreated: () => void;
+}
+
+export interface BookingHistoryProps {
+  locker: Locker;
+  box: BoxType;
+  booking: Booking;
+}
+
+export interface PendingProps {
+  bookings: Booking[];
+  locker?: Locker;
+  box?: BoxType;
+  booking?: Booking;
+}
+
+export interface Incidence {
+  id: number;
+  content: string;
+  isSolved: boolean;
+  createdAt: string;
+  boxId: number;
+  user: {
+    avatar: string;
+    name: string;
+  };
+}
+
+//enum for roles
+
+enum roles {
+  TEACHER,
+  ADMIN,
+  MANAGER,
+}
+//type for user -- created primarily for AuthProvider
+export interface UserType {
+  id: number;
+  name: string;
+  surname: string;
+  password: string;
+  username: string;
+  avatar: string;
+  role: roles;
+}
+
+export interface Incidence {
+  id: number;
+  content: string;
+  isSolved: boolean;
+  createdAt: string;
+  boxId: number; user: {
+    avatar: string;
+    name: string;
+  };
+
+}
+
+export interface Boxs {
+  id: number;
+  description: string;
+  createdAt: string;
+};

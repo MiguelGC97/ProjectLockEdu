@@ -1,0 +1,49 @@
+﻿h2 {
+  color: var(--mantine-color-white);
+  padding: -10;
+}
+
+Box {
+  border-radius: 50px;
+}
+
+Text {
+  color: var(--mantine-color-white);
+}
+
+.label {
+ color: #ffffff;
+}
+
+.input {
+  border: 1px solid var(--mantine-color-violet-filled);
+}
+
+.hour {
+  font-size: 3rem;
+}
+
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: red;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #b30000;
+}
+
+Table {
+  min-width: 500px;
+}
