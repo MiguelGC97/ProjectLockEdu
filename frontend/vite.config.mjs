@@ -1,8 +1,14 @@
-import { defineConfig } from 'vite';
+import path from 'path';
 import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'), // Nota: eliminé la barra inicial para evitar problemas
+    },
+  },
   test: {
     globals: true, // Enable globals like `describe`, `it`, `expect`
     environment: 'jsdom', // Required for DOM testing
