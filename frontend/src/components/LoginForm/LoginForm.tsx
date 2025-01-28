@@ -127,7 +127,7 @@ const LoginForm: React.FC = () => {
         </Button>
 
         {/* Link to the registration page (optional) */}
-        <Anchor c="white" href="" size="sm" mt="md" align="center" block>
+        <Anchor c="white" href="" size="sm" mt="md" align="center">
           ¿Olvidaste tu contraseña?
         </Anchor>
       </Flex>
