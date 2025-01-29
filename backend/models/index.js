@@ -34,6 +34,7 @@ db.user = require("./user.model.js")(sequelize, Sequelize);
 db.booking = require("./booking.model.js")(sequelize, Sequelize);
 db.report = require("./report.model.js")(sequelize, Sequelize);
 db.notification = require("./notification.model.js")(sequelize, Sequelize);
+db.reportLog = require("./reportLog.model.js")(sequelize, Sequelize); 
 
 //Locker-box Association
 db.locker.hasMany(db.box, {
@@ -126,6 +127,32 @@ db.notification.belongsTo(db.user, {
   foreignKey: 'userId',
   targetKey: 'id',
 });
+
+// reportsLog relations 
+
+db.reportLog.belongsTo(db.report, {
+  foreignKey: 'reportId',
+  targetKey: 'id',
+})
+
+db.report.hasMany(db.reportLog, {   
+  foreignKey: 'reportId',
+  sourceKey: 'id',
+  onDelete: 'CASCADE',
+})
+
+//reportLog belongs to user with the role of manager
+ 
+db.reportLog.belongsTo(db.user, {
+  foreignKey: 'userId',
+  targetKey: 'id',
+})
+
+db.user.hasMany(db.reportLog, {   
+  foreignKey: 'userId',
+  sourceKey: 'id',
+  onDelete: 'CASCADE',
+})
 
 //Booking-notification association
 db.booking.hasMany(db.notification, {
