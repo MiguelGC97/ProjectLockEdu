@@ -33,7 +33,7 @@ const findAll = (req, res) => {
   ReportLog.findAll().then((data) => {
     console.log("dESPUES DEL AWAIT........................");
     console.log(data);
-    return res.render("reportlog/index", { reportLog: data });
+    return res.render("reportLog/index", { reportLog: data, activeRoute: "reportlog" });
   });
   // } catch (error) {
   //   res.status(500).json({ message: error.message });
@@ -47,7 +47,7 @@ exports.create = (req, res) => {
 exports.edit = (req, res) => {
   const id = req.params.id;
 
-  reportLog
+  ReportLog
     .findByPk(id)
     .then((data) => {
       res.render("reportlog/edit", { data: data });

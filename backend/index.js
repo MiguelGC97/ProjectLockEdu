@@ -18,6 +18,7 @@ app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.urlencoded({ extended: true }));
 
 app.set('view engine', 'ejs');
+// app.set('views', path.join(__dirname, 'views'));
 
 // Public directory
 app.use(express.static(path.join(__dirname, 'public')));
@@ -74,6 +75,9 @@ require("./routes/report.routes")(app);
 require("./routes/reportLog.routes")(app);
 
 require("./routes/reportLog.views.routes")(app);
+
+
+require("./routes/locker.views.routes")(app);
 
 // Function to run seeders
 async function runSeeders() {
