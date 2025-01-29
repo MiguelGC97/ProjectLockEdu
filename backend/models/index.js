@@ -33,6 +33,7 @@ db.item = require("./item.model.js")(sequelize, Sequelize);
 db.user = require("./user.model.js")(sequelize, Sequelize);
 db.booking = require("./booking.model.js")(sequelize, Sequelize);
 db.report = require("./report.model.js")(sequelize, Sequelize);
+db.notification = require("./notification.model.js")(sequelize, Sequelize);
 db.reportLog = require("./reportLog.model.js")(sequelize, Sequelize); 
 
 //Locker-box Association
@@ -116,6 +117,17 @@ db.user.hasMany(db.report, {
   onDelete: 'CASCADE',
 })
 
+//User-notification association
+db.user.hasMany(db.notification, {
+  foreignKey: 'userId',
+  sourceKey: 'id',
+  onDelete: 'CASCADE',
+});
+db.notification.belongsTo(db.user, {
+  foreignKey: 'userId',
+  targetKey: 'id',
+});
+
 // reportsLog relations 
 
 db.reportLog.belongsTo(db.report, {
@@ -130,7 +142,7 @@ db.report.hasMany(db.reportLog, {
 })
 
 //reportLog belongs to user with the role of manager
-
+ 
 db.reportLog.belongsTo(db.user, {
   foreignKey: 'userId',
   targetKey: 'id',
@@ -142,27 +154,16 @@ db.user.hasMany(db.reportLog, {
   onDelete: 'CASCADE',
 })
 
-//Box.hasMany(Item);
-//Item.belongsTo(Box);
-
-//Box.hasMany(Incident);
-//Incident.belongsTo(Box);
-
-//Type.hasMany(Item);
-//Item.belongsTo(Type);
-
-//User.hasMany(Incident);
-//Incident.belongsTo(User);
-
-//User.hasMany(Booking);
-//Booking.belongsTo(User);
-
-//Item.belongsToMany(Booking, { through: 'ItemBookings' /* options */ });
-//Booking.belongsToMany(Item, { through: 'ItemBookings' /* options */ });
-
-//User.belongsToMany(Incident, { thorugh: 'UserIncidents' /* options */ });
-//Incident.belongsToMany(User, { thorugh: 'UserIncidents' /* options */ });
-
+//Booking-notification association
+db.booking.hasMany(db.notification, {
+  foreignKey: 'bookingId',
+  sourceKey: 'id',
+  onDelete: 'CASCADE',
+});
+db.notification.belongsTo(db.booking, {
+  foreignKey: 'bookingId',
+  targetKey: 'id',
+});
 
 
 module.exports = db;
