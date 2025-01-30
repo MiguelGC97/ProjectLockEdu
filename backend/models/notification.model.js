@@ -21,7 +21,10 @@ module.exports = (sequelize) => {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
         },
-        type: DataTypes.ENUM('warning', 'reminder', 'info'),
+        type: {
+            type: DataTypes.ENUM('warning', 'reminder', 'info'),
+            allowNull: false,
+        },
     });
     return Notification;
 }
