@@ -1,0 +1,43 @@
+
+services:
+  db:
+    image: mysql
+    env_file:
+      - ./backend/.env
+    volumes:
+      - lockedu-mysql-db:/var/lib/mysql
+    ports:
+      - "3307:3306" # Change the first number for different port
+    expose:
+      - "3306"
+    networks:
+      - lockedu-network
+  api:
+    image: lockedu_api_backend
+    build: ./backend
+    env_file:
+      - ./backend/.env
+    ports:
+      - "8080:8080" # Change the first number for different port
+    expose:
+      - "8080" # 443 is default for https
+    networks:
+      - lockedu-network
+
+  frontend:
+    image: lockedu_frontend
+    build: ./frontend
+    ports:
+      - "5173:5173" # Change the first number for different port
+    expose:
+      - "5173" # 443 is default for https
+    networks:
+      - lockedu-network
+
+volumes:
+  lockedu-mysql-db:
+    driver: local
+
+networks:
+  lockedu-network:
+    driver: bridge

@@ -95,7 +95,7 @@ db.sequelize.sync({ force: true }).then(async () => {
   await runSeeders(); // Run seeders after syncing database
 
 
-  const PORT = process.env.DB_PORT || 8080;
+  const PORT = process.env.HOST_PORT || 8080;
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);
   });

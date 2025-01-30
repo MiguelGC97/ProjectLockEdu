@@ -3,15 +3,15 @@ module.exports = (app) => {
 
   var router = require("express").Router();
 
-  router.post("/", reportLog.store);
+  // router.post("/", reportLog.store);
 
-  router.get("/", reportLog.index);
+  // router.get("/", reportLog.index);
 
-  router.get("/create", reportLog.create);
+  // router.get("/create", reportLog.create);
 
-  router.get("/:id", reportLog.edit);
+  // router.get("/:id", reportLog.edit);
 
-  router.post("/:id", reportLog.update);
+  // router.post("/:id", reportLog.update);
 
   app.use("/reportLog", router);
 };
