@@ -17,6 +17,11 @@ app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+//Redirects to notifications, only for testing
+app.get("/", (req, res) => {
+  res.redirect("/notification");
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Middleware to check JWT token
@@ -64,6 +69,7 @@ require("./routes/reportLog.routes")(app);
 
 require("./routes/reportLog.views.routes")(app);
 
+require("./routes/notification.views.routes")(app);
 
 require("./routes/locker.views.routes")(app);
 

@@ -11,7 +11,7 @@ exports.store = async (req, res) => {
     return res.status(400).json({ message: "bookingId is required" });
   }
   const notification = {
-    userId: req.body.id,
+    userId: req.body.userId,
     bookingId: req.body.bookingId,
     isRead: false,
     content: req.body.content,
@@ -37,7 +37,7 @@ exports.index = (req, res) => {
 const findAll = (req, res) => {
   Notification.findAll()
     .then(data => {
-      return res.render('notifications/index', { notiications: data });
+      return res.render('notifications/index', { notifications: data, activeRoute: "notifications"  });
     })
     .catch(err => {
       return res.render("error", {

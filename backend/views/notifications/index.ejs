@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <%- include('../partials/sidemenu.ejs'); %>
+        <p>Notificaciones</p>
+        <% notifications.forEach((notification)=> { %>
+            <p>
+                <%= notification.content %>
+            </p>
+            <% }) %>
+
+            <a href="/notification/create">Crear nueva notificación</a>
+</body>
+
+</html>
