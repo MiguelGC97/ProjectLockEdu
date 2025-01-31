@@ -62,7 +62,7 @@ exports.logout = (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       console.error(err);
-      return res.redirect('/motorbikes');
+      return res.redirect('/reportLog');
     }
     
     res.clearCookie('connect.sid'); // Explicitly clear the session cookie

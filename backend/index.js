@@ -1,46 +1,54 @@
+// app.js
 require('dotenv').config();
-
-const jwt = require('jsonwebtoken');
 const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
 const path = require('path');
-
-const app = express();
-const db = require("./models");
-
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
 const session = require('express-session');
 const { store } = require('./controllers/reportLog.views.controller.js');
 const sequelizeStore = require('connect-session-sequelize')(session.Store);
+const db = require("./models");
 
+// Initialize express app
+const app = express();
+
+// Middleware Configurations
 app.use(cors({ origin: 'http://localhost:5173' }));
-
 app.use(express.urlencoded({ extended: true }));
-
-app.set('view engine', 'ejs');
-// app.set('views', path.join(__dirname, 'views'));
-
-// Public directory
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Session middleware 
-const sessionStore = new sequelizeStore({
-  db: db.sequelize,
-}); 
-
-db.sessionStore = sessionStore;
-db.session = session;
-
-// Middleware to check JWT token
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(function (req, res, next) {
-  var token = req.headers['authorization'];
+// Session store setup
+const sessionStore = new sequelizeStore({
+  db: db.sequelize,
+});
+db.sessionStore = sessionStore;
+db.session = session;
+
+// Session middleware
+app.use(
+  db.session({
+    secret: process.env.SESSION_SECRET,
+    store: db.sessionStore,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 24 * 60 * 60 * 1000 }, // 24 hours session
+  })
+);
+
+// Set view engine
+app.set('view engine', 'ejs');
+// Public static files
+app.use(express.static(path.join(__dirname, 'public')));
+
+// JWT middleware to validate token
+app.use((req, res, next) => {
+  let token = req.headers['authorization'];
   if (!token) return next();
 
-  if (req.headers.authorization.indexOf('Basic ') === 0) {
-    const base64Credentials = req.headers.authorization.split(' ')[1];
+  if (token.startsWith('Basic ')) {
+    const base64Credentials = token.split(' ')[1];
     const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
     const [username, password] = credentials.split(':');
     req.body.username = username;
@@ -49,7 +57,7 @@ app.use(function (req, res, next) {
   }
 
   token = token.replace('Bearer ', '');
-  jwt.verify(token, process.env.JWT_SECRET, function (err, user) {
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
       return res.status(401).json({
         error: true,
@@ -63,23 +71,15 @@ app.use(function (req, res, next) {
   });
 });
 
-// Routes
-require("./routes/locker.routes")(app);
-require("./routes/box.routes")(app);
-require("./routes/user.routes")(app);
-require("./routes/type.routes")(app);
-require("./routes/item.routes")(app);
-require("./routes/booking.routes")(app);
-require("./routes/report.routes")(app);
+// Route Imports
+const routes = [
+  'locker', 'box', 'user', 'type', 'item', 'booking',
+  'report', 'reportLog', 'reportLog.views', 'user.views', 'locker.views'
+];
 
-require("./routes/reportLog.routes")(app);
+routes.forEach(route => require(`./routes/${route}.routes`)(app));
 
-require("./routes/reportLog.views.routes")(app);
-
-
-require("./routes/locker.views.routes")(app);
-
-// Function to run seeders
+// Seeders
 async function runSeeders() {
   const seeders = [
     require('./seeders/20241121192833-seed-lockers.js'),
@@ -100,32 +100,19 @@ async function runSeeders() {
   console.log("Seeders completed.");
 }
 
-// Sync database and start server
-db.sequelize.sync({ force: true }).then(async () => {
-  console.log("Database synced: tables dropped and recreated.");
+// Sync Database and start server
+db.sequelize.sync({ force: true })
+  .then(async () => {
+    console.log("Database synced: tables dropped and recreated.");
 
-  await runSeeders(); // Run seeders after syncing database
+    await runSeeders(); // Run seeders after syncing database
+    await db.sessionStore.sync(); // Sync session store
 
-
-  const PORT = process.env.DB_PORT || 8080;
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}.`);
-  });
-}).catch((error) => {
-  console.error("Error syncing database:", error);
-});
-
-db,sessionStore.sync();
-
-app.use(
-  db.session({
-    secret: process.env.SESSION_SECRET,
-    store: db.sessionStore,
-    resave: false,
-    saveUninitialized: false,
-    cookie: { 
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours, time in milliseconds of how long the session will last   
-     },
+    const PORT = process.env.DB_PORT || 8080;
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}.`);
+    });
   })
-);  
-
+  .catch((error) => {
+    console.error("Error syncing database:", error);
+  });

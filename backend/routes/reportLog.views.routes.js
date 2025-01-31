@@ -7,7 +7,7 @@ const authSession = require("../middlewares/auth.session.js");
 
   router.get("/",  authSession.isAuthenticated, reportLog.index);
 
-  router.get("/create", authSession.isAuthenticated, breportLog.create);
+  router.get("/create", authSession.isAuthenticated, reportLog.create);
 
   router.get("/:id", authSession.isAuthenticated, reportLog.edit);
 
