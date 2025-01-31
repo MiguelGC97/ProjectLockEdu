@@ -19,6 +19,5 @@ module.exports = (sequelize) => {
         description: DataTypes.STRING,
         state: DataTypes.ENUM('booked', 'available'),
     });
-
     return Item;
 }
