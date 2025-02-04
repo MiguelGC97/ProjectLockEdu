@@ -17,8 +17,8 @@ const Settings: React.FC = () => {
   return (
     <>
       <SideMenu />
-      <Flex justify="flex-end">
-        <Avatar size="lg" src={user?.avatar} alt="User profile photo" bd="3px solid white" />
+      <Flex p="xl" direction="column" w="100%">
+        <UserBar />
       </Flex>
       
     </>
