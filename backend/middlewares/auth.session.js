@@ -5,11 +5,11 @@ const User = db.user;
 
 exports.login = async (req, res) => {
   if (req.session.user) {
-    return res.redirect("/dashboard");
+    return res.redirect("/reportLog");
   }
 
-  //admin dashboard page will be rendered if user is already logged in
-  res.render("login", { title: "Login" });
+  //reportLog page will be rendered if user is already logged in
+  res.render("login");
 };
 
 exports.signin = async (req, res) => {
@@ -42,9 +42,10 @@ exports.signin = async (req, res) => {
       id: data.id,
     };
 
-    return res.redirect("/dashboard");
+    return res.redirect("/reportLog");
   } catch (err) {
     return res.render("error", {
+      
       message: err.message || "Some error occurred while retrieving dashboard.",
     });
   }
@@ -52,7 +53,7 @@ exports.signin = async (req, res) => {
 
 exports.isAuthenticated = async (req, res, next) => {
   if (!req.session.user) {
-    return res.redirect("/login");
+    return res.redirect("/users/login");
   }
 
   next();
