@@ -128,6 +128,17 @@ db.notification.belongsTo(db.user, {
   targetKey: 'id',
 });
 
+//Booking-notification association
+db.booking.hasMany(db.notification, {
+  foreignKey: 'bookingId',
+  targetKey: 'id',
+});
+
+db.notification.belongsTo(db.booking, {
+  foreignKey: 'bookingId',
+  targetKey: 'id',
+});
+
 // reportsLog relations 
 
 db.reportLog.belongsTo(db.report, {

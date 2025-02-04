@@ -1,5 +1,7 @@
 const db = require("../models");
 const Notification = db.notification;
+const Booking = db.booking;
+const User = db.user;
 
 exports.addNotification = async (req, res) => {
   try {
@@ -13,7 +15,36 @@ exports.addNotification = async (req, res) => {
 
 exports.getAll = async (req, res) => {
   try {
-    const notifications = await Notification.findAll();
+    const notifications = await Notification.findAll({
+      include: [
+        {
+          model: User,
+          attributes: ['name', 'surname', 'role'],
+        },
+        {
+          model: Booking,
+          attributes: ['checkOut', 'checkIn'],
+          include: [
+            {
+              model: Item,
+              attributes: [],
+              include: [
+                {
+                  model: Box,
+                  attributes: ['id'],
+                  include: [
+                    {
+                      model: Locker,
+                      attributes: ['id'],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        }
+      ]
+    });
     res.status(200).json({ data: notifications });
   } catch (error) {
     res.status(500).json({ error: error.message });
