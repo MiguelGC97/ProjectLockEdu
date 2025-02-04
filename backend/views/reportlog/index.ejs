@@ -1,20 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
+    <link rel="stylesheet" href="/css/reportable.css" />
+  </head>
 
-<body>
-    <%- include('../partials/sidemenu.ejs'); %>
-        <p>Listado de incidencias</p>
-        <% reportLog.forEach((rl)=> { %>
-            <p>
-                <%= rl.comment %>
-            </p>
-            <% }) %>
-</body>
+  <body>
+    <body>
+        <%- include('../partials/sidemenu.ejs'); %>
+        <div class="table-container">
+          <p>Listado de incidencias</p>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Manager</th>
+                <th>Profesor</th>
+                <th>Casilla</th>
+                <th>Comentario</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% reportLog.forEach((rl) => { %>
+                <tr>
+                  <td>
+                    <div class="profile-container">
+                      <img src="<%= rl.managerImage %>" alt="Manager" class="profile-image">
+                      <span><%= rl.userId %></span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="profile-container">
+                      <img src="<%= rl.professorImage %>" alt="Profesor" class="profile-image">
+                      <span><%= rl.professorName %></span>
+                    </div>
+                  </td>
+                  <td><%= rl.casilla %></td>
+                  <td class="<%= rl.commentClass %>"><%= rl.comment %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </body>
+  </body>
 
+
+
+  
 </html>
+
