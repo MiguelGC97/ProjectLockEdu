@@ -1,4 +1,7 @@
 const db = require("../models");
+const Locker = db.locker;
+const Report = db.report;
+const Box = db.box;
 const ReportLog = db.reportLog;
 
 exports.store = async (req, res) => {
@@ -6,38 +9,53 @@ exports.store = async (req, res) => {
     return res.status(400).json({ message: "Comment is required" });
   }
 
-  const reportLog = {
-    comment: req.body.comment,
-    userId: req.user.id,
-    reportId: req.body.reportId,
-  };
+  try {
+    const newReportLog = await ReportLog.create({
+      comment: req.body.comment, // manager comment
+      userId: req.user.id, // manager
+      reportId: req.body.reportId, // report
+    });
 
-  ReportLog.create = async (req, res) => {
-    try {
-      const newReportLog = await ReportLog.create(reportLog);
-      res.status(201).json({ data: newReportLog });
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  };
+    res.status(201).json({ data: newReportLog });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 };
 
 exports.index = (req, res) => {
   console.log("INDEX........................");
   findAll(req, res);
 };
-
 const findAll = (req, res) => {
-  console.log("findAll........................");
-  // try {
-  ReportLog.findAll().then((data) => {
-    console.log("dESPUES DEL AWAIT........................");
-    console.log(data);
-    return res.render("reportLog/index", { reportLog: data, activeRoute: "reportlog" });
-  });
-  // } catch (error) {
-  //   res.status(500).json({ message: error.message });
-  // }
+  ReportLog.findAll({
+    include: [
+      {
+        model: Report,
+        attributes: ["boxId", "isSolved"],
+        include: [
+          {
+            model: Box,
+            attributes: ["description"],
+            include: [
+              {
+                model: Locker,
+                attributes: ["description", "location"],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  })
+    .then((data) => {
+      res.render("reportLog/index", {
+        reportLog: data,
+        activeRoute: "reportlog",
+      });
+    })
+    .catch((error) => {
+      res.status(500).json({ message: error.message });
+    });
 };
 
 exports.create = (req, res) => {
@@ -47,8 +65,7 @@ exports.create = (req, res) => {
 exports.edit = (req, res) => {
   const id = req.params.id;
 
-  ReportLog
-    .findByPk(id)
+  ReportLog.findByPk(id)
     .then((data) => {
       res.render("reportlog/edit", { data: data });
     })
@@ -62,7 +79,7 @@ exports.edit = (req, res) => {
 exports.update = async (req, res) => {
   const id = req.params.id;
 
-  reportLog
+  ReportLog
     .update(req.body, {
       where: { id: id },
     })

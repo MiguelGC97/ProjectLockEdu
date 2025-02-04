@@ -15,9 +15,10 @@
           <table class="table">
             <thead>
               <tr>
+                <th>Id Incidencia</th>
                 <th>Manager</th>
-                <th>Profesor</th>
                 <th>Casilla</th>
+                <th>Armario</th>
                 <th>Comentario</th>
               </tr>
             </thead>
@@ -27,20 +28,23 @@
                   <td>
                     <div class="profile-container">
                       <img src="<%= rl.managerImage %>" alt="Manager" class="profile-image">
-                      <span><%= rl.userId %></span>
+                      <span><%= rl.reportId %></span>
                     </div>
                   </td>
                   <td>
                     <div class="profile-container">
                       <img src="<%= rl.professorImage %>" alt="Profesor" class="profile-image">
-                      <span><%= rl.professorName %></span>
+                      <span><%= rl.userId %></span>
                     </div>
                   </td>
-                  <td><%= rl.casilla %></td>
-                  <td class="<%= rl.commentClass %>"><%= rl.comment %></td>
+                  <td><%= rl.Report && rl.Report.Box ? rl.Report.Box.description : "N/A" %></td>
+                  <td><%= rl.Report && rl.Report.Box && rl.Report.Box.Locker ? rl.Report.Box.Locker.description : "N/A" %></td>
+                  <td><%= rl.comment %></td>
                 </tr>
               <% }) %>
             </tbody>
+            
+            
           </table>
         </div>
       </body>
