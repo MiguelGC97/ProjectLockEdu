@@ -3,6 +3,7 @@ const Locker = db.locker;
 const Report = db.report;
 const Box = db.box;
 const ReportLog = db.reportLog;
+const User = db.user; 
 
 exports.store = async (req, res) => {
   if (!req.body.comment) {
@@ -23,31 +24,39 @@ exports.store = async (req, res) => {
 };
 
 exports.index = (req, res) => {
-  console.log("INDEX........................");
+ 
   findAll(req, res);
 };
+
 const findAll = (req, res) => {
   ReportLog.findAll({
     include: [
       {
         model: Report,
-        attributes: ["boxId", "isSolved"],
+        attributes: ["id","isSolved"],
         include: [
           {
             model: Box,
-            attributes: ["description"],
+            attributes: ["id","description"],
             include: [
               {
                 model: Locker,
-                attributes: ["description", "location"],
+                attributes: ["id","description", "location"],
               },
             ],
           },
         ],
       },
+      {
+        model: User, 
+        attributes: ["id", "name", "avatar"],
+      },
     ],
   })
     .then((data) => {
+
+      console.log(data);
+
       res.render("reportLog/index", {
         reportLog: data,
         activeRoute: "reportlog",
@@ -57,6 +66,7 @@ const findAll = (req, res) => {
       res.status(500).json({ message: error.message });
     });
 };
+
 
 exports.create = (req, res) => {
   return res.render("reportlog/create");

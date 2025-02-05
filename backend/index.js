@@ -77,7 +77,7 @@ const routes = [
   'report', 'reportLog', 'reportLog.views', 'user.views', 'locker.views'
 ];
 
-routes.forEach(route => require(`./routes/${route}.routes`)(app));
+routes.forEach(route => require(`./routes/${route}.routes.js`)(app));
 
 // Seeders
 async function runSeeders() {
