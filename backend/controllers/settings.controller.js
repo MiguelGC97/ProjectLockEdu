@@ -13,7 +13,7 @@ exports.addSettings = async (req, res) => {
 
 exports.getAll = async (req, res) => {
   try {
-    const settings = await Type.findAll();
+    const settings = await Settings.findAll();
     res.status(200).json({ data: settings });
   } catch (error) {
     res.status(500).json({ error: error.message });

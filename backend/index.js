@@ -59,6 +59,7 @@ require("./routes/type.routes")(app);
 require("./routes/item.routes")(app);
 require("./routes/booking.routes")(app);
 require("./routes/report.routes")(app);
+require("./routes/settings.routes")(app);
 
 require("./routes/reportLog.routes")(app);
 
@@ -79,6 +80,7 @@ async function runSeeders() {
     require('./seeders/20241210162620-seed-bookings.js'),
     require('./seeders/20241121192926-seed-notifications.js'),
     require('./seeders/20250114162620-seed-reportLog.js'),
+    require('./seeders/20241121192927-seed-settings.js'),
   ];
 
   console.log("Running seeders...");
