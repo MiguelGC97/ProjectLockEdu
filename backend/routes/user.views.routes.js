@@ -3,7 +3,7 @@ module.exports = app => {
 
   var router = require("express").Router();
 
-  
+
   router.get("/login", authSession.login);
 
   // Sign in a user
@@ -11,6 +11,7 @@ module.exports = app => {
 
   // Logout
   router.post("/logout", authSession.logout);
+
 
   app.use('/users', router);
 };
