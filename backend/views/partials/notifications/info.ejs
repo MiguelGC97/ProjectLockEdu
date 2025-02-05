@@ -2,34 +2,26 @@
   <div class="notification-content">
     <p class="notification-title">Información</p>
     <% if (notification.user) { %>
-    <p>
-      <%= notification.user.name %>
-      <%= notification.user.surname %> - <strong>
-        <%= notification.user.role %>
-      </strong>
-    </p>
+    <p><%= notification.user.name %> <%= notification.user.surname %> - <strong><%= notification.user.role %> </strong> </p>
     <% } %>
 
-
-    <% let boxes=new Set(); let lockers=new Set(); notification.booking.items.forEach(item=> {
-                    if (item.box) {
+    
+        <% 
+            let boxes = new Set();
+            let lockers = new Set();
+            notification.booking.items.forEach(item => {
+                if (item.box) {
                     boxes.add(item.box.id);
                     if (item.box.locker) {
-                    lockers.add(item.box.locker.id);
+                        lockers.add(item.box.locker.id);
                     }
-                    }
-                    });
-                    %>
+                }
+            });
+        %>
 
-    <p>
-      <%= notification.content %> en A<%=
-                                Array.from(lockers).join(', ') %>-<%= Array.from(boxes).join('
-                                , ') %> pendiente de recoger el <%= new Date(notification.booking.checkOut).toLocaleDateString('
-                                es-ES') %>
-      a las
-      <%= new Date(notification.booking.checkOut).toLocaleTimeString('es-ES', {
-                                    hour: '2-digit' , minute: '2-digit' }) %>
-    </p>
-
+        <p><%= notification.content %> en A<%= Array.from(lockers).join(', ') %>-<%= Array.from(boxes).join(', ') %> pendiente de recoger el <strong><%= new Date(notification.booking.checkOut).toLocaleDateString('es-ES') %></strong> 
+            a las 
+            <strong><%= new Date(notification.booking.checkOut).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) %></p></strong>
+    
   </div>
 </div>
