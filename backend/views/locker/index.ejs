@@ -9,12 +9,13 @@
 
 <body>
     <%- include('../partials/sidemenu.ejs'); %>
-        <p>Listado de armarios</p>
-        <% lockers.forEach((locker)=> { %>
-            <p>
-                <%= locker.description %>
-            </p>
-            <% }) %>
+        <%- include('../partials/userbar.ejs'); %>
+            <p>Listado de armarios</p>
+            <% lockers.forEach((locker)=> { %>
+                <p>
+                    <%= locker.description %>
+                </p>
+                <% }) %>
 </body>
 
 </html>
