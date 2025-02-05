@@ -1,6 +1,9 @@
 const db = require("../models");
 const Notification = db.notification;
 const Booking = db.booking;
+const Item = db.item;
+const Box = db.box;
+const Locker = db.locker;
 const User = db.user;
 
 exports.addNotification = async (req, res) => {

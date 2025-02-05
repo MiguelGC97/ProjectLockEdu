@@ -65,6 +65,9 @@ require("./routes/item.routes")(app);
 require("./routes/booking.routes")(app);
 require("./routes/report.routes")(app);
 
+//Only for testing
+require("./routes/notification.routes")(app);
+
 require("./routes/reportLog.routes")(app);
 
 require("./routes/reportLog.views.routes")(app);

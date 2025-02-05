@@ -1,5 +1,10 @@
 const db = require("../models");
 const Notification = db.notification;
+const User = db.user;
+const Booking = db.booking;
+const Item = db.item;
+const Box = db.box;
+const Locker = db.locker;
 const { Op } = require("sequelize");
 
 exports.store = async (req, res) => {
@@ -35,7 +40,38 @@ exports.index = (req, res) => {
 };
 
 const findAll = (req, res) => {
-  Notification.findAll()
+  Notification.findAll(
+    {
+      include: [
+        {
+          model: User,
+          attributes: ['name', 'surname', 'role'],
+        },
+        {
+          model: Booking,
+          attributes: ['id','checkOut', 'checkIn'],
+          include: [
+            {
+              model: Item,
+              attributes: ['id'],
+              include: [
+                {
+                  model: Box,
+                  attributes: ['id'],
+                  include: [
+                    {
+                      model: Locker,
+                      attributes: ['id'],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    }
+  )
     .then(data => {
       return res.render('notifications/index', { notifications: data, activeRoute: "notifications"  });
     })
