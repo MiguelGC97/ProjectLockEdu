@@ -1,4 +1,16 @@
-﻿#userbarContainer {
+﻿@fontface {
+  font-family: "Quicksand";
+  src: url("../fonts/Quicksand-Regular.ttf");
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Quicksand", sans-serif;
+  box-sizing: border-box;
+}
+
+#userbarContainer {
   width: 100%;
   height: 10vh;
   background-color: #000;
@@ -41,4 +53,12 @@
   color: #ffff;
   align-items: flex-end;
   justify-content: center;
+}
+
+.menu-link-logout > img {
+  background-color: transparent;
+}
+
+form {
+  background-color: transparent;
 }

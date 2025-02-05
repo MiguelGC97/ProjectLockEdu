@@ -5,7 +5,7 @@ const User = db.user;
 
 exports.login = async (req, res) => {
   if (req.session.user) {
-    return res.redirect("/reportLog");
+    return res.redirect("/locker");
   }
 
   //reportLog page will be rendered if user is already logged in
@@ -42,10 +42,10 @@ exports.signin = async (req, res) => {
       id: data.id,
     };
 
-    return res.redirect("/reportLog");
+    return res.redirect("/locker");
   } catch (err) {
     return res.render("error", {
-      
+
       message: err.message || "Some error occurred while retrieving dashboard.",
     });
   }
@@ -63,11 +63,22 @@ exports.logout = (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       console.error(err);
-      return res.redirect('/reportLog');
+      return res.redirect('/locker');
     }
-    
+
     res.clearCookie('connect.sid'); // Explicitly clear the session cookie
 
     res.redirect('/users/login');
   });
+};
+
+exports.setUserLocals = (req, res, next) => {
+  console.log("Session user:", req.session.user); // Debug session
+  if (req.session.user) {
+    res.locals.user = req.session.user;
+  } else {
+    res.locals.user = null;
+  }
+  console.log("Res.locals.user:", res.locals.user); // Debug res.locals
+  next();
 };

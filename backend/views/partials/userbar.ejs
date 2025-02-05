@@ -5,27 +5,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="css/userbar.css">
+    <link rel="stylesheet" href="/css/userbar.css">
 </head>
 
 <body>
     <!-- This is the entire component for the user bar -->
-    <div id="userbarContainer">
-        <section class="userbar">
-            <div class="userbar-info">
-                <span class="user-name">
-                    <% user.name %>
-                        <% user.surname %>
-                </span>
-                <span class="user-email">
-                    <% user.username %>
-                </span>
-            </div>
-            <div class="user-img-container"><img class="userbar-img" src="images/girl-picture.jpg"
-                    alt="A girl's picture">
-            </div>
-        </section>
-    </div>
+    <% if (user) { %>
+        <div id="userbarContainer">
+            <section class="userbar">
+                <div class="userbar-info">
+                    <span class="user-name">
+                        <%= user.name %>
+                    </span>
+                    <span class="user-email">
+                        <%= user.username %>
+                    </span>
+                </div>
+                <div class="user-img-container"><img class="userbar-img" src="/images/girl-picture.jpg"
+                        alt="A girl's picture">
+                </div>
+            </section>
+        </div>
+
+        <% } %>
 
 </body>
 
