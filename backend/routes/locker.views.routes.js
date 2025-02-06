@@ -11,7 +11,9 @@
 
     router.get("/:id", locker.edit);
 
-    router.put("/:id", locker.update);
+    router.post("/update/:id", locker.update);
+
+    router.post("/:id", locker.destroy);
 
     app.use("/locker", router);
 };
