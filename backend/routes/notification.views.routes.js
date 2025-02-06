@@ -4,7 +4,7 @@ module.exports = app => {
     var router = require("express").Router();
 
     // Save a new Motorbike
-    router.post("/create", notifications.store);
+    router.post("/", notifications.store);
 
     // Retrieve all notifications
     router.get("/", notifications.index);

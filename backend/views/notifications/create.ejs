@@ -1,17 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear notificación</title>
-</head>
-
-<body>
+<div>
     <h1>Crear nueva notificación</h1>
-    <form action="/notification/create" method="POST">
+    <form action="/notification" method="POST">
         <label for="type">Tipo de notificación:</label>
-        <select name="type" id="type">
+        <select name="type" id="type" onchange="updateContent()" required>
+            <option value="" selected disabled>Selecciona un tipo</option>
             <option value="info">Información</option>
             <option value="reminder">Recordatorio</option>
             <option value="warning">Aviso</option>
@@ -27,12 +19,26 @@
         <br>
 
         <label for="content">Contenido:</label>
-        <textarea id="content" name="content" required></textarea>
+        <p id="contentText">Selecciona un tipo de notificación</p>
+        <input type="hidden" id="content" name="content">
         <br>
 
         <button type="submit">Crear</button>
     </form>
-    <a href="/notification">Volver a notificaciones</a>
-</body>
+</div>
 
-</html>
+<script>
+function updateContent() {
+    const type = document.getElementById("type").value;
+    const contentText = document.getElementById("contentText");
+    const contentInput = document.getElementById("content");
+    const messages = {
+        info: "Nueva reserva en",
+        reminder: "Tiene una recogida próxima",
+        warning: "Tiene una devolución retrasada"
+    };
+    contentText.textContent = messages[type] || "Selecciona un tipo de notificación";
+    contentInput.value = messages[type] || "";
+}
+</script>
+

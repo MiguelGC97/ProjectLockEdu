@@ -72,17 +72,45 @@ const findAll = (req, res) => {
       ],
     }
   )
-    .then(data => {
-      return res.render('notifications/index', { notifications: data, activeRoute: "notifications"  });
-    })
-    .catch(err => {
-      return res.render("error", {
-        message: err.message || "Some error occurred while retrieving notiications."
-      });
+  .then(data => {
+    
+    const now = new Date();
+
+    const notifications = data.map(notification => {
+      if (notification.booking && notification.booking.checkOut) {
+        const checkOut = new Date(notification.booking.checkOut);
+        const diffMs = checkOut - now;
+
+        if (diffMs < 0) {
+          return {
+            ...notification.toJSON(),
+            timeMessage: "Tiempo expirado"
+          };
+        }
+
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+        return {
+          ...notification.toJSON(), 
+          diffHours,
+          diffMinutes,
+          timeMessage: `${diffHours} horas y ${diffMinutes} minutos`,
+        };
+      }
+      return { ...notification.toJSON(), diffHours: null, diffMinutes: null };
     });
+
+    return res.render('notifications/index', { notifications, activeRoute: "notifications" });
+  })
+  .catch(err => {
+    return res.render("error", {
+      message: err.message || "Some error occurred while retrieving notifications."
+    });
+  });
 }
 
-// Show Form to create a new Motorbike
+
 exports.create = (req, res) => {
   return res.render("notifications/create");
 };

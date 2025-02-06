@@ -1,13 +1,18 @@
+<%
+  const roleTranslations = {
+    ADMIN: "Admin",
+    TEACHER: "Docente",
+    MANAGER: "Manager"
+  };
+  const translatedRole = roleTranslations[notification.user.role] || notification.user.role;
+%>
+
 <div class="notification-card reminder">
   <div class="notification-content">
     <p class="notification-title">Recordatorio</p>
-    <%
-        const now = new Date();
-        const checkOut = new Date(notification.booking.checkOut);
-        const diffMs = checkOut - now;
-        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-        const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-    %>
-    <p><%= notification.content %> en <%= diffHours %> horas y <%= diffMinutes %> minutos.</p>
+    <% if (notification.user) { %>
+      <p><%= notification.user.name %> <%= notification.user.surname %> - <strong><%= translatedRole %> </strong> </p>
+      <% } %>
+    <p><%= notification.content %>: <%= notification.timeMessage %></p>
   </div>
 </div>

@@ -31,8 +31,8 @@ module.exports = {
       },
       {
         name: "Miguel",
-        surname: "Angel",
-        username: "Manager@gmail.com",
+        surname: "Gutiérrez",
+        username: "miguelgc@gmail.com",
         password: hashedPassword1,
         avatar: "imgen",
         role: "MANAGER",

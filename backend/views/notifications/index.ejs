@@ -13,25 +13,28 @@
 
 <body>
   <%- include('../partials/sidemenu.ejs'); %>
-  <div id="notificationsContainer">
+  <div id="mainContainer">
+    <div id="notificationsContainer">
 
-    <div id="notificationsTitleCard">
-      <h1>Notificaciones</h1>
+      <div id="notificationsTitleCard">
+        <h1>Notificaciones</h1>
+      </div>
+      <div>
+          <% notifications.forEach((notification)=> { %>
+          <% if (notification.type==='warning' ) { %>
+          <%- include('../partials/notifications/warning.ejs', { notification }) %>
+          <% } else if (notification.type==='reminder' ) { %>
+          <%- include('../partials/notifications/reminder.ejs', { notification }) %>
+          <% } else if (notification.type==='info' ) { %>
+          <%- include('../partials/notifications/info.ejs', { notification }) %>
+          <% } %>
+          <% }) %>
+      </div>
     </div>
-    <div>
-        <% notifications.forEach((notification)=> { %>
-        <% if (notification.type==='warning' ) { %>
-        <%- include('../partials/notifications/warning.ejs', { notification }) %>
-        <% } else if (notification.type==='reminder' ) { %>
-        <%- include('../partials/notifications/reminder.ejs', { notification }) %>
-        <% } else if (notification.type==='info' ) { %>
-        <%- include('../partials/notifications/info.ejs', { notification }) %>
-        <% } %>
-        <% }) %>
-    </div>
-    
 
-    <a href="/notification/create">Crear nueva notificación</a>
+    <div id="formContainer">
+      <%- include('create.ejs'); %>
+    </div>
   </div>
 
 </body>
