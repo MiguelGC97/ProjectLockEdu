@@ -5,16 +5,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="/css/locker.css">
 </head>
 
 <body>
+
     <%- include('../partials/sidemenu.ejs'); %>
-        <p>Listado de armarios</p>
-        <% lockers.forEach((locker)=> { %>
-            <p>
-                <%= locker.description %>
-            </p>
-            <% }) %>
+        <%- include('../partials/userbar.ejs'); %>
+
+            <main id="mainContainer">
+
+
+                <!-- locker content -->
+                <div id="mainContentContainer">
+                    <section id="lockersSection">
+                        <div class="locker-section-header">
+                            <h1 class="locker-section-title">Armarios</h1>
+                            <!-- <div class="title-and-search">
+                            <input type="text" id="search" placeholder="Buscar objeto">
+                        </div> -->
+                        </div>
+
+                        <div class="locker-flex">
+
+                            <% lockers.forEach((locker)=> { %>
+
+
+                                <div class="locker-box">
+                                    <div class="info-and-image">
+                                        <div class="locker-info">
+                                            <span class="locker-name">
+                                                <%= locker.description %>
+                                            </span>
+                                            <span class="locker-location">
+                                                <%= locker.location %>
+                                            </span>
+                                        </div>
+                                        <img src="/images/locker-icon.svg" alt="Locker's icon">
+                                    </div>
+                                    <div class="action-buttons">
+                                        <a href="/locker/<%= locker.id %>"><img class="edit-icon"
+                                                src="images/edit-icon.svg" alt="Edit icon"></a>
+                                        <button class="see-boxes-button">Ver casillas</button>
+                                        <!-- Form for deleting locker -->
+                                        <form action="/locker/<%= locker.id %>" method="POST" class="delete-form">
+                                            <button type="submit" class="delete-button">
+                                                <img class="delete-button" src="/images/trash-icon.svg"
+                                                    alt="Delete icon">
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <% }) %>
+
+
+                        </div>
+
+                        <a href="/locker/create" class="add-locker-button">
+                            <button>+</button>
+                            <p>Añadir</p>
+                            <a />
+
+
+                    </section>
+                </div>
+
+            </main>
+
+
 </body>
 
 </html>

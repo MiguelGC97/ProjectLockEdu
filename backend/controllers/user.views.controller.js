@@ -8,28 +8,52 @@ exports.login = (req, res) => {
   return res.render("login");
 };
 
-// Sign in
 exports.signin = (req, res) => {
   // Validate request
   if (!req.body.username || !req.body.password) {
     return res.render("error", {
-      message: "Username and password are mandatory!"
+      message: "Correo y contraseña son obligatorios!"
     });
   }
 
   const user = {
     username: req.body.username,
     password: req.body.password
-  }
+  };
 
-  // Save reportLog in the database
+  // Find the user in the database
   User.findOne({ where: { username: user.username } })
     .then(data => {
-      findAll(req, res);
+      if (data && data.password === user.password) { // Assuming plain text password for simplicity
+        req.session.user = data; // Store user data in session
+        return res.redirect("/locker"); // Redirect to the home page or dashboard
+      } else {
+        return res.render("error", {
+          message: "Invalid username or password!"
+        });
+      }
     })
     .catch(err => {
       return res.render("error", {
-        message: err.message || "Some error occurred while creating the Motorbike."
+        message: err.message || "Some error occurred while signing in."
       });
     });
 };
+
+exports.index = (req, res) => {
+  findCurrentUser(req, res);
+};
+
+const findCurrentUser = (req, res) => {
+  const user = {
+    username: req.body.username,
+    avatar: req.body.avatar,
+    name: req.body.name,
+  }
+
+
+  User.findOne({ where: { username: user.username } }).then(user => {
+    res.render("partials/userbar", { user: user });
+  })
+
+}
