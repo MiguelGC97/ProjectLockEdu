@@ -3,11 +3,11 @@ module.exports = (app) => {
 const authSession = require("../middlewares/auth.session.js");
   var router = require("express").Router();
 
-  router.post("/", authSession.isAuthenticated, reportLog.store);
+  router.post("/create", authSession.isAuthenticated, reportLog.store);
 
-  router.get("/",  authSession.isAuthenticated, reportLog.index);
+  router.get("/list",  authSession.isAuthenticated, reportLog.index);
 
-  router.get("/create", authSession.isAuthenticated, reportLog.create);
+  router.get("/",  authSession.isAuthenticated, reportLog.create);
 
   router.get("/:id", authSession.isAuthenticated, reportLog.edit);
 

@@ -1,29 +1,13 @@
-//view that will be rendered when the user wants to create a new report log. this is just a template.
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>comment form</title>
-</head>
-
-<body>
-    <form action="/report" method="POST">
-        <label for="reportId">reportId</label>
-        <input type="text" name="reportId" placeholder="reportId">
-        <br>
-        <label for="userId">userId</label>
-        <input type="text" name="userId" placeholder="userId">
-        <br>
-        <label for="comment">comment</label>
-        <textarea name="comment" placeholder="comment"></textarea>
-        <br>
-
-        <button type="submit">Submit</button>
-    </form>
-
-</body>
-
-</html>
+<h2>Agregar Nuevo Reporte</h2>
+<form action="/reportlog" method="POST">
+    <label for="reportId">Report ID:</label>
+    <input type="text" name="reportId" placeholder="reportId">
+    <br>
+    <label for="userId">User ID:</label>
+    <input type="text" name="userId" placeholder="userId">
+    <br>
+    <label for="comment">Comentario:</label>
+    <textarea name="comment" placeholder="comment"></textarea>
+    <br>
+    <button type="submit">Enviar</button>
+</form>

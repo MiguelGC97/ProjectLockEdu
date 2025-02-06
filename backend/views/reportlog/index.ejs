@@ -1,74 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Document</title>
-  <link rel="stylesheet" href="/css/reportable.css" />
-</head>
-
-<body>
-  <%- include('../partials/sidemenu.ejs'); %>
-    <div class="table-container">
-      <p>Listado de incidencias</p>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Id Incidencia</th>
-            <th>Manager</th>
-            <th>Casilla</th>
-            <th>Armario</th>
-            <th>Comentario</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% reportLog.forEach((rl)=> { %>
-            <tr>
-
-              <td>
-                <%= rl.report.dataValues.id %>
-              </td>
-              <td>
-                <div class="profile-container">
-
-                  <!-- <img
-                  src="<%= rl.user.dataValues.avatar ? rl.user.dataValues.avatar : '/images/default.png' %>"
-                  alt="Manager"
-                  class="profile-image"
-                /> -->
-                  <span>
-                    <%= rl.user.dataValues.name %>
-                  </span>
-                </div>
-              </td>
-              <td>
-                <%= rl.report.dataValues.box && rl.report.dataValues.box.dataValues.description ?
-                  rl.report.dataValues.box.dataValues.description : 'Sin descripción' %>
-              </td>
-              <td>
-                <%= rl.report.dataValues.box && rl.report.dataValues.box.dataValues.locker &&
-                  rl.report.dataValues.box.dataValues.locker.dataValues.description ?
-                  rl.report.dataValues.box.dataValues.locker.dataValues.description : 'Sin descripción' %>
-              </td>
-              <td>
-                <%= rl.comment ? rl.comment : 'Sin comentario' %>
-              </td>
-              <td>
-                <% if (rl.report.dataValues.isSolved) { %>
-                  <span style="color: green;">Resuelto</span>
-                <% } else { %>
-                  <span style="color: red;">Pendiente</span>
-                <% } %>
-              </td>
-
-              </select>
-            </tr>
-            <% }); %>
-        </tbody>
-      </table>
-    </div>
-</body>
-
-</html>
+<h1>Listado de Reportes</h1>
+<div class="table-container">
+  <p>Listado de incidencias</p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Id Incidencia</th>
+        <th>Manager</th>
+        <th>Casilla</th>
+        <th>Armario</th>
+        <th>Comentario</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% reportLog.forEach((rl)=> { %>
+        <tr>
+          <td><%= rl.report.id %></td>
+          <td><%= rl.user.name %></td>
+          <td><%= rl.report.box ? rl.report.box.description : 'Sin descripción' %></td>
+          <td><%= rl.report.box && rl.report.box.locker ? rl.report.box.locker.description : 'Sin descripción' %></td>
+          <td><%= rl.comment || 'Sin comentario' %></td>
+          <td>
+            <% if (rl.report.isSolved) { %>
+              <span style="color: green;">Resuelto</span>
+            <% } else { %>
+              <span style="color: red;">Pendiente</span>
+            <% } %>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>

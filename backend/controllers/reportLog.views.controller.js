@@ -5,6 +5,20 @@ const Box = db.box;
 const ReportLog = db.reportLog;
 const User = db.user; 
 
+exports.reportPage = (req, res) => {
+  res.render("reportLog/reportPage", { activeRoute: "reportlog" });
+}
+
+exports.create = (req, res) => {
+  return res.render("reportLog/report", { activeRoute: "reportlog" });
+};
+
+
+exports.index = (req, res) => {
+ 
+  findAll(req, res);
+};
+
 exports.store = async (req, res) => {
   if (!req.body.comment) {
     return res.status(400).json({ message: "Comment is required" });
@@ -21,11 +35,6 @@ exports.store = async (req, res) => {
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
-};
-
-exports.index = (req, res) => {
- 
-  findAll(req, res);
 };
 
 const findAll = (req, res) => {
@@ -57,7 +66,7 @@ const findAll = (req, res) => {
 
       console.log(data);
 
-      res.render("reportLog/index", {
+      res.render("reportLog/report", {
         reportLog: data,
         activeRoute: "reportlog",
       });
@@ -68,16 +77,12 @@ const findAll = (req, res) => {
 };
 
 
-exports.create = (req, res) => {
-  return res.render("reportlog/create");
-};
-
 exports.edit = (req, res) => {
   const id = req.params.id;
 
   ReportLog.findByPk(id)
     .then((data) => {
-      res.render("reportlog/edit", { data: data });
+      res.render("reportLog/edit", { data: data });
     })
     .catch((err) => {
       res.status(500).send({
@@ -110,3 +115,4 @@ exports.update = async (req, res) => {
       });
     });
 };
+
