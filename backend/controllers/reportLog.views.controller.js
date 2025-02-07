@@ -12,7 +12,7 @@ exports.create = (req, res) => {
 
 exports.store = async (req, res) => {
   const { comment, reportId } = req.body;
-  const userId = req.user.id; // Obtener el userId de la sesión
+  const userId = req.session.user.id; // Obtener el userId de la sesión
 
   if (!comment || !reportId) {
     return res.status(400).json({ message: "Todos los campos son obligatorios" });
@@ -22,7 +22,7 @@ exports.store = async (req, res) => {
     const newReportLog = await ReportLog.create({
       comment,   
       reportId,
-      userId: req.user.id
+      userId,
     });
 
     res.status(201).json({ data: newReportLog });
@@ -61,7 +61,7 @@ const findAll = (req, res) => {
       },
       {
         model: User, 
-        attributes: ["id", "name", "avatar"],
+        attributes: ["id", "name", "avatar", "role"],
       },
     ],
   })
