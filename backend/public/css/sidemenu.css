@@ -85,4 +85,8 @@ ul {
   color: white;
 }
 
+#logout-form > button {
+  all: unset;
+}
+
 /* we need to add activeRoute: locker as sent data in the routes */

@@ -1,5 +1,6 @@
+<link rel="stylesheet" href="/css/notifications/createStyles.css">
 <div>
-    <h1>Crear nueva notificación</h1>
+    <h2>Crear nueva notificación</h2>
     <form action="/notification" method="POST">
         <label for="type">Tipo de notificación:</label>
         <select name="type" id="type" onchange="updateContent()" required>
@@ -10,20 +11,28 @@
         </select>
         <br>
 
-        <label for="userId">ID del usuario:</label>
-        <input type="number" id="userId" name="userId" required>
+        <label for="userId">Usuario</label>
+        <select name="userId" id="userId" required>
+            <option value="" selected disabled>Selecciona a un usuario</option>
+            <% users.forEach(user => { %>
+                <option value= "<%= user.id %>" data-bookings='<%= JSON.stringify(user.bookings) %>'><%= user.name %> <%= user.surname %></option>
+            <% }) %>
+
+        </select>
         <br>
 
-        <label for="bookingId">ID de la reserva:</label>
-        <input type="number" id="bookingId" name="bookingId" required>
+        <label for="bookingId">Reservas:</label>
+        <select name="bookingId" id="bookingId" required>
+            <option value="" selected disabled>Selecciona una reserva</option>
+        </select>
         <br>
 
-        <label for="content">Contenido:</label>
-        <p id="contentText">Selecciona un tipo de notificación</p>
+        <label for="content">Texto que se mostrará:</label>
+        <p id="contentText">Selecciona un tipo de notificación para ver el texto.</p>
         <input type="hidden" id="content" name="content">
         <br>
 
-        <button type="submit">Crear</button>
+        <button class="formButton" type="submit"><strong>Crear</strong></button>
     </form>
 </div>
 
@@ -40,5 +49,20 @@ function updateContent() {
     contentText.textContent = messages[type] || "Selecciona un tipo de notificación";
     contentInput.value = messages[type] || "";
 }
+
+document.getElementById("userId").addEventListener("change", function() {
+    const selectedUser = this.options[this.selectedIndex];
+    const bookings = JSON.parse(selectedUser.getAttribute("data-bookings") || "[]");
+    
+    const bookingSelect = document.getElementById("bookingId");
+    bookingSelect.innerHTML = '<option value="" selected disabled>Selecciona una reserva</option>';
+    
+    bookings.forEach(booking => {
+        const option = document.createElement("option");
+        option.value = booking.id;
+        option.textContent = `Reserva número ${booking.id}`;
+        bookingSelect.appendChild(option);
+    });
+});
 </script>
 

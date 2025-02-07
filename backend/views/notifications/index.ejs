@@ -11,31 +11,36 @@
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
 </head>
 
+
 <body>
   <%- include('../partials/sidemenu.ejs'); %>
-  <div id="mainContainer">
+  <%- include('../partials/userbar.ejs'); %>
+  <main id="mainContainer">
     <div id="notificationsContainer">
 
-      <div id="notificationsTitleCard">
-        <h1>Notificaciones</h1>
+      <div id="notificationsList">
+        <div id="notificationsTitleCard">
+          <h1>Notificaciones</h1>
+        </div>
+        <div>
+            <% notifications.forEach((notification)=> { %>
+            <% if (notification.type==='warning' ) { %>
+            <%- include('../partials/notifications/warning.ejs', { notification }) %>
+            <% } else if (notification.type==='reminder' ) { %>
+            <%- include('../partials/notifications/reminder.ejs', { notification }) %>
+            <% } else if (notification.type==='info' ) { %>
+            <%- include('../partials/notifications/info.ejs', { notification }) %>
+            <% } %>
+            <% }) %>
+        </div>
       </div>
-      <div>
-          <% notifications.forEach((notification)=> { %>
-          <% if (notification.type==='warning' ) { %>
-          <%- include('../partials/notifications/warning.ejs', { notification }) %>
-          <% } else if (notification.type==='reminder' ) { %>
-          <%- include('../partials/notifications/reminder.ejs', { notification }) %>
-          <% } else if (notification.type==='info' ) { %>
-          <%- include('../partials/notifications/info.ejs', { notification }) %>
-          <% } %>
-          <% }) %>
-      </div>
+      
     </div>
 
     <div id="formContainer">
       <%- include('create.ejs'); %>
     </div>
-  </div>
+  </main>
 
 </body>
 
