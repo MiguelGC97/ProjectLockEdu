@@ -9,21 +9,26 @@ const db = {};
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
 
 let sequelize;
+
 try {
-  if (dbConfig.use_env_variable) {
-    sequelize = new Sequelize(process.env[dbConfig.use_env_variable], dbConfig);
-  } else {
-    sequelize = new Sequelize(
-      dbConfig.DB,
-      dbConfig.USER,
-      dbConfig.PASSWORD,
-      dbConfig
-    );
-  }
+  sequelize = new Sequelize(
+    dbConfig.database,
+    dbConfig.username,
+    dbConfig.password,
+    {
+      host: dbConfig.host,
+      dialect: dbConfig.dialect,
+      port: dbConfig.port,
+      logging: dbConfig.logging
+    }
+  );
+
+  console.log("Database connection established successfully.");
 } catch (error) {
-  console.error("Error Sequelize is not able to iniciate:", error.message);
+  console.error("Error: Sequelize failed to initialize:", error.message);
   process.exit(1);
 }
+
 
 const sessionStore = new SequelizeStore({
   db: sequelize,

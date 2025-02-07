@@ -1,4 +1,3 @@
-// app.js
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
@@ -19,6 +18,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Set view engine
+app.set('view engine', 'ejs');
+// Public static files
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Session store setup
 const sessionStore = new sequelizeStore({
   db: db.sequelize,
@@ -37,10 +41,8 @@ app.use(
   })
 );
 
-// Set view engine
-app.set('view engine', 'ejs');
-// Public static files
-app.use(express.static(path.join(__dirname, 'public')));
+const authSession = require("./middlewares/auth.session.js");
+app.use(authSession.setUserLocals);
 
 // JWT middleware to validate token
 app.use((req, res, next) => {
@@ -70,6 +72,15 @@ app.use((req, res, next) => {
     }
   });
 });
+
+app.get("/", (req, res) => {
+  if (req.session.user) {
+    res.redirect("/locker");
+  } else {
+    res.redirect("/users/login");
+  }
+});
+
 
 // Route Imports
 const routes = [
@@ -108,7 +119,7 @@ db.sequelize.sync({ force: true })
     await runSeeders(); // Run seeders after syncing database
     await db.sessionStore.sync(); // Sync session store
 
-    const PORT = process.env.DB_PORT || 8080;
+    const PORT = process.env.HOST_PORT || 8080;
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}.`);
     });
