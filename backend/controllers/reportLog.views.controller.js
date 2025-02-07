@@ -5,30 +5,24 @@ const Box = db.box;
 const ReportLog = db.reportLog;
 const User = db.user; 
 
-exports.reportPage = (req, res) => {
-  res.render("reportLog/reportPage", { activeRoute: "reportlog" });
-}
 
 exports.create = (req, res) => {
-  return res.render("reportLog/report", { activeRoute: "reportlog" });
-};
-
-
-exports.index = (req, res) => {
- 
-  findAll(req, res);
+  return res.render("reportlog/create", { activeRoute: "reportlog"});
 };
 
 exports.store = async (req, res) => {
-  if (!req.body.comment) {
-    return res.status(400).json({ message: "Comment is required" });
+  const { comment, reportId } = req.body;
+  const userId = req.user.id; // Obtener el userId de la sesión
+
+  if (!comment || !reportId) {
+    return res.status(400).json({ message: "Todos los campos son obligatorios" });
   }
 
   try {
     const newReportLog = await ReportLog.create({
-      comment: req.body.comment, // manager comment
-      userId: req.user.id, // manager
-      reportId: req.body.reportId, // report
+      comment,   
+      reportId,
+      userId: req.user.id
     });
 
     res.status(201).json({ data: newReportLog });
@@ -36,6 +30,15 @@ exports.store = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+
+
+
+exports.index = (req, res) => {
+ 
+  findAll(req, res);
+};
+
 
 const findAll = (req, res) => {
   ReportLog.findAll({
@@ -66,7 +69,7 @@ const findAll = (req, res) => {
 
       console.log(data);
 
-      res.render("reportLog/report", {
+      res.render("reportlog/index", {
         reportLog: data,
         activeRoute: "reportlog",
       });
@@ -82,7 +85,7 @@ exports.edit = (req, res) => {
 
   ReportLog.findByPk(id)
     .then((data) => {
-      res.render("reportLog/edit", { data: data });
+      res.render("reportlog/edit", { data: data });
     })
     .catch((err) => {
       res.status(500).send({

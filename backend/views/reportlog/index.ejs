@@ -1,34 +1,46 @@
-<h1>Listado de Reportes</h1>
-<div class="table-container">
-  <p>Listado de incidencias</p>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Id Incidencia</th>
-        <th>Manager</th>
-        <th>Casilla</th>
-        <th>Armario</th>
-        <th>Comentario</th>
-        <th>Estado</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% reportLog.forEach((rl)=> { %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="/css/reportable.css">
+</head>
+<body>
+  <%- include ("../partials/sidemenu.ejs") %>
+  <div class="table-container">
+    <p>Log de reportes</p>
+    <table class="table">
+      <thead>
         <tr>
-          <td><%= rl.report.id %></td>
-          <td><%= rl.user.name %></td>
-          <td><%= rl.report.box ? rl.report.box.description : 'Sin descripción' %></td>
-          <td><%= rl.report.box && rl.report.box.locker ? rl.report.box.locker.description : 'Sin descripción' %></td>
-          <td><%= rl.comment || 'Sin comentario' %></td>
-          <td>
-            <% if (rl.report.isSolved) { %>
-              <span style="color: green;">Resuelto</span>
-            <% } else { %>
-              <span style="color: red;">Pendiente</span>
-            <% } %>
-          </td>
+          <th>Id Incidencia</th>
+          <th>Manager</th>
+          <th>Casilla</th>
+          <th>Armario</th>
+          <th>Comentario</th>
+          <th>Estado</th>
         </tr>
-      <% }); %>
-    </tbody>
-  </table>
-</div>
+      </thead>
+      <tbody>
+        <% reportLog.forEach((rl)=> { %>
+          <tr>
+            <td><%= rl.report.id %></td>
+            <td><%= rl.user.name %></td>
+            <td><%= rl.report.box ? rl.report.box.description : 'Sin descripción' %></td>
+            <td><%= rl.report.box && rl.report.box.locker ? rl.report.box.locker.description : 'Sin descripción' %></td>
+            <td><%= rl.comment || 'Sin comentario' %></td>
+            <td>
+              <% if (rl.report.isSolved) { %>
+                <span style="color: green;">Resuelto</span>
+              <% } else { %>
+                <span style="color: red;">Pendiente</span>
+              <% } %>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+  <%- include ("create.ejs") %>
+</body>
+</html>

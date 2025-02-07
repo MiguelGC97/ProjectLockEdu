@@ -1,13 +1,22 @@
-<h2>Agregar Nuevo Reporte</h2>
-<form action="/reportlog" method="POST">
-    <label for="reportId">Report ID:</label>
-    <input type="text" name="reportId" placeholder="reportId">
-    <br>
-    <label for="userId">User ID:</label>
-    <input type="text" name="userId" placeholder="userId">
-    <br>
-    <label for="comment">Comentario:</label>
-    <textarea name="comment" placeholder="comment"></textarea>
-    <br>
-    <button type="submit">Enviar</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/reportform.css" />
+  </head>
+  <body>
+    <div class="form-container">
+      <h2>Agregar Nuevo Reporte</h2>
+      <form class="report-form" action="/reportlog" method="POST">
+        <label for="reportId">Report ID:</label>
+        <input type="text" name="reportId" placeholder="reportId" />
+        <br />
+        <label for="comment">Comentario:</label>
+        <textarea name="comment" placeholder="comment"></textarea>
+        <br />
+        <button class="button-form" type="submit">Enviar</button>
+      </form>
+    </div>
+  </body>
+</html>
