@@ -1,63 +1,112 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #1e1e2f;
-    color: #fff;
-  
-    margin-left: 100px;
-    padding: 0;
-  }
+  font-family: Arial, sans-serif;
+  background-color: #393A58;
+  color: white;
+  display: flex;
 
+  height: 700px;
+  margin: 0;
+}
+
+.table-container {
+  width: 100%;
+  padding: 20px;
+  border: 1px solid white;
+  border-radius: 60px 0 25px 25px;
+  text-align: center;
+  overflow-x: auto;
+  margin-top:80px;
+  margin-left: 130px;
+  margin-right: 30px;
+}
+p {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 15px;
+ 
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  border-top: 1px solid white;
+}
+
+
+
+.table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: bold;
+  border-bottom: 2px solid white; 
+}
+
+.table th {
+  padding: 12px;
+  text-align: center; /* Centra el texto en los encabezados */
+  font-weight: bold;
+  border-bottom: 1px solid white; /* Líneas blancas */
+}
+
+.table td {
+  padding: 12px;
+  text-align: center; /* Centra el texto en las celdas */
+  border-bottom: 1px solid white; /* Líneas blancas */
+}
+
+
+
+.table tbody tr:hover {
+  background-color: #333366;
+}
+
+.solved {
+  color: green;
+}
+
+.pending {
+  color: red;
+}
+
+/* --- Media Queries para Móviles --- */
+@media (max-width: 768px) {
   .table-container {
-    padding: 20px;
-   
+    width: 95%;
+    padding: 10px;
   }
 
   .table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #292b3a;
-    border-radius: 10px;
-    overflow: hidden;
-  }
-
-  .table thead {
-    background-color: #383a4d;
+    font-size: 14px; /* Letra más pequeña en móvil */
   }
 
   .table th, .table td {
+    padding: 8px;
+  }
+
+  .table thead {
+    display: none; /* Oculta el encabezado en móvil */
+  }
+
+  .table tbody tr {
+    display: block;
+    margin-bottom: 10px;
+    border: 1px solid white;
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .table tbody td {
+    display: block;
+    text-align: right;
+    padding: 5px;
+    position: relative;
+  }
+
+  .table tbody td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 10px;
+    font-weight: bold;
     text-align: left;
-    padding: 15px;
   }
-
-  .table th {
-    color: #aaa;
-  }
-
-  .table tbody tr:nth-child(odd) {
-    background-color: #323545;
-  }
-
-  .table tbody tr:nth-child(even) {
-    background-color: #2a2c3a;
-  }
-
-  .profile-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .profile-image {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-
-  .comment-green {
-    color: #00ff7f;
-  }
-
-  .comment-orange {
-    color: #ffae42;
-  }
+}

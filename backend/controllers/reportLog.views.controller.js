@@ -1,54 +1,89 @@
 const db = require("../models");
+const Locker = db.locker;
+const Report = db.report;
+const Box = db.box;
 const ReportLog = db.reportLog;
+const User = db.user; 
 
-exports.store = async (req, res) => {
-  if (!req.body.comment) {
-    return res.status(400).json({ message: "Comment is required" });
-  }
 
-  const reportLog = {
-    comment: req.body.comment,
-    userId: req.user.id,
-    reportId: req.body.reportId,
-  };
-
-  ReportLog.create = async (req, res) => {
-    try {
-      const newReportLog = await ReportLog.create(reportLog);
-      res.status(201).json({ data: newReportLog });
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  };
+exports.create = (req, res) => {
+  return res.render("reportlog/create", { activeRoute: "reportlog"});
 };
 
+exports.store = async (req, res) => {
+  const { comment, reportId } = req.body;
+  const userId = req.session.user.id; // Obtener el userId de la sesión
+
+  if (!comment || !reportId) {
+    return res.status(400).json({ message: "Todos los campos son obligatorios" });
+  }
+
+  try {
+    const newReportLog = await ReportLog.create({
+      comment,   
+      reportId,
+      userId,
+    });
+
+    res.status(201).json({ data: newReportLog });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+
+
+
 exports.index = (req, res) => {
-  console.log("INDEX........................");
+ 
   findAll(req, res);
 };
 
+
 const findAll = (req, res) => {
-  console.log("findAll........................");
-  // try {
-  ReportLog.findAll().then((data) => {
-    console.log("dESPUES DEL AWAIT........................");
-    console.log(data);
-    return res.render("reportLog/index", { reportLog: data, activeRoute: "reportlog" });
-  });
-  // } catch (error) {
-  //   res.status(500).json({ message: error.message });
-  // }
+  ReportLog.findAll({
+    include: [
+      {
+        model: Report,
+        attributes: ["id","isSolved"],
+        include: [
+          {
+            model: Box,
+            attributes: ["id","description"],
+            include: [
+              {
+                model: Locker,
+                attributes: ["id","description", "location"],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        model: User, 
+        attributes: ["id", "name", "avatar", "role"],
+      },
+    ],
+  })
+    .then((data) => {
+
+      console.log(data);
+
+      res.render("reportlog/index", {
+        reportLog: data,
+        activeRoute: "reportlog",
+      });
+    })
+    .catch((error) => {
+      res.status(500).json({ message: error.message });
+    });
 };
 
-exports.create = (req, res) => {
-  return res.render("reportlog/create");
-};
 
 exports.edit = (req, res) => {
   const id = req.params.id;
 
-  ReportLog
-    .findByPk(id)
+  ReportLog.findByPk(id)
     .then((data) => {
       res.render("reportlog/edit", { data: data });
     })
@@ -62,7 +97,7 @@ exports.edit = (req, res) => {
 exports.update = async (req, res) => {
   const id = req.params.id;
 
-  reportLog
+  ReportLog
     .update(req.body, {
       where: { id: id },
     })
@@ -83,3 +118,4 @@ exports.update = async (req, res) => {
       });
     });
 };
+
