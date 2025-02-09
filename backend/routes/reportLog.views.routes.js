@@ -7,9 +7,13 @@ module.exports = (app) => {
 
   router.get("/", authSession.isAuthenticated, reportLog.index);
 
+  router.get("/create", authSession.isAuthenticated, reportLog.create);
+
   router.get("/:id", authSession.isAuthenticated, reportLog.edit);
 
-  router.post("/:id", authSession.isAuthenticated, reportLog.update);
+  router.post("/update/:id", authSession.isAuthenticated, reportLog.update);
+
+  router.post("/:id", authSession.isAuthenticated, reportLog.destroy);
 
   app.use("/reportLog", router);
 };
