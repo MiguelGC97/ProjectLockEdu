@@ -7,57 +7,103 @@
     <link rel="stylesheet" href="/css/reportable.css" />
   </head>
   <body>
-    <%- include ("../partials/sidemenu.ejs") %> <%-
-    include('../partials/userbar.ejs'); %>
-
-    <div class="table-container">
-      <p>Log de reportes</p>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Id Incidencia</th>
-            <th>Manager</th>
-            <th>Casilla</th>
-            <th>Armario</th>
-            <th>Comentario</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% reportLog.forEach((rl)=> { %>
-          <tr>
-            <td><%= rl.report.id %></td>
-            <td>
-              <% if (rl.user && rl.user.role === "ADMIN") { %>
-              <span style="color: rgb(237, 198, 43)">
-                <%= rl.user.name %>
-              </span>
-              <% } else { %>
-              <span><%= rl.user ? rl.user.name : "Usuario desconocido" %></span>
-              <% } %>
-            </td>
-
-            <td>
-              <%= rl.report.box ? rl.report.box.description : 'Sin descripción'
-              %>
-            </td>
-            <td>
-              <%= rl.report.box && rl.report.box.locker ?
-              rl.report.box.locker.description : 'Sin descripción' %>
-            </td>
-            <td><%= rl.comment || 'Sin comentario' %></td>
-            <td>
-              <% if (rl.report.isSolved) { %>
-              <span style="color: green">Resuelto</span>
-              <% } else { %>
-              <span style="color: red">Pendiente</span>
-              <% } %>
-            </td>
-          </tr>
-          <% }); %>
-        </tbody>
-      </table>
-    </div>
-    <%- include ("create.ejs") %>
+    <%- include('../partials/sidemenu.ejs'); %>
+    <%- include('../partials/userbar.ejs'); %>
+    <main id="mainContainer">
+      <div id="mainContentContainer">
+        <section id="reportlogsSection">
+          <div class="reportlog-section-header">
+            <h1 class="reportlog-section-title">Incidencias</h1>
+          </div>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Id Incidencia</th>
+                  <th>Manager</th>
+                  <th>Casilla</th>
+                  <th>Armario</th>
+                  <th>Estado</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% reportLog.forEach((rl) => { %>
+                  <tr>
+                    <td><%= rl.report.id %></td>
+                    <td>
+                      <% if (rl.user && rl.user.role === "ADMIN") { %>
+                        <span style="color: rgb(237, 198, 43)">
+                          <%= rl.user.name %>
+                        </span>
+                      <% } else { %>
+                        <span>
+                          <%= rl.user ? rl.user.name : "Usuario desconocido" %>
+                        </span>
+                      <% } %>
+                    </td>
+                    <td>
+                      <%= rl.report.box ? rl.report.box.description : 'Sin descripción' %>
+                    </td>
+                    <td>
+                      <%= rl.report.box && rl.report.box.locker ? rl.report.box.locker.description : 'Sin descripción' %>
+                    </td>
+                    <td>
+                      <% if (rl.report.isSolved) { %>
+                        <span style="color: green">Resuelto</span>
+                      <% } else { %>
+                        <span style="color: red">Pendiente</span>
+                      <% } %>
+                    </td>
+                    <td>
+                      <button class="dropdown-btn">
+                        <span style="display: inline-block; transform: rotate(45deg); border: solid white; border-width: 0 2px 2px 0; padding: 3px; margin-top: 5px;"></span>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr class="dropdown-content">
+                    <td colspan="6">
+                      <div class="comment-container">
+                        <%= rl.comment || 'Sin comentario' %>
+                      </div>
+                      <div class="action-buttons">
+                        <a href="/reportlog/<%= rl.id %>">
+                          <img class="edit-icon" src="images/edit-icon.svg" alt="Edit icon" />
+                        </a>
+                        <form action="/reportlog/<%= rl.id %>" method="POST" class="delete-form">
+                          <button type="submit" class="delete-button">
+                            <img class="delete-button" src="/images/trash-icon.svg" alt="Delete icon" />
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+          <a href="/reportlog/create" class="add-reportlog-button">
+            <button>+</button>
+            <p>Añadir</p>
+          </a>
+        </section>
+      </div>
+    </main>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".dropdown-btn").forEach((button) => {
+          button.addEventListener("click", (e) => {
+            e.preventDefault();
+            const currentRow = button.closest("tr");
+            if (currentRow) {
+              const dropdownRow = currentRow.nextElementSibling;
+              if (dropdownRow && dropdownRow.classList.contains("dropdown-content")) {
+                dropdownRow.classList.toggle("show");
+              }
+            }
+          });
+        });
+      });
+    </script>
   </body>
 </html>
