@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications</title>
+  <link rel="stylesheet" href="css/notifications/indexStyles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+</head>
+
+
+<body>
+  <%- include('../partials/sidemenu.ejs'); %>
+  <%- include('../partials/userbar.ejs'); %>
+  <main id="mainContainer">
+    <div id="notificationsContainer">
+
+      <div id="notificationsList">
+        <div id="notificationsTitleCard">
+          <h1>Notificaciones</h1>
+        </div>
+        <div>
+            <% notifications.forEach((notification)=> { %>
+            <% if (notification.type==='warning' ) { %>
+            <%- include('../partials/notifications/warning.ejs', { notification }) %>
+            <% } else if (notification.type==='reminder' ) { %>
+            <%- include('../partials/notifications/reminder.ejs', { notification }) %>
+            <% } else if (notification.type==='info' ) { %>
+            <%- include('../partials/notifications/info.ejs', { notification }) %>
+            <% } %>
+            <% }) %>
+        </div>
+      </div>
+      
+    </div>
+
+    <div id="formContainer">
+      <%- include('create.ejs'); %>
+    </div>
+  </main>
+
+</body>
+
+</html>

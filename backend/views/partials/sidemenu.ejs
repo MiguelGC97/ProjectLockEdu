@@ -24,11 +24,11 @@
               alt="Reports icon" /></a>
         </li>
         <li class="menu-item <%= activeRoute === 'notifications' ? 'active' : '' %>" data-route="notifications">
-          <a class="menu-link inactive" href="/notifications"><img class="nav-icon" src="/images/notification-icon.svg"
+          <a class="menu-link inactive" href="/notification"><img class="nav-icon" src="/images/notification-icon.svg"
               alt="Notifications icon" /></a>
         </li>
 
-        <li class="menu-logout <%= activeRoute === 'notifications' ? 'active' : '' %>">
+        <li class="menu-logout <%= activeRoute === 'logout' ? 'active' : '' %>">
           <form id="logout-form" action="/users/logout" method="POST">
             <button type="submit" class="menu-link menu-link-logout">
               <img class="nav-icon" src="/images/logout-icon.svg" alt="Logout icon" />

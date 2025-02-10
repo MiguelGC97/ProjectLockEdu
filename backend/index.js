@@ -85,8 +85,10 @@ app.get("/", (req, res) => {
 // Route Imports
 const routes = [
   'locker', 'box', 'user', 'type', 'item', 'booking',
-  'report', 'reportLog', 'reportLog.views', 'user.views', 'locker.views'
+  'report', 'reportLog', 'reportLog.views', 'user.views', 'locker.views', 
+  'notification.views'
 ];
+
 
 routes.forEach(route => require(`./routes/${route}.routes.js`)(app));
 

@@ -1,0 +1,53 @@
+<%
+  const roleTranslations = {
+    ADMIN: "Admin",
+    TEACHER: "Docente",
+    MANAGER: "Manager"
+  };
+  const translatedRole = roleTranslations[notification.user.role] || notification.user.role;
+%>
+
+<div class="notification-card info">
+  
+  <div class="notification-content">
+    <p class="notification-title">Información</p>
+    <% if (notification.user) { %>
+    <p><%= notification.user.name %> <%= notification.user.surname %> - <strong><%= translatedRole %> </strong> </p>
+    <% } %>
+
+    
+        <% 
+            let boxes = new Set();
+            let lockers = new Set();
+            notification.booking.items.forEach(item => {
+                if (item.box) {
+                    boxes.add(item.box.id);
+                    if (item.box.locker) {
+                        lockers.add(item.box.locker.id);
+                    }
+                }
+            });
+        %>
+
+        <p><%= notification.content %> A<%= Array.from(lockers).join(', ') %>-<%= Array.from(boxes).join(', ') %> pendiente de recoger el <strong><%= new Date(notification.booking.checkOut).toLocaleDateString('es-ES') %></strong> 
+            a las 
+            <strong><%= new Date(notification.booking.checkOut).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) %></p></strong>
+    
+  </div>
+
+  <div class="notification-buttons">
+    <form action="notification/read/<%= notification.id %>" method="POST">
+      <button type="submit" class="read-button" <%= notification.isRead ? 'disabled' : '' %>>
+        <img src="<%= notification.isRead ? 'images/eye-open.svg' : 'images/eye-closed.svg' %>" alt="Marcar como leído">
+      </button>
+    </form>
+
+    <form action="notification/delete/<%= notification.id %>" method="POST">
+      <button class="delete-button">
+        <img src="images/trash-icon.svg" alt="Eliminar">
+      </button>
+    </form>
+
+  </div>
+
+</div>

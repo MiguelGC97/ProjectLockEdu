@@ -1,0 +1,33 @@
+<%
+  const roleTranslations = {
+    ADMIN: "Admin",
+    TEACHER: "Docente",
+    MANAGER: "Manager"
+  };
+  const translatedRole = roleTranslations[notification.user.role] || notification.user.role;
+%>
+
+<div class="notification-card reminder">
+  <div class="notification-content">
+    <p class="notification-title">Recordatorio</p>
+    <% if (notification.user) { %>
+      <p><%= notification.user.name %> <%= notification.user.surname %> - <strong><%= translatedRole %> </strong> </p>
+      <% } %>
+    <p><%= notification.content %>: <%= notification.timeMessage %></p>
+  </div>
+
+  <div class="notification-buttons">
+    <form action="notification/read/<%= notification.id %>" method="POST">
+      <button type="submit" class="read-button" <%= notification.isRead ? 'disabled' : '' %>>
+        <img src="<%= notification.isRead ? 'images/eye-open.svg' : 'images/eye-closed.svg' %>" alt="Marcar como leído">
+      </button>
+    </form>
+
+    <form action="notification/delete/<%= notification.id %>" method="POST">
+      <button class="delete-button">
+        <img src="images/trash-icon.svg" alt="Eliminar">
+      </button>
+    </form>
+
+  </div>
+</div>

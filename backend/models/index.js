@@ -139,8 +139,19 @@ db.user.hasMany(db.notification, {
   onDelete: "CASCADE",
 });
 db.notification.belongsTo(db.user, {
-  foreignKey: "userId",
-  targetKey: "id",
+  foreignKey: 'userId',
+  targetKey: 'id',
+});
+
+//Booking-notification association
+db.booking.hasMany(db.notification, {
+  foreignKey: 'bookingId',
+  targetKey: 'id',
+});
+
+db.notification.belongsTo(db.booking, {
+  foreignKey: 'bookingId',
+  targetKey: 'id',
 });
 
 // reportsLog relations

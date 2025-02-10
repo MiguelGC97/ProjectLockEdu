@@ -1,5 +1,4 @@
-﻿/* sidemenu */
-
+/* sidemenu */
 @media (max-width: 768px) {
   #sidemenuContainer {
     margin: auto;
@@ -75,6 +74,10 @@
     margin: 0;
   }
 
+#logout-form > button {
+  all: unset;
+}
+
   .menu-item > a {
     color: #ffff;
     display: flex;
@@ -144,3 +147,4 @@
 
   /* we need to add activeRoute: locker as sent data in the routes */
 }
+

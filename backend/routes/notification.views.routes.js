@@ -1,29 +1,20 @@
 module.exports = app => {
     const notifications = require("../controllers/notification.views.controller.js");
-    const authSession = require("../controllers/auth.session.js");
+
+    const authSession = require("../middlewares/auth.session.js");
 
     var router = require("express").Router();
 
-    // Save a new Motorbike
-    router.post("/", notifications.store);
+    router.post("/", authSession.isAuthenticated, notifications.store);
 
-    // Retrieve all notifications
-    router.get("/", notifications.index);
+    router.post("/read/:id", authSession.isAuthenticated, notifications.markAsRead);
 
-    // Show Form to create a new Motorbike
-    router.get("/create", notifications.create);
 
-    // Show Motorbike with id
-    // router.get("/:id", authSession.isAuthenticated, notifications.show);
+    router.get("/", authSession.isAuthenticated, notifications.index);
 
-    // Show form to edit Motorbike with id
-    router.get("/edit/:id", notifications.edit);
+    router.get("/create", authSession.isAuthenticated, notifications.create);
 
-    // Update a Motorbike with id
-    router.post("/update/:id", notifications.update);
+    router.post("/delete/:id", authSession.isAuthenticated, notifications.destroy);
 
-    // Delete a Motorbike with id
-    router.post("/delete/:id", notifications.destroy);
-
-    app.use('/notifications', router);
+    app.use('/notification', router);
 };

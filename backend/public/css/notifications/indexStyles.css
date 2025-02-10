@@ -1,0 +1,123 @@
+/* notifications index*/
+
+body {
+    background-color: #393A58;
+    font-family: 'Quicksand', sans-serif;
+}
+
+#mainContainer {
+    display: flex;
+    width: 90vw;
+    height: 85vh;
+    margin-left: 124px;
+    margin-right: 50px; 
+}
+
+#notificationsContainer{
+    flex: 2;
+    margin-top: 24px;
+    margin-right: 24px; 
+    padding: 24px;
+    background-color: #393A58;
+    color: #ffff;
+    overflow-y: auto;
+    border: 1px solid white;
+    border-radius: 25px;
+}
+
+#formContainer {
+    flex: 1;
+    padding: 20px;
+    color: white;
+    background-color: #5F60BD;
+}
+
+#notificationsTitleCard{
+    text-align: center; 
+    margin: 0 auto; 
+    padding: 20px;
+    border-bottom: 1px solid white;
+}
+
+#formContainer{
+    margin-top: 24px;
+    border-radius: 15px;
+}
+
+.notification-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    margin: 10px 0;
+    border-radius: 15px;
+    font-size: 1rem;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    color: white;
+}
+
+.notification-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    margin-left: auto;
+}
+
+.notification-card:hover {
+    transform: scale(1.01);
+}
+
+.notification-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.notification-content {
+    flex-grow: 1;
+    padding-left: 10px;
+}
+
+.warning {
+    background-color: rgba(231, 175, 46, 0.2);
+    border-left: 5px solid #E7AF2E;
+}
+
+.reminder {
+    background-color: rgba(34, 139, 230, 0.2);
+    border-left: 5px solid #228BE6;
+}
+
+.info {
+    background-color: #283747;
+    border-left: 5px solid #6c757d;
+}
+
+.read-button, .delete-button {
+    all: unset;
+    background-color: transparent;
+}
+
+.read-button img,
+.delete-button img {
+    width: 24px;
+}
+
+::-webkit-scrollbar {
+    width: 18px;
+    padding: 10px;
+}
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background-color: rgb(193, 194, 218);
+    border-radius: 10px;
+}
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #4f51b3;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
