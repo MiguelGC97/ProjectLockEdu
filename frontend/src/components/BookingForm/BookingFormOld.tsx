@@ -19,7 +19,7 @@ import {
   Title,
   useMantineTheme,
 } from '@mantine/core';
-import { DateTimePicker, DatesProvider, DatePicker } from '@mantine/dates';
+import { DateTimePicker, DatesProvider, Calendar } from '@mantine/dates';
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import dayjs from 'dayjs';
@@ -38,7 +38,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
   const [confirmedBooking, setConfirmedBooking] = useState<any | null>(null);
   const [pickupDate, setPickupDate] = useState<Date | null>(null);
   const [returnDate, setReturnDate] = useState<Date | null>(null);
-  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
   const theme = useMantineTheme();
   const { user } = useAuth();
 
@@ -182,10 +181,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
           <ScrollArea h="80%" w="100%">
             <Flex direction="column" justify="center" align="center" h="100%" w="100%" gap="10">
               <DatesProvider settings={{ consistentWeeks: true }}>
-
-              <DatePicker type="range" allowSingleDateInRange value={dateRange} onChange={setDateRange} />
-
-                {/* <DateTimePicker w="70%" c="white"
+                <DateTimePicker w="70%" c="white"
                   valueFormat="DD MMM YYYY hh:mm A"
                   label="Selecciona una fecha de recogida"
                   placeholder="Selecciona una fecha de recogida"
@@ -195,22 +191,22 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
                   classNames={{
                     input: 'custom-input',
                   }}
-                /> */}
+                />
               </DatesProvider>
-              {/* <DateTimePicker w="70%" c="white"
+              <DateTimePicker w="70%" c="white"
                 valueFormat="DD MMM YYYY hh:mm A"
                 label="Selecciona una fecha de devolución"
                 placeholder="Selecciona una fecha de devolución"
                 value={returnDate}
                 onChange={handleReturnDate}
-              /> */}
+              />
             </Flex>
 
             <Flex direction="column" gap="sm" py="xl" mb="md" align="center" justify="center" c="white">
               <Stack mt="md">
                 {filteredObjects.length > 0 ? (
                   <div>
-                    <h3>Lo que quieres reservar:</h3>
+                    <h3>Lo que vas a reservar:</h3>
                     <ul>
                       {filteredObjects.map((object) => (
                         <li key={object.id}>
