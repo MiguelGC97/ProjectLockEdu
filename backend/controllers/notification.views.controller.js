@@ -138,11 +138,11 @@ exports.markAsRead = async (req, res) => {
   try {
     const [updated] = await Notification.update(
       { isRead: true },
-      { where: { id } }
-    );
+      { where: { id: id },
+    });
 
     if (updated) {
-      return res.redirect("/notifications/index");
+      return res.redirect("/notification");
     } else {
       return res.render("error", {
         message: `Could not mark as read the notification with id=${id}.`,
@@ -154,3 +154,26 @@ exports.markAsRead = async (req, res) => {
     });
   }
 };
+
+exports.destroy = (req, res) => {
+  const id = req.params.id;
+
+  try {
+      Notification.destroy({
+          where: { id: id },
+      }).then((num) => {
+          if (num == 1) {
+              return res.redirect("/notification");
+          } else {
+              res.send({
+                  message: `Cannot delete notification with id=${id}.`,
+              });
+          }
+      });
+  } catch (error) {
+      res.status(500).send({
+          message: "Could not delete notification with id=" + id,
+      });
+  }
+
+}

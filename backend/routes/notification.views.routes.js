@@ -7,12 +7,14 @@ module.exports = app => {
 
     router.post("/", authSession.isAuthenticated, notifications.store);
 
-    router.post("/notifications/:id/read", authSession.isAuthenticated, notifications.markAsRead);
+    router.post("/read/:id", authSession.isAuthenticated, notifications.markAsRead);
 
 
     router.get("/", authSession.isAuthenticated, notifications.index);
 
     router.get("/create", authSession.isAuthenticated, notifications.create);
+
+    router.post("/delete/:id", authSession.isAuthenticated, notifications.destroy);
 
     app.use('/notification', router);
 };

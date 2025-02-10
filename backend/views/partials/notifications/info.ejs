@@ -36,14 +36,18 @@
   </div>
 
   <div class="notification-buttons">
-    <form action="/notifications/<%= notification.id %>/read" method="POST">
-      <button type="submit" class="read-button">
+    <form action="notification/read/<%= notification.id %>" method="POST">
+      <button type="submit" class="read-button" <%= notification.isRead ? 'disabled' : '' %>>
         <img src="<%= notification.isRead ? 'images/eye-open.svg' : 'images/eye-closed.svg' %>" alt="Marcar como leído">
       </button>
     </form>
-    <button class="delete-button">
-      <img src="images/trash-icon.svg" alt="Eliminar">
-    </button>
+
+    <form action="notification/delete/<%= notification.id %>" method="POST">
+      <button class="delete-button">
+        <img src="images/trash-icon.svg" alt="Eliminar">
+      </button>
+    </form>
+
   </div>
 
 </div>

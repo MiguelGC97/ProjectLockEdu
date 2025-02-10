@@ -15,4 +15,19 @@
       <% } %>
     <p><%= notification.content %>: <%= notification.timeMessage %></p>
   </div>
+
+  <div class="notification-buttons">
+    <form action="notification/read/<%= notification.id %>" method="POST">
+      <button type="submit" class="read-button" <%= notification.isRead ? 'disabled' : '' %>>
+        <img src="<%= notification.isRead ? 'images/eye-open.svg' : 'images/eye-closed.svg' %>" alt="Marcar como leído">
+      </button>
+    </form>
+
+    <form action="notification/delete/<%= notification.id %>" method="POST">
+      <button class="delete-button">
+        <img src="images/trash-icon.svg" alt="Eliminar">
+      </button>
+    </form>
+
+  </div>
 </div>
