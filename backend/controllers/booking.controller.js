@@ -3,7 +3,8 @@ const Booking = db.booking;
 const Item = db.item;
 const Box = db.box;
 const Locker = db.locker;
-const { Op } = require("sequelize");
+const User = db.user;
+const { Op, where } = require("sequelize");
 
 exports.newBooking = async (req, res) => {
   const t = await db.sequelize.transaction();
@@ -142,6 +143,53 @@ exports.getAllbyUserIdAndState = async (req, res) => {
     });
 
     res.status(200).json({ data: bookings });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getDates = async (req, res) => {
+  try {
+    const { itemIds } = req.body; // Receives an array of Item ids
+
+    if (!Array.isArray(itemIds) || itemIds.length === 0) {
+      return res.status(400).json({ message: "itemIds can't be an empty array" });
+    }
+
+    const today = new Date();
+
+    const bookings = await Booking.findAll({
+      include: [
+        {
+          model: Item,
+          where: { id: { [Op.in]: itemIds } },
+          attributes: ['id'],
+        },
+        {
+          model: User,
+          attributes: ['name', 'surname']
+        },
+      ],
+      attributes: ['checkIn', 'checkOut', 'state'],
+    });
+
+    if (bookings.length === 0) {
+      return res.status(200).json({});
+    }
+
+    const itemDates = bookings.flatMap(booking =>
+      booking.items
+        .filter(item => new Date(booking.checkIn) >= today) // Filter out past check-ins
+        .filter(item => booking.state != "returned")
+        .map(item => ({
+          itemId: item.id,
+          checkIn: booking.checkIn,
+          checkOut: booking.checkOut,
+          state: booking.state,
+        }))
+    );
+
+    res.status(200).json({ itemDates });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

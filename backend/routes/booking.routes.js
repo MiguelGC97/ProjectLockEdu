@@ -12,6 +12,13 @@ module.exports = (app) => {
     bookings.newBooking
   );
 
+  router.post(
+    "/items",
+    auth.isAuthenticated,
+    permissions.authorize(["TEACHER", "ADMIN"]),
+    bookings.getDates
+  );
+
   router.get(
     "/",
     auth.isAuthenticated,
