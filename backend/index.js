@@ -5,6 +5,9 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const session = require('express-session');
+const http = require('http');
+const WebSocket = require('ws');
+
 const { store } = require('./controllers/reportLog.views.controller.js');
 const sequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require("./models");
@@ -81,7 +84,6 @@ app.get("/", (req, res) => {
   }
 });
 
-
 // Route Imports
 const routes = [
   'locker', 'box', 'user', 'type', 'item', 'booking',
@@ -114,19 +116,58 @@ async function runSeeders() {
   console.log("Seeders completed.");
 }
 
-// Sync Database and start server
+// Create HTTP server
+const server = http.createServer(app);
+
+// WebSocket Server Setup
+const wss = new WebSocket.Server({ server });
+
+wss.on('connection', (ws) => {
+  console.log('New client connected.');
+
+  // Send a welcome message
+  ws.send(JSON.stringify({ message: 'Bienvenido al servidor WebSocket.' }));
+
+  // Handle incoming messages
+  ws.on('message', (message) => {
+    console.log(`Mensaje recibido: ${message}`);
+
+    // Broadcast to all clients
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(message);
+      }
+    });
+  });
+
+  // Handle client disconnection
+  ws.on('close', () => {
+    console.log('Cliente desconectado.');
+  });
+
+  // Handle errors
+  ws.on('error', (error) => {
+    console.error('WebSocket error:', error);
+  });
+});
+
+// Make WebSocket server accessible in controllers
+app.set('wss', wss);
+
+// Sync Database and Start Server
 db.sequelize.sync({ force: true })
   .then(async () => {
     console.log("Database synced: tables dropped and recreated.");
 
-    await runSeeders(); // Run seeders after syncing database
-    await db.sessionStore.sync(); // Sync session store
+    await runSeeders();
+    await db.sessionStore.sync();
 
     const PORT = process.env.HOST_PORT || 8080;
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}.`);
+    server.listen(PORT, () => {
+      console.log(`Servidor ejecutándose en el puerto ${PORT}.`);
+      console.log(`Servidor WebSocket ejecutándose en el puerto ${PORT}.`);
     });
   })
   .catch((error) => {
-    console.error("Error syncing database:", error);
+    console.error("Error al sincronizar la base de datos:", error);
   });

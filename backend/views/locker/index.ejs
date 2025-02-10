@@ -73,6 +73,18 @@
 
             </main>
 
+            <script>
+                const socket = new WebSocket('ws://localhost:8080');
+
+                socket.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'locker_delete') {
+                        alert(data.message);
+                    }
+                };
+
+            </script>
+
 
 </body>
 
