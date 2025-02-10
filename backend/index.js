@@ -85,26 +85,12 @@ app.get("/", (req, res) => {
 // Route Imports
 const routes = [
   'locker', 'box', 'user', 'type', 'item', 'booking',
-  'report', 'reportLog', 'reportLog.views', 'user.views', 'locker.views'
+  'report', 'reportLog', 'reportLog.views', 'user.views', 'locker.views', 
+  'notification.views'
 ];
 
-routes.forEach(route => require(`./routes/${route}.routes`)(app));
-// Routes
-require("./routes/locker.routes")(app);
-require("./routes/box.routes")(app);
-require("./routes/user.routes")(app);
-require("./routes/type.routes")(app);
-require("./routes/item.routes")(app);
-require("./routes/booking.routes")(app);
-require("./routes/report.routes")(app);
 
-require("./routes/reportLog.routes")(app);
-
-require("./routes/reportLog.views.routes")(app);
-
-require("./routes/notification.views.routes")(app);
-
-require("./routes/locker.views.routes")(app);
+routes.forEach(route => require(`./routes/${route}.routes.js`)(app));
 
 // Seeders
 async function runSeeders() {
