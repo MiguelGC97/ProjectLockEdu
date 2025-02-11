@@ -4,6 +4,7 @@ import './NotificationsBox.module.css';
 
 import { useEffect, useState } from 'react';
 import { useMediaQuery } from '@mantine/hooks';
+import { useThemeContext } from '@/hooks/AppProvider';
 import instance from '@/services/api';
 import { Booking } from '@/types/types';
 
@@ -37,6 +38,7 @@ function formatTime(timeString: string): string {
 
 export function NotificationsBox() {
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const { currentTheme } = useThemeContext();
 
   const matches = useMediaQuery('(min-width: 85em)');
   const matches2 = useMediaQuery('(max-width: 93em)');
@@ -81,11 +83,22 @@ export function NotificationsBox() {
       {matches ? (
         matches2 ? (
           //component for small desktops - max 1440
-          <Box bg="transparent" h="60vh" bd="1px solid myPurple.1" style={{ borderRadius: 40 }}>
+          <Box
+            bg="transparent"
+            h="60vh"
+            bd={currentTheme === 'light' ? '1px solid #4F51B3' : '1px solid #F1F2FF'}
+            style={{ borderRadius: 40 }}
+          >
             <Center>
-              <h2>Notificaciones</h2>
+              <h2
+                style={{
+                  color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}`,
+                }}
+              >
+                Notificaciones
+              </h2>
             </Center>
-            <Divider size="xs" color="myPurple.1" />
+            <Divider size="xs" color={currentTheme === 'light' ? '#4F51B3' : '#F1F2FF'} />
 
             <ScrollArea p="lg" m="md" h="50vh" scrollbarSize={16}>
               <Flex direction="column" gap="sm">
@@ -113,19 +126,39 @@ export function NotificationsBox() {
                           </Text>
                           <Flex gap="md" justify="flex-start">
                             <Flex gap={5}>
-                              <Text c="white" fw={700}>
+                              <Text
+                                style={{
+                                  color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}`,
+                                }}
+                                fw={700}
+                              >
                                 Casilla:
                               </Text>{' '}
-                              <Text c="white">
+                              <Text
+                                style={{
+                                  color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}`,
+                                }}
+                              >
                                 {lockerName}
                                 {boxName}
                               </Text>
                             </Flex>
                             <Flex gap={5}>
-                              <Text c="white" fw={700}>
+                              <Text
+                                style={{
+                                  color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}`,
+                                }}
+                                fw={700}
+                              >
                                 Ubicación:
                               </Text>{' '}
-                              <Text c="white">{lockerLocation}</Text>
+                              <Text
+                                style={{
+                                  color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}`,
+                                }}
+                              >
+                                {lockerLocation}
+                              </Text>
                             </Flex>
                           </Flex>
                         </Flex>
@@ -146,11 +179,22 @@ export function NotificationsBox() {
           </Box>
         ) : (
           //component for big desktops - min 1440
-          <Box bg="transparent" h="60vh" bd="1px solid myPurple.1" style={{ borderRadius: 40 }}>
+          <Box
+            bg="transparent"
+            h="60vh"
+            bd={currentTheme === 'light' ? '1px solid #4F51B3' : '1px solid #F1F2FF'}
+            style={{ borderRadius: 40 }}
+          >
             <Center>
-              <h2>Notificaciones</h2>
+              <h2
+                style={{
+                  color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}`,
+                }}
+              >
+                Notificaciones
+              </h2>
             </Center>
-            <Divider size="xs" color="myPurple.1" />
+            <Divider size="xs" color={currentTheme === 'light' ? '#4F51B3' : '#F1F2FF'} />
 
             <ScrollArea p="lg" m="md" h="50vh" scrollbarSize={16}>
               <Flex direction="column" gap="sm">
@@ -173,24 +217,47 @@ export function NotificationsBox() {
                     >
                       <Flex gap="xl" justify="center" align="center">
                         <Flex gap="sm" direction="column" justify="center">
-                          <Text fw={700} c="white">
+                          <Text
+                            fw={700}
+                            style={{ color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}` }}
+                          >
                             Recordatorio de {sb.type}:
                           </Text>
                           <Flex gap="md" justify="flex-start">
                             <Flex gap={5}>
-                              <Text c="white" fw={700}>
+                              <Text
+                                fw={700}
+                                style={{
+                                  color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}`,
+                                }}
+                              >
                                 Casilla:
                               </Text>{' '}
-                              <Text c="white">
+                              <Text
+                                style={{
+                                  color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}`,
+                                }}
+                              >
                                 {lockerName}
                                 {boxName}
                               </Text>
                             </Flex>
                             <Flex gap={5}>
-                              <Text c="white" fw={700}>
+                              <Text
+                                style={{
+                                  color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}`,
+                                }}
+                                fw={700}
+                              >
                                 Ubicación:
                               </Text>{' '}
-                              <Text c="white">{lockerLocation}</Text>
+                              <Text
+                                style={{
+                                  color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}`,
+                                }}
+                              >
+                                {lockerLocation}
+                              </Text>
                             </Flex>
                           </Flex>
                         </Flex>
@@ -212,11 +279,22 @@ export function NotificationsBox() {
         )
       ) : (
         //component for mobile and tablet -- needs to be changed
-        <Box bg="transparent" h="50vh" bd="1px solid myPurple.1" style={{ borderRadius: 40 }}>
+        <Box
+          bg="transparent"
+          h="50vh"
+          bd={currentTheme === 'light' ? '1px solid #4F51B3' : '1px solid #F1F2FF'}
+          style={{ borderRadius: 40 }}
+        >
           <Center>
-            <h2>Notificaciones</h2>
+            <h2
+              style={{
+                color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}`,
+              }}
+            >
+              Notificaciones
+            </h2>
           </Center>
-          <Divider size="xs" color="myPurple.1" />
+          <Divider size="xs" color={currentTheme === 'light' ? '#4F51B3' : '#F1F2FF'} />
 
           <ScrollArea p="lg" m="md" h="50vh" scrollbarSize={16}>
             <Flex direction="column" gap="sm">
@@ -237,24 +315,39 @@ export function NotificationsBox() {
                   >
                     <Flex gap="xl" justify="center" align="center">
                       <Flex gap="sm" direction="column" justify="center">
-                        <Text fw={700} c="white">
+                        <Text
+                          fw={700}
+                          style={{ color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}` }}
+                        >
                           Recordatorio de {sb.type}:
                         </Text>
                         <Flex gap="md" justify="flex-start">
                           <Flex gap={5}>
-                            <Text c="white" fw={700}>
+                            <Text
+                              fw={700}
+                              style={{ color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}` }}
+                            >
                               Casilla:
                             </Text>{' '}
-                            <Text c="white">
+                            <Text
+                              style={{ color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}` }}
+                            >
                               {lockerName}
                               {boxName}
                             </Text>
                           </Flex>
                           <Flex gap={5}>
-                            <Text c="white" fw={700}>
+                            <Text
+                              fw={700}
+                              style={{ color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}` }}
+                            >
                               Ubicación:
                             </Text>{' '}
-                            <Text c="white">{lockerLocation}</Text>
+                            <Text
+                              style={{ color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}` }}
+                            >
+                              {lockerLocation}
+                            </Text>
                           </Flex>
                         </Flex>
                       </Flex>

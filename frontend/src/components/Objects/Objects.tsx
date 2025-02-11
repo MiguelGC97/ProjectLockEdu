@@ -22,7 +22,7 @@ import { Item, ObjectsProps } from '@/types/types';
 
 import './Objects.module.css';
 
-import { useAppContext } from '@/hooks/AppProvider';
+import { useAppContext, useThemeContext } from '@/hooks/AppProvider';
 
 const Objects: React.FC<ObjectsProps> = ({ onReturn, onCreateBooking }) => {
   const { objects, setObjects } = useAppContext();
@@ -33,6 +33,7 @@ const Objects: React.FC<ObjectsProps> = ({ onReturn, onCreateBooking }) => {
   const [value, setValue] = useState<string[]>([]);
   const theme = useMantineTheme();
   const [opened, { open, close }] = useDisclosure(false);
+  const { currentTheme } = useThemeContext();
 
   if (loading) {
     return (
@@ -65,6 +66,8 @@ const Objects: React.FC<ObjectsProps> = ({ onReturn, onCreateBooking }) => {
           borderBottomLeftRadius: 40,
           borderBottomRightRadius: 40,
         }}
+        bg={currentTheme === 'light' ? '#E0E1FA' : '#5F60BD'}
+        bd={currentTheme === 'light' ? '1px solid #5F60BD' : '#ffff'}
         p="3%"
         mb="lg"
         h="86vh"
@@ -73,10 +76,14 @@ const Objects: React.FC<ObjectsProps> = ({ onReturn, onCreateBooking }) => {
         <Stack mb="2vh" gap="xl">
           <Flex gap="29%">
             <a>
-              <IconArrowLeft color="white" size="30px" onClick={onReturn} />
+              <IconArrowLeft
+                c={currentTheme === 'light' ? '#06060E' : '#ffff'}
+                size="30px"
+                onClick={onReturn}
+              />
             </a>
 
-            <Title fw="600" c="white">
+            <Title fw="600" c={currentTheme === 'light' ? '#06060E' : '#ffff'}>
               Casilla C0{selectedBox.id}
             </Title>
           </Flex>
@@ -89,6 +96,8 @@ const Objects: React.FC<ObjectsProps> = ({ onReturn, onCreateBooking }) => {
             borderBottomRightRadius: 30,
             backgroundColor: theme.colors.myPurple[6],
           }}
+          bg={currentTheme === 'light' ? '#ffff' : '#393A58'}
+          bd={currentTheme === 'light' ? '1px solid #4F51B3' : '1px solid #F1F2FF'}
           pb="xl"
         >
           <Image
@@ -97,7 +106,7 @@ const Objects: React.FC<ObjectsProps> = ({ onReturn, onCreateBooking }) => {
             mah="20vh"
             onClick={open}
           />
-          <Divider c="#DBDCEC" />
+          <Divider c={currentTheme === 'light' ? '#06060E' : '#ffff'} />
           <ScrollArea h="36vh" scrollbarSize={16} mb="xl">
             <Flex direction="column" gap="sm" py="xl" mb="md">
               <Checkbox.Group value={value} onChange={setValue}>
@@ -113,18 +122,21 @@ const Objects: React.FC<ObjectsProps> = ({ onReturn, onCreateBooking }) => {
                           }}
                         >
                           <Checkbox
-                            c="white"
+                            c={currentTheme === 'light' ? '#06060E' : '#ffff'}
+                            color={currentTheme === 'light' ? '#06060E' : '#AEB0F2'}
                             ml="1vw"
                             value={`${object.id}`}
                             label={object.description}
                           />
                         </Flex>
-                        <Divider c="#DBDCEC" />
+                        <Divider c={currentTheme === 'light' ? '#06060E' : '#ffff'} />
                       </>
                     ))
                   ) : (
                     <Center>
-                      <Text c="white">No hay ningun objeto disponible en esta casilla.</Text>
+                      <Text c={currentTheme === 'light' ? '#06060E' : '#ffff'}>
+                        No hay ningun objeto disponible en esta casilla.
+                      </Text>
                     </Center>
                   )}
                 </Stack>

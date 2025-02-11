@@ -1,6 +1,6 @@
-// Home.page.tsx
 import { useState } from 'react';
-import { Flex, useMantineTheme } from '@mantine/core';
+import { IconSunHigh } from '@tabler/icons-react';
+import { Flex } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Banner } from '@/components/Banner/Banner';
 import BookingForm from '@/components/BookingForm/BookingForm';
@@ -12,18 +12,18 @@ import Objects from '@/components/Objects/Objects';
 import Pending from '@/components/Pending/Pending';
 import { SideMenu } from '@/components/SideMenu/SideMenu';
 import UserBar from '@/components/UserBar/UserBar';
-import { useAppContext } from '@/hooks/AppProvider';
+import { useAppContext, useThemeContext } from '@/hooks/AppProvider';
 import { fetchBookingsByUserIdAndState } from '@/services/fetch';
 import { Booking, BoxType, Locker } from '@/types/types';
 
 const Home: React.FC = () => {
-  const theme = useMantineTheme();
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { selectedLocker, setSelectedLocker } = useAppContext();
   const { selectedBox, setSelectedBox } = useAppContext();
   const { selectedObjects, setSelectedObjects } = useAppContext();
   const [createBooking, setCreateBooking] = useState(false);
   const [pendingBookings, setPendingBookings] = useState<Booking[]>([]);
+  const { currentTheme, toggleTheme } = useThemeContext();
 
   const handleReturnToLockers = () => {
     setSelectedLocker(null);
@@ -47,7 +47,6 @@ const Home: React.FC = () => {
   };
 
   const updatePendingBookings = async () => {
-    // Fetch the latest pending bookings after creating a new booking
     const data = await fetchBookingsByUserIdAndState(1, 'pending');
     setPendingBookings(data);
   };
@@ -58,12 +57,25 @@ const Home: React.FC = () => {
         <BottomTabs />
       ) : (
         <>
-          {' '}
           <SideMenu />
-          <Flex pl="1.5%" style={{ backgroundColor: theme.colors.myPurple[6] }}>
+          <Flex
+            pl="1.5%"
+            style={{
+              width: '100%',
+              backgroundColor: currentTheme === 'light' ? '#ffff' : '#393A58',
+            }}
+          >
             <Flex maw="100%" gap="lg">
               <Flex direction="column" w="100%">
-                <UserBar />
+                <Flex justify="flex-end" align="center">
+                  <IconSunHigh
+                    cursor="pointer"
+                    color={currentTheme === 'light' ? '#06060E' : '#ffff'}
+                    onClick={toggleTheme}
+                  />
+                  <UserBar />
+                </Flex>
+
                 <Flex gap="lg" wrap="wrap">
                   <Flex gap="lg" direction="column">
                     <Banner />

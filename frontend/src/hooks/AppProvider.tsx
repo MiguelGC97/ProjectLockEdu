@@ -1,6 +1,15 @@
 ﻿import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { MantineProvider } from '@mantine/core';
 import { fetchBoxesByLocker, fetchItemsByBox, fetchLockers } from '@/services/fetch';
+import { dark, light } from '@/theme';
 import { BoxType, Item, Locker } from '@/types/types';
+
+interface ThemeContextProps {
+  toggleTheme: () => void;
+  currentTheme: 'light' | 'dark';
+}
+
+const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
 interface AppContextProps {
   lockers: Locker[];
@@ -15,6 +24,8 @@ interface AppContextProps {
   selectedObjects: Item[] | null;
   setObjects: React.Dispatch<React.SetStateAction<Item[]>>;
   setSelectedObjects: React.Dispatch<React.SetStateAction<Item[] | null>>;
+  currentTheme: string;
+  setCurrentTheme: React.Dispatch<React.SetStateAction<string>>;
 }
 
 interface AppProviderProps {
@@ -75,6 +86,29 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       {children}
     </AppContext.Provider>
   );
+};
+
+// ThemeProvider component
+export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [currentTheme, setCurrentTheme] = useState<'light' | 'dark'>('dark');
+
+  const toggleTheme = () => {
+    setCurrentTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  };
+
+  return (
+    <ThemeContext.Provider value={{ toggleTheme, currentTheme }}>
+      <MantineProvider theme={currentTheme === 'light' ? light : dark}>{children}</MantineProvider>
+    </ThemeContext.Provider>
+  );
+};
+
+export const useThemeContext = (): ThemeContextProps => {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error('useTheme must be used within a ThemeProvider');
+  }
+  return context;
 };
 
 export const useAppContext = () => {

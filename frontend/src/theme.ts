@@ -13,10 +13,28 @@ const myPurple: MantineColorsTuple = [
   '#222337', //done
 ];
 
-export const theme = createTheme({
+export const dark = createTheme({
   colors: {
-    // purple gradient
     myPurple,
+    // You can add other colors specific to light theme
+  },
+  shadows: {
+    md: '1px 1px 3px rgba(0, 0, 0, .25)',
+    xl: '5px 5px 3px rgba(0, 0, 0, .25)',
+  },
+
+  headings: {
+    fontFamily: 'Quicksand, sans-serif',
+    sizes: {
+      h1: { fontSize: rem(36) },
+    },
+  },
+});
+
+export const light = createTheme({
+  colors: {
+    myPurple,
+    // You can add other colors specific to light theme
   },
 
   shadows: {

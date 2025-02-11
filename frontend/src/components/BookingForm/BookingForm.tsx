@@ -26,7 +26,7 @@ import '@mantine/dates/styles.css';
 
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { useAppContext } from '@/hooks/AppProvider';
+import { useAppContext, useThemeContext } from '@/hooks/AppProvider';
 import { useAuth } from '@/hooks/AuthProvider';
 import instance, { baseUrl } from '@/services/api';
 import { createBooking } from '@/services/fetch';
@@ -49,6 +49,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
   const [returnDate, setReturnDate] = useState<Date | null>(null);
   const theme = useMantineTheme();
   const { user } = useAuth();
+  const { currentTheme } = useThemeContext();
 
   // Handle Date Change for Pickup and Return
   const handlePickupDate = (date: Date | null) => {
@@ -158,6 +159,8 @@ const BookingForm: React.FC<BookingFormProps> = ({
           borderBottomLeftRadius: 40,
           borderBottomRightRadius: 40,
         }}
+        bg={currentTheme === 'light' ? '#E0E1FA' : '#5F60BD'}
+        bd={currentTheme === 'light' ? '1px solid #5F60BD' : null}
         p="3%"
         mb="lg"
         h="86vh"
@@ -169,7 +172,8 @@ const BookingForm: React.FC<BookingFormProps> = ({
               <DatesProvider settings={{ consistentWeeks: true }}>
                 <DateTimePicker
                   w="70%"
-                  c="white"
+                  color={currentTheme === 'light' ? '#06060E' : '#ffff'}
+                  style={{ color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}` }}
                   valueFormat="DD MMM YYYY hh:mm A"
                   label="Selecciona una fecha de recogida"
                   placeholder="Selecciona una fecha de recogida"
@@ -183,7 +187,8 @@ const BookingForm: React.FC<BookingFormProps> = ({
               </DatesProvider>
               <DateTimePicker
                 w="70%"
-                c="white"
+                color={currentTheme === 'light' ? '#06060E' : '#ffff'}
+                style={{ color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}` }}
                 valueFormat="DD MMM YYYY hh:mm A"
                 label="Selecciona una fecha de devolución"
                 placeholder="Selecciona una fecha de devolución"
@@ -204,15 +209,24 @@ const BookingForm: React.FC<BookingFormProps> = ({
               <Stack mt="md">
                 {selectedObjects.length > 0 ? (
                   <div>
-                    <h3>Lo que vas a reservar:</h3>
+                    <h3 style={{ color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}` }}>
+                      Lo que vas a reservar:
+                    </h3>
                     <ul>
                       {selectedObjects.map((object) => (
-                        <li key={object.id}>{object.description}</li>
+                        <li
+                          style={{ color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}` }}
+                          key={object.id}
+                        >
+                          {object.description}
+                        </li>
                       ))}
                     </ul>
                   </div>
                 ) : (
-                  <p>No objects selected.</p>
+                  <p style={{ color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}` }}>
+                    No objects selected.
+                  </p>
                 )}
               </Stack>
             </Flex>

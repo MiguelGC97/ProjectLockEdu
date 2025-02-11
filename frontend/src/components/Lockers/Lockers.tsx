@@ -1,16 +1,18 @@
 ﻿import { IconSearch } from '@tabler/icons-react';
 import { Box, Button, Center, Flex, Input, ScrollArea, Stack, Text, Title } from '@mantine/core';
-import { useAppContext } from '@/hooks/AppProvider';
+import { useAppContext, useThemeContext } from '@/hooks/AppProvider';
 import { Locker } from '@/types/types';
 
 import './Lockers.module.css';
 
 const Lockers: React.FC<{ onLockerClick: (locker: Locker) => void }> = ({ onLockerClick }) => {
   const { lockers, setSelectedLocker } = useAppContext(); //we extrack lockers and selected lockers from general app context
+  const { currentTheme } = useThemeContext();
 
   return (
     <Box
-      bg="myPurple.4"
+      bg={currentTheme === 'light' ? '#E0E1FA' : '#5F60BD'}
+      bd={currentTheme === 'light' ? '1px solid #5F60BD' : null}
       px="1vw"
       mb="lg"
       h="86vh"
@@ -19,31 +21,46 @@ const Lockers: React.FC<{ onLockerClick: (locker: Locker) => void }> = ({ onLock
     >
       <Stack my="4vh" gap="xl">
         <Center>
-          <Title fw="600" c="white">
+          <Title fw="600" c={currentTheme === 'light' ? '#06060E' : '#ffff'}>
             Armarios
           </Title>
         </Center>
         <Center>
-          <Input w="20vw" size="lg" placeholder="Busca un objeto" rightSection={<IconSearch />} />
+          <Input
+            bd={currentTheme === 'light' ? '1px solid #4F51B3' : null}
+            w="20vw"
+            size="lg"
+            placeholder="Busca un objeto"
+            rightSection={<IconSearch />}
+          />
         </Center>
       </Stack>
       <ScrollArea p="lg" m="md" h="62vh" scrollbarSize={16}>
         <Flex direction="column" gap="sm">
           {lockers.map((locker) => {
             return (
-              <Box h="auto" bg="myPurple.6" style={{ borderRadius: 20 }} p="sm" key={locker.id}>
+              <Box
+                h="auto"
+                bg={currentTheme === 'light' ? '#ffff' : '#393A58'}
+                bd={currentTheme === 'light' ? '1px solid #4F51B3' : null}
+                style={{ borderRadius: 20 }}
+                p="sm"
+                key={locker.id}
+              >
                 <Flex direction="column" gap="lg" p="sm">
                   <Flex gap="10vw" justify="center" align="center">
                     <Flex direction="column" gap="1vh" justify="center">
-                      <Title size="xl" c="white">
+                      <Title size="xl" c={currentTheme === 'light' ? '#06060E' : '#ffff'}>
                         Armario 0{locker.number}
                       </Title>
                       <Flex gap="md" justify="flex-start">
                         <Flex gap={5}>
-                          <Text c="white" fw={700}>
+                          <Text c={currentTheme === 'light' ? '#06060E' : '#ffff'} fw={700}>
                             Ubicación:
                           </Text>{' '}
-                          <Text c="white">{locker.location}</Text>
+                          <Text c={currentTheme === 'light' ? '#06060E' : '#ffff'}>
+                            {locker.location}
+                          </Text>
                         </Flex>
                       </Flex>
                     </Flex>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   IconCalendarTime,
   IconLogout,
@@ -6,8 +6,9 @@ import {
   IconSettings,
   IconUser,
 } from '@tabler/icons-react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Center, Flex, Image, rem, Stack, Tooltip, UnstyledButton } from '@mantine/core';
+import { useThemeContext } from '@/hooks/AppProvider';
 import { useAuth } from '@/hooks/AuthProvider';
 import classes from './SideMenu.module.css';
 
@@ -20,6 +21,24 @@ interface NavbarLinkProps {
 }
 
 function NavbarLink({ icon: Icon, label, active, onClick, to }: NavbarLinkProps) {
+  const { currentTheme } = useThemeContext();
+
+  useEffect(() => {
+    const root = document.documentElement;
+
+    if (currentTheme === 'light') {
+      root.style.setProperty('--link-menu-bg', '#5F60BD');
+      root.style.setProperty('--link-hover-bg', '#ffff');
+      root.style.setProperty('--link-active-bg', '#BABBE0');
+      root.style.setProperty('--link-text-color', '#ffff');
+    } else {
+      root.style.setProperty('--link-menu-bg', '#4F51B3');
+      root.style.setProperty('--link-hover-bg', '#ffff');
+      root.style.setProperty('--link-active-bg', '#3C3D85');
+      root.style.setProperty('--link-text-color', '#F1F2FF');
+    }
+  }, [currentTheme]);
+
   return (
     <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
       <UnstyledButton onClick={onClick} className={classes.link} data-active={active || undefined}>
@@ -37,14 +56,13 @@ const menuData = [
 ];
 
 export function SideMenu() {
-
   // const [active, setActive] = useState(0);
   const navigate = useNavigate(); // Initialize useNavigate
   const location = useLocation();
   const { logout } = useAuth(); // Get the logout function from AuthContext
 
   //Finds active link index by current page
-  const activeIndex = menuData.findIndex(link => link.to === location.pathname);
+  const activeIndex = menuData.findIndex((link) => link.to === location.pathname);
 
   const handleLogout = () => {
     logout(); // Clear user state and navigate to login page
@@ -58,7 +76,7 @@ export function SideMenu() {
       onClick={() => {
         // setActive(index);
         // if (link.to) {
-          navigate(link.to); // Navigate to the page when clicked
+        navigate(link.to); // Navigate to the page when clicked
         //}
       }}
     />

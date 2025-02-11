@@ -4,7 +4,7 @@
   padding-top: var(--mantine-spacing-md);
   padding-bottom: var(--mantine-spacing-md);
   flex-direction: column;
-  background-color: var(--mantine-color-myPurple-4);
+  background-color: var(--link-menu-bg);
 }
 
 .navbarMain {
@@ -19,10 +19,10 @@
   align-items: center;
   justify-content: center;
   gap: rem(50px);
-  color: var(--mantine-color-white);
+  color: var(--link-text-color);
 
   &:hover {
-    background-color: var(--mantine-color-white);
+    background-color: var(--link-hover-bg);
     color: var(--mantine-color-myPurple-4);
   }
 
@@ -30,7 +30,7 @@
     &,
     &:hover {
       box-shadow: var(--mantine-shadow-sm);
-      background-color: var(--mantine-color-myPurple-5);
+      background-color: var(--link-active-bg);
       color: var(--mantine-color-white);
     }
   }

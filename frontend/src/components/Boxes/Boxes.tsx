@@ -16,9 +16,10 @@ import { BoxesProps, BoxType } from '@/types/types';
 
 import './Boxes.module.css';
 
-import { useAppContext } from '@/hooks/AppProvider';
+import { useAppContext, useThemeContext } from '@/hooks/AppProvider';
 
 const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
+  const { currentTheme } = useThemeContext();
   const { setSelectedBox } = useAppContext();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -52,20 +53,32 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
       mb="lg"
       h="86vh"
       w="34.5vw"
+      bg={currentTheme === 'light' ? '#E0E1FA' : '#5F60BD'}
+      bd={currentTheme === 'light' ? '1px solid #5F60BD' : null}
     >
       <Stack my="4vh" gap="xl">
         <Flex gap="33%">
           <a>
-            <IconArrowLeft color="white" size="30px" onClick={onReturn} />
+            <IconArrowLeft
+              size="30px"
+              onClick={onReturn}
+              style={{ color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}` }}
+            />
           </a>
 
-          <Title fw="600" c="white">
+          <Title fw="600" style={{ color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}` }}>
             Casillas
           </Title>
         </Flex>
 
         <Center>
-          <Input w="20vw" size="lg" placeholder="Busca un objeto" rightSection={<IconSearch />} />
+          <Input
+            w="20vw"
+            size="lg"
+            placeholder="Busca un objeto"
+            bd={currentTheme === 'light' ? '1px solid #4F51B3' : null}
+            rightSection={<IconSearch />}
+          />
         </Center>
       </Stack>
       <ScrollArea p="lg" m="md" h="62vh" scrollbarSize={16}>
@@ -77,19 +90,23 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
                 setSelectedBox(box);
                 onBoxClick(box);
               }}
-              style={{
-                cursor: 'pointer',
-                borderRadius: 20,
-                backgroundColor: theme.colors.myPurple[6],
-              }}
+              bg={currentTheme === 'light' ? '#ffff' : '#393A58'}
+              bd={currentTheme === 'light' ? '1px solid #5F60BD' : '1px solid transparent'}
+              style={{ borderRadius: '20px', cursor: 'pointer' }}
               p="lg"
             >
               <Flex w="100%" align="center" justify="space-between">
                 <Stack>
-                  <Title size="xl" c="white">
+                  <Title
+                    size="xl"
+                    style={{ color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}` }}
+                  >
                     Casilla C{box.id}
                   </Title>
-                  <Text size="md" c="white">
+                  <Text
+                    size="md"
+                    style={{ color: `${currentTheme === 'light' ? '#06060E' : '#ffff'}` }}
+                  >
                     {box.description}
                   </Text>
                 </Stack>
