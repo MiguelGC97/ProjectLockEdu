@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link rel="stylesheet" href="/css/sidemenu.css" />
+</head>
+
+<body>
+  <div id="sidemenuContainer">
+    <nav class="sidemenu-all">
+      <ul class="menu-main-links">
+        <li class="app-logo">
+          <img src="/images/logoApp-new.png" alt="Sidemenu logo" />
+        </li>
+        <li class="menu-item <%= activeRoute === 'lockers' ? 'active' : '' %>" data-route="locker">
+          <a class="menu-link" href="/locker"><img class="nav-icon" src="/images/locker-icon.svg"
+              alt="Locker icon" /></a>
+        </li>
+        <li class="menu-item <%= activeRoute === 'reportlog' ? 'active' : '' %>" data-route="reportLog">
+          <a class="menu-link inactive" href="/reportlog"><img class="nav-icon" src="/images/report-icon.svg"
+              alt="Reports icon" /></a>
+        </li>
+        <li class="menu-item <%= activeRoute === 'notifications' ? 'active' : '' %>" data-route="notifications">
+          <a class="menu-link inactive" href="/notifications"><img class="nav-icon" src="/images/notification-icon.svg"
+              alt="Notifications icon" /></a>
+        </li>
+
+        <li class="menu-logout <%= activeRoute === 'notifications' ? 'active' : '' %>">
+          <form id="logout-form" action="/users/logout" method="POST">
+            <button type="submit" class="menu-link menu-link-logout">
+              <img class="nav-icon" src="/images/logout-icon.svg" alt="Logout icon" />
+            </button>
+          </form>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</body>
+
+</html>

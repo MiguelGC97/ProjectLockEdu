@@ -1,0 +1,74 @@
+
+  
+  h2 {
+	font-size: 30px;
+	color: #fff;
+	text-align: center;
+	margin-bottom: 20px;
+  }
+  
+  .form-container{
+	padding-right: 25px;
+	
+  }
+
+  .report-form {
+	width: 25em;
+	height: 35em;
+	background-color: #4F51B3;
+	padding: 30px;
+	border-radius: 0 0 25px 25px;
+	
+  }
+  
+  label {
+	display: block;
+	font-size: 16px;
+	color: #ffffff;
+	margin-bottom: 5px;
+  }
+  
+  input,
+  textarea {
+	width: 100%;
+	background-color: #31324E;
+	border: 1px solid #7955ce;
+	border-radius: 5px;
+	padding: 10px;
+	margin-bottom: 20px;
+	font-size: 14px;
+	color: #ffffff;
+  }
+  
+  textarea {
+	height: 150px;
+	resize: none;
+  }
+  
+  .button-form {
+	width: 97px;
+	height: 35px;
+	background-color: #3C3D85;
+	color: #fff;
+	font-size: 16px;
+	text-transform: uppercase;
+	border: none;
+	border-radius: 35px;
+	cursor: pointer;
+	transition: background 0.3s ease;
+  }
+  
+  .button-form:hover {
+	background-color: #343572;
+  }
+  
+  ::placeholder {
+	color: #a8a8a8;
+  }
+  
+  input:focus,
+  textarea:focus {
+	outline: 0;
+	border: 1px solid #926be4;
+  }
+  
