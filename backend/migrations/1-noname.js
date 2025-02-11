@@ -1,5 +1,7 @@
 "use strict";
 
+const { DataTypes } = require('sequelize');
+
 var Sequelize = require("sequelize");
 
 var info = {
