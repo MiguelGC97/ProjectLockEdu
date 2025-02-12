@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "cross-env NODE_ENV=test jest --testTimeout=10000",
+    "pretest": "cross-env NODE_ENV=test npm run db:reset",
+    "db:makemigrations": "node ./node_modules/sequelize-auto-migrations/bin/makemigration.js",
+    "db:reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npm run db:migrate-and-seed",
+    "db:migrate-and-seed": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
+    "db:reset-and-start": "npm run db:reset && npm start",
+    "db:migrate-and-start": "npx sequelize-cli db:migrate && npm start",
     "start": "node server.js"
   },
   "keywords": [],

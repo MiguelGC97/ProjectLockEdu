@@ -97,16 +97,16 @@ routes.forEach(route => require(`./routes/${route}.routes.js`)(app));
 // Seeders
 async function runSeeders() {
   const seeders = [
-    require('./seeders/20241121192833-seed-lockers.js'),
-    require('./seeders/20241121192910-seed-boxes.js'),
-    require('./seeders/20241121192926-seed-types.js'),
-    require('./seeders/20241121192941-seed-items.js'),
-    require('./seeders/20241121162756-seed-user.js'),
-    require('./seeders/20241121163651-seed-report.js'),
-    require('./seeders/20241210162620-seed-bookings.js'),
-    require('./seeders/20241121192926-seed-notifications.js'),
-    require('./seeders/20250114162620-seed-reportLog.js'),
-    require('./seeders/20241121192927-seed-settings.js'),
+    require('./seeders/01-20241121192833-seed-lockers.js'),
+    require('./seeders/02-20241121192910-seed-boxes.js'),
+    require('./seeders/06-20241121192926-seed-types.js'),
+    require('./seeders/08-20241121192941-seed-items.js'),
+    require('./seeders/00-20241121162756-seed-user.js'),
+    require('./seeders/03-20241121163651-seed-report.js'),
+    require('./seeders/04-20241210162620-seed-bookings.js'),
+    require('./seeders/05-20241121192926-seed-notifications.js'),
+    require('./seeders/09-20250114162620-seed-reportLog.js'),
+    require('./seeders/07-20241121192927-seed-settings.js'),
   ];
 
   console.log("Running seeders...");
