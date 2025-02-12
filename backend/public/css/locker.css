@@ -35,7 +35,7 @@
   .locker-flex {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     height: auto;
     gap: 20px;
@@ -263,8 +263,8 @@
     flex-direction: column;
     justify-content: space-between;
     background-color: #393a58;
-    width: 49%;
-    height: 15vh;
+    width: 350px;
+    height: 150px;
     padding: 20px 20px;
     border-radius: 10px;
   }
@@ -334,7 +334,7 @@
 
   .see-boxes-button:hover {
     background-color: rgb(90, 92, 187);
-    padding: 5px 80px;
+    padding: 5px 60px;
   }
 
   ::-webkit-scrollbar {
@@ -406,7 +406,7 @@
     position: fixed;
     z-index: 3;
     width: 40vw;
-    height: 40vh;
+    height: 400px;
     left: 0;
     right: 0;
     top: 20vh;
