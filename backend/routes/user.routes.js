@@ -6,7 +6,12 @@ module.exports = (app) => {
 
   var router = require("express").Router();
 
-  router.post("/", users.addNewUser);
+  router.post(
+    "/",
+    auth.isAuthenticated,
+    permissions.authorize(["ADMIN"]),
+    users.addNewUser
+  );
 
   router.get(
     "/",
@@ -32,7 +37,7 @@ module.exports = (app) => {
   router.put(
     "/:id",
     auth.isAuthenticated,
-    permissions.authorize(["TEACHER", "ADMIN"]),
+    permissions.authorize(["ADMIN"]),
     users.update
   );
 

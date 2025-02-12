@@ -5,7 +5,7 @@ describe('Initial Test', () => {
   })
 
   describe('Another Test' , () => {
-    it('test that pepito exist', () => {
-        expect("pepito").toBe("Juan")
+    it('test that Juan exist', () => {
+        expect("Pepito").toBe("Juan")
     })
   })

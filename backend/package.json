@@ -10,12 +10,12 @@
     "db:migrate-and-seed": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
     "db:reset-and-start": "npm run db:reset && npm start",
     "db:migrate-and-start": "npx sequelize-cli db:migrate && npm start",
-    "start": "node server.js"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "Sarah | Migue | Yami",
   "license": "ISC",
-  "description": "A proyect aboutt lockers",
+  "description": "A proyect about lockers",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",

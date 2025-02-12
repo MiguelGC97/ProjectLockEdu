@@ -95,8 +95,8 @@ exports.addNewUser = async (req, res) => {
     return res.json({ user: userObj, access_token: token });
   } catch (err) {
     // Handle errors
-    res.status(500).send({
-      message: err.message || "Some error occurred while creating the User.",
+    res.status(401).send({
+      message: err.message || "Unathorized",
     });
   }
 };

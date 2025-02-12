@@ -8,6 +8,9 @@ const session = require('express-session');
 const http = require('http');
 const WebSocket = require('ws');
 
+const PORT = process.env.HOST_PORT || 8080;
+
+
 const { store } = require('./controllers/reportLog.views.controller.js');
 const sequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require("./models");
@@ -95,26 +98,26 @@ const routes = [
 routes.forEach(route => require(`./routes/${route}.routes.js`)(app));
 
 // Seeders
-async function runSeeders() {
-  const seeders = [
-    require('./seeders/01-20241121192833-seed-lockers.js'),
-    require('./seeders/02-20241121192910-seed-boxes.js'),
-    require('./seeders/06-20241121192926-seed-types.js'),
-    require('./seeders/08-20241121192941-seed-items.js'),
-    require('./seeders/00-20241121162756-seed-user.js'),
-    require('./seeders/03-20241121163651-seed-report.js'),
-    require('./seeders/04-20241210162620-seed-bookings.js'),
-    require('./seeders/05-20241121192926-seed-notifications.js'),
-    require('./seeders/09-20250114162620-seed-reportLog.js'),
-    require('./seeders/07-20241121192927-seed-settings.js'),
-  ];
+// async function runSeeders() {
+//   const seeders = [
+//     require('./seeders/01-20241121192833-seed-lockers.js'),
+//     require('./seeders/02-20241121192910-seed-boxes.js'),
+//     require('./seeders/06-20241121192926-seed-types.js'),
+//     require('./seeders/08-20241121192941-seed-items.js'),
+//     require('./seeders/00-20241121162756-seed-user.js'),
+//     require('./seeders/03-20241121163651-seed-report.js'),
+//     require('./seeders/04-20241210162620-seed-bookings.js'),
+//     require('./seeders/05-20241121192926-seed-notifications.js'),
+//     require('./seeders/09-20250114162620-seed-reportLog.js'),
+//     require('./seeders/07-20241121192927-seed-settings.js'),
+//   ];
 
-  console.log("Running seeders...");
-  for (const seeder of seeders) {
-    await seeder.up(db.sequelize.getQueryInterface(), db.Sequelize);
-  }
-  console.log("Seeders completed.");
-}
+//   console.log("Running seeders...");
+//   for (const seeder of seeders) {
+//     await seeder.up(db.sequelize.getQueryInterface(), db.Sequelize);
+//   }
+//   console.log("Seeders completed.");
+// }
 
 // Create HTTP server
 const server = http.createServer(app);
@@ -152,22 +155,29 @@ wss.on('connection', (ws) => {
 });
 
 // Make WebSocket server accessible in controllers
-app.set('wss', wss);
+// app.set('wss', wss);
 
 // Sync Database and Start Server
-db.sequelize.sync({ force: true })
-  .then(async () => {
-    console.log("Database synced: tables dropped and recreated.");
+// db.sequelize.sync({ force: true })
+//   .then(async () => {
+//     console.log("Database synced: tables dropped and recreated.");
 
-    await runSeeders();
-    await db.sessionStore.sync();
+//     await runSeeders();
+//     await db.sessionStore.sync();
 
-    const PORT = process.env.HOST_PORT || 8080;
-    server.listen(PORT, () => {
-      console.log(`Servidor ejecutándose en el puerto ${PORT}.`);
-      console.log(`Servidor WebSocket ejecutándose en el puerto ${PORT}.`);
-    });
-  })
-  .catch((error) => {
-    console.error("Error al sincronizar la base de datos:", error);
-  });
+//     const PORT = process.env.HOST_PORT || 8080;
+//     server.listen(PORT, () => {
+//       console.log(`Servidor ejecutándose en el puerto ${PORT}.`);
+//       console.log(`Servidor WebSocket ejecutándose en el puerto ${PORT}.`);
+//     });
+//   })
+//   .catch((error) => {
+//     console.error("Error al sincronizar la base de datos:", error);
+//   });
+
+
+server.listen(PORT, () => {
+  console.log(`Servidor ejecutándose en el puerto ${PORT}.`);
+});
+
+module.exports = { app, server };

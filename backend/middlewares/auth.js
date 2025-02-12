@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const db = require("../models");
 const utils = require("../utils");
+
+const db = require("../models");
 const User = db.user;
 
 const validateSigninInput = (user, pwd) => {
@@ -70,7 +71,7 @@ exports.isAuthenticated = async (req, res, next) => {
 
     next(); // Continuar al siguiente middleware
   } catch (err) {
-    const status = err.message === "Invalid token." ? 401 : 500;
+    const status = err.message === "Unathorized." ? 500 : 401;
     res.status(status).json({ error: true, message: err.message });
   }
 };
