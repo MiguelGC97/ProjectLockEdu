@@ -47,5 +47,12 @@ module.exports = (app) => {
     reports.resolveReport
   );
 
-  app.use("/api/reports", auth.isAuthenticated, router);
+  router.delete(
+    "/:id",
+    auth.isAuthenticated,
+    permissions.authorize(["ADMIN"]),
+    reports.deleteReport
+  );
+
+  app.use("/api/reports", router);
 };
