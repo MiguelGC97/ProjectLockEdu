@@ -47,5 +47,5 @@ module.exports = (app) => {
     reports.resolveReport
   );
 
-  app.use("/api/reports", auth.isAuthenticated, router);
+  app.use("/api/reports", router);
 };

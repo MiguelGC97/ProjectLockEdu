@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const db = require("../models/index.js");
 const User = db.user;
 const Report = db.report;
+const Box = db.box;
 
 const utils = require("../utils.js");
 
@@ -43,34 +44,118 @@ beforeAll(async () => {
   A_USER_TOKEN = utils.generateToken(A_USER);
 });
 
-describe("GET /api/reports", () => {
-  it("should show all reports", async () => {
-    const res = await request(app)
-      .get("/api/reports")
-      .set("Authorization", `Bearer ${ADMIN_TOKEN}`);
-
-    expect(res.statusCode).toEqual(200);
-    expect(res.body.data[0]).toHaveProperty("isSolved");
-  });
-});
-
 describe("POST /api/reports", () => {
-  it("should create a new report", async () => {
-    const payload = {
-      content: "Hola soy un test",
+  it("user should create a report successfully", async () => {
+    const newReport = {
+      content: "This is a test report",
       isSolved: false,
-      userId: "2",
-      boxId: "1"
+      userId: A_USER.id,
+      boxId: 1,
     };
 
     const res = await request(app)
       .post("/api/reports")
-      .set("Authorization", `Bearer ${ADMIN_TOKEN}`)
-      .send(payload);
+      .set("Authorization", `Bearer ${A_USER_TOKEN}`)
+      .send(newReport);
 
-      console.log("HOLA ESTOY AQUUIIIIIIII:", res.body)
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("report");
+    expect(res.body.report).toHaveProperty("content", newReport.content);
+    expect(res.body.report).toHaveProperty("isSolved", newReport.isSolved);
+  });
+
+  it("should return 400 if content is missing", async () => {
+    const invalidReport = {
+      isSolved: false,
+      userId: A_USER.id,
+      boxId: 1,
+    };
+
+    const res = await request(app)
+      .post("/api/reports")
+      .set("Authorization", `Bearer ${A_USER_TOKEN}`)
+      .send(invalidReport);
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toHaveProperty("message", "Content can not be empty!");
+  });
+
+  it("should return 401 if user is not authenticated", async () => {
+    const newReport = {
+      content: "Unauthorized test report",
+      isSolved: false,
+      userId: MANAGER_USER_ID.id,
+      boxId: 1,
+    };
+
+    const res = await request(app).post("/api/reports").send(newReport);
+
+    expect(res.statusCode).toBe(401);
+  });
+
+  it("should return 401 if user does not have permission", async () => {
+    const newReport = {
+      content: "Unauthorized role report",
+      isSolved: false,
+      userId: A_USER.id,
+      boxId: 1,
+    };
+
+    const res = await request(app)
+      .post("/api/reports")
+      .set("Authorization", `Bearer ${MANAGER_TOKEN}`)
+      .send(newReport);
+
+    expect(res.statusCode).toBe(401);
+  });
+});
+
+describe("GET /api/reports", () => {
+    it("admin should show all reports", async () => {
+      const res = await request(app)
+        .get("/api/reports")
+        .set("Authorization", `Bearer ${ADMIN_TOKEN}`);
+  
+      expect(res.statusCode).toEqual(200);
+      expect(res.body.data[0]).toHaveProperty("isSolved");
+    });
+  });
+
+describe("GET /api/reports", () => {
+  it("manager should show all reports", async () => {
+    const res = await request(app)
+      .get("/api/reports")
+      .set("Authorization", `Bearer ${MANAGER_TOKEN}`);
+
     expect(res.statusCode).toEqual(200);
-    expect(res.body.report.content).toEqual("Hola soy un test");
+    expect(res.body.data[0]).toHaveProperty("isSolved");
+    expect(res.body.data[0]).toHaveProperty("content");
+  });
+});
+
+describe("GET /api/reports/:userId", () => {
+  it("manager should show a report by userId", async () => {
+    const res = await request(app)
+      .get(`/api/reports/user/${A_USER.id}`)
+      .set("Authorization", `Bearer ${MANAGER_TOKEN}`);
+
+    console.log("Respuesta completa:", res.body);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("username");
+  });
+});
+
+describe("GET /api/reports/:userId", () => {
+  it("manager should show a report by username", async () => {
+    const res = await request(app)
+      .get(`/api/reports/${A_USER.username}`)
+      .set("Authorization", `Bearer ${MANAGER_TOKEN}`);
+
+    console.log("Respuesta completa:", res.body);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("username");
   });
 });
 
