@@ -8,11 +8,11 @@ exports.authorize = (allowedRoles) => {
       const userRole = req.user?.role;
 
       if (!userRole) {
-        return res.status(401).json({ message: "Role is missing or invalid." });
+        return res.status(403).json({ message: "Role is missing or invalid." });
       }
 
       if (!allowedRoles.includes(userRole)) {
-        return res.status(403).json({ message: "You shall not pass." });
+        return res.status(401).json({ message: "You shall not pass." });
       }
 
       next();
