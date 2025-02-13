@@ -154,25 +154,52 @@ exports.resolveReport = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-
 exports.updateDescription = async (req, res) => {
   const id = req.params.id;
   const { content } = req.body;
+  const userId = req.user.id; // Suponiendo que el usuario autenticado viene en req.user
 
   try {
-    const [updated] = await Report.update({ content }, {
-      where: { id },
-    });
+    // Buscar el reporte para verificar si pertenece al usuario autenticado
+    const report = await Report.findByPk(id);
 
-    if (updated) {
-      res.status(200).json({
-        message: "Incidence content updated",
-        data: { content },
-      });
-    } else {
-      res.status(404).json({ message: "Incidence not found" });
+    if (!report) {
+      return res.status(404).json({ message: "Report not found" });
     }
+
+    // Verificar si el usuario es el propietario del reporte
+    if (report.userId !== userId) {
+      return res.status(403).json({ message: "You are not allowed to update this report" });
+    }
+
+    // Actualizar el contenido del reporte
+    report.content = content;
+    await report.save();
+
+    return res.status(200).json({
+      message: "Incidence content updated",
+      data: { content },
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.deleteReport = async (req, res) => {
+  const id = req.params.id;
+  const userId = req.user.id; 
+
+
+  try {
+    const report = await Report.findByPk(id);
+
+    if (!report) {
+      return res.status(404).json({ message: "Report not found" });
+    }
+
+    await report.destroy();
+
+    return res.status(200).json({ message: "Report deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
