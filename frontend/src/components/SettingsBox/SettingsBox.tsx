@@ -76,7 +76,7 @@ export function SettingsBox() {
                         onVisibilityChange={toggle}
                         onChange={(e) => setNewPassword(e.target.value)}
                     />
-                    <Button onClick={handleChangePassword} variant="filled" size="md" px="50" radius="xl" color="#483D8B">Enviar</Button>
+                    <Button onClick={handleChangePassword} variant="filled" size="md" px="50" radius="xl" color="#483D8B">Guardar</Button>
                 </Flex>
             </Stack>
             
@@ -99,7 +99,12 @@ export function SettingsBox() {
                 color="white"
                 iconColor="#191970"
             />
-            <Button onClick={handleChangePassword} variant="filled" size="md" px="50" radius="xl" color="#483D8B">Enviar</Button>
+            <Button 
+            style={{
+                position: 'absolute',
+                right: '50px',
+            }}
+            variant="filled" size="md" px="50" radius="xl" color="#483D8B">Guardar</Button>
         </Box>
     );
 }
