@@ -6,7 +6,7 @@ const db = require("../models/index.js");
 const User = db.user;
 const utils = require("../utils.js");
 
-const { app, server } = require("../index");
+const { app, server } = require("../testServer");
 
 let ADMIN_USER_ID = "", ADMIN_TOKEN = "";
 let MANAGER_USER_ID = "", MANAGER_TOKEN = "";
