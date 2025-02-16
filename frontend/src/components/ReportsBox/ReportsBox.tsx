@@ -43,15 +43,43 @@ export function ReportsBox() {
 
   const handleSave = async () => {
     if (currentIncidence) {
-      await updateIncidenceContent(currentIncidence.id, newContent);
-      setModalOpened(false);
-      setIncidences(
-        incidences?.map((inc) =>
-          inc.id === currentIncidence?.id ? { ...inc, content: newContent } : inc
-        )
-      );
+      try {
+        const response = await updateIncidenceContent(currentIncidence.id, newContent);
+        const data = response.data; // Axios ya parsea JSON automáticamente
+        
+        console.log("Respuesta del backend:", data);
+  
+        // ✅ Si la API devuelve el mensaje de tiempo límite, mostramos la alerta
+        if (data.message === "Ha excedido el tiempo límite para actualizar este reporte") {
+          alert("No puedes actualizar este reporte porque ha pasado el tiempo límite.");
+          setModalOpened(false);
+          return;
+        }
+  
+        // ✅ Si la actualización fue exitosa, cerramos el modal y actualizamos la lista
+        setModalOpened(false);
+        setIncidences(
+          incidences?.map((inc) =>
+            inc.id === currentIncidence?.id ? { ...inc, content: newContent } : inc
+          )
+        );
+  
+      } catch (error: any) {
+        console.error("Error al actualizar la incidencia:", error);
+  
+       
+        if (error.response && error.response.data.message) {
+          alert(error.response.data.message);
+        } else {
+         
+          alert("Ocurrió un error inesperado. Inténtalo de nuevo más tarde.");
+        }
+  
+        setModalOpened(false); 
+      }
     }
   };
+  
 
   const StyledAccordion = styled(Accordion)`
     .mantine-Accordion-control {
