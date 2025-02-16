@@ -125,7 +125,7 @@ export function ReportForm() {
             <IconArrowLeft size={30} color="white" />
           </Box>
           <Box style={{ flexGrow: 1 }}>
-            <h2 style={{ color: 'white', margin: 0, textAlign: 'center' }}>
+            <h2 data-testid="reportForm" style={{ color: 'white', margin: 0, textAlign: 'center' }}>
               Formulario de Incidencias
             </h2>
           </Box>

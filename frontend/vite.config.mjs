@@ -7,13 +7,13 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'), // Nota: eliminé la barra inicial para evitar problemas
+      '@': path.resolve(__dirname, 'src'), 
       '@tabler/icons-react': '@tabler/icons-react/dist/esm/icons/index.mjs',
     },
   },
   test: {
-    globals: true, // Enable globals like `describe`, `it`, `expect`
-    environment: 'jsdom', // Required for DOM testing
-    setupFiles: './vitest.setup.mjs', // Point to your setup file
+    globals: true, 
+    environment: 'jsdom', 
+    setupFiles: './vitest.setup.mjs', 
   },
 });

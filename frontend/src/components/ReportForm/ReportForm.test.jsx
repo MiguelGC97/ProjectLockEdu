@@ -26,7 +26,7 @@ describe("ReportForm Component", () => {
         </Router>
       </MantineProvider>
     );
-    expect(screen.getByText("Formulario de Incidencias")).toBeInTheDocument();
+    expect(screen.getByTestId("reportForm")).toBeInTheDocument();
     await waitFor(() => expect(fetchLockers).toHaveBeenCalled());
   });
 
@@ -41,7 +41,7 @@ describe("ReportForm Component", () => {
     );
     await waitFor(() => {
       expect(fetchLockers).toHaveBeenCalled();
-      expect(screen.getByText("Locker 1")).toBeInTheDocument();
+      expect(screen.getByTestId("Locker 1")).toBeInTheDocument();
     });
   });
 
@@ -60,7 +60,7 @@ describe("ReportForm Component", () => {
 
     fireEvent.change(screen.getByLabelText("Armario"), { target: { value: "1" } });
     await waitFor(() => expect(fetchBoxesByLocker).toHaveBeenCalledWith("1"));
-    expect(screen.getByText("Box 101")).toBeInTheDocument();
+    expect(screen.getByTestId("Box 101")).toBeInTheDocument();
   });
 
   test("disables Casilla select if no locker is selected", () => {
@@ -92,7 +92,7 @@ describe("ReportForm Component", () => {
     fireEvent.change(screen.getByLabelText("Casilla"), { target: { value: "101" } });
     fireEvent.change(screen.getByLabelText("Descripción"), { target: { value: "Test description" } });
     
-    fireEvent.click(screen.getByText("Enviar"));
+    fireEvent.click(screen.getByTestId("Enviar"));
     await waitFor(() => expect(fetchFormIncident).toHaveBeenCalledWith({
       content: "Test description",
       isSolved: false,
@@ -110,7 +110,7 @@ describe("ReportForm Component", () => {
         </Router>
       </MantineProvider>
     );
-    fireEvent.click(screen.getByText("Enviar"));
+    fireEvent.click(screen.getByTestId("Enviar"));
     expect(window.alert).toHaveBeenCalledWith("Por favor, complete todos los campos.");
   });
 });
