@@ -131,7 +131,7 @@ export async function fetchBoxesByLocker(lockerId: string): Promise<BoxType[] | 
 }
 
 
-// 
+//function to fetch items
 export async function fetchItems(): Promise<Item[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/items`);
@@ -144,6 +144,7 @@ export async function fetchItems(): Promise<Item[] | undefined> {
   }
 }
 
+//function to fetch bookings by user Id
 export async function fetchBookingsByUserId(userId: number): Promise<Booking[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/bookings/users/${userId}`);
@@ -156,6 +157,7 @@ export async function fetchBookingsByUserId(userId: number): Promise<Booking[] |
   }
 }
 
+//fetch bookings by user id and booking state
 export async function fetchBookingsByUserIdAndState(userId: number, state: string): Promise<Booking[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/bookings/users/${userId}/state/${state}`);
@@ -169,6 +171,29 @@ export async function fetchBookingsByUserIdAndState(userId: number, state: strin
   }
 }
 
+//fetch dates and item Ids from all bookings
+export async function fetchBookingDatesByItemIds(itemIds: string[]): Promise<{ checkIn: string; checkOut: string }[]> {
+  try {
+    if (itemIds.length === 0) {
+      console.warn("No item IDs provided");
+      return [];
+    }
+
+    const response = await instance.post(`${baseUrl}/bookings/items`, { itemIds });
+
+    if (response.status >= 200 && response.status < 300 && response.data.itemDates) {
+      return response.data.itemDates;
+    } else {
+      console.error("Unexpected response format:", response.data);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching booking dates by items:", error);
+    return [];
+  }
+}
+
+//update booking state by Id
 export async function updateBookingState(bookingId: number, state: string): Promise<any> {
   try {
     const response = await instance.put(`${baseUrl}/bookings/${bookingId}`, { state });
@@ -184,6 +209,7 @@ export async function updateBookingState(bookingId: number, state: string): Prom
   }
 }
 
+//delete booking by Id
 export async function deleteBookingById(bookingId: number): Promise<void> {
   try {
     const response = await instance.delete(`${baseUrl}/bookings/${bookingId}`);

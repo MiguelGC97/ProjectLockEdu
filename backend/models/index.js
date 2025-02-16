@@ -148,6 +148,7 @@ db.notification.belongsTo(db.user, {
 db.booking.hasMany(db.notification, {
   foreignKey: 'bookingId',
   targetKey: 'id',
+  onDelete: "CASCADE",
 });
 
 db.notification.belongsTo(db.booking, {
