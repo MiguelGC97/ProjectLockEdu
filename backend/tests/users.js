@@ -6,7 +6,7 @@ const db = require("../models/index.js");
 const User = db.user;
 
 const request = require("supertest");
-const { app, server } = require("../testServer");
+const { app, server } = require("../testServer.js");
 
 
 let ADMIN_USER_ID = "";

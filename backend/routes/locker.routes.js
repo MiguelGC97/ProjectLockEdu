@@ -19,6 +19,13 @@
     lockers.getAll
   );
 
+  router.get(
+    "/:id",
+    auth.isAuthenticated,
+    permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]),
+    lockers.getOne
+  );
+
   router.put(
     "/:id",
     auth.isAuthenticated,
