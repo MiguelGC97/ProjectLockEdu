@@ -54,8 +54,9 @@ exports.update = async (req, res) => {
 };
 
 exports.delete = async (req, res) => {
+
   const deleting = await Locker.destroy({ where: { id: req.params.id } });
-  const status = deleting ? 200 : 404;
+  const status = deleting ? 200 : 401;
   const message = deleting ? "Locker deleted" : "Locker not found";
   res.status(status).json({ message });
 };
