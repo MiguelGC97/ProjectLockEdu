@@ -35,23 +35,7 @@ exports.newBooking = async (req, res) => {
       { transaction: t }
     );
 
-    const availableItems = await Item.findAll({
-      where: {
-        id: {
-          [Op.in]: itemIds,
-        },
-        state: "available",
-      },
-    });
-
-    if (availableItems.length === 0) {
-      await t.rollback();
-      return res.status(404).json({
-        message: "No available items found for the provided IDs",
-      });
-    }
-
-    await booking.addItem(availableItems, { transaction: t });
+    await booking.addItem(itemIds, { transaction: t });
 
     await Item.update(
       { state: "booked" },

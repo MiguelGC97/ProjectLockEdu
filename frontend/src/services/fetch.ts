@@ -169,10 +169,8 @@ export async function fetchBookingsByUserIdAndState(userId: number, state: strin
 }
 
 //fetch dates and item Ids from all bookings
-export async function fetchBookingDatesByItemIds(items: Item[]): Promise<Booking[] | undefined> {
+export async function fetchBookingDatesByItemIds(itemIds: string[]): Promise<{ checkIn: string; checkOut: string }[]> {
   try {
-    const itemIds = items.map(item => item.id);
-
     if (itemIds.length === 0) {
       console.warn("No item IDs provided");
       return [];
