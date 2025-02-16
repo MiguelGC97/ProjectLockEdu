@@ -58,31 +58,29 @@ export function ReportForm() {
     }
   };
 
-
   const handleSubmit = async () => {
     if (!selectedLocker || !selectedBox || !description) {
       alert('Por favor, complete todos los campos.');
       return;
     }
-
+  
     const reportData = {
       content: description,
       isSolved: false,
       userId: parseInt(user.id),
       boxId: parseInt(selectedBox, 10),
     };
-
+  
+    console.log('Enviando reporte:', reportData); // Agregar console.log para depuración
+  
     try {
       const response = await fetchFormIncident(reportData);
       alert('Reporte creado exitosamente');
-
-      //clear form and toggle off.
-
+  
+      // Limpiar el formulario
       setSelectedLocker('');
       setSelectedBox('');
       setDescription('');
-      
-
     } catch (error) {
       console.error('Error al enviar reporte:', error);
       alert('Error al crear el reporte');
@@ -105,10 +103,7 @@ export function ReportForm() {
     })),
   ];
 
-
   return (
-
-
     <MantineProvider theme={theme}>
       <Box
         bg="#4F51B3"
@@ -143,6 +138,7 @@ export function ReportForm() {
             },
           }}
           onChange={(e) => handleLockerChange(e.currentTarget.value)}
+          data-testid="locker-select"
         />
 
         <NativeSelect
@@ -158,6 +154,7 @@ export function ReportForm() {
           }}
           onChange={(e) => setSelectedBox(e.currentTarget.value)}
           disabled={!selectedLocker}
+          data-testid="box-select"
         />
 
         <Textarea
@@ -174,6 +171,7 @@ export function ReportForm() {
               backgroundColor: '#2A2B44',
             },
           }}
+          data-testid="description-textarea"
         />
 
         <Box
@@ -191,7 +189,7 @@ export function ReportForm() {
               padding: '10px 20px',
             }}
             onClick={handleSubmit}
-            
+            data-testid="submit-button"
           >
             Enviar
           </Button>

@@ -1,116 +1,200 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { BrowserRouter as Router } from "react-router-dom";
-import { vi } from "vitest";
-import { MantineProvider } from "@mantine/core";
-import { theme } from "../../theme";
-import { ReportForm } from "./ReportForm";
+import React from 'react'
+import { render, fireEvent, waitFor, screen } from '@testing-library/react'
+import { ReportForm } from './ReportForm'
+import { MantineProvider } from '@mantine/core'
+import {
+  fetchBoxesByLocker,
+  fetchFormIncident,
+  fetchLockers
+} from '@/services/fetch'
 
+vi.mock('@/hooks/AuthProvider', () => ({
+  useAuth: () => ({
+    user: { id: '1' }
+  })
+}))
 
-vi.mock("@/services/fetch");
-vi.mock("../../hooks/AuthProvider", () => ({
-  useAuth: vi.fn(),
-}));
+vi.mock('@/services/fetch', () => ({
+  fetchLockers: vi.fn(() =>
+    Promise.resolve([{ id: 1, description: 'Armario 01' }])
+  ),
+  fetchBoxesByLocker: vi.fn(() =>
+    Promise.resolve([{ id: 1, description: 'Casilla del armario 01' }])
+  ),
+  fetchFormIncident: vi.fn(() => Promise.resolve({}))
+}))
 
-describe("ReportForm Component", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    useAuth.mockReturnValue({ user: { id: "1" } });
-  });
+const renderWithMantine = component => {
+  return render(<MantineProvider>{component}</MantineProvider>)
+}
 
-  test("renders correctly with initial state", async () => {
-    fetchLockers.mockResolvedValue([]);
-    render(
-      <MantineProvider theme={theme}>
-        <Router>
-          <ReportForm />
-        </Router>
-      </MantineProvider>
-    );
-    expect(screen.getByTestId("reportForm")).toBeInTheDocument();
-    await waitFor(() => expect(fetchLockers).toHaveBeenCalled());
-  });
+describe('ReportForm', () => {
+  it('renders correctly', async () => {
+    renderWithMantine(<ReportForm />)
 
-  test("loads lockers on mount", async () => {
-    fetchLockers.mockResolvedValue([{ id: 1, description: "Locker 1" }]);
-    render(
-      <MantineProvider theme={theme}>
-        <Router>
-          <ReportForm />
-        </Router>
-      </MantineProvider>
-    );
     await waitFor(() => {
-      expect(fetchLockers).toHaveBeenCalled();
-      expect(screen.getByTestId("Locker 1")).toBeInTheDocument();
-    });
+      expect(screen.getByTestId('reportForm')).toBeInTheDocument()
+      expect(screen.getByTestId('locker-select')).toBeInTheDocument()
+      expect(screen.getByTestId('box-select')).toBeInTheDocument()
+      expect(screen.getByTestId('description-textarea')).toBeInTheDocument()
+      expect(screen.getByTestId('submit-button')).toBeInTheDocument()
+    })
+  })
+
+  it('submits the form correctly', async () => {
+    fetchLockers.mockResolvedValue([{ id: 1, description: 'Armario 01' }])
+
+    fetchBoxesByLocker.mockResolvedValue([
+      { id: 1, description: 'Casilla del armario 01' }
+    ])
+
+    renderWithMantine(<ReportForm />)
+
+    await waitFor(() => {
+      expect(screen.getByTestId('locker-select')).toBeInTheDocument()
+    })
+
+    const lockerSelect = screen.getByTestId('locker-select')
+    fireEvent.mouseDown(lockerSelect)
+    fireEvent.change(lockerSelect, { target: { value: '1' } }) 
+
+    await waitFor(() => {
+      const boxSelect = screen.getByTestId('box-select')
+      expect(boxSelect).not.toBeDisabled()
+    })
+
+    const boxSelect = screen.getByTestId('box-select')
+    fireEvent.mouseDown(boxSelect)
+    fireEvent.change(boxSelect, { target: { value: '1' } })
+
+    const descriptionTextarea = screen.getByTestId('description-textarea')
+    fireEvent.change(descriptionTextarea, {
+      target: { value: 'Test description' }
+    })
+
+    const submitButton = screen.getByTestId('submit-button')
+    fireEvent.click(submitButton)
+
+    await waitFor(() => {
+      expect(fetchFormIncident).toHaveBeenCalledWith({
+        content: 'Test description',
+        isSolved: false,
+        userId: 1,
+        boxId: 1
+      })
+    })
+  })
+
+  it('shows an alert if the form is incomplete', async () => {
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {})
+
+    renderWithMantine(<ReportForm />)
+
+    fireEvent.click(screen.getByTestId('submit-button'))
+
+    await waitFor(() => {
+      expect(alertSpy).toHaveBeenCalledWith(
+        'Por favor, complete todos los campos.'
+      )
+    })
+
+    alertSpy.mockRestore()
+  })
+})
+
+it('shows an alert if no locker is selected', async () => {
+  const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+  renderWithMantine(<ReportForm />);
+
+ 
+  const boxSelect = screen.getByTestId('box-select');
+  fireEvent.mouseDown(boxSelect);
+  fireEvent.change(boxSelect, { target: { value: '1' } });
+
+  const descriptionTextarea = screen.getByTestId('description-textarea');
+  fireEvent.change(descriptionTextarea, {
+    target: { value: 'Test description' },
   });
 
-  test("updates boxes when selecting a locker", async () => {
-    fetchLockers.mockResolvedValue([{ id: 1, description: "Locker 1" }]);
-    fetchBoxesByLocker.mockResolvedValue([{ id: 101, description: "Box 101" }]);
-    
-    render(
-      <MantineProvider theme={theme}>
-        <Router>
-          <ReportForm />
-        </Router>
-      </MantineProvider>
-    );
-    await waitFor(() => expect(fetchLockers).toHaveBeenCalled());
 
-    fireEvent.change(screen.getByLabelText("Armario"), { target: { value: "1" } });
-    await waitFor(() => expect(fetchBoxesByLocker).toHaveBeenCalledWith("1"));
-    expect(screen.getByTestId("Box 101")).toBeInTheDocument();
+  const submitButton = screen.getByTestId('submit-button');
+  fireEvent.click(submitButton);
+
+
+  await waitFor(() => {
+    expect(alertSpy).toHaveBeenCalledWith('Por favor, complete todos los campos.');
   });
 
-  test("disables Casilla select if no locker is selected", () => {
-    render(
-      <MantineProvider theme={theme}>
-        <Router>
-          <ReportForm />
-        </Router>
-      </MantineProvider>
-    );
-    expect(screen.getByLabelText("Casilla")).toBeDisabled();
+  alertSpy.mockRestore();
+});
+
+it('shows an alert if no box is selected', async () => {
+  const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+  renderWithMantine(<ReportForm />);
+
+
+  const lockerSelect = screen.getByTestId('locker-select');
+  fireEvent.mouseDown(lockerSelect);
+  fireEvent.change(lockerSelect, { target: { value: '1' } });
+
+
+  const descriptionTextarea = screen.getByTestId('description-textarea');
+  fireEvent.change(descriptionTextarea, {
+    target: { value: 'Test description' },
   });
 
-  test("submits the form with valid data", async () => {
-    fetchLockers.mockResolvedValue([{ id: 1, description: "Locker 1" }]);
-    fetchBoxesByLocker.mockResolvedValue([{ id: 101, description: "Box 101" }]);
-    fetchFormIncident.mockResolvedValue({});
 
-    render(
-      <MantineProvider theme={theme}>
-        <Router>
-          <ReportForm />
-        </Router>
-      </MantineProvider>
-    );
-    await waitFor(() => expect(fetchLockers).toHaveBeenCalled());
-    fireEvent.change(screen.getByLabelText("Armario"), { target: { value: "1" } });
-    await waitFor(() => expect(fetchBoxesByLocker).toHaveBeenCalled());
-    fireEvent.change(screen.getByLabelText("Casilla"), { target: { value: "101" } });
-    fireEvent.change(screen.getByLabelText("Descripción"), { target: { value: "Test description" } });
-    
-    fireEvent.click(screen.getByTestId("Enviar"));
-    await waitFor(() => expect(fetchFormIncident).toHaveBeenCalledWith({
-      content: "Test description",
-      isSolved: false,
-      userId: "1",
-      boxId: "101",
-    }));
+  const submitButton = screen.getByTestId('submit-button');
+  fireEvent.click(submitButton);
+
+
+  await waitFor(() => {
+    expect(alertSpy).toHaveBeenCalledWith('Por favor, complete todos los campos.');
   });
 
-  test("shows an alert if required fields are missing", () => {
-    vi.spyOn(window, "alert").mockImplementation(() => {});
-    render(
-      <MantineProvider theme={theme}>
-        <Router>
-          <ReportForm />
-        </Router>
-      </MantineProvider>
-    );
-    fireEvent.click(screen.getByTestId("Enviar"));
-    expect(window.alert).toHaveBeenCalledWith("Por favor, complete todos los campos.");
+  alertSpy.mockRestore();
+});
+
+it('shows an alert if no description is provided', async () => {
+  const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+  renderWithMantine(<ReportForm />);
+
+ 
+  const lockerSelect = screen.getByTestId('locker-select');
+  fireEvent.mouseDown(lockerSelect);
+  fireEvent.change(lockerSelect, { target: { value: '1' } });
+
+
+  const boxSelect = screen.getByTestId('box-select');
+  fireEvent.mouseDown(boxSelect);
+  fireEvent.change(boxSelect, { target: { value: '1' } });
+
+
+  const submitButton = screen.getByTestId('submit-button');
+  fireEvent.click(submitButton);
+
+  await waitFor(() => {
+    expect(alertSpy).toHaveBeenCalledWith('Por favor, complete todos los campos.');
   });
+
+  alertSpy.mockRestore();
+});
+
+it('handles error when fetching lockers', async () => {
+ 
+  fetchLockers.mockRejectedValue(new Error('Error fetching lockers'));
+
+  renderWithMantine(<ReportForm />);
+
+ 
+  await waitFor(() => {
+    expect(screen.getByTestId('locker-select')).toBeInTheDocument();
+  });
+
+  
+  const boxSelect = screen.getByTestId('box-select');
+  expect(boxSelect).toBeDisabled();
 });
