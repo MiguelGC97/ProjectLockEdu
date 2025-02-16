@@ -23,13 +23,10 @@ const Profile: React.FC = () => {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
   const handleLockerClick = (locker: Locker) => {
-    console.log('Locker selected:', locker); // Debugging log
     setSelectedLocker(locker);
-    console.log('Updated selectedLocker state:', selectedLocker); // This may not immediately reflect the updated state due to React's asynchronous state update
   };
 
   const handleBoxClick = (box: BoxType) => {
-    console.log('Box clicked:', box);
     setSelectedBox(box);
   };
 

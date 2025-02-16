@@ -8,10 +8,10 @@ export const login = async (username: string, password: string) => {
   try {
     const response = await instance.post(`${baseUrl}/users/signin`, formData.toString(), {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded', // ensuring the request is encoded
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
     });
-    return response.data; // it returns the user and access_token
+    return response.data;
   } catch (error: any) {
     throw new Error(error.response?.data?.message || 'Login failed');
   }

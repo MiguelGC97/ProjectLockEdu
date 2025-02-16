@@ -9,13 +9,12 @@ const { Op, AccessDeniedError } = require("sequelize");
 exports.getAll = async (req, res) => {
   try {
     const reports = await Report.findAll({
-     
-      //create a function to change data format
+
 
       include: [
         {
-          model: db.user, 
-          attributes: ['name', 'avatar'], 
+          model: db.user,
+          attributes: ['name', 'avatar'],
         },
       ],
     });
@@ -28,16 +27,16 @@ exports.getAll = async (req, res) => {
 
 exports.getReportByUsername = async (req, res) => {
   try {
-    const { username } = req.params; // Extraer el username correctamente
+    const { username } = req.params;
 
-    // Buscar al usuario por username, incluyendo los reportes relacionados
+
     const user = await User.findOne({
       where: { username: { [Op.like]: `%${username}%` } },
       include: [
         {
           model: Report,
-          as: "reports", // Alias definido en la relación
-          attributes: ["id", "content", "isSolved"], // Campos a incluir
+          as: "reports",
+          attributes: ["id", "content", "isSolved"],
         },
       ],
     });
@@ -57,21 +56,21 @@ exports.getReportByUsername = async (req, res) => {
 
 exports.getReportByUserId = async (req, res) => {
   try {
-    const { userId } = req.params; 
+    const { userId } = req.params;
 
-  
+
     const user = await User.findByPk(userId, {
       include: [
         {
           model: Report,
-          as: "reports", 
-          attributes: ["id", "content", "isSolved", "boxId", "userId","createdAt"], 
+          as: "reports",
+          attributes: ["id", "content", "isSolved", "boxId", "userId", "createdAt"],
         },
       ],
     });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" + userId});
+      return res.status(404).json({ message: "User not found" + userId });
     }
 
     res.status(200).json({
@@ -115,12 +114,12 @@ exports.createReport = async (req, res) => {
       content: req.body.content,
       isSolved: req.body.isSolved ?? false,
       userId: req.body.userId,
-      boxId:req.body.boxId,
+      boxId: req.body.boxId,
     };
 
     const newReport = await Report.create(report);
 
-    // Generate token and return data
+
     const token = utils.generateTokenReport(newReport);
     const reportObj = utils.getCleanReport(newReport);
     return res.json({ report: reportObj, access_token: token });
@@ -157,22 +156,22 @@ exports.resolveReport = async (req, res) => {
 exports.updateDescription = async (req, res) => {
   const id = req.params.id;
   const { content } = req.body;
-  const userId = req.user.id; // Suponiendo que el usuario autenticado viene en req.user
+  const userId = req.user.id;
 
   try {
-    // Buscar el reporte para verificar si pertenece al usuario autenticado
+
     const report = await Report.findByPk(id);
 
     if (!report) {
       return res.status(404).json({ message: "Report not found" });
     }
 
-    // Verificar si el usuario es el propietario del reporte
+
     if (report.userId !== userId) {
       return res.status(403).json({ message: "You are not allowed to update this report" });
     }
 
-    // Actualizar el contenido del reporte
+
     report.content = content;
     await report.save();
 
@@ -187,7 +186,7 @@ exports.updateDescription = async (req, res) => {
 
 exports.deleteReport = async (req, res) => {
   const id = req.params.id;
-  const userId = req.user.id; 
+  const userId = req.user.id;
 
 
   try {
@@ -205,48 +204,3 @@ exports.deleteReport = async (req, res) => {
   }
 };
 
-
-// exports.updateDescription = async (req, res) => {
-//   const { id } = req.params.id;
-//   const { content } = req.body.content;
-
-//   try {
-//     // Buscar el reporte por ID
-//     const report = await Report.findByPk(id);
-
-//     if (!report) {
-//       return res.status(404).json({ message: "Report not found" });
-//     }
-
-//     // Actualizar solo el contenido del reporte
-//     report.content = content;
-//     await report.save();
-
-//     return res.status(200).json(report);
-//   } catch (error) {
-//     return res.status(500).json({ message: error.message });
-//   }
-// };
-
-// exports.updateStatus = async (req, res) => {
-  
-//     const id = req.params.id;
-
-//     try {
-//       const [updated] = await Report.update(req.body.isSolved, {
-//         where: { id },
-//       });
-
-//       if (updated) {
-//         res.status(200).json({
-//           message: "state updated",
-//           data: req.body,
-//         });
-//       } else {
-//         res.status(404).json({ message: "report not found" });
-//       }
-//     } catch (error) {
-//       res.status(500).json({ error: error.message });
-//     }
-  
-//   };

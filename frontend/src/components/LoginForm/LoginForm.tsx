@@ -20,7 +20,7 @@ import classes from '../../App.module.css';
 
 const LoginForm: React.FC = () => {
   const theme = useMantineTheme();
-  const { login } = useAuth(); // Use the login function from context
+  const { login } = useAuth();
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -31,22 +31,17 @@ const LoginForm: React.FC = () => {
     e.preventDefault();
 
     try {
-      // call the login service with the username and password
       const data = await loginService(username, password);
 
-      // Assuming the response data contains the user and access token
-      login(data.user); // Update the Auth context with the logged-in user
-      localStorage.setItem('access_token', data.access_token); // Store token in localStorage
+      login(data.user);
+      localStorage.setItem('access_token', data.access_token);
 
-      // Optionally store the user in localStorage if 'Remember Me' is checked
       if (rememberMe) {
         localStorage.setItem('user', JSON.stringify(data.user));
       }
 
-      // Redirect to the profile or dashboard page
       navigate('/perfil');
     } catch (err: any) {
-      // If login fails, display an error message
       setError(err.message || 'Login failed');
     }
   };

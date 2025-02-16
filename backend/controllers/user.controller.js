@@ -55,7 +55,7 @@ exports.addNewUser = async (req, res) => {
       });
     }
 
-    // Create a User object
+
     let user = {
       name: req.body.name,
       surname: req.body.surname,
@@ -65,7 +65,7 @@ exports.addNewUser = async (req, res) => {
       role: req.body.role,
     };
 
-    // Check if a user with the same username already exists
+
     const existingUser = await User.findOne({
       where: { username: user.username },
     });
@@ -78,23 +78,23 @@ exports.addNewUser = async (req, res) => {
         return res.status(401).send("Password not valid!");
       }
 
-      // Generate token and return user data
+
       const token = utils.generateToken(existingUser);
       const userObj = utils.getCleanUser(existingUser);
       return res.json({ user: userObj, access_token: token });
     }
 
-    // If user does not exist, hash password and save new user
+
     user.password = bcrypt.hashSync(req.body.password);
 
     const newUser = await User.create(user);
 
-    // Generate token and return user data
+
     const token = utils.generateToken(newUser);
     const userObj = utils.getCleanUser(newUser);
     return res.json({ user: userObj, access_token: token });
   } catch (err) {
-    // Handle errors
+
     res.status(401).send({
       message: err.message || "Unathorized",
     });
@@ -103,7 +103,7 @@ exports.addNewUser = async (req, res) => {
 
 exports.delete = async (req, res) => {
   const deleting = await User.destroy({ where: { id: req.params.id } });
-  const status = deleting ? 200 : 404; //operador ternario.  condición ? valor_si_verdadero : valor_si_falso
+  const status = deleting ? 200 : 404;
   const message = deleting ? "User deleted" : "User not found";
   res.status(status).json({ message });
 };
@@ -113,7 +113,7 @@ exports.update = async (req, res) => {
     const id = req.params.id;
 
     if (req.body.password) {
-      req.body.password = await bcrypt.hash(req.body.password, 10); //hash the new password
+      req.body.password = await bcrypt.hash(req.body.password, 10);
     }
 
     const [updated] = await User.update(req.body, { where: { id } });
@@ -136,10 +136,10 @@ exports.updatePassword = async (req, res) => {
     const id = req.params.id;
 
     if (req.body.password) {
-      req.body.password = await bcrypt.hash(req.body.password, 10); //hash the new password
+      req.body.password = await bcrypt.hash(req.body.password, 10);
     }
 
-    //Dr3am-- could be good if we create some email user connection so you send a email and get a link to change both email and password
+
 
     const [updated] = await User.update(req.body.password, { where: { id } });
 
@@ -156,23 +156,3 @@ exports.updatePassword = async (req, res) => {
   }
 };
 
-// exports.updateUsername = async (req, res) => {
-//   try {
-//     const id = req.params.id;
-
-//     //Dr3am-- could be good if we create some email user connection so you send a email and get a link to change both email and password
-
-//     const [updated] = await User.update(req.body.username, { where: { id } });
-
-//     if (updated) {
-//       res.status(200).json({
-//         message: "Profile updated",
-//         data: req.body,
-//       });
-//     } else {
-//       res.status(404).json({ message: "User not found" });
-//     }
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// };

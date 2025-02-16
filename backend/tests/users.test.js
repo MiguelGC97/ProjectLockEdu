@@ -149,7 +149,7 @@ describe("GET /api/users/:userId", () => {
       .get(`/api/users/${ADMIN_USER_ID}`)
       .set("Authorization", `Bearer ${ADMIN_TOKEN}`);
 
-    console.log("Respuesta completa:", res.body);
+
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("username");
@@ -162,9 +162,6 @@ describe("GET /api/users/username/:username", () => {
       .get(`/api/users/username/${process.env.ADMIN_USER}`)
       .set("Authorization", `Bearer ${ADMIN_TOKEN}`);
 
-    console.log("hola soy SEARCH BY USERNAME Respuesta completa:", res.body);
-
-    console.log();
 
     expect(res.statusCode).toEqual(200);
     expect(res.body.data[0]).toHaveProperty("username");
@@ -222,9 +219,7 @@ describe("GET /api/users/username/:username", () => {
       .get(`/api/users/username/${process.env.ADMIN_USER}`)
       .set("Authorization", `Bearer ${MANAGER_TOKEN}`);
 
-    console.log("hola soy SEARCH BY USERNAME Respuesta completa:", res.body);
 
-    console.log();
 
     expect(res.statusCode).toEqual(401);
   });
@@ -333,9 +328,7 @@ describe("GET /api/users/username/:username", () => {
       .get(`/api/users/username/${process.env.ADMIN_USER}`)
       .set("Authorization", `Bearer ${A_USER_TOKEN}`);
 
-    console.log("hola soy SEARCH BY USERNAME Respuesta completa:", res.body);
 
-    console.log();
 
     expect(res.statusCode).toEqual(401);
   });

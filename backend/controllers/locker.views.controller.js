@@ -47,14 +47,14 @@ exports.index = (req, res) => {
 
 const findAll = (req, res) => {
     Locker.findAll().then((data) => {
-        console.log(data);
+
         return res.render("locker/index", { lockers: data, activeRoute: "lockers" });
     });
 };
 
 exports.create = (req, res) => {
     Locker.findAll().then((data) => {
-        console.log(data);
+
         return res.render("locker/create", { lockers: data, activeRoute: "lockers" });
     });
 };
@@ -94,7 +94,7 @@ exports.update = async (req, res) => {
 
     try {
         const updatedLocker = await Locker.findByPk(id);
-        // Update the locker with the provided id using the request body
+
         const [updated] = await Locker.update(req.body, {
             where: { id: id },
         });
@@ -115,7 +115,7 @@ exports.update = async (req, res) => {
 
         if (updated === 1) {
             res.redirect("/locker");
-            console.log("Locker was updated successfully.", updated);
+
         } else {
             res.send({
                 message: `Cannot update locker with id=${id}. Maybe the locker was not found or the request body is empty!`,

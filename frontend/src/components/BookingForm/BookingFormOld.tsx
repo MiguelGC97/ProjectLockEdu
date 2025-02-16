@@ -19,20 +19,28 @@ import {
   Title,
   useMantineTheme,
 } from '@mantine/core';
-import { DateTimePicker, DatesProvider, Calendar } from '@mantine/dates';
+import { Calendar, DatesProvider, DateTimePicker } from '@mantine/dates';
+
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
+
 import dayjs from 'dayjs';
-import instance, { baseUrl } from '@/services/api';
-import { BookingFormProps, BoxType, Item } from '@/types/types';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { useAuth } from '@/hooks/AuthProvider';
-
-dayjs.extend(customParseFormat);
+import instance, { baseUrl } from '@/services/api';
+import { BookingFormProps, BoxType, Item } from '@/types/types';
 
 import './BookingForm.module.css';
 
-const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, onReturn, onBookingCreated }) => {
+dayjs.extend(customParseFormat);
+
+const BookingForm: React.FC<BookingFormProps> = ({
+  box,
+  items,
+  onReturnToBox,
+  onReturn,
+  onBookingCreated,
+}) => {
   const [error, setError] = useState<string | null>(null);
   const [filteredObjects, setFilteredObjects] = useState<Item[]>([]);
   const [confirmedBooking, setConfirmedBooking] = useState<any | null>(null);
@@ -40,8 +48,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
   const [returnDate, setReturnDate] = useState<Date | null>(null);
   const theme = useMantineTheme();
   const { user } = useAuth();
-
-
 
   const handlePickupDate = (date: Date | null) => {
     setPickupDate(date);
@@ -52,7 +58,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
   };
 
   const handleBookingConfirmation = async () => {
-
     if (!pickupDate || !returnDate) {
       setError('Por favor, selecciona ambas fechas: la de recogida y la de devolución.');
       return;
@@ -63,8 +68,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
       return;
     }
 
-    const description = "Reserva de prueba";
-    const state = "pending";
+    const description = 'Reserva de prueba';
+    const state = 'pending';
     const itemIds = filteredObjects.map((object) => object.id.toString());
     const userId = user.id;
 
@@ -77,11 +82,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
       userId,
     };
 
-    console.log('Sent data', bookingData);
-
     try {
       const response = await instance.post(`${baseUrl}/bookings`, bookingData);
-      console.log('Booking created:', response.data);
 
       setConfirmedBooking({
         box,
@@ -102,7 +104,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
 
   if (!Array.isArray(items)) {
     console.error('Expected items to be an array, but got:', items);
-    return <div>Items data is invalid.</div>; // Or handle the error appropriately
+    return <div>Items data is invalid.</div>;
   }
 
   useEffect(() => {
@@ -112,18 +114,14 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
         if (Array.isArray(response.data.data)) {
           const filtered = response.data.data
             .filter((object: Item) => {
-              // Check if the object's boxId matches the box.id from props
               return object.boxId === box.id;
             })
             .filter((object: Item) => {
-              const str = object.id ? object.id.toString() : ''; // Ensure boxId is converted safely
-              console.log('Checking object with boxId:', str); // Debugging the boxId value
-              console.log('Items array:', items); // Debugging the items array
-              console.log('Is in items:', items.includes(str)); // Check if str is in items
-              return items.includes(str.trim()); // Trim any extra spaces
+              const str = object.id ? object.id.toString() : '';
+
+              return items.includes(str.trim());
             });
 
-          console.log('Filtered objects:', filtered); // Check the result
           setFilteredObjects(filtered);
         } else {
           console.error('Data is not an array', response.data.data);
@@ -181,7 +179,9 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
           <ScrollArea h="80%" w="100%">
             <Flex direction="column" justify="center" align="center" h="100%" w="100%" gap="10">
               <DatesProvider settings={{ consistentWeeks: true }}>
-                <DateTimePicker w="70%" c="white"
+                <DateTimePicker
+                  w="70%"
+                  c="white"
                   valueFormat="DD MMM YYYY hh:mm A"
                   label="Selecciona una fecha de recogida"
                   placeholder="Selecciona una fecha de recogida"
@@ -193,7 +193,9 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
                   }}
                 />
               </DatesProvider>
-              <DateTimePicker w="70%" c="white"
+              <DateTimePicker
+                w="70%"
+                c="white"
                 valueFormat="DD MMM YYYY hh:mm A"
                 label="Selecciona una fecha de devolución"
                 placeholder="Selecciona una fecha de devolución"
@@ -202,16 +204,22 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
               />
             </Flex>
 
-            <Flex direction="column" gap="sm" py="xl" mb="md" align="center" justify="center" c="white">
+            <Flex
+              direction="column"
+              gap="sm"
+              py="xl"
+              mb="md"
+              align="center"
+              justify="center"
+              c="white"
+            >
               <Stack mt="md">
                 {filteredObjects.length > 0 ? (
                   <div>
                     <h3>Lo que vas a reservar:</h3>
                     <ul>
                       {filteredObjects.map((object) => (
-                        <li key={object.id}>
-                          {object.description}
-                        </li>
+                        <li key={object.id}>{object.description}</li>
                       ))}
                     </ul>
                   </div>
@@ -234,7 +242,13 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
             >
               Cancelar
             </Button>
-            <Button size="md" maw="8vw" bg="myPurple.6"     radius="xl" mx="auto" mt="1vh"
+            <Button
+              size="md"
+              maw="8vw"
+              bg="myPurple.6"
+              radius="xl"
+              mx="auto"
+              mt="1vh"
               onClick={handleBookingConfirmation}
               disabled={!pickupDate || !returnDate}
             >
@@ -242,7 +256,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
             </Button>
           </Flex>
         </Flex>
-
       </Box>
     </>
   );
