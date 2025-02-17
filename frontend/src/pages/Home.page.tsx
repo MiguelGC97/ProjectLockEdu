@@ -70,7 +70,7 @@ const Home: React.FC = () => {
             <Flex maw="100%" gap="lg">
               <Flex direction="column" w="100%">
                 <UserBar />
-                <Flex gap="lg" wrap="wrap">
+                <Flex gap="lg" wrap="no-wrap">
                   <Flex gap="lg" direction="column">
                     <Banner />
                     <Flex miw={800} w={1100} gap="lg">

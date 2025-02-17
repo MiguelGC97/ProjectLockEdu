@@ -8,10 +8,10 @@ export default function UserBar() {
   return (
     <Flex miw={100} mih={20} justify="flex-end" px="xl" py="md" gap="2vw">
       <Flex direction="column" align="flex-end" gap="-1vw">
-        <Text c="white" size="lg" fw={600}>
+        <Text aria-label="user's name and surname" c="white" size="lg" fw={600}>
           {user?.name} {user?.surname}
         </Text>
-        <Text c="white" ml="" size="lg" fw={300}>
+        <Text aria-label="user's email" c="white" ml="" size="lg" fw={300}>
           {user?.username}
         </Text>
       </Flex>
