@@ -33,7 +33,7 @@ import 'dayjs/locale/es';
 
 import { useAuth } from '@/hooks/AuthProvider';
 import instance, { baseUrl } from '@/services/api';
-import { fetchBookingDatesByItemIds } from '@/services/fetch';
+import { fetchBookingDatesByItemIds } from '@/services/fetch';   
 import { BookingFormProps, BoxType, Item } from '@/types/types';
 
 import './BookingForm.module.css';
