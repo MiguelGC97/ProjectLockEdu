@@ -99,7 +99,7 @@ export function ReportForm() {
           </Box>
         </Box>
 
-        {/* Selector de Armario */}
+    
         <NativeSelect
           mt="md"
           label="Armario"
@@ -119,7 +119,7 @@ export function ReportForm() {
           classNames={{ input: classes.input, label: classes.label }}
         />
 
-        {/* Selector de Casilla */}
+      
         <NativeSelect
           mt="md"
           label="Casilla"
@@ -140,7 +140,7 @@ export function ReportForm() {
           classNames={{ input: classes.input, label: classes.label }}
         />
 
-        {/* Descripción */}
+      
         <Textarea
           mt="md"
           label="Descripción"
