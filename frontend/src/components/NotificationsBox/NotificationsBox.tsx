@@ -78,8 +78,8 @@ export function NotificationsBox() {
                       h="auto"
                       bg={
                         sb.type === 'recogida'
-                          ? 'rgba(34, 139, 230, .20)'
-                          : 'rgba(231, 175, 46, .20)'
+                          ? 'rgba(34, 139, 230, 0.09)'
+                          : 'rgba(231, 176, 46, 0.1)'
                       }
                       style={{ borderRadius: 20 }}
                       p="md"
@@ -143,8 +143,8 @@ export function NotificationsBox() {
                       h="auto"
                       bg={
                         sb.type === 'recogida'
-                          ? 'rgba(34, 139, 230, .20)'
-                          : 'rgba(231, 175, 46, .20)'
+                          ? 'rgba(34, 139, 230, 0.09)'
+                          : 'rgba(231, 176, 46, 0.1)'
                       }
                       style={{ borderRadius: 20 }}
                       p="md"
@@ -208,7 +208,9 @@ export function NotificationsBox() {
                   <Box
                     h="auto"
                     bg={
-                      sb.type === 'recogida' ? 'rgba(34, 139, 230, .20)' : 'rgba(231, 175, 46, .20)'
+                      sb.type === 'recogida'
+                        ? 'rgba(34, 139, 230, 0.09)'
+                        : 'rgba(231, 176, 46, 0.1)'
                     }
                     style={{ borderRadius: 20 }}
                     p="md"

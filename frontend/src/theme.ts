@@ -35,6 +35,6 @@ export const theme = createTheme({
 // // additional colors
 //     myBlack: '#06060E',
 //     green: '#12B886',
-//     red: '#FA5252',
+//     red: '#FA5252', new red:'#FF5C5C'
 //     yellow: '#E7AF2E',
 //     brightBlue: '#228BE6',
