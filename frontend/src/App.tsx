@@ -12,7 +12,6 @@ import { theme } from './theme';
 import './App.module.css';
 
 import BookingHistory from './pages/BookingsHistory.page';
-import LoginPage from './pages/Login.page';
 import Settings from './pages/Settings.page';
 
 export default function App() {

@@ -13,12 +13,12 @@ import {
   Table,
   Text,
   Textarea,
-  Toast,
-  useToast, // Usamos el hook useToast para manejar toasts
 } from '@mantine/core';
 import { useAuth } from '@/hooks/AuthProvider';
 import { fetchIncidencesByUserId, updateIncidenceContent } from '@/services/fetch';
 import { Incidence } from '@/types/types';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export function ReportsBox() {
   const [incidences, setIncidences] = useState<Incidence[]>();
@@ -26,7 +26,7 @@ export function ReportsBox() {
   const [currentIncidence, setCurrentIncidence] = useState<Incidence | null>(null);
   const [newContent, setNewContent] = useState<string>('');
   const { user } = useAuth();
-  const toast = useToast(); // Creamos el toast para mostrar mensajes al usuario
+
 
   useEffect(() => {
     const loadIncidences = async () => {
@@ -44,21 +44,44 @@ export function ReportsBox() {
   };
 
   const handleSave = async () => {
-    if (currentIncidence) {
-      await updateIncidenceContent(currentIncidence.id, newContent);
-      setModalOpened(false);
-      setIncidences(
-        incidences?.map((inc) =>
-          inc.id === currentIncidence?.id ? { ...inc, content: newContent } : inc
+    if (!currentIncidence) return;
+  
+    try {
+      console.log("Intentando actualizar incidencia con ID:", currentIncidence.id);
+  
+      const updatedIncidence = await updateIncidenceContent(currentIncidence.id, newContent);
+  
+      toast.success("Incidencia actualizada con éxito");
+  
+      setIncidences((prev) =>
+        prev?.map((inc) =>
+          inc.id === currentIncidence.id ? { ...inc, content: newContent } : inc
         )
       );
-      toast.show({
-        title: 'Incidencia actualizada',
-        message: 'La incidencia se ha actualizado correctamente.',
-        color: 'green',
-      });
+  
+      setModalOpened(false);
+    } catch (error: any) {
+      console.error("Error en la actualización:", error);
+  
+      let errorMessage = "Error al actualizar. Inténtalo de nuevo.";
+  
+    
+      if (error.response) {
+        errorMessage = error.response.data?.message || `Error ${error.response.status}: ${error.response.statusText}`;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+  
+    
+      if (errorMessage.includes("excedido el tiempo") || error.response?.status === 400) {
+        toast.warning("Han pasado más de 10 minutos no se puede actualizar la incidencia");
+        setModalOpened(false); 
+      } else {
+        toast.error(`Error: ${errorMessage}`);
+      }
     }
   };
+  
 
   const StyledAccordion = styled(Accordion)`
     .mantine-Accordion-control {
@@ -74,7 +97,7 @@ export function ReportsBox() {
   `;
 
   const rows = incidences?.map((report) => (
-    <Accordion.Item key={report.id} value={`casilla-${report.boxId}`} aria-labelledby={`casilla-${report.boxId}`}>
+<Accordion.Item key={report.id} value={`incidencia-${report.id}`} aria-labelledby={`incidencia-${report.id}`}>
       <Accordion.Control
         aria-expanded={report.isSolved ? 'true' : 'false'}
         aria-controls={`casilla-${report.boxId}-panel`}
