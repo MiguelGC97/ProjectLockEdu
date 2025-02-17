@@ -29,7 +29,7 @@ branch
     <img src="images/logo.png" alt="Logo" width="100%" height="100%">
   </a>
 
-  <h3 align="center">Proyecto LockEDU</h3>
+  <h3 align="center">LockEDU project</h3>
 
   <p align="center">
     LockEDU is a full-stack locker management application developed as part of the second term of the Web Development course at IES El Rincón. This functional application is designed specifically for the institute's teachers, allowing them to reserve items stored in lockers for a specified period. The app keeps a useful log of all reservations and facilitates the management of item returns. This project is part of a series of collaborative efforts undertaken by a team of three students, where we applied the knowledge and skills acquired throughout the course to create a fully-featured and practical application.
