@@ -25,7 +25,7 @@ exports.newBooking = async (req, res) => {
     }
 
     if (missingFields.length > 0) {
-      return res.status(400).json({
+      return res.status(401).json({
         message: `Missing required booking data: ${missingFields.join(", ")}`,
       });
     }
