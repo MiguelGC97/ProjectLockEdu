@@ -9,8 +9,10 @@
 *** Don't forget to give the project a star!
 *** Thanks again! Now go create something AMAZING! :D
 -->
+
 Miguel explains
 branch
+
 <!-- PROJECT SHIELDS -->
 <!--
 *** I'm using markdown "reference style" links for readability.
@@ -91,6 +93,10 @@ In addition to item reservations, the app offers a robust reporting system:
 
 By tracking who has borrowed each item and for how long, this project serves as a comprehensive control system, ensuring proper usage and management of the institute's resources.
 
+[![LockEDU Admin Lockers Page][admin-locker]](https://github.com/MiguelGC97/ProjectLockEdu)
+[![LockEDU Admin Report Log Page][admin-report]](https://github.com/MiguelGC97/ProjectLockEdu)
+[![LockEDU Admin Notifications Page][admin-notification]](https://github.com/MiguelGC97/ProjectLockEdu)
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With
@@ -102,6 +108,7 @@ This app was built with:
 - [![Sequelize][Sequelize.org]][Sequelize-url]
 - [![MySQL][Mysql.com]][Mysql-url]
 - [![Mantine][Mantine.dev]][Mysql-url]
+- [![EJS][Ejs.dev]][Ejs-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -204,6 +211,9 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 [product-screenshot]: images/home-page.png
+[admin-locker]: images/lockedu-locker.png
+[admin-report]: images/lockedu-report.png
+[admin-notification]: images/lockedu-notification.png
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://react.dev/
 [Node.js]: https://img.shields.io/badge/Node.js-303030?style=for-the-badge&logo=node.js&logoColor=3C873A
@@ -216,3 +226,5 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 [Mysql-url]: https://mysql.com
 [Mantine.dev]: https://img.shields.io/badge/Mantine-cbe7f7?style=for-the-badge&logo=mantine&logoColor=309BF0
 [Mantine-url]: https://mantine.dev
+[Ejs.dev]: https://img.shields.io/badge/ejs-B4CA65?style=for-the-badge&logo=ejs&logoColor=A91E50
+[Ejs-url]: https://ejs.co/
