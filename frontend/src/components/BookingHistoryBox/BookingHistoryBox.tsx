@@ -156,7 +156,7 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
               onClick={() => handleUpdateState(b.id, 'withdrawn')}
               size="md"
               maw="8vw"
-              bg="myPurple.3"
+              bg="myPurple.4"
               radius="xl"
             >
               Recoger
@@ -179,7 +179,7 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
           <IconTrash
             onClick={() => handleDeleteBooking(b.id)}
             style={{ cursor: 'pointer' }}
-            color="red"
+            color="#FF5C5C"
           />
         </Table.Td>
       </Table.Tr>

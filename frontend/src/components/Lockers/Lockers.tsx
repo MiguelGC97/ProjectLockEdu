@@ -44,7 +44,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
           <Flex direction="column" gap="sm">
             {lockers?.map((locker) => {
               return (
-                <Box h="auto" bg="myPurple.6" style={{ borderRadius: 20 }} p="sm">
+                <Box h="auto" bg="myPurple.8" style={{ borderRadius: 20 }} p="sm">
                   <Flex direction="column" gap="lg" p="sm">
                     <Flex gap="10vw" justify="center" align="center">
                       <Flex direction="column" gap="1vh" justify="center">
@@ -61,7 +61,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
                         </Flex>
                       </Flex>
                       <svg
-                        fill="#7072C2"
+                        fill="#F1F2FF"
                         height="60px"
                         width="60px"
                         version="1.1"
@@ -103,7 +103,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
                         }}
                         size="md"
                         maw="8vw"
-                        bg="myPurple.3"
+                        bg="myPurple.4"
                         radius="xl"
                       >
                         Ver casillas

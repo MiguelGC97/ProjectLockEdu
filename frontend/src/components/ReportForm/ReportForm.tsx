@@ -1,10 +1,10 @@
 ﻿import { useEffect, useState } from 'react';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { Box, Button, createTheme, MantineProvider, NativeSelect, Textarea } from '@mantine/core';
+import { useAuth } from '@/hooks/AuthProvider';
 import { fetchBoxesByLocker, fetchFormIncident, fetchLockers } from '@/services/fetch';
 import { Boxs, Locker } from '@/types/types';
 import classes from './ReportForm.module.css';
-import { useAuth } from '@/hooks/AuthProvider';
 
 const theme = createTheme({
   components: {
@@ -63,20 +63,20 @@ export function ReportForm() {
       alert('Por favor, complete todos los campos.');
       return;
     }
-  
+
     const reportData = {
       content: description,
       isSolved: false,
       userId: parseInt(user.id),
       boxId: parseInt(selectedBox, 10),
     };
-  
+
     console.log('Enviando reporte:', reportData); // Agregar console.log para depuración
-  
+
     try {
       const response = await fetchFormIncident(reportData);
       alert('Reporte creado exitosamente');
-  
+
       // Limpiar el formulario
       setSelectedLocker('');
       setSelectedBox('');

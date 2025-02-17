@@ -94,7 +94,7 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
               border: '1px solid #DBDCEC',
               borderBottomLeftRadius: 30,
               borderBottomRightRadius: 30,
-              backgroundColor: theme.colors.myPurple[6],
+              backgroundColor: theme.colors.myPurple[8],
             }}
             pb="xl"
           >
