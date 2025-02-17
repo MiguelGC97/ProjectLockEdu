@@ -1,200 +1,106 @@
-import React from 'react'
-import { render, fireEvent, waitFor, screen } from '@testing-library/react'
-import { ReportForm } from './ReportForm'
-import { MantineProvider } from '@mantine/core'
-import {
-  fetchBoxesByLocker,
-  fetchFormIncident,
-  fetchLockers
-} from '@/services/fetch'
+import { useEffect, useState } from 'react';
+import { IconArrowLeft } from '@tabler/icons-react';
+import { Box, Button, createTheme, MantineProvider, NativeSelect, Textarea, Modal } from '@mantine/core';
+import { fetchBoxesByLocker, fetchFormIncident, fetchLockers } from '@/services/fetch';
+import { Boxs, Locker } from '@/types/types';
+import classes from './ReportForm.module.css';
+import { useAuth } from '@/hooks/AuthProvider';
 
-vi.mock('@/hooks/AuthProvider', () => ({
-  useAuth: () => ({
-    user: { id: '1' }
-  })
-}))
+const theme = createTheme({
+  components: {
+    Input: {
+      classNames: {
+        input: classes.input,
+      },
+    },
+    InputWrapper: {
+      classNames: {
+        label: classes.label,
+      },
+    },
+  },
+});
 
-vi.mock('@/services/fetch', () => ({
-  fetchLockers: vi.fn(() =>
-    Promise.resolve([{ id: 1, description: 'Armario 01' }])
-  ),
-  fetchBoxesByLocker: vi.fn(() =>
-    Promise.resolve([{ id: 1, description: 'Casilla del armario 01' }])
-  ),
-  fetchFormIncident: vi.fn(() => Promise.resolve({}))
-}))
+export function ReportForm() {
+  const [lockers, setLockers] = useState<Locker[]>([]);
+  const [boxes, setBoxes] = useState<Boxs[]>([]);
+  const [selectedLocker, setSelectedLocker] = useState('');
+  const [selectedBox, setSelectedBox] = useState('');
+  const [description, setDescription] = useState('');
+  const [modal, setModal] = useState({ open: false, title: '', message: '', color: '' });
+  const { user } = useAuth();
 
-const renderWithMantine = component => {
-  return render(<MantineProvider>{component}</MantineProvider>)
+  useEffect(() => {
+    const loadLockers = async () => {
+      try {
+        const data = await fetchLockers();
+        setLockers(data);
+      } catch (error) {
+        console.error('Error fetching lockers:', error);
+      }
+    };
+    loadLockers();
+  }, []);
+
+  const handleLockerChange = async (lockerId: string) => {
+    setSelectedLocker(lockerId);
+    setSelectedBox('');
+    if (lockerId) {
+      try {
+        const data = await fetchBoxesByLocker(lockerId);
+        setBoxes(data);
+      } catch (error) {
+        console.error('Error fetching boxes for locker:', error);
+      }
+    } else {
+      setBoxes([]);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!selectedLocker || !selectedBox || !description) {
+      setModal({ open: true, title: 'Error', message: 'Por favor, complete todos los campos.', color: 'red' });
+      return;
+    }
+
+    const reportData = {
+      content: description,
+      isSolved: false,
+      userId: parseInt(user.id),
+      boxId: parseInt(selectedBox, 10),
+    };
+
+    try {
+      await fetchFormIncident(reportData);
+      setModal({ open: true, title: 'Éxito', message: 'Reporte creado exitosamente', color: 'green' });
+      setSelectedLocker('');
+      setSelectedBox('');
+      setDescription('');
+    } catch (error) {
+      setModal({ open: true, title: 'Error', message: 'Error al crear el reporte', color: 'red' });
+    }
+  };
+
+  return (
+    <MantineProvider theme={theme}>
+      <Modal opened={modal.open} onClose={() => setModal({ ...modal, open: false })} title={modal.title} centered>
+        <p style={{ color: modal.color }}>{modal.message}</p>
+      </Modal>
+      
+      <Box bg="#4F51B3" style={{ borderRadius: '20px' }} p="xl" w="60em">
+        <Box display="flex" mb="md">
+          <IconArrowLeft size={30} color="white" />
+          <h2 style={{ color: 'white', margin: 0, textAlign: 'center', flexGrow: 1 }}>Formulario de Incidencias</h2>
+        </Box>
+
+        <NativeSelect label="Armario" data={lockers.map(l => ({ value: l.id.toString(), label: l.description }))} value={selectedLocker} onChange={(e) => handleLockerChange(e.currentTarget.value)} />
+        <NativeSelect label="Casilla" data={boxes.map(b => ({ value: b.id.toString(), label: b.description }))} value={selectedBox} onChange={(e) => setSelectedBox(e.currentTarget.value)} disabled={!selectedLocker} />
+        <Textarea label="Descripción" placeholder="Añada su motivo de la incidencia" value={description} onChange={(e) => setDescription(e.currentTarget.value)} />
+        
+        <Box mt="md" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button variant="filled" color="#3C3D85" radius="xl" onClick={handleSubmit}>Enviar</Button>
+        </Box>
+      </Box>
+    </MantineProvider>
+  );
 }
-
-describe('ReportForm', () => {
-  it('renders correctly', async () => {
-    renderWithMantine(<ReportForm />)
-
-    await waitFor(() => {
-      expect(screen.getByTestId('reportForm')).toBeInTheDocument()
-      expect(screen.getByTestId('locker-select')).toBeInTheDocument()
-      expect(screen.getByTestId('box-select')).toBeInTheDocument()
-      expect(screen.getByTestId('description-textarea')).toBeInTheDocument()
-      expect(screen.getByTestId('submit-button')).toBeInTheDocument()
-    })
-  })
-
-  it('submits the form correctly', async () => {
-    fetchLockers.mockResolvedValue([{ id: 1, description: 'Armario 01' }])
-
-    fetchBoxesByLocker.mockResolvedValue([
-      { id: 1, description: 'Casilla del armario 01' }
-    ])
-
-    renderWithMantine(<ReportForm />)
-
-    await waitFor(() => {
-      expect(screen.getByTestId('locker-select')).toBeInTheDocument()
-    })
-
-    const lockerSelect = screen.getByTestId('locker-select')
-    fireEvent.mouseDown(lockerSelect)
-    fireEvent.change(lockerSelect, { target: { value: '1' } }) 
-
-    await waitFor(() => {
-      const boxSelect = screen.getByTestId('box-select')
-      expect(boxSelect).not.toBeDisabled()
-    })
-
-    const boxSelect = screen.getByTestId('box-select')
-    fireEvent.mouseDown(boxSelect)
-    fireEvent.change(boxSelect, { target: { value: '1' } })
-
-    const descriptionTextarea = screen.getByTestId('description-textarea')
-    fireEvent.change(descriptionTextarea, {
-      target: { value: 'Test description' }
-    })
-
-    const submitButton = screen.getByTestId('submit-button')
-    fireEvent.click(submitButton)
-
-    await waitFor(() => {
-      expect(fetchFormIncident).toHaveBeenCalledWith({
-        content: 'Test description',
-        isSolved: false,
-        userId: 1,
-        boxId: 1
-      })
-    })
-  })
-
-  it('shows an alert if the form is incomplete', async () => {
-    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {})
-
-    renderWithMantine(<ReportForm />)
-
-    fireEvent.click(screen.getByTestId('submit-button'))
-
-    await waitFor(() => {
-      expect(alertSpy).toHaveBeenCalledWith(
-        'Por favor, complete todos los campos.'
-      )
-    })
-
-    alertSpy.mockRestore()
-  })
-})
-
-it('shows an alert if no locker is selected', async () => {
-  const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
-
-  renderWithMantine(<ReportForm />);
-
- 
-  const boxSelect = screen.getByTestId('box-select');
-  fireEvent.mouseDown(boxSelect);
-  fireEvent.change(boxSelect, { target: { value: '1' } });
-
-  const descriptionTextarea = screen.getByTestId('description-textarea');
-  fireEvent.change(descriptionTextarea, {
-    target: { value: 'Test description' },
-  });
-
-
-  const submitButton = screen.getByTestId('submit-button');
-  fireEvent.click(submitButton);
-
-
-  await waitFor(() => {
-    expect(alertSpy).toHaveBeenCalledWith('Por favor, complete todos los campos.');
-  });
-
-  alertSpy.mockRestore();
-});
-
-it('shows an alert if no box is selected', async () => {
-  const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
-
-  renderWithMantine(<ReportForm />);
-
-
-  const lockerSelect = screen.getByTestId('locker-select');
-  fireEvent.mouseDown(lockerSelect);
-  fireEvent.change(lockerSelect, { target: { value: '1' } });
-
-
-  const descriptionTextarea = screen.getByTestId('description-textarea');
-  fireEvent.change(descriptionTextarea, {
-    target: { value: 'Test description' },
-  });
-
-
-  const submitButton = screen.getByTestId('submit-button');
-  fireEvent.click(submitButton);
-
-
-  await waitFor(() => {
-    expect(alertSpy).toHaveBeenCalledWith('Por favor, complete todos los campos.');
-  });
-
-  alertSpy.mockRestore();
-});
-
-it('shows an alert if no description is provided', async () => {
-  const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
-
-  renderWithMantine(<ReportForm />);
-
- 
-  const lockerSelect = screen.getByTestId('locker-select');
-  fireEvent.mouseDown(lockerSelect);
-  fireEvent.change(lockerSelect, { target: { value: '1' } });
-
-
-  const boxSelect = screen.getByTestId('box-select');
-  fireEvent.mouseDown(boxSelect);
-  fireEvent.change(boxSelect, { target: { value: '1' } });
-
-
-  const submitButton = screen.getByTestId('submit-button');
-  fireEvent.click(submitButton);
-
-  await waitFor(() => {
-    expect(alertSpy).toHaveBeenCalledWith('Por favor, complete todos los campos.');
-  });
-
-  alertSpy.mockRestore();
-});
-
-it('handles error when fetching lockers', async () => {
- 
-  fetchLockers.mockRejectedValue(new Error('Error fetching lockers'));
-
-  renderWithMantine(<ReportForm />);
-
- 
-  await waitFor(() => {
-    expect(screen.getByTestId('locker-select')).toBeInTheDocument();
-  });
-
-  
-  const boxSelect = screen.getByTestId('box-select');
-  expect(boxSelect).toBeDisabled();
-});

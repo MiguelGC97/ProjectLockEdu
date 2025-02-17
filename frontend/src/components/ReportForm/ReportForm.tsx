@@ -5,6 +5,8 @@ import { fetchBoxesByLocker, fetchFormIncident, fetchLockers } from '@/services/
 import { Boxs, Locker } from '@/types/types';
 import classes from './ReportForm.module.css';
 import { useAuth } from '@/hooks/AuthProvider';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const theme = createTheme({
   components: {
@@ -27,6 +29,7 @@ export function ReportForm() {
   const [selectedLocker, setSelectedLocker] = useState('');
   const [selectedBox, setSelectedBox] = useState('');
   const [description, setDescription] = useState('');
+  const [thumbsUpEmojis, setThumbsUpEmojis] = useState<{ id: number; top: number; left: number }[]>([]);
 
   const { user } = useAuth();
 
@@ -60,31 +63,45 @@ export function ReportForm() {
 
   const handleSubmit = async () => {
     if (!selectedLocker || !selectedBox || !description) {
-      alert('Por favor, complete todos los campos.');
+      toast.error('Por favor, complete todos los campos.');
       return;
     }
-  
+
     const reportData = {
       content: description,
       isSolved: false,
       userId: parseInt(user.id),
       boxId: parseInt(selectedBox, 10),
     };
-  
-    console.log('Enviando reporte:', reportData); // Agregar console.log para depuración
-  
+
+    console.log('Enviando reporte:', reportData);
+
     try {
-      const response = await fetchFormIncident(reportData);
-      alert('Reporte creado exitosamente');
-  
-      // Limpiar el formulario
+      await fetchFormIncident(reportData);
+      toast.success('Reporte creado exitosamente');
+      
       setSelectedLocker('');
       setSelectedBox('');
       setDescription('');
+
+      generateThumbsUpEmojis();
     } catch (error) {
       console.error('Error al enviar reporte:', error);
-      alert('Error al crear el reporte');
+      toast.error('Error al crear el reporte');
     }
+  };
+
+  const generateThumbsUpEmojis = () => {
+    const newEmojis = Array.from({ length: 8 }, (_, index) => ({
+      id: Date.now() + index,
+      top: Math.random() * 100,
+      left: Math.random() * 100,
+    }));
+    setThumbsUpEmojis((prev) => [...prev, ...newEmojis]);
+
+    setTimeout(() => {
+      setThumbsUpEmojis([]);
+    }, 5000);
   };
 
   const lockerOptions = [
@@ -111,10 +128,25 @@ export function ReportForm() {
           borderRadius: '20px',
           borderTopLeftRadius: '0',
           borderTopRightRadius: '0',
+          position: 'relative',
         }}
         p="xl"
         w="60em"
       >
+        {thumbsUpEmojis.map((emoji) => (
+          <div
+            key={emoji.id}
+            className={classes.thumbsUp}
+            style={{
+              position: 'absolute',
+              top: `${emoji.top}%`,
+              left: `${emoji.left}%`,
+            }}
+          >
+            👍
+          </div>
+        ))}
+
         <Box display="flex" mb="md">
           <Box>
             <IconArrowLeft size={30} color="white" />
@@ -131,12 +163,6 @@ export function ReportForm() {
           label="Armario"
           data={lockerOptions}
           value={selectedLocker}
-          styles={{
-            input: {
-              color: 'white',
-              backgroundColor: '#2A2B44',
-            },
-          }}
           onChange={(e) => handleLockerChange(e.currentTarget.value)}
           data-testid="locker-select"
         />
@@ -146,12 +172,6 @@ export function ReportForm() {
           label="Casilla"
           data={boxOptions}
           value={selectedBox}
-          styles={{
-            input: {
-              color: 'white',
-              backgroundColor: '#2A2B44',
-            },
-          }}
           onChange={(e) => setSelectedBox(e.currentTarget.value)}
           disabled={!selectedLocker}
           data-testid="box-select"
@@ -163,34 +183,11 @@ export function ReportForm() {
           placeholder="Añada su motivo de la incidencia"
           value={description}
           onChange={(e) => setDescription(e.currentTarget.value)}
-          styles={{
-            input: {
-              height: '300px',
-              overflow: 'auto',
-              color: 'white',
-              backgroundColor: '#2A2B44',
-            },
-          }}
           data-testid="description-textarea"
         />
 
-        <Box
-          mt="md"
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-          }}
-        >
-          <Button
-            variant="filled"
-            color="#3C3D85"
-            radius="xl"
-            style={{
-              padding: '10px 20px',
-            }}
-            onClick={handleSubmit}
-            data-testid="submit-button"
-          >
+        <Box mt="md" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button variant="filled" color="#3C3D85" radius="xl" onClick={handleSubmit} data-testid="submit-button">
             Enviar
           </Button>
         </Box>
