@@ -8,7 +8,7 @@ exports.login = async (req, res) => {
     return res.redirect("/locker");
   }
 
-  //reportLog page will be rendered if user is already logged in
+
   res.render("login");
 };
 
@@ -21,8 +21,7 @@ exports.signin = async (req, res) => {
 
   const user = req.body.username;
   const pwd = req.body.password;
-  //   const role = req.body.role;
-  //I was thinking about implementing the role feature but i think it is possible to implement it trough the autorization middleware
+
 
   try {
     const data = await User.findOne({ where: { username: user } });
@@ -66,19 +65,19 @@ exports.logout = (req, res) => {
       return res.redirect('/locker');
     }
 
-    res.clearCookie('connect.sid'); // Explicitly clear the session cookie
+    res.clearCookie('connect.sid');
 
     res.redirect('/users/login');
   });
 };
 
 exports.setUserLocals = (req, res, next) => {
-  console.log("Session user:", req.session.user); // Debug session
+
   if (req.session.user) {
     res.locals.user = req.session.user;
   } else {
     res.locals.user = null;
   }
-  console.log("Res.locals.user:", res.locals.user); // Debug res.locals
+
   next();
 };

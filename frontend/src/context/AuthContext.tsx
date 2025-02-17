@@ -1,9 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import instance from '@/services/api';
 
 interface AuthContextProps {
-  user: any; // Replace `any` with a user type
+  user: any;
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
 }
@@ -14,7 +14,6 @@ export const AuthProvider: React.FC = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Auto-login if token exists
     const token = localStorage.getItem('authToken');
     if (token) {
       instance
@@ -36,11 +35,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     setUser(null);
   };
 
-  return (
-    <AuthContext.Provider value={{ user, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {

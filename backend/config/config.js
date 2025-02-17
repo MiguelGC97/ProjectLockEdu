@@ -10,7 +10,7 @@ const config = {
     host: process.env.DB_HOST_DEV || "localhost",
     dialect: process.env.DB_DIALECT_DEV || "mysql",
     port: process.env.DB_PORT_DEV || 3306,
-    logging: console.log,  // Log SQL queries in dev
+    logging: console.log,
   },
   test: {
     username: process.env.DB_USERNAME_TEST || "test_user",
@@ -32,5 +32,5 @@ const config = {
   }
 };
 
-console.log("Loading Config for:", env, config[env]);  // Debugging line
+
 module.exports = config[env];

@@ -36,10 +36,9 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
     const loadObjects = async () => {
       const data = await fetchItems();
       setObjects(data?.filter((o: any) => o.boxId === box.id));
-    }
+    };
     loadObjects();
-  }, [])
-
+  }, []);
 
   if (loading) {
     return (
@@ -143,7 +142,6 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
               <Button
                 onClick={() => {
                   onCreateBooking(box, value);
-                  console.log(value);
                 }}
                 disabled={value.length === 0}
                 size="md"

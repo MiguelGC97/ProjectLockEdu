@@ -7,12 +7,9 @@ import { useMediaQuery } from '@mantine/hooks';
 import instance from '@/services/api';
 import { Booking } from '@/types/types';
 
-//this interface defines the values types of Booking object for later usage in the component
-
 function sortBookings(bookings: Booking[]): Booking[] {
   const now = Date.now();
 
-  //logic to sort the bookings by the closest notification time
   return bookings.sort((a, b) => {
     const aCheckInTime = new Date(a.checkInTime).getTime();
     const aCheckOutTime = new Date(a.checkOutTime).getTime();
@@ -27,7 +24,6 @@ function sortBookings(bookings: Booking[]): Booking[] {
 }
 
 function formatTime(timeString: string): string {
-  // function for formatting the timestamp to display only the hours and minutes in the notification
   const date = new Date(timeString);
   const hours = date.getHours().toString().padStart(2, '0');
   const minutes = date.getMinutes().toString().padStart(2, '0');
@@ -41,24 +37,7 @@ export function NotificationsBox() {
   const matches = useMediaQuery('(min-width: 85em)');
   const matches2 = useMediaQuery('(max-width: 93em)');
 
-  // useEffect(() => {
-  //   //it fetches the filteredbookings using the axios instance (provisionally this will be commented and we will use the hardcoded filteredNotifications.json in the assets folder )
-  //   // the response.data will be called reservations for the sake of distinction
-  //   instance
-  //     .get('../../assets/filteredBookings.json')
-  //     .then((response) => {
-  //       const reservations: Booking[] = response.data;
-  //       const sortedReservations = sortBookings(reservations);
-  //       console.log(sortedReservations);
-  //       setBookings(sortedReservations); //sets the sorted reservations in state
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error fetching filtered bookings:', error);
-  //     });
-  // }, []);
-
   useEffect(() => {
-    //for testing purposes, let's use fetch to retrieve filtered bookings in json file
     fetch('/assets/filteredBookings.json')
       .then((response) => {
         if (!response.ok) {
@@ -69,7 +48,7 @@ export function NotificationsBox() {
       .then((data) => {
         const reservations: Booking[] = data;
         const sortedReservations = sortBookings(reservations);
-        setBookings(sortedReservations); //sets the sorted reservations in state
+        setBookings(sortedReservations);
       })
       .catch((error) => {
         console.error('Error fetching filtered bookings:', error);

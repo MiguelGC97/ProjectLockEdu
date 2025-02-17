@@ -1,8 +1,6 @@
 ﻿import { useAuth } from '@/hooks/AuthProvider';
 import instance, { baseUrl } from '@/services/api';
-import { BoxType, Incidence, Item, Locker, Booking, UserType } from '@/types/types';
-
-
+import { Booking, BoxType, Incidence, Item, Locker, UserType } from '@/types/types';
 
 // function to fetch lockers
 export async function fetchLockers(): Promise<Locker[] | undefined> {
@@ -40,7 +38,6 @@ export async function fetchIncidences(): Promise<Incidence[] | undefined> {
     if (Array.isArray(response.data.data)) {
       return response.data.data;
     }
-
   } catch (error) {
     console.error('Error fetching Incidences:', error);
     return [];
@@ -48,13 +45,14 @@ export async function fetchIncidences(): Promise<Incidence[] | undefined> {
 }
 
 // function to fetch incidences by username
-export async function fetchIncidencesByUsername(username:string): Promise<Incidence[] | undefined> {
+export async function fetchIncidencesByUsername(
+  username: string
+): Promise<Incidence[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/reports/${username}`);
     if (Array.isArray(response.data.data)) {
       return response.data.data;
     }
-
   } catch (error) {
     console.error('Error fetching Incidences:', error);
     return [];
@@ -66,21 +64,18 @@ export async function fetchIncidencesByUsername(username:string): Promise<Incide
 export async function fetchIncidencesByUserId(userId: number): Promise<Incidence[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/reports/user/${userId}`);
-    
 
     if (Array.isArray(response.data.reports) && response.data.reports.length > 0) {
-      return response.data.reports; 
+      return response.data.reports;
     } else {
       console.warn('No incidences found for the given user ID');
       return [];
     }
   } catch (error) {
-    console.error("Error fetching incidences by user ID:", error);
+    console.error('Error fetching incidences by user ID:', error);
     return [];
   }
 }
-
-
 
 //function to send data from incidences- we need to collect the right data
 
@@ -89,32 +84,25 @@ export async function fetchFormIncident(reportData: {
   isSolved: boolean;
   userId: number;
   boxId: number;
-  
 }): Promise<any> {
   try {
     const response = await instance.post(`${baseUrl}/reports`, reportData);
     return response.data.data;
-      } catch (error) {
+  } catch (error) {
     console.error('Error sending report data', error);
     throw error;
   }
 }
 
-
 //function to update the incidences - implement the timer
-export async function updateIncidenceContent(
-  id: number,
-  content: string
-): Promise<any> {
+export async function updateIncidenceContent(id: number, content: string): Promise<any> {
   try {
     await instance.put(`${baseUrl}/reports/update/${id}`, { content });
   } catch (error) {
-    console.log (content);
     console.error('Error updating Incidence:', error);
     throw error;
   }
 }
-
 
 //function to fetchBoxesByLocker
 export async function fetchBoxesByLocker(lockerId: string): Promise<BoxType[] | undefined> {
@@ -123,13 +111,11 @@ export async function fetchBoxesByLocker(lockerId: string): Promise<BoxType[] | 
     if (Array.isArray(response.data.data)) {
       return response.data.data;
     }
-
   } catch (error) {
     console.error(`Error fetching boxes for locker ${lockerId}:`, error);
     return [];
   }
 }
-
 
 //function to fetch items
 export async function fetchItems(): Promise<Item[] | undefined> {
@@ -158,11 +144,13 @@ export async function fetchBookingsByUserId(userId: number): Promise<Booking[] |
 }
 
 //fetch bookings by user id and booking state
-export async function fetchBookingsByUserIdAndState(userId: number, state: string): Promise<Booking[] | undefined> {
+export async function fetchBookingsByUserIdAndState(
+  userId: number,
+  state: string
+): Promise<Booking[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/bookings/users/${userId}/state/${state}`);
     if (Array.isArray(response.data.data)) {
-      console.log(JSON.stringify(response.data.data, null, 2));
       return response.data.data;
     }
   } catch (error) {
@@ -172,10 +160,12 @@ export async function fetchBookingsByUserIdAndState(userId: number, state: strin
 }
 
 //fetch dates and item Ids from all bookings
-export async function fetchBookingDatesByItemIds(itemIds: string[]): Promise<{ checkIn: string; checkOut: string }[]> {
+export async function fetchBookingDatesByItemIds(
+  itemIds: string[]
+): Promise<{ checkIn: string; checkOut: string }[]> {
   try {
     if (itemIds.length === 0) {
-      console.warn("No item IDs provided");
+      console.warn('No item IDs provided');
       return [];
     }
 
@@ -184,11 +174,11 @@ export async function fetchBookingDatesByItemIds(itemIds: string[]): Promise<{ c
     if (response.status >= 200 && response.status < 300 && response.data.itemDates) {
       return response.data.itemDates;
     } else {
-      console.error("Unexpected response format:", response.data);
+      console.error('Unexpected response format:', response.data);
       return [];
     }
   } catch (error) {
-    console.error("Error fetching booking dates by items:", error);
+    console.error('Error fetching booking dates by items:', error);
     return [];
   }
 }
@@ -214,18 +204,15 @@ export async function deleteBookingById(bookingId: number): Promise<void> {
   try {
     const response = await instance.delete(`${baseUrl}/bookings/${bookingId}`);
     if (response.status >= 200 && response.status < 300) {
-      console.log(`Booking ${bookingId} deleted`);
     } else {
       console.error('Unexpected error while trying to delete booking:', response.data);
     }
   } catch (error) {
     console.error(`Error trying to delete booking ${bookingId}:`, error);
-    throw error; 
+    throw error;
   }
 }
 export async function updatePassword(user: UserType, password: string): Promise<string> {
-
-    
   try {
     const userId = user?.id;
     const response = await instance.put(`${baseUrl}/users/${userId}`, { password });

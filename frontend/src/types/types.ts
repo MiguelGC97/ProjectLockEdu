@@ -57,7 +57,7 @@ export interface ObjectsProps {
 
 export interface BookingFormProps {
   box: BoxType;
-  items: string[]; // This is the array of selected item ids.
+  items: string[];
   onReturnToBox: () => void;
   onReturn: () => void;
   onBookingCreated: () => void;
@@ -111,15 +111,15 @@ export interface Incidence {
   content: string;
   isSolved: boolean;
   createdAt: string;
-  boxId: number; user: {
+  boxId: number;
+  user: {
     avatar: string;
     name: string;
   };
-
 }
 
 export interface Boxs {
   id: number;
   description: string;
   createdAt: string;
-};
+}

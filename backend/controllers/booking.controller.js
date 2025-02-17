@@ -134,7 +134,7 @@ exports.getAllbyUserIdAndState = async (req, res) => {
 
 exports.getDates = async (req, res) => {
   try {
-    const { itemIds } = req.body; // Receives an array of Item ids
+    const { itemIds } = req.body;
 
     if (!Array.isArray(itemIds) || itemIds.length === 0) {
       return res.status(400).json({ message: "itemIds can't be an empty array" });
@@ -163,7 +163,7 @@ exports.getDates = async (req, res) => {
 
     const itemDates = bookings.flatMap(booking =>
       booking.items
-        .filter(item => new Date(booking.checkIn) >= today) // Filter out past check-ins
+        .filter(item => new Date(booking.checkIn) >= today)
         .filter(item => booking.state != "returned")
         .map(item => ({
           itemId: item.id,
@@ -239,11 +239,11 @@ exports.changeState = async (req, res) => {
 };
 
 exports.delete = async (req, res) => {
-  const t = await db.sequelize.transaction(); 
+  const t = await db.sequelize.transaction();
   try {
     const bookingId = req.params.id;
 
-    // Finds items associated with booking
+
     const booking = await Booking.findByPk(bookingId, {
       include: [{ model: Item }],
     });
@@ -252,8 +252,8 @@ exports.delete = async (req, res) => {
       return res.status(404).json({ message: "Booking not found" });
     }
 
-    // Changes items state
-    const itemIds = booking.items.map(item => item.id); 
+
+    const itemIds = booking.items.map(item => item.id);
     await Item.update(
       { state: "available" },
       {
@@ -264,7 +264,7 @@ exports.delete = async (req, res) => {
 
     await Booking.destroy({ where: { id: bookingId }, transaction: t });
 
-    await t.commit(); 
+    await t.commit();
     res.status(200).json({ message: "Booking deleted and items updated to available" });
   } catch (error) {
     await t.rollback();

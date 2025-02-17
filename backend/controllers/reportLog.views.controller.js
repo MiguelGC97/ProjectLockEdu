@@ -34,7 +34,7 @@ const reportLogAssociationData = [
 
 exports.create = (req, res) => {
   ReportLog.findAll({ include: reportLogAssociationData }).then((data) => {
-    console.log(data);
+
     return res.render("reportlog/create", {
       reportLog: data,
       activeRoute: "reportlog",
@@ -76,7 +76,7 @@ const findAll = (req, res) => {
     order: [[db.Sequelize.col("Report.id"), "ASC"]],
   })
     .then((data) => {
-      console.log(data);
+
 
       return res.render("reportlog/index", {
         reportLog: data,
@@ -126,7 +126,7 @@ exports.update = async (req, res) => {
 
     if (updated === 1) {
       res.redirect("/reportlog");
-      console.log("log was updated successfully.", updated);
+
     } else {
       res.send({
         message: `Cannot update log with id=${id}.`,
@@ -141,14 +141,14 @@ exports.update = async (req, res) => {
 
 exports.destroy = async (req, res) => {
   const id = req.params.id;
-  const sessionUserId = req.session.user && req.session.user.id; // Asegúrate de que exista
+  const sessionUserId = req.session.user && req.session.user.id;
 
   if (!sessionUserId) {
     return res.status(401).send({ message: "No estás autenticado." });
   }
 
   try {
-    // Buscamos el log a borrar
+
     const reportLog = await ReportLog.findOne({ where: { id: id } });
     if (!reportLog) {
       return res
@@ -156,14 +156,14 @@ exports.destroy = async (req, res) => {
         .send({ message: `No se encontró el log con id=${id}.` });
     }
 
-    // Verificamos que el log pertenezca al usuario de la sesión
+
     if (reportLog.userId !== sessionUserId) {
       return res
         .status(403)
         .send({ message: "No estás autorizado para borrar este log." });
     }
 
-    // Procedemos a borrar el log
+
     const num = await ReportLog.destroy({ where: { id: id } });
     if (num === 1) {
       return res.redirect("/reportlog");

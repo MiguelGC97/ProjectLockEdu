@@ -1,31 +1,28 @@
-﻿import { IconTrash } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
+import { IconTrash } from '@tabler/icons-react';
 import { Box, Center, Divider, Flex, Group, ScrollArea, Table, Text, Title } from '@mantine/core';
 
 import './Pending.module.css';
 
-import { BookingHistoryProps, Booking, PendingProps } from '@/types/types';
-import { fetchBookingsByUserIdAndState } from '@/services/fetch';
 import { useAuth } from '@/hooks/AuthProvider';
+import { fetchBookingsByUserIdAndState } from '@/services/fetch';
+import { Booking, BookingHistoryProps, PendingProps } from '@/types/types';
 
 const Pending: React.FC<BookingHistoryProps> = ({ locker, box, booking }) => {
-
   const [bookings, setBookings] = useState<Booking[]>();
 
   const { user } = useAuth();
-  const state = "pending";
+  const state = 'pending';
 
   useEffect(() => {
     const loadBookings = async () => {
       const data = await fetchBookingsByUserIdAndState(user.id, state);
       setBookings(data);
-      console.log(data);
-    }
+    };
     loadBookings();
-  }, [])
+  }, []);
 
   function formatTime(timeString: string): string {
-    // function for formatting the timestamp to display only the hours and minutes in the notification
     const date = new Date(timeString);
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
@@ -51,18 +48,11 @@ const Pending: React.FC<BookingHistoryProps> = ({ locker, box, booking }) => {
 
     return (
       <Table.Tr key={b.id} c="white">
-        <Table.Td>
-          {lockerBoxInfo}
-        </Table.Td>
+        <Table.Td>{lockerBoxInfo}</Table.Td>
 
-        <Table.Td>
-          {formatDate(b.checkOut)}
-        </Table.Td>
+        <Table.Td>{formatDate(b.checkOut)}</Table.Td>
 
-        <Table.Td>
-          {formatTime(b.checkOut)}
-        </Table.Td>
-
+        <Table.Td>{formatTime(b.checkOut)}</Table.Td>
       </Table.Tr>
     );
   });
@@ -103,6 +93,6 @@ const Pending: React.FC<BookingHistoryProps> = ({ locker, box, booking }) => {
       </ScrollArea>
     </Box>
   );
-}
+};
 
 export default Pending;

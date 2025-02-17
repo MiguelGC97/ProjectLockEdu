@@ -6,18 +6,18 @@ import useLocalStorage from './useLocalStorage';
 const AuthContext = createContext<any>(null);
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useLocalStorage('user', null); // Assuming you're using useLocalStorage hook
+  const [user, setUser] = useLocalStorage('user', null);
   const navigate = useNavigate();
 
   const login = (data: UserType) => {
-    setUser(data); // Store user data
-    navigate('/perfil'); // Redirect to profile page or dashboard
+    setUser(data);
+    navigate('/perfil');
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('access_token'); // Clear the token from localStorage
-    navigate('/', { replace: true }); // Redirect to login page
+    localStorage.removeItem('access_token');
+    navigate('/', { replace: true });
   };
 
   const value = useMemo(

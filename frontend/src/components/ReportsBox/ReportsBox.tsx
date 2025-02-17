@@ -45,41 +45,33 @@ export function ReportsBox() {
     if (currentIncidence) {
       try {
         const response = await updateIncidenceContent(currentIncidence.id, newContent);
-        const data = response.data; // Axios ya parsea JSON automáticamente
-        
-        console.log("Respuesta del backend:", data);
-  
-        // ✅ Si la API devuelve el mensaje de tiempo límite, mostramos la alerta
-        if (data.message === "Ha excedido el tiempo límite para actualizar este reporte") {
-          alert("No puedes actualizar este reporte porque ha pasado el tiempo límite.");
+        const data = response.data;
+
+        if (data.message === 'Ha excedido el tiempo límite para actualizar este reporte') {
+          alert('No puedes actualizar este reporte porque ha pasado el tiempo límite.');
           setModalOpened(false);
           return;
         }
-  
-        // ✅ Si la actualización fue exitosa, cerramos el modal y actualizamos la lista
+
         setModalOpened(false);
         setIncidences(
           incidences?.map((inc) =>
             inc.id === currentIncidence?.id ? { ...inc, content: newContent } : inc
           )
         );
-  
       } catch (error: any) {
-        console.error("Error al actualizar la incidencia:", error);
-  
-       
+        console.error('Error al actualizar la incidencia:', error);
+
         if (error.response && error.response.data.message) {
           alert(error.response.data.message);
         } else {
-         
-          alert("Ocurrió un error inesperado. Inténtalo de nuevo más tarde.");
+          alert('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
         }
-  
-        setModalOpened(false); 
+
+        setModalOpened(false);
       }
     }
   };
-  
 
   const StyledAccordion = styled(Accordion)`
     .mantine-Accordion-control {
@@ -116,15 +108,10 @@ export function ReportsBox() {
           backgroundColor: '#3C3D85',
           padding: '1rem',
         }}
-        onClick={() => handleEditClick(report)} 
+        onClick={() => handleEditClick(report)}
       >
         <Flex align="center" gap="md">
-          <Avatar
-            src={report.user?.avatar}
-            alt={report.user?.name}
-            radius="xl"
-            size="lg"
-          />
+          <Avatar src={report.user?.avatar} alt={report.user?.name} radius="xl" size="lg" />
           <Box>
             <Text c="white">{report.content}</Text>
           </Box>
@@ -134,9 +121,15 @@ export function ReportsBox() {
   ));
 
   return (
-    <Box bg="transparent" h="80vh" bd="1px solid myPurple.1" w="100%"  style={{
-     borderRadius: '83px 0 25px 25px'
-    }} >
+    <Box
+      bg="transparent"
+      h="80vh"
+      bd="1px solid myPurple.1"
+      w="100%"
+      style={{
+        borderRadius: '83px 0 25px 25px',
+      }}
+    >
       <Center>
         <h2>Incidencias</h2>
       </Center>
@@ -170,14 +163,7 @@ export function ReportsBox() {
         </Flex>
       </ScrollArea>
 
-     
-      <Modal
-        opened={modalOpened}
-        onClose={() => setModalOpened(false)}
-        centered
-  
-              
-      >
+      <Modal opened={modalOpened} onClose={() => setModalOpened(false)} centered>
         <Textarea
           value={newContent}
           onChange={(e) => setNewContent(e.currentTarget.value)}
