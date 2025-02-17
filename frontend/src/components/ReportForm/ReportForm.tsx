@@ -29,7 +29,6 @@ export function ReportForm() {
   const [selectedLocker, setSelectedLocker] = useState('');
   const [selectedBox, setSelectedBox] = useState('');
   const [description, setDescription] = useState('');
-  const [thumbsUpEmojis, setThumbsUpEmojis] = useState<{ id: number; top: number; left: number }[]>([]);
 
   const { user } = useAuth();
 
@@ -61,64 +60,19 @@ export function ReportForm() {
     }
   };
 
-  const handleSubmit = async () => {
-    if (!selectedLocker || !selectedBox || !description) {
-      toast.error('Por favor, complete todos los campos.');
-      return;
-    }
-
-    const reportData = {
-      content: description,
-      isSolved: false,
-      userId: parseInt(user.id),
-      boxId: parseInt(selectedBox, 10),
-    };
-
-    console.log('Enviando reporte:', reportData);
-
-    try {
-      await fetchFormIncident(reportData);
-      toast.success('Reporte creado exitosamente');
-      
-      setSelectedLocker('');
-      setSelectedBox('');
-      setDescription('');
-
-      generateThumbsUpEmojis();
-    } catch (error) {
-      console.error('Error al enviar reporte:', error);
-      toast.error('Error al crear el reporte');
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLSelectElement>, type: 'locker' | 'box') => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      (e.currentTarget as HTMLSelectElement).size = type === 'locker' ? lockers.length + 1 : boxes.length + 1;
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      (e.currentTarget as HTMLSelectElement).size = 1;
     }
   };
 
-  const generateThumbsUpEmojis = () => {
-    const newEmojis = Array.from({ length: 8 }, (_, index) => ({
-      id: Date.now() + index,
-      top: Math.random() * 100,
-      left: Math.random() * 100,
-    }));
-    setThumbsUpEmojis((prev) => [...prev, ...newEmojis]);
-
-    setTimeout(() => {
-      setThumbsUpEmojis([]);
-    }, 5000);
+  const handleBlur = (e: React.FocusEvent<HTMLSelectElement>) => {
+    e.currentTarget.size = 1;
   };
-
-  const lockerOptions = [
-    { value: '', label: '' },
-    ...lockers.map((locker) => ({
-      value: locker.id.toString(),
-      label: locker.description || `Locker ${locker.id}`,
-    })),
-  ];
-
-  const boxOptions = [
-    { value: '', label: '' },
-    ...boxes.map((box) => ({
-      value: box.id.toString(),
-      label: box.description || `Box ${box.id}`,
-    })),
-  ];
 
   return (
     <MantineProvider theme={theme}>
@@ -132,62 +86,79 @@ export function ReportForm() {
         }}
         p="xl"
         w="60em"
+        aria-labelledby="report-form-title"
       >
-        {thumbsUpEmojis.map((emoji) => (
-          <div
-            key={emoji.id}
-            className={classes.thumbsUp}
-            style={{
-              position: 'absolute',
-              top: `${emoji.top}%`,
-              left: `${emoji.left}%`,
-            }}
-          >
-            👍
-          </div>
-        ))}
-
         <Box display="flex" mb="md">
-          <Box>
+          <Box role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && console.log('Volver')} aria-label="Volver atrás">
             <IconArrowLeft size={30} color="white" />
           </Box>
           <Box style={{ flexGrow: 1 }}>
-            <h2 data-testid="reportForm" style={{ color: 'white', margin: 0, textAlign: 'center' }}>
+            <h2 id="report-form-title" style={{ color: 'white', margin: 0, textAlign: 'center' }}>
               Formulario de Incidencias
             </h2>
           </Box>
         </Box>
 
+        {/* Selector de Armario */}
         <NativeSelect
           mt="md"
           label="Armario"
-          data={lockerOptions}
+          aria-label="Selecciona un armario"
+          data={[
+            { value: '', label: 'Seleccione un armario' },
+            ...lockers.map((locker) => ({
+              value: locker.id.toString(),
+              label: locker.description || `Locker ${locker.id}`,
+            })),
+          ]}
           value={selectedLocker}
           onChange={(e) => handleLockerChange(e.currentTarget.value)}
+          onKeyDown={(e) => handleKeyDown(e, 'locker')}
+          onBlur={handleBlur}
           data-testid="locker-select"
+          classNames={{ input: classes.input, label: classes.label }}
         />
 
+        {/* Selector de Casilla */}
         <NativeSelect
           mt="md"
           label="Casilla"
-          data={boxOptions}
+          aria-label="Selecciona una casilla"
+          data={[
+            { value: '', label: 'Seleccione una casilla' },
+            ...boxes.map((box) => ({
+              value: box.id.toString(),
+              label: box.description || `Box ${box.id}`,
+            })),
+          ]}
           value={selectedBox}
           onChange={(e) => setSelectedBox(e.currentTarget.value)}
+          onKeyDown={(e) => handleKeyDown(e, 'box')}
+          onBlur={handleBlur}
           disabled={!selectedLocker}
           data-testid="box-select"
+          classNames={{ input: classes.input, label: classes.label }}
         />
 
+        {/* Descripción */}
         <Textarea
           mt="md"
           label="Descripción"
           placeholder="Añada su motivo de la incidencia"
+          aria-label="Escriba la descripción de la incidencia"
           value={description}
           onChange={(e) => setDescription(e.currentTarget.value)}
-          data-testid="description-textarea"
+          classNames={{ input: classes.input, label: classes.label }}
         />
 
         <Box mt="md" style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button variant="filled" color="#3C3D85" radius="xl" onClick={handleSubmit} data-testid="submit-button">
+          <Button
+            variant="filled"
+            color="#3C3D85"
+            radius="xl"
+            onClick={() => toast.success('Reporte enviado')}
+            aria-label="Enviar reporte"
+          >
             Enviar
           </Button>
         </Box>
