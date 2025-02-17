@@ -71,7 +71,12 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
       <Stack my="4vh" gap="xl">
         <Flex gap="33%">
           <a>
-            <IconArrowLeft color="white" size="30px" onClick={onReturn} />
+            <IconArrowLeft
+              aria-label="volver a armarios"
+              color="white"
+              size="30px"
+              onClick={onReturn}
+            />
           </a>
 
           <Title fw="600" c="white">
@@ -80,7 +85,13 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
         </Flex>
 
         <Center>
-          <Input w="20vw" size="lg" placeholder="Busca un objeto" rightSection={<IconSearch />} />
+          <Input
+            aria-label="buscar objeto"
+            w="20vw"
+            size="lg"
+            placeholder="Busca un objeto"
+            rightSection={<IconSearch />}
+          />
         </Center>
       </Stack>
       <ScrollArea p="lg" m="md" h="62vh" scrollbarSize={16}>
