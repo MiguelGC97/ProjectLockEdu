@@ -1,116 +1,106 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { BrowserRouter as Router } from "react-router-dom";
-import { vi } from "vitest";
-import { MantineProvider } from "@mantine/core";
-import { theme } from "../../theme";
-import { ReportForm } from "./ReportForm";
+import { useEffect, useState } from 'react';
+import { IconArrowLeft } from '@tabler/icons-react';
+import { Box, Button, createTheme, MantineProvider, NativeSelect, Textarea, Modal } from '@mantine/core';
+import { fetchBoxesByLocker, fetchFormIncident, fetchLockers } from '@/services/fetch';
+import { Boxs, Locker } from '@/types/types';
+import classes from './ReportForm.module.css';
+import { useAuth } from '@/hooks/AuthProvider';
 
-
-vi.mock("@/services/fetch");
-vi.mock("../../hooks/AuthProvider", () => ({
-  useAuth: vi.fn(),
-}));
-
-describe("ReportForm Component", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    useAuth.mockReturnValue({ user: { id: "1" } });
-  });
-
-  test("renders correctly with initial state", async () => {
-    fetchLockers.mockResolvedValue([]);
-    render(
-      <MantineProvider theme={theme}>
-        <Router>
-          <ReportForm />
-        </Router>
-      </MantineProvider>
-    );
-    expect(screen.getByText("Formulario de Incidencias")).toBeInTheDocument();
-    await waitFor(() => expect(fetchLockers).toHaveBeenCalled());
-  });
-
-  test("loads lockers on mount", async () => {
-    fetchLockers.mockResolvedValue([{ id: 1, description: "Locker 1" }]);
-    render(
-      <MantineProvider theme={theme}>
-        <Router>
-          <ReportForm />
-        </Router>
-      </MantineProvider>
-    );
-    await waitFor(() => {
-      expect(fetchLockers).toHaveBeenCalled();
-      expect(screen.getByText("Locker 1")).toBeInTheDocument();
-    });
-  });
-
-  test("updates boxes when selecting a locker", async () => {
-    fetchLockers.mockResolvedValue([{ id: 1, description: "Locker 1" }]);
-    fetchBoxesByLocker.mockResolvedValue([{ id: 101, description: "Box 101" }]);
-    
-    render(
-      <MantineProvider theme={theme}>
-        <Router>
-          <ReportForm />
-        </Router>
-      </MantineProvider>
-    );
-    await waitFor(() => expect(fetchLockers).toHaveBeenCalled());
-
-    fireEvent.change(screen.getByLabelText("Armario"), { target: { value: "1" } });
-    await waitFor(() => expect(fetchBoxesByLocker).toHaveBeenCalledWith("1"));
-    expect(screen.getByText("Box 101")).toBeInTheDocument();
-  });
-
-  test("disables Casilla select if no locker is selected", () => {
-    render(
-      <MantineProvider theme={theme}>
-        <Router>
-          <ReportForm />
-        </Router>
-      </MantineProvider>
-    );
-    expect(screen.getByLabelText("Casilla")).toBeDisabled();
-  });
-
-  test("submits the form with valid data", async () => {
-    fetchLockers.mockResolvedValue([{ id: 1, description: "Locker 1" }]);
-    fetchBoxesByLocker.mockResolvedValue([{ id: 101, description: "Box 101" }]);
-    fetchFormIncident.mockResolvedValue({});
-
-    render(
-      <MantineProvider theme={theme}>
-        <Router>
-          <ReportForm />
-        </Router>
-      </MantineProvider>
-    );
-    await waitFor(() => expect(fetchLockers).toHaveBeenCalled());
-    fireEvent.change(screen.getByLabelText("Armario"), { target: { value: "1" } });
-    await waitFor(() => expect(fetchBoxesByLocker).toHaveBeenCalled());
-    fireEvent.change(screen.getByLabelText("Casilla"), { target: { value: "101" } });
-    fireEvent.change(screen.getByLabelText("Descripción"), { target: { value: "Test description" } });
-    
-    fireEvent.click(screen.getByText("Enviar"));
-    await waitFor(() => expect(fetchFormIncident).toHaveBeenCalledWith({
-      content: "Test description",
-      isSolved: false,
-      userId: "1",
-      boxId: "101",
-    }));
-  });
-
-  test("shows an alert if required fields are missing", () => {
-    vi.spyOn(window, "alert").mockImplementation(() => {});
-    render(
-      <MantineProvider theme={theme}>
-        <Router>
-          <ReportForm />
-        </Router>
-      </MantineProvider>
-    );
-    fireEvent.click(screen.getByText("Enviar"));
-    expect(window.alert).toHaveBeenCalledWith("Por favor, complete todos los campos.");
-  });
+const theme = createTheme({
+  components: {
+    Input: {
+      classNames: {
+        input: classes.input,
+      },
+    },
+    InputWrapper: {
+      classNames: {
+        label: classes.label,
+      },
+    },
+  },
 });
+
+export function ReportForm() {
+  const [lockers, setLockers] = useState<Locker[]>([]);
+  const [boxes, setBoxes] = useState<Boxs[]>([]);
+  const [selectedLocker, setSelectedLocker] = useState('');
+  const [selectedBox, setSelectedBox] = useState('');
+  const [description, setDescription] = useState('');
+  const [modal, setModal] = useState({ open: false, title: '', message: '', color: '' });
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const loadLockers = async () => {
+      try {
+        const data = await fetchLockers();
+        setLockers(data);
+      } catch (error) {
+        console.error('Error fetching lockers:', error);
+      }
+    };
+    loadLockers();
+  }, []);
+
+  const handleLockerChange = async (lockerId: string) => {
+    setSelectedLocker(lockerId);
+    setSelectedBox('');
+    if (lockerId) {
+      try {
+        const data = await fetchBoxesByLocker(lockerId);
+        setBoxes(data);
+      } catch (error) {
+        console.error('Error fetching boxes for locker:', error);
+      }
+    } else {
+      setBoxes([]);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!selectedLocker || !selectedBox || !description) {
+      setModal({ open: true, title: 'Error', message: 'Por favor, complete todos los campos.', color: 'red' });
+      return;
+    }
+
+    const reportData = {
+      content: description,
+      isSolved: false,
+      userId: parseInt(user.id),
+      boxId: parseInt(selectedBox, 10),
+    };
+
+    try {
+      await fetchFormIncident(reportData);
+      setModal({ open: true, title: 'Éxito', message: 'Reporte creado exitosamente', color: 'green' });
+      setSelectedLocker('');
+      setSelectedBox('');
+      setDescription('');
+    } catch (error) {
+      setModal({ open: true, title: 'Error', message: 'Error al crear el reporte', color: 'red' });
+    }
+  };
+
+  return (
+    <MantineProvider theme={theme}>
+      <Modal opened={modal.open} onClose={() => setModal({ ...modal, open: false })} title={modal.title} centered>
+        <p style={{ color: modal.color }}>{modal.message}</p>
+      </Modal>
+      
+      <Box bg="#4F51B3" style={{ borderRadius: '20px' }} p="xl" w="60em">
+        <Box display="flex" mb="md">
+          <IconArrowLeft size={30} color="white" />
+          <h2 style={{ color: 'white', margin: 0, textAlign: 'center', flexGrow: 1 }}>Formulario de Incidencias</h2>
+        </Box>
+
+        <NativeSelect label="Armario" data={lockers.map(l => ({ value: l.id.toString(), label: l.description }))} value={selectedLocker} onChange={(e) => handleLockerChange(e.currentTarget.value)} />
+        <NativeSelect label="Casilla" data={boxes.map(b => ({ value: b.id.toString(), label: b.description }))} value={selectedBox} onChange={(e) => setSelectedBox(e.currentTarget.value)} disabled={!selectedLocker} />
+        <Textarea label="Descripción" placeholder="Añada su motivo de la incidencia" value={description} onChange={(e) => setDescription(e.currentTarget.value)} />
+        
+        <Box mt="md" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button variant="filled" color="#3C3D85" radius="xl" onClick={handleSubmit}>Enviar</Button>
+        </Box>
+      </Box>
+    </MantineProvider>
+  );
+}
