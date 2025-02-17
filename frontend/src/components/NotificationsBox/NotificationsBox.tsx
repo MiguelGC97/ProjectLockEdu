@@ -60,7 +60,13 @@ export function NotificationsBox() {
       {matches ? (
         matches2 ? (
           //component for small desktops - max 1440
-          <Box bg="transparent" h="60vh" bd="1px solid myPurple.1" style={{ borderRadius: 40 }}>
+          <Box
+            aria-label="caja de notificationes"
+            bg="transparent"
+            h="60vh"
+            bd="1px solid myPurple.1"
+            style={{ borderRadius: 40 }}
+          >
             <Center>
               <h2>Notificaciones</h2>
             </Center>
@@ -75,6 +81,11 @@ export function NotificationsBox() {
 
                   return (
                     <Box
+                      aria-label={
+                        sb.type === 'recogida'
+                          ? 'notificación de recogida de objeto'
+                          : 'notificación de devolución de objeto'
+                      }
                       h="auto"
                       bg={
                         sb.type === 'recogida'
@@ -125,7 +136,13 @@ export function NotificationsBox() {
           </Box>
         ) : (
           //component for big desktops - min 1440
-          <Box bg="transparent" h="60vh" bd="1px solid myPurple.1" style={{ borderRadius: 40 }}>
+          <Box
+            aria-label="caja de notificaciones"
+            bg="transparent"
+            h="60vh"
+            bd="1px solid myPurple.1"
+            style={{ borderRadius: 40 }}
+          >
             <Center>
               <h2>Notificaciones</h2>
             </Center>
@@ -140,6 +157,11 @@ export function NotificationsBox() {
 
                   return (
                     <Box
+                      aria-label={
+                        sb.type === 'recogida'
+                          ? 'notificación de recogida de objeto'
+                          : 'notificación de devolución de objeto'
+                      }
                       h="auto"
                       bg={
                         sb.type === 'recogida'

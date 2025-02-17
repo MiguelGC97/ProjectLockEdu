@@ -48,11 +48,11 @@ const Pending: React.FC<BookingHistoryProps> = ({ locker, box, booking }) => {
 
     return (
       <Table.Tr key={b.id} c="white">
-        <Table.Td>{lockerBoxInfo}</Table.Td>
+        <Table.Td aria-label="nombre de la casilla">{lockerBoxInfo}</Table.Td>
 
-        <Table.Td>{formatDate(b.checkOut)}</Table.Td>
+        <Table.Td aria-label="fecha de recogida">{formatDate(b.checkOut)}</Table.Td>
 
-        <Table.Td>{formatTime(b.checkOut)}</Table.Td>
+        <Table.Td aria-label="horario de recogida">{formatTime(b.checkOut)}</Table.Td>
       </Table.Tr>
     );
   });
@@ -67,7 +67,7 @@ const Pending: React.FC<BookingHistoryProps> = ({ locker, box, booking }) => {
       <ScrollArea p="lg" m="md" h="50vh" scrollbarSize={16}>
         <Flex direction="column" gap="xl">
           <Table horizontalSpacing="sm" verticalSpacing="sm">
-            <Table.Thead c="white">
+            <Table.Thead c="white" aria-label="cabecera del cuadro de reservas pendientes">
               <Table.Tr size="xl">
                 <Table.Th>
                   <Text c="white" fw={700}>
