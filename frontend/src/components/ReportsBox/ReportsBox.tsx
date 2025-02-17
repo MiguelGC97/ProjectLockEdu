@@ -21,7 +21,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export function ReportsBox() {
-  const [incidences, setIncidences] = useState<Incidence[]>();
+  const [incidences, setIncidences] = useState<Incidence[]>([]);
   const [modalOpened, setModalOpened] = useState(false);
   const [currentIncidence, setCurrentIncidence] = useState<Incidence | null>(null);
   const [newContent, setNewContent] = useState<string>('');
@@ -30,12 +30,17 @@ export function ReportsBox() {
 
   useEffect(() => {
     const loadIncidences = async () => {
-      const data = await fetchIncidencesByUserId(user.id);
-      setIncidences(data);
+      try {
+        const data = await fetchIncidencesByUserId(user.id);
+        setIncidences(data);
+      } catch (error) {
+        console.error('Error cargando incidencias:', error);
+        toast.error('Error al cargar las incidencias');
+      }
     };
 
     loadIncidences();
-  }, []);
+  }, [user.id]);
 
   const handleEditClick = (incidence: Incidence) => {
     setCurrentIncidence(incidence);
@@ -47,21 +52,22 @@ export function ReportsBox() {
     if (currentIncidence) {
       try {
         const response = await updateIncidenceContent(currentIncidence.id, newContent);
-        const data = response.data;
 
-        if (data.message === 'Ha excedido el tiempo límite para actualizar este reporte') {
+        if (response.message === 'Ha excedido el tiempo límite para actualizar este reporte') {
           toast.error('No puedes actualizar este reporte porque ha pasado el tiempo límite.');
           setModalOpened(false);
           return;
         }
 
-        setModalOpened(false);
-        setIncidences(
-          incidences?.map((inc) =>
-            inc.id === currentIncidence?.id ? { ...inc, content: newContent } : inc
+        // Actualizar el estado local con el nuevo contenido
+        setIncidences((prev) =>
+          prev.map((inc) =>
+            inc.id === currentIncidence.id ? { ...inc, content: newContent } : inc
           )
         );
+
         toast.success('Incidencia actualizada correctamente.');
+        setModalOpened(false);
       } catch (error: any) {
         console.error('Error al actualizar la incidencia:', error);
 
@@ -89,7 +95,7 @@ export function ReportsBox() {
     }
   `;
 
-  const rows = incidences?.map((report) => (
+  const rows = incidences.map((report) => (
     <Accordion.Item key={report.id} value={`casilla-${report.boxId}`}>
       <Accordion.Control aria-label={`Incidencia en casilla ${report.boxId}, estado ${report.isSolved ? 'Resuelto' : 'Pendiente'}`}>
         <Flex justify="space-between" align="center">

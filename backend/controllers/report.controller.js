@@ -156,21 +156,28 @@ exports.resolveReport = async (req, res) => {
 exports.updateDescription = async (req, res) => {
   const id = req.params.id;
   const { content } = req.body;
-  const userId = req.user.id;
+  const userId = req.user.id; 
 
   try {
-
     const report = await Report.findByPk(id);
 
     if (!report) {
       return res.status(404).json({ message: "Report not found" });
     }
 
-
     if (report.userId !== userId) {
       return res.status(403).json({ message: "You are not allowed to update this report" });
     }
 
+    const createdAt = report.createdAt;
+    const now = new Date();
+    const diference = now - createdAt;
+    const checkMinutes = diference / (1000 * 60); // Convertir milisegundos a minutos
+
+   
+    if (checkMinutes >= 10) {
+      return res.status(400).json({ message: "Ha excedido el tiempo límite para actualizar este reporte" });
+    }
 
     report.content = content;
     await report.save();
