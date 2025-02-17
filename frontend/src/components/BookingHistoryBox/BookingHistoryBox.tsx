@@ -158,6 +158,7 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
               maw="8vw"
               bg="myPurple.3"
               radius="xl"
+              data-testid={`withdraw-button-${b.id}`}
             >
               Recoger
             </Button>
@@ -169,6 +170,7 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
               maw="8vw"
               bg="myPurple.3"
               radius="xl"
+              data-testid={`return-button-${b.id}`}
             >
               Devolver
             </Button>
@@ -180,6 +182,7 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
             onClick={() => handleDeleteBooking(b.id)}
             style={{ cursor: 'pointer' }}
             color="red"
+            data-testid={`delete-booking`}
           />
         </Table.Td>
       </Table.Tr>
@@ -194,7 +197,7 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
       style={{ borderRadius: '83px 0 25px 25px' }}
     >
       <Center>
-        <h2>Historial de reservas</h2>
+        <h2 data-testid="history-title">Historial de reservas</h2>
       </Center>
       <Divider size="xs" color="myPurple.1" />
 
