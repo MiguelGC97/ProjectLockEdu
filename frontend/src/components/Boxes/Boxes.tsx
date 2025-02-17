@@ -98,6 +98,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
         <Flex direction="column" gap="sm">
           {boxes?.map((box) => (
             <Box
+              aria-label={`casilla ${box.description}`}
               key={box.id}
               onClick={() => onBoxClick(box)}
               style={{
@@ -109,10 +110,10 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
             >
               <Flex w="100%" align="center" justify="space-between">
                 <Stack>
-                  <Title size="xl" c="white">
+                  <Title aria-label="número de la casilla" size="xl" c="white">
                     Casilla C{box.id}
                   </Title>
-                  <Text size="md" c="white">
+                  <Text aria-label="descripción de la casilla" size="md" c="white">
                     {box.description}
                   </Text>
                 </Stack>
