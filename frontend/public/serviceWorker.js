@@ -1,0 +1,7 @@
+self.addEventListener('push', function (event) {
+    const data = event.data ? event.data.json() : {};
+
+    self.registration.showNotification(data.title || "Notificación", {
+        body: data.body || "Tienes una nueva notificación",
+    });
+});

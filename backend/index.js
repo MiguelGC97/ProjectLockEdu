@@ -99,7 +99,8 @@ const routes = [
   "reportLog.views",
   "user.views",
   "locker.views",
-  'notification.views'
+  'notification.views',
+  "webNotification",
 ];
 
 routes.forEach((route) => require(`./routes/${route}.routes.js`)(app));
@@ -114,7 +115,6 @@ async function runSeeders() {
     require("./seeders/00-20241121162756-seed-user.js"),
     require("./seeders/03-20241121163651-seed-report.js"),
     require("./seeders/04-20241210162620-seed-bookings.js"),
-    require("./seeders/05-20241121192926-seed-notifications.js"),
     require("./seeders/09-20250114162620-seed-reportLog.js"),
     require("./seeders/07-20241121192927-seed-settings.js"),
   ];

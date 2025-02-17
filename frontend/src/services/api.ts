@@ -1,6 +1,7 @@
 ﻿import axios from 'axios';
 
 export const baseUrl = import.meta.env.VITE_BASE_URL;
+export const key = import.meta.env.VITE_PUBLIC_KEY;
 
 const instance = axios.create({
   baseURL: baseUrl,

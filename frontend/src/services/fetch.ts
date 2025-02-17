@@ -240,3 +240,25 @@ export async function updatePassword(user: UserType, password: string): Promise<
     throw error;
   }
 }
+
+//Send notifications subscription to backend
+export async function subscribeUserToNotifications(subscription: PushSubscription): Promise<any> {
+  try {
+
+    // Enviar la suscripción al backend
+    const response = await instance.post(`${baseUrl}/webNotifications`, subscription, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.status >= 200 && response.status < 300) {
+      console.log('Suscripción enviada correctamente:', response.data);
+    } else {
+      console.error('Error al enviar la suscripción al backend:', response.data);
+    }
+  } catch (error) {
+    console.error('Error al enviar la suscripción al backend:', error);
+    throw error;
+  }
+}

@@ -49,6 +49,7 @@ db.user = require("./user.model.js")(sequelize, Sequelize);
 db.booking = require("./booking.model.js")(sequelize, Sequelize);
 db.report = require("./report.model.js")(sequelize, Sequelize);
 db.notification = require("./notification.model.js")(sequelize, Sequelize);
+db.webNotification = require("./webNotification.model.js")(sequelize, Sequelize);
 db.reportLog = require("./reportLog.model.js")(sequelize, Sequelize); 
 db.settings = require("./settings.model.js")(sequelize, Sequelize);
 
@@ -140,6 +141,17 @@ db.user.hasMany(db.notification, {
   onDelete: "CASCADE",
 });
 db.notification.belongsTo(db.user, {
+  foreignKey: 'userId',
+  targetKey: 'id',
+});
+
+//User-WebNotification association
+db.user.hasMany(db.webNotification, {
+  foreignKey: "userId",
+  sourceKey: "id",
+  onDelete: "CASCADE",
+});
+db.webNotification.belongsTo(db.user, {
   foreignKey: 'userId',
   targetKey: 'id',
 });

@@ -30,7 +30,7 @@ import 'dayjs/locale/es';
 import instance, { baseUrl } from '@/services/api';
 import { BookingFormProps, BoxType, Item } from '@/types/types';
 import { useAuth } from '@/hooks/AuthProvider';
-import { fetchBookingDatesByItemIds } from '@/services/fetch';
+import { fetchBookingDatesByItemIds, subscribeUserToNotifications } from '@/services/fetch';
 
 dayjs.extend(customParseFormat);
 dayjs.extend(isBetween);
@@ -58,6 +58,36 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
     setReturnTime(event.target.value);
   };
 
+  const requestNotificationPermission = async () => {
+    if ('Notification' in window && 'serviceWorker' in navigator) {
+      const permission = await Notification.requestPermission();
+      console.log('Permiso de notificaciones:', permission);
+      return permission;
+    } else {
+      console.log('Notificaciones no soportadas');
+      return 'unsupported';
+    }
+  };
+
+  const subscribeUser = async () => {
+    const registration = await navigator.serviceWorker.ready;
+    const applicationServerKey = import.meta.env.VITE_PUBLIC_KEY;
+  
+    try {
+      // Suscribir al usuario
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: applicationServerKey,
+      });
+  
+      // Enviar la suscripción al backend usando la función de fetch
+      await subscribeUserToNotifications(subscription);
+      console.log('Usuario suscrito:', subscription);
+    } catch (error) {
+      console.error('Error al suscribir al usuario:', error);
+    }
+  };
+
   const handleBookingConfirmation = async () => {
 
     if (!dateRange[0] || !dateRange[1] || !pickupTime || !returnTime) {
@@ -74,6 +104,13 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
     if (dayjs(dateRange[1]).isBefore(dayjs(dateRange[0]))) {
       setError('La fecha de devolución no puede ser anterior a la fecha de recogida.');
       return;
+    }
+
+    const permission = await requestNotificationPermission();
+    if (permission === 'denied') {
+      console.warn('El usuario denegó las notificaciones.');
+    } else if (permission === 'granted') {
+      await subscribeUser(); // Suscribir al usuario si el permiso es concedido
     }
 
     const description = "Reserva de prueba";
@@ -110,6 +147,14 @@ const BookingForm: React.FC<BookingFormProps> = ({ box, items, onReturnToBox, on
       if (onBookingCreated) {
         onBookingCreated();
       }
+
+      if (Notification.permission === 'granted') {
+        new Notification('Nueva reserva creada', {
+          body: `Reserva realizada para el locker ${box.description}.`,
+
+        });
+      }
+
     } catch (error) {
       console.error('Error al crear la reserva:', error);
       setError('Hubo un error al crear la reserva. Inténtalo de nuevo.');

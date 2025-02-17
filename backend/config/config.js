@@ -1,4 +1,5 @@
 require("dotenv").config();
+const webPush = require('web-push');
 
 const env = process.env.NODE_ENV || "development";
 
@@ -31,6 +32,12 @@ const config = {
     logging: false,
   }
 };
+
+webPush.setVapidDetails(
+  'mailto:miguelangelgutierrezcarreno@alumno.ieselrincon.es',
+  process.env.PUBLIC_KEY,
+  process.env.PRIVATE_KEY
+);
 
 console.log("Loading Config for:", env, config[env]);  // Debugging line
 module.exports = config[env];
