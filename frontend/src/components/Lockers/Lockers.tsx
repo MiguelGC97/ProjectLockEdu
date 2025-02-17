@@ -13,10 +13,10 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
 
   useEffect(() => {
     const loadLockers = async () => {
-      const data = await fetchLockers(); // Wait for the promise to resolve
-      setLockers(data || []); // Set the lockers once the data is fetched
+      const data = await fetchLockers();
+      setLockers(data || []);
     };
-    loadLockers(); // Call the async function
+    loadLockers();
   }, []);
 
   return (
@@ -99,7 +99,6 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
                     <Center>
                       <Button
                         onClick={() => {
-                          console.log('Locker clicked:', locker);
                           onLockerClick(locker);
                         }}
                         size="md"

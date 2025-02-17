@@ -21,12 +21,12 @@ exports.signin = (req, res) => {
     password: req.body.password
   };
 
-  // Find the user in the database
+
   User.findOne({ where: { username: user.username } })
     .then(data => {
-      if (data && data.password === user.password) { // Assuming plain text password for simplicity
-        req.session.user = data; // Store user data in session
-        return res.redirect("/locker"); // Redirect to the home page or dashboard
+      if (data && data.password === user.password) {
+        req.session.user = data;
+        return res.redirect("/locker");
       } else {
         return res.render("error", {
           message: "Invalid username or password!"

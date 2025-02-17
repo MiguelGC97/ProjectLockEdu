@@ -6,7 +6,7 @@ import {
   IconSettings,
   IconUser,
 } from '@tabler/icons-react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Center, Flex, Image, rem, Stack, Tooltip, UnstyledButton } from '@mantine/core';
 import { useAuth } from '@/hooks/AuthProvider';
 import classes from './SideMenu.module.css';
@@ -16,7 +16,7 @@ interface NavbarLinkProps {
   label: string;
   active?: boolean;
   onClick?(): void;
-  to?: string; // Add a to prop for the route path
+  to?: string;
 }
 
 function NavbarLink({ icon: Icon, label, active, onClick, to }: NavbarLinkProps) {
@@ -37,17 +37,14 @@ const menuData = [
 ];
 
 export function SideMenu() {
-
-  // const [active, setActive] = useState(0);
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
   const location = useLocation();
-  const { logout } = useAuth(); // Get the logout function from AuthContext
+  const { logout } = useAuth();
 
-  //Finds active link index by current page
-  const activeIndex = menuData.findIndex(link => link.to === location.pathname);
+  const activeIndex = menuData.findIndex((link) => link.to === location.pathname);
 
   const handleLogout = () => {
-    logout(); // Clear user state and navigate to login page
+    logout();
   };
 
   const iconLinks = menuData.map((link, index) => (
@@ -56,10 +53,7 @@ export function SideMenu() {
       key={link.label}
       active={index === activeIndex}
       onClick={() => {
-        // setActive(index);
-        // if (link.to) {
-          navigate(link.to); // Navigate to the page when clicked
-        //}
+        navigate(link.to);
       }}
     />
   ));

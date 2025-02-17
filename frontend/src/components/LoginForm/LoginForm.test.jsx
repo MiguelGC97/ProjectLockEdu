@@ -7,11 +7,9 @@ import { MantineProvider } from '@mantine/core';
 import { theme } from '../../theme';
 import LoginForm from './LoginForm';
 
-
 const usernameTest = import.meta.env.VITE_USERNAME_FOR_TEST;
 const passwordTest = import.meta.env.VITE_PASSWORD_FOR_TEST;
 const tokenTest = import.meta.env.VITE_TOKEN_FOR_TEST;
-
 
 vi.mock('../../services/authService', () => ({
   login: vi.fn(() => ({
@@ -50,7 +48,6 @@ describe('LoginForm', () => {
       </MantineProvider>
     );
 
-
     fireEvent.change(screen.getByTestId('username-input'), {
       target: { value: usernameTest },
     });
@@ -67,7 +64,6 @@ describe('LoginForm', () => {
   });
 
   it('shows error message on login failure', async () => {
-
     vi.mock('../../services/authService', () => ({
       login: vi.fn(() => {
         return Promise.reject(new Error('Login failed'));
@@ -82,7 +78,6 @@ describe('LoginForm', () => {
       </MantineProvider>
     );
 
-
     fireEvent.change(screen.getByTestId('username-input'), {
       target: { value: 'error@example.com' },
     });
@@ -93,7 +88,6 @@ describe('LoginForm', () => {
     fireEvent.click(screen.getByTestId('submit-button'));
 
     const errorMessage = await screen.findByTestId('login-error');
-
 
     expect(errorMessage).toBeInTheDocument();
     expect(errorMessage).toHaveTextContent('Login failed');

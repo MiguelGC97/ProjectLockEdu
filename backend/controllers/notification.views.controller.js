@@ -34,7 +34,7 @@ exports.store = async (req, res) => {
     });
 };
 
-// Retrieve all notiications
+
 exports.index = (req, res) => {
   findAll(req, res);
 };
@@ -49,7 +49,7 @@ const findAll = (req, res) => {
       },
       {
         model: Booking,
-        attributes: ['id','checkOut', 'checkIn'],
+        attributes: ['id', 'checkOut', 'checkIn'],
         include: [
           {
             model: Item,
@@ -81,13 +81,13 @@ const findAll = (req, res) => {
         attributes: ['id'],
       }
     ]
-    
+
   });
 
 
   Promise.all([notificationsPromise, usersPromise])
-    .then(([notificationsData, users]) => {  
-      const now = new Date();  
+    .then(([notificationsData, users]) => {
+      const now = new Date();
 
       const notifications = notificationsData.map(notification => {
         if (notification.booking && notification.booking.checkOut) {
@@ -138,8 +138,9 @@ exports.markAsRead = async (req, res) => {
   try {
     const [updated] = await Notification.update(
       { isRead: true },
-      { where: { id: id },
-    });
+      {
+        where: { id: id },
+      });
 
     if (updated) {
       return res.redirect("/notification");
@@ -159,21 +160,21 @@ exports.destroy = (req, res) => {
   const id = req.params.id;
 
   try {
-      Notification.destroy({
-          where: { id: id },
-      }).then((num) => {
-          if (num == 1) {
-              return res.redirect("/notification");
-          } else {
-              res.send({
-                  message: `Cannot delete notification with id=${id}.`,
-              });
-          }
-      });
+    Notification.destroy({
+      where: { id: id },
+    }).then((num) => {
+      if (num == 1) {
+        return res.redirect("/notification");
+      } else {
+        res.send({
+          message: `Cannot delete notification with id=${id}.`,
+        });
+      }
+    });
   } catch (error) {
-      res.status(500).send({
-          message: "Could not delete notification with id=" + id,
-      });
+    res.status(500).send({
+      message: "Could not delete notification with id=" + id,
+    });
   }
 
 }

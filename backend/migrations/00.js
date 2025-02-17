@@ -650,7 +650,7 @@ module.exports = {
         function next() {
           if (index < commands.length) {
             let command = commands[index];
-            console.log("[#" + index + "] execute: " + command.fn);
+
             index++;
             queryInterface[command.fn]
               .apply(queryInterface, command.params)

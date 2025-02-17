@@ -26,14 +26,10 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
   const [error, setError] = useState<string | null>(null);
   const [boxes, setBoxes] = useState<BoxType[]>();
   const theme = useMantineTheme();
-  
-
-  console.log('Box ID:', boxId); // box.id passed from Objects component
-  console.log('Selected Values:', selectedValues);
 
   useEffect(() => {
-    setLoading(true); // Set loading state before starting the request
-    setError(null); // Clear previous errors
+    setLoading(true);
+    setError(null);
 
     const loadBoxes = async () => {
       const data = await fetchBoxes();
@@ -42,7 +38,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
 
     loadBoxes();
     setLoading(false);
-  }, [locker]); // Dependency array ensures this effect runs when `locker` changes;
+  }, [locker]);
 
   if (loading) {
     return (
