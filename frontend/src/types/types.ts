@@ -35,13 +35,12 @@ export interface Booking {
   description: string;
   checkOut: string;
   checkIn: string;
-  state: 'pending' | 'withdrawn' | 'returned';
+  state: string;
 }
 
 export interface Item {
   id: number;
   description: string;
-  state: string;
   boxId: number;
   typeId: number;
   createdAt: string;

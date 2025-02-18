@@ -26,13 +26,19 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
   const { user } = useAuth();
 
   useEffect(() => {
-    const loadBookings = async () => {
-      const data = await fetchBookingsByUserId(user.id);
+    if (!user?.id) return;
 
-      setBookings(data);
+    const loadBookings = async () => {
+      try {
+        const data = await fetchBookingsByUserId(user.id);
+        setBookings(data);
+      } catch (error) {
+        console.error("Error fetching bookings:", error);
+      }
     };
+
     loadBookings();
-  }, []);
+  }, [user?.id]);
 
   const translateState = (state: string): string => {
     switch (state) {
@@ -158,6 +164,7 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
               maw="8vw"
               bg="myPurple.4"
               radius="xl"
+              data-testid={`withdraw-button`}
             >
               Recoger
             </Button>
@@ -169,6 +176,7 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
               maw="8vw"
               bg="myPurple.3"
               radius="xl"
+              data-testid={`return-button`}
             >
               Devolver
             </Button>
@@ -180,6 +188,7 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
             onClick={() => handleDeleteBooking(b.id)}
             style={{ cursor: 'pointer' }}
             color="#FF5C5C"
+            data-testid={`delete-booking`}
           />
         </Table.Td>
       </Table.Tr>
@@ -194,45 +203,43 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
       style={{ borderRadius: '83px 0 25px 25px' }}
     >
       <Center>
-        <h2>Historial de reservas</h2>
+        <h2 data-testid="history-title">Historial de reservas</h2>
       </Center>
       <Divider size="xs" color="myPurple.1" />
 
       <ScrollArea p="lg" m="md" h="50vh" scrollbarSize={16}>
         <Flex direction="column" gap="xl">
-          <Table horizontalSpacing="sm" verticalSpacing="sm">
-            <Table.Thead c="white">
-              <Table.Tr size="xl">
-                <Table.Th>
-                  <Text c="white" fw={700}>
-                    Casilla
-                  </Text>
-                </Table.Th>
-                <Table.Th>
-                  <Text c="white" fw={700}>
-                    Fecha de recogida
-                  </Text>
-                </Table.Th>
-                <Table.Th>
-                  <Text c="white" fw={700}>
-                    Fecha de devolución
-                  </Text>
-                </Table.Th>
-                <Table.Th>
-                  <Text c="white" fw={700}>
-                    Objetos reservados
-                  </Text>
-                </Table.Th>
-                <Table.Th>
-                  <Text c="white" fw={700}>
-                    Estado
-                  </Text>
-                </Table.Th>
-                <Table.Th> </Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>{rows}</Table.Tbody>
-          </Table>
+          {bookings && bookings.length > 0 ? (
+            <Table horizontalSpacing="sm" verticalSpacing="sm">
+              <Table.Thead c="white">
+                <Table.Tr size="xl">
+                  <Table.Th>
+                    <Text c="white" fw={700}>Casilla</Text>
+                  </Table.Th>
+                  <Table.Th>
+                    <Text c="white" fw={700}>Fecha de recogida</Text>
+                  </Table.Th>
+                  <Table.Th>
+                    <Text c="white" fw={700}>Fecha de devolución</Text>
+                  </Table.Th>
+                  <Table.Th>
+                    <Text c="white" fw={700}>Objetos reservados</Text>
+                  </Table.Th>
+                  <Table.Th>
+                    <Text c="white" fw={700}>Estado</Text>
+                  </Table.Th>
+                  <Table.Th> </Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>{rows}</Table.Tbody>
+            </Table>
+          ) : (
+            <Center h="40vh">
+              <Text c="gray" size="lg" fw={500}>
+                No tienes reservas registradas.
+              </Text>
+            </Center>
+          )}
         </Flex>
       </ScrollArea>
     </Box>
