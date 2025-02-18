@@ -140,32 +140,32 @@ export function ReportsBox() {
       <Divider size="xs" color="myPurple.1" />
 
       <ScrollArea p="lg" m="md" h="70vh" scrollbarSize={16}>
-        <Flex direction="column" gap="xl">
-          <Table horizontalSpacing="sm" verticalSpacing="sm">
-            <Table.Thead c="white">
-              <Table.Tr>
-                <Table.Th style={{ textAlign: 'center', width: '33.33%' }}>
-                  <Text c="white" fw={700}>
-                    Casilla
-                  </Text>
-                </Table.Th>
-                <Table.Th style={{ textAlign: 'center', width: '33.33%' }}>
-                  <Text c="white" fw={700}>
-                    Fecha
-                  </Text>
-                </Table.Th>
-                <Table.Th style={{ textAlign: 'center', width: '33.33%' }}>
-                  <Text c="white" fw={700}>
-                    Estado
-                  </Text>
-                </Table.Th>
-                <Table.Th></Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-          </Table>
-          <StyledAccordion>{rows}</StyledAccordion>
-        </Flex>
-      </ScrollArea>
+  <Flex direction="column" gap="xl">
+    <Table horizontalSpacing="sm" verticalSpacing="sm">
+      <Table.Thead c="white" aria-label="Encabezado de la tabla de incidencias">
+        <Table.Tr>
+          <Table.Th style={{ textAlign: 'center', width: '33.33%' }}>
+            <Text c="white" fw={700}>
+              Casilla
+            </Text>
+          </Table.Th>
+          <Table.Th style={{ textAlign: 'center', width: '33.33%' }}>
+            <Text c="white" fw={700}>
+              Fecha
+            </Text>
+          </Table.Th>
+          <Table.Th style={{ textAlign: 'center', width: '33.33%' }}>
+            <Text c="white" fw={700}>
+              Estado
+            </Text>
+          </Table.Th>
+          <Table.Td></Table.Td>
+        </Table.Tr>
+      </Table.Thead>
+    </Table>
+    <StyledAccordion>{rows}</StyledAccordion>
+  </Flex>
+</ScrollArea>
 
       <Modal
         opened={modalOpened}
