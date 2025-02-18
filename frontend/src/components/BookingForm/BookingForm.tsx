@@ -183,23 +183,33 @@ const BookingForm: React.FC<BookingFormProps> = ({
       <Box
         style={{
           backgroundColor: theme.colors.myPurple[4],
+          // width: '',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          width: '34vw',
           borderRadius: 20,
           padding: '2rem',
           color: 'white',
         }}
       >
         <Title order={3}>Reserva Confirmada</Title>
-        <Text>Locker: {confirmedBooking.box.name}</Text>
-        <Text>Pickup Date: {dayjs(confirmedBooking.pickupDate).format('YYYY-MM-DD HH:mm')}</Text>
-        <Text>Return Date: {dayjs(confirmedBooking.returnDate).format('YYYY-MM-DD HH:mm')}</Text>
+        <Text>Armario: {confirmedBooking.box.name}</Text>
+        <Text>
+          Fecha de recogida: {dayjs(confirmedBooking.pickupDate).format('YYYY-MM-DD HH:mm')}
+        </Text>
+        <Text>
+          Fecha de devolución: {dayjs(confirmedBooking.returnDate).format('YYYY-MM-DD HH:mm')}
+        </Text>
+        <br />
         <Text>Items Reservados:</Text>
         <ul>
           {confirmedBooking.items.map((item: Item) => (
             <li key={item.id}>{item.description}</li>
           ))}
         </ul>
-        <Button onClick={onReturnToBox} mt="lg">
-          Volver
+        <Button onClick={onReturnToBox} bg="myPurple.8" mt="lg">
+          Entendido!
         </Button>
       </Box>
     );
@@ -224,7 +234,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
               <DatesProvider settings={{ locale: 'es', consistentWeeks: true }}>
                 <Box
                   style={{
-                    backgroundColor: '#DBDCEC',
+                    backgroundColor: '#ffff',
                     borderRadius: '14px',
                   }}
                   p="2vw"

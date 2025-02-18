@@ -71,7 +71,12 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
       <Stack my="4vh" gap="xl">
         <Flex gap="33%">
           <a>
-            <IconArrowLeft color="white" size="30px" onClick={onReturn} />
+            <IconArrowLeft
+              aria-label="volver a armarios"
+              color="white"
+              size="30px"
+              onClick={onReturn}
+            />
           </a>
 
           <Title fw="600" c="white">
@@ -80,28 +85,35 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
         </Flex>
 
         <Center>
-          <Input w="20vw" size="lg" placeholder="Busca un objeto" rightSection={<IconSearch />} />
+          <Input
+            aria-label="buscar objeto"
+            w="20vw"
+            size="lg"
+            placeholder="Busca un objeto"
+            rightSection={<IconSearch />}
+          />
         </Center>
       </Stack>
       <ScrollArea p="lg" m="md" h="62vh" scrollbarSize={16}>
         <Flex direction="column" gap="sm">
           {boxes?.map((box) => (
             <Box
+              aria-label={`casilla ${box.description}`}
               key={box.id}
               onClick={() => onBoxClick(box)}
               style={{
                 cursor: 'pointer',
                 borderRadius: 20,
-                backgroundColor: theme.colors.myPurple[6],
+                backgroundColor: theme.colors.myPurple[8],
               }}
               p="lg"
             >
               <Flex w="100%" align="center" justify="space-between">
                 <Stack>
-                  <Title size="xl" c="white">
+                  <Title aria-label="número de la casilla" size="xl" c="white">
                     Casilla C{box.id}
                   </Title>
-                  <Text size="md" c="white">
+                  <Text aria-label="descripción de la casilla" size="md" c="white">
                     {box.description}
                   </Text>
                 </Stack>
@@ -139,7 +151,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
                           <path
                             d="M14.2534,2.29104 C15.121985,2.146279 15.916565,2.77536663 15.9938515,3.63333818 L16,3.77063 L16,4.99994 L18,4.99994 C19.0543909,4.99994 19.9181678,5.81581733 19.9945144,6.85067759 L20,6.99994 L20,16.9999 C20,18.0542909 19.18415,18.9180678 18.1492661,18.9944144 L18,18.9999 L16,18.9999 L16,20.2293 C16,21.109855 15.2488492,21.7901453 14.3898362,21.7253089 L14.2534,21.7088 L5.6712,20.2785 C4.76040611,20.1266333 4.07933154,19.3740213 4.00646768,18.4672313 L4,18.3057 L4,5.6942 C4,4.77083556 4.63047491,3.97529117 5.51293334,3.7543449 L5.6712,3.72141 L14.2534,2.29104 Z M14,4.36087 L6,5.6942 L6,18.3057 L14,19.639 L14,4.36087 Z M18,6.99994 L16,6.99994 L16,16.9999 L18,16.9999 L18,6.99994 Z M11.5,10.4999 C12.3284,10.4999 13,11.1715 13,11.9999 C13,12.8284 12.3284,13.4999 11.5,13.4999 C10.6716,13.4999 10,12.8284 10,11.9999 C10,11.1715 10.6716,10.4999 11.5,10.4999 Z"
                             id="形状"
-                            fill="#7072C2"
+                            fill="#F1F2FF"
                           >
                             {' '}
                           </path>{' '}

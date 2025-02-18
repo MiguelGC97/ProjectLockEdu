@@ -60,7 +60,13 @@ export function NotificationsBox() {
       {matches ? (
         matches2 ? (
           //component for small desktops - max 1440
-          <Box bg="transparent" h="60vh" bd="1px solid myPurple.1" style={{ borderRadius: 40 }}>
+          <Box
+            aria-label="caja de notificationes"
+            bg="transparent"
+            h="60vh"
+            bd="1px solid myPurple.1"
+            style={{ borderRadius: 40 }}
+          >
             <Center>
               <h2>Notificaciones</h2>
             </Center>
@@ -75,11 +81,16 @@ export function NotificationsBox() {
 
                   return (
                     <Box
+                      aria-label={
+                        sb.type === 'recogida'
+                          ? 'notificación de recogida de objeto'
+                          : 'notificación de devolución de objeto'
+                      }
                       h="auto"
                       bg={
                         sb.type === 'recogida'
-                          ? 'rgba(34, 139, 230, .20)'
-                          : 'rgba(231, 175, 46, .20)'
+                          ? 'rgba(34, 139, 230, 0.09)'
+                          : 'rgba(231, 176, 46, 0.1)'
                       }
                       style={{ borderRadius: 20 }}
                       p="md"
@@ -125,7 +136,13 @@ export function NotificationsBox() {
           </Box>
         ) : (
           //component for big desktops - min 1440
-          <Box bg="transparent" h="60vh" bd="1px solid myPurple.1" style={{ borderRadius: 40 }}>
+          <Box
+            aria-label="caja de notificaciones"
+            bg="transparent"
+            h="60vh"
+            bd="1px solid myPurple.1"
+            style={{ borderRadius: 40 }}
+          >
             <Center>
               <h2>Notificaciones</h2>
             </Center>
@@ -140,11 +157,16 @@ export function NotificationsBox() {
 
                   return (
                     <Box
+                      aria-label={
+                        sb.type === 'recogida'
+                          ? 'notificación de recogida de objeto'
+                          : 'notificación de devolución de objeto'
+                      }
                       h="auto"
                       bg={
                         sb.type === 'recogida'
-                          ? 'rgba(34, 139, 230, .20)'
-                          : 'rgba(231, 175, 46, .20)'
+                          ? 'rgba(34, 139, 230, 0.09)'
+                          : 'rgba(231, 176, 46, 0.1)'
                       }
                       style={{ borderRadius: 20 }}
                       p="md"
@@ -208,7 +230,9 @@ export function NotificationsBox() {
                   <Box
                     h="auto"
                     bg={
-                      sb.type === 'recogida' ? 'rgba(34, 139, 230, .20)' : 'rgba(231, 175, 46, .20)'
+                      sb.type === 'recogida'
+                        ? 'rgba(34, 139, 230, 0.09)'
+                        : 'rgba(231, 176, 46, 0.1)'
                     }
                     style={{ borderRadius: 20 }}
                     p="md"

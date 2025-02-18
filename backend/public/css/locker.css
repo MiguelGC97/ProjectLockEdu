@@ -119,7 +119,7 @@
     flex-direction: column;
     top: 75%;
     left: 70%;
-    color: #ffff;
+    color: #00000;
     style: none;
     background-color: rgb(135, 136, 214);
     width: 100px;
@@ -131,7 +131,7 @@
 
   .add-locker-button > button {
     all: unset;
-    color: #ffff;
+    color: #00000;
     font-size: 4rem;
     style: none;
   }
@@ -208,7 +208,7 @@
     color: #ffff;
     display: flex;
     justify-content: center;
-    background-color: rgb(116, 117, 201);
+    background-color: rgb(77, 79, 163);
     padding: 10px 20px;
     border-radius: 10px;
     cursor: pointer;
@@ -218,7 +218,7 @@
 
 @media (min-width: 768px) {
   #mainContentContainer {
-    background-color: #393a58;
+    background-color: #2a2b44;
     width: 100%;
     height: 90vh;
     padding: 10px 30px 30px 130px;
@@ -262,7 +262,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background-color: #393a58;
+    background-color: #2a2b44;
     width: 350px;
     height: 150px;
     padding: 20px 20px;
@@ -325,7 +325,7 @@
     all: unset;
     color: #ffff;
     style: none;
-    background-color: #7072c2;
+    background-color: #4f51b3;
     padding: 5px 50px;
     border-radius: 100px;
     cursor: pointer;
@@ -365,9 +365,8 @@
     flex-direction: column;
     top: 45%;
     left: 80%;
-    color: #ffff;
-    style: none;
-    background-color: rgb(135, 136, 214);
+    color: #000;
+    background-color: rgb(175, 176, 238);
     width: 150px;
     height: 150px;
     border-radius: 100px;
@@ -380,12 +379,12 @@
     left: 78%;
     width: 180px;
     height: 180px;
-    background-color: rgb(120, 121, 211);
+    background-color: rgb(143, 145, 231);
   }
 
   .add-locker-button > button {
     all: unset;
-    color: #ffff;
+    color: #00000;
     font-size: 4rem;
     style: none;
   }
@@ -434,7 +433,7 @@
   .modal-header > a > button {
     all: unset;
     color: #ffff;
-    background-color: rgb(116, 117, 201);
+    background-color: #4f51b3;
     padding: 10px 20px;
     border-radius: 10px;
     cursor: pointer;
@@ -450,7 +449,7 @@
   .locker-form > input {
     padding: 7px;
     border-radius: 10px;
-    border: 1px solid #7072c2;
+    border: 1px solid #4f51b3;
   }
 
   .add-locker-confirm {
@@ -458,7 +457,7 @@
     color: #ffff;
     display: flex;
     justify-content: center;
-    background-color: rgb(116, 117, 201);
+    background-color: #4f51b3;
     padding: 10px 20px;
     border-radius: 10px;
     cursor: pointer;

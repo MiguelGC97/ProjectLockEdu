@@ -26,7 +26,7 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
   const { user } = useAuth();
 
   useEffect(() => {
-    if (!user?.id) return; // Evita llamadas innecesarias si user.id no está definido
+    if (!user?.id) return;
 
     const loadBookings = async () => {
       try {
@@ -162,7 +162,7 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
               onClick={() => handleUpdateState(b.id, 'withdrawn')}
               size="md"
               maw="8vw"
-              bg="myPurple.3"
+              bg="myPurple.4"
               radius="xl"
               data-testid={`withdraw-button`}
             >
@@ -187,7 +187,7 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
           <IconTrash
             onClick={() => handleDeleteBooking(b.id)}
             style={{ cursor: 'pointer' }}
-            color="red"
+            color="#FF5C5C"
             data-testid={`delete-booking`}
           />
         </Table.Td>

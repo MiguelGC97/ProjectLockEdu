@@ -74,9 +74,9 @@
     margin: 0;
   }
 
-#logout-form > button {
-  all: unset;
-}
+  #logout-form > button {
+    all: unset;
+  }
 
   .menu-item > a {
     color: #ffff;
@@ -139,6 +139,7 @@
     margin: 20px 0;
     width: 100%;
     height: 50vh;
+    cursor: pointer;
   }
 
   .active {
@@ -147,4 +148,3 @@
 
   /* we need to add activeRoute: locker as sent data in the routes */
 }
-

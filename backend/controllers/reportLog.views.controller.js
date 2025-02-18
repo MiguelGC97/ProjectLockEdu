@@ -118,11 +118,28 @@ exports.edit = async (req, res) => {
 
 exports.update = async (req, res) => {
   const id = req.params.id;
+  const sessionUserId = req.session.user && req.session.user.id;
 
+  if (!sessionUserId) {
+    return res.status(401).send({ message: "No estás autenticado." });
+  }
+
+  
   try {
-    const [updated] = await ReportLog.update(req.body, {
-      where: { id: id },
-    });
+
+    const reportLog = await ReportLog.findOne({ where: { id: id } });
+    if (!reportLog) {
+      return res
+        .status(404)
+        .send({ message: `No se encontró el log con id=${id}.` });
+    }
+
+    if (reportLog.userId !== sessionUserId) {
+      return res
+        .status(403)
+        .send({ message: "No estás autorizado para actualizar este log." });
+    }
+
 
     if (updated === 1) {
       res.redirect("/reportlog");

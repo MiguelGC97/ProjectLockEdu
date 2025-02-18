@@ -55,8 +55,10 @@ describe('LoginForm', () => {
       target: { value: passwordTest },
     });
 
+
     fireEvent.click(screen.getByTestId('submit-button'));
 
+ 
     expect(screen.getByTestId('username-input')).toHaveValue(usernameTest);
     expect(screen.getByTestId('password-input')).toHaveValue(passwordTest);
   });
