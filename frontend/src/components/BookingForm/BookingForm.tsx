@@ -183,7 +183,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
       <Box
         style={{
           backgroundColor: theme.colors.myPurple[4],
-          width: '',
+          // width: '',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-start',
