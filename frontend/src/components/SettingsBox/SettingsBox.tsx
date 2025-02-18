@@ -104,7 +104,7 @@ export function SettingsBox() {
             size="md"
             px="50"
             radius="xl"
-            color="#483D8B"
+            color="#4F51B3"
           >
             Enviar
           </Button>
@@ -122,30 +122,35 @@ export function SettingsBox() {
       />
       <Divider size="xs" color="myPurple.1" />
 
-      <Checkbox
-        defaultChecked
-        ml={50}
-        mt={10}
-        size="md"
-        styles={{
-          label: {
-            color: 'white',
-          },
-        }}
-        label="Recibir notificaciones de mis recordatorios"
-        color="white"
-        iconColor="#191970"
-      />
-      <Button
-        onClick={handleChangePassword}
-        variant="filled"
-        size="md"
-        px="50"
-        radius="xl"
-        color="#483D8B"
-      >
-        Enviar
-      </Button>
+      <Flex h="200px" w="100%" justify="space-between" align="center">
+        {' '}
+        <Flex w="100%" px={20} justify="space-between" align="center">
+          <Checkbox
+            defaultChecked
+            ml={50}
+            mt={10}
+            size="md"
+            styles={{
+              label: {
+                color: 'white',
+              },
+            }}
+            label="Recibir notificaciones de mis recordatorios"
+            color="white"
+            iconColor="#191970"
+          />
+          <Button
+            onClick={handleChangePassword}
+            variant="filled"
+            size="md"
+            px="50"
+            radius="xl"
+            color="#4F51B3"
+          >
+            Enviar
+          </Button>
+        </Flex>
+      </Flex>
     </Box>
   );
 }
