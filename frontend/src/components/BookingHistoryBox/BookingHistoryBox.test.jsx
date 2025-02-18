@@ -4,18 +4,39 @@ import BookingHistoryBox from './BookingHistoryBox';
 import { MantineProvider } from '@mantine/core';
 import { deleteBookingById, fetchBookingsByUserId, updateBookingState } from '@/services/fetch';
 import { vi } from 'vitest';
+import { faker } from '@faker-js/faker';
 
-// Mock del hook useAuth
+// useAuth hook mock
 vi.mock('@/hooks/AuthProvider', () => ({
   useAuth: () => ({
     user: { id: '1' },
   }),
 }));
 
-// Función para renderizar con Mantine
+// Mantine render
 const renderWithMantine = (component) => {
   return render(<MantineProvider>{component}</MantineProvider>);
 };
+
+//Faker dinamic data generation
+const generateBooking = () => ({
+  id: faker.number.int(),
+  state: faker.helpers.arrayElement(['pending', 'withdrawn', 'returned']),
+  checkIn: faker.date.future().toISOString(),
+  checkOut: faker.date.future().toISOString(),
+  items: [
+    {
+      id: faker.number.int(),
+      description: faker.commerce.productName(),
+      box: {
+        id: faker.number.int(),
+        locker: {
+          id: faker.number.int(),
+        },
+      },
+    },
+  ],
+});
 
 describe('BookingHistoryBox', () => {
   const testLocker = {
@@ -129,21 +150,15 @@ describe('BookingHistoryBox', () => {
   });
 
   it('renders correctly and loads bookings', async () => {
-    vi.mock('@/services/fetch', () => ({
-      fetchBookingsByUserId: vi.fn(() =>
-        Promise.resolve([
-          {
-            id: 1,
-            state: 'pending',
-            checkIn: '2025-02-17T12:00:00Z',
-            checkOut: '2025-02-17T10:00:00Z',
-            items: [{ description: 'Item 1', box: { locker: { id: 1 }, id: 1 } }],
-          },
-        ])
-      ),
-      deleteBookingById: vi.fn(() => Promise.resolve()),
-      updateBookingState: vi.fn(() => Promise.resolve()),
-    }));
+    vi.mocked(fetchBookingsByUserId).mockResolvedValueOnce([
+      {
+        id: 1,
+        state: 'pending',
+        checkIn: '2025-02-17T12:00:00Z',
+        checkOut: '2025-02-17T10:00:00Z',
+        items: [{ description: 'Item 1', box: { locker: { id: 1 }, id: 1 } }],
+      },
+    ]);
 
     renderWithMantine(<BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />);
 
@@ -155,22 +170,35 @@ describe('BookingHistoryBox', () => {
     expect(screen.getByText('A01-C01')).toBeInTheDocument();
   });
 
+  it('renders the correct state color for pending bookings', async () => {
+    vi.mocked(fetchBookingsByUserId).mockResolvedValueOnce([
+      {
+        id: 1,
+        state: 'pending',
+        checkIn: '2025-02-17T12:00:00Z',
+        checkOut: '2025-02-17T10:00:00Z',
+        items: [{ description: 'Item 1', box: { locker: { id: 1 }, id: 1 } }],
+      },
+    ]);
+    
+    renderWithMantine(<BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />);
+
+    await waitFor(() => {
+      const stateText = screen.getByText('Pendiente');
+      expect(stateText).toHaveStyle('color: var(--mantine-color-yellow-text)');
+    });
+  });
+
   it('updates booking state when "Recoger" button is clicked', async () => {
-    vi.mock('@/services/fetch', () => ({
-      fetchBookingsByUserId: vi.fn(() =>
-        Promise.resolve([
-          {
-            id: 2,
-            state: 'pending',
-            checkIn: '2025-02-17T12:00:00Z',
-            checkOut: '2025-02-17T10:00:00Z',
-            items: [{ description: 'Item 1', box: { locker: { id: 1 }, id: 1 } }],
-          },
-        ])
-      ),
-      deleteBookingById: vi.fn(() => Promise.resolve()),
-      updateBookingState: vi.fn(() => Promise.resolve()),
-    }));
+    vi.mocked(fetchBookingsByUserId).mockResolvedValueOnce([
+      {
+        id: 1,
+        state: 'pending',
+        checkIn: '2025-02-17T12:00:00Z',
+        checkOut: '2025-02-17T10:00:00Z',
+        items: [{ description: 'Item 1', box: { locker: { id: 1 }, id: 1 } }],
+      },
+    ]);
 
     renderWithMantine(<BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />);
 
@@ -265,6 +293,32 @@ describe('BookingHistoryBox', () => {
     await waitFor(() => {
       const stateText = screen.getByText('Devuelto');
       expect(stateText).toHaveStyle('color: var(--mantine-color-white)');
+    });
+  });
+
+  it('calls deleteBookingById with the correct booking ID', async () => {
+    renderWithMantine(<BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />);
+
+    await waitFor(() => {
+      const trashIcon = screen.getByTestId('delete-booking');
+      fireEvent.click(trashIcon);
+    });
+
+    await waitFor(() => {
+      expect(deleteBookingById).toHaveBeenCalledWith(1);
+    });
+  });
+
+  it('updates the bookings list after deleting a booking', async () => {
+    renderWithMantine(<BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />);
+
+    await waitFor(() => {
+      const trashIcon = screen.getByTestId('delete-booking');
+      fireEvent.click(trashIcon);
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByText('Item 1')).not.toBeInTheDocument();
     });
   });
 
