@@ -6,12 +6,12 @@ import AuthProvider from './hooks/AuthProvider';
 import Home from './pages/Home.page';
 import Login from './pages/Login.page';
 import Reports from './pages/Reports.page';
+import { ToastContainer } from 'react-toastify';
 import { theme } from './theme';
 
 import './App.module.css';
 
 import BookingHistory from './pages/BookingsHistory.page';
-import LoginPage from './pages/Login.page';
 import Settings from './pages/Settings.page';
 
 export default function App() {
@@ -30,6 +30,7 @@ export default function App() {
           </Flex>
         </AuthProvider>
       </Router>
+      <ToastContainer position="top-right" autoClose={3000} />
     </MantineProvider>
   );
 }

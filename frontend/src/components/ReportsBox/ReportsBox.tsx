@@ -17,14 +17,16 @@ import {
 import { useAuth } from '@/hooks/AuthProvider';
 import { fetchIncidencesByUserId, updateIncidenceContent } from '@/services/fetch';
 import { Incidence } from '@/types/types';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export function ReportsBox() {
   const [incidences, setIncidences] = useState<Incidence[]>();
   const [modalOpened, setModalOpened] = useState(false);
   const [currentIncidence, setCurrentIncidence] = useState<Incidence | null>(null);
   const [newContent, setNewContent] = useState<string>('');
-
   const { user } = useAuth();
+
 
   useEffect(() => {
     const loadIncidences = async () => {
@@ -42,36 +44,44 @@ export function ReportsBox() {
   };
 
   const handleSave = async () => {
-    if (currentIncidence) {
-      try {
-        const response = await updateIncidenceContent(currentIncidence.id, newContent);
-        const data = response.data;
-
-        if (data.message === 'Ha excedido el tiempo límite para actualizar este reporte') {
-          alert('No puedes actualizar este reporte porque ha pasado el tiempo límite.');
-          setModalOpened(false);
-          return;
-        }
-
-        setModalOpened(false);
-        setIncidences(
-          incidences?.map((inc) =>
-            inc.id === currentIncidence?.id ? { ...inc, content: newContent } : inc
-          )
-        );
-      } catch (error: any) {
-        console.error('Error al actualizar la incidencia:', error);
-
-        if (error.response && error.response.data.message) {
-          alert(error.response.data.message);
-        } else {
-          alert('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
-        }
-
-        setModalOpened(false);
+    if (!currentIncidence) return;
+  
+    try {
+      console.log("Intentando actualizar incidencia con ID:", currentIncidence.id);
+  
+      const updatedIncidence = await updateIncidenceContent(currentIncidence.id, newContent);
+  
+      toast.success("Incidencia actualizada con éxito");
+  
+      setIncidences((prev) =>
+        prev?.map((inc) =>
+          inc.id === currentIncidence.id ? { ...inc, content: newContent } : inc
+        )
+      );
+  
+      setModalOpened(false);
+    } catch (error: any) {
+      console.error("Error en la actualización:", error);
+  
+      let errorMessage = "Error al actualizar. Inténtalo de nuevo.";
+  
+    
+      if (error.response) {
+        errorMessage = error.response.data?.message || `Error ${error.response.status}: ${error.response.statusText}`;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+  
+    
+      if (errorMessage.includes("excedido el tiempo") || error.response?.status === 400) {
+        toast.warning("Han pasado más de 10 minutos no se puede actualizar la incidencia");
+        setModalOpened(false); 
+      } else {
+        toast.error(`Error: ${errorMessage}`);
       }
     }
   };
+  
 
   const StyledAccordion = styled(Accordion)`
     .mantine-Accordion-control {
@@ -87,11 +97,14 @@ export function ReportsBox() {
   `;
 
   const rows = incidences?.map((report) => (
-    <Accordion.Item key={report.id} value={`casilla-${report.boxId}`}>
-      <Accordion.Control>
+<Accordion.Item key={report.id} value={`incidencia-${report.id}`} aria-labelledby={`incidencia-${report.id}`}>
+      <Accordion.Control
+        aria-expanded={report.isSolved ? 'true' : 'false'}
+        aria-controls={`casilla-${report.boxId}-panel`}
+      >
         <Flex justify="space-between" align="center">
           <Box style={{ width: '33.33%', textAlign: 'center', color: 'white' }}>
-            Casilla {report.boxId} {}
+            Casilla {report.boxId}
           </Box>
           <Box style={{ width: '33.33%', textAlign: 'center', color: 'white' }}>
             {new Date(report.createdAt).toLocaleDateString()}
@@ -104,14 +117,22 @@ export function ReportsBox() {
         </Flex>
       </Accordion.Control>
       <Accordion.Panel
+        id={`casilla-${report.boxId}-panel`}
         style={{
           backgroundColor: '#3C3D85',
           padding: '1rem',
         }}
         onClick={() => handleEditClick(report)}
+        role="button"
+        aria-label={`Editar incidencia ${report.boxId}`}
       >
         <Flex align="center" gap="md">
-          <Avatar src={report.user?.avatar} alt={report.user?.name} radius="xl" size="lg" />
+          <Avatar
+            src={report.user?.avatar}
+            alt={report.user?.name}
+            radius="xl"
+            size="lg"
+          />
           <Box>
             <Text c="white">{report.content}</Text>
           </Box>
@@ -121,15 +142,9 @@ export function ReportsBox() {
   ));
 
   return (
-    <Box
-      bg="transparent"
-      h="80vh"
-      bd="1px solid myPurple.1"
-      w="100%"
-      style={{
-        borderRadius: '83px 0 25px 25px',
-      }}
-    >
+    <Box bg="transparent" h="80vh" bd="1px solid myPurple.1" w="100%" style={{
+      borderRadius: '83px 0 25px 25px'
+    }}>
       <Center>
         <h2>Incidencias</h2>
       </Center>
@@ -163,16 +178,22 @@ export function ReportsBox() {
         </Flex>
       </ScrollArea>
 
-      <Modal opened={modalOpened} onClose={() => setModalOpened(false)} centered>
+      <Modal
+        opened={modalOpened}
+        onClose={() => setModalOpened(false)}
+        centered
+        aria-labelledby="modal-edit-incidence"
+      >
         <Textarea
           value={newContent}
           onChange={(e) => setNewContent(e.currentTarget.value)}
           autosize
           minRows={5}
           maxRows={10}
+          aria-label="Contenido de la incidencia"
         />
         <Flex justify="flex-end" mt="md">
-          <Button onClick={handleSave} color="#4F51B3">
+          <Button onClick={handleSave} color="#4F51B3" aria-label="Guardar cambios">
             Guardar
           </Button>
         </Flex>

@@ -1,6 +1,6 @@
 ﻿h2 {
   color: var(--mantine-color-white);
-  padding: -10;
+  padding: 10px; /* Corregido el padding */
 }
 
 Box {
@@ -12,7 +12,7 @@ Text {
 }
 
 .label {
- color: #ffffff;
+  color: #ffffff;
 }
 
 .input {
@@ -21,6 +21,16 @@ Text {
 
 .hour {
   font-size: 3rem;
+}
+
+/* Agregar estilos para el enfoque (focus) */
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+  outline: 2px solid #3C3D85; /* Color de borde al estar enfocado */
+  outline-offset: 4px; /* Espaciado extra para que se vea mejor */
+  box-shadow: 0 0 5px rgba(60, 61, 133, 0.6); /* Sombra suave para mejorar la visibilidad */
 }
 
 ::-webkit-scrollbar {
@@ -46,4 +56,20 @@ Text {
 
 Table {
   min-width: 500px;
+}
+
+.thumbsUp {
+  font-size: 24px;
+  animation: floatUp 2s ease-out forwards;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
 }
