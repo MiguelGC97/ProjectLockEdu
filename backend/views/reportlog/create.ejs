@@ -76,9 +76,9 @@
                       </td>
                       <td class="not-visible">
                         <% if (rl.report.isSolved) { %>
-                          <span style="color: green">Resuelto</span>
+                          <span style="color: rgb(161, 255, 161)">Resuelto</span>
                           <% } else { %>
-                            <span style="color: red">Pendiente</span>
+                            <span style="color: #ff6161">Pendiente</span>
                             <% } %>
                       </td>
                       <td>
@@ -88,54 +88,57 @@
                         </button>
                       </td>
                     </tr>
+
+
                     <tr class="dropdown-content">
-
-
                       <td colspan="6">
 
                         <div class="visible">
                           <% if (rl.report.isSolved) { %>
-                            <span style="color: rgb(155, 238, 155)">Resuelto</span>
+                            <span style="color: rgb(161, 255, 161)">Resuelto</span>
                             <% } else { %>
-                              <span style="color: red">Pendiente</span>
+                              <span style="color: #ff6161">Pendiente</span>
                               <% } %>
-                                <div />
-                                <div class="visible">
-                                  <% if (rl.user && rl.user.role==="ADMIN" ) { %>
-                                    <span style="color: rgb(237, 198, 43)">
+                        </div>
+                        <div class="visible">
+                          <% if (rl.user && rl.user.role==="ADMIN" ) { %>
+                            <span style="color: rgb(236, 196, 34)">
 
-                                      <%= rl.user.name %>
-                                    </span>
-                                    <% } else { %>
-                                      <span>
-                                        <span>Manager: </span>
-                                        <%= rl.user ? rl.user.name : "Usuario desconocido" %>
-                                      </span>
-                                      <% } %>
-                                        <div />
-                                        <div class="comment-container">
-                                          <%= rl.comment || 'Sin comentario' %>
-                                        </div>
-                                        <div class="action-buttons">
-                                          <a href="/reportlog/<%= rl.id %>">
-                                            <img class="edit-icon" src="images/edit-icon.svg" alt="Edit icon" />
-                                          </a>
-                                          <form action="/reportlog/<%= rl.id %>" method="POST" class="delete-form">
-                                            <button type="submit" class="delete-button">
-                                              <img class="delete-button" src="/images/trash-icon.svg"
-                                                alt="Delete icon" />
-                                            </button>
-                                          </form>
-                                        </div>
+                              <%= rl.user.name %>
+                            </span>
+                            <% } else { %>
+                              <span>
+                                <span>Manager: </span>
+                                <%= rl.user ? rl.user.name : "Usuario desconocido" %>
+                              </span>
+                              <% } %>
+                        </div>
+                        <div class="comment-container">
+                          <%= rl.comment || 'Sin comentario' %>
+                        </div>
+                        <div class="action-buttons">
+                          <a href="/reportlog/<%= rl.id %>">
+                            <img class="edit-icon" src="images/edit-icon.svg" alt="Edit icon" />
+                          </a>
+                          <form action="/reportlog/<%= rl.id %>" method="POST" class="delete-form">
+                            <button type="submit" class="delete-button">
+                              <img class="delete-button" src="/images/trash-icon.svg" alt="Delete icon" />
+                            </button>
+                          </form>
+                        </div>
                       </td>
                     </tr>
                     <% }); %>
                 </tbody>
               </table>
             </div>
-
+            <a href="/reportlog/create" class="add-reportlog-button">
+              <button>+</button>
+              <p>Añadir</p>
+            </a>
           </section>
         </div>
+
       </main>
 
 
