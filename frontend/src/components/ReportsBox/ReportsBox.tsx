@@ -27,7 +27,6 @@ export function ReportsBox() {
   const [newContent, setNewContent] = useState<string>('');
   const { user } = useAuth();
 
-
   useEffect(() => {
     const loadIncidences = async () => {
       const data = await fetchIncidencesByUserId(user.id);
@@ -45,43 +44,31 @@ export function ReportsBox() {
 
   const handleSave = async () => {
     if (!currentIncidence) return;
-  
+
     try {
-      console.log("Intentando actualizar incidencia con ID:", currentIncidence.id);
-  
       const updatedIncidence = await updateIncidenceContent(currentIncidence.id, newContent);
-  
       toast.success("Incidencia actualizada con éxito");
-  
       setIncidences((prev) =>
         prev?.map((inc) =>
           inc.id === currentIncidence.id ? { ...inc, content: newContent } : inc
         )
       );
-  
       setModalOpened(false);
     } catch (error: any) {
-      console.error("Error en la actualización:", error);
-  
       let errorMessage = "Error al actualizar. Inténtalo de nuevo.";
-  
-    
       if (error.response) {
         errorMessage = error.response.data?.message || `Error ${error.response.status}: ${error.response.statusText}`;
       } else if (error.message) {
         errorMessage = error.message;
       }
-  
-    
       if (errorMessage.includes("excedido el tiempo") || error.response?.status === 400) {
         toast.warning("Han pasado más de 10 minutos no se puede actualizar la incidencia");
-        setModalOpened(false); 
+        setModalOpened(false);
       } else {
         toast.error(`Error: ${errorMessage}`);
       }
     }
   };
-  
 
   const StyledAccordion = styled(Accordion)`
     .mantine-Accordion-control {
@@ -97,10 +84,11 @@ export function ReportsBox() {
   `;
 
   const rows = incidences?.map((report) => (
-<Accordion.Item key={report.id} value={`incidencia-${report.id}`} aria-labelledby={`incidencia-${report.id}`}>
+    <Accordion.Item key={report.id} value={`incidencia-${report.id}`} aria-labelledby={`incidencia-${report.id}`} data-testid={`incidencia-${report.id}`}>
       <Accordion.Control
         aria-expanded={report.isSolved ? 'true' : 'false'}
         aria-controls={`casilla-${report.boxId}-panel`}
+        data-testid={`incidencia-control-${report.id}`}
       >
         <Flex justify="space-between" align="center">
           <Box style={{ width: '33.33%', textAlign: 'center', color: 'white' }}>
@@ -125,6 +113,7 @@ export function ReportsBox() {
         onClick={() => handleEditClick(report)}
         role="button"
         aria-label={`Editar incidencia ${report.boxId}`}
+        data-testid={`incidencia-panel-${report.id}`}
       >
         <Flex align="center" gap="md">
           <Avatar
@@ -183,6 +172,7 @@ export function ReportsBox() {
         onClose={() => setModalOpened(false)}
         centered
         aria-labelledby="modal-edit-incidence"
+        data-testid="edit-incidence-modal"
       >
         <Textarea
           value={newContent}
@@ -191,9 +181,10 @@ export function ReportsBox() {
           minRows={5}
           maxRows={10}
           aria-label="Contenido de la incidencia"
+          data-testid="incidence-content-textarea"
         />
         <Flex justify="flex-end" mt="md">
-          <Button onClick={handleSave} color="#4F51B3" aria-label="Guardar cambios">
+          <Button onClick={handleSave} color="#4F51B3" aria-label="Guardar cambios" data-testid="save-incidence-button">
             Guardar
           </Button>
         </Flex>
