@@ -264,7 +264,7 @@
 }
 
 @media (min-width: 768px) {
-  visible {
+  .visible {
     display: none;
   }
 

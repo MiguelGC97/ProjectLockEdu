@@ -31,24 +31,36 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
       >
         <Stack my="4vh" gap="xl">
           <Center>
-            <Title fw="600" c="white">
+            <Title aria-label="titulo de la sesión" fw="600" c="white">
               Armarios
             </Title>
           </Center>
           {/* Search input for lockers */}
           <Center>
-            <Input w="20vw" size="lg" placeholder="Busca un objeto" rightSection={<IconSearch />} />
+            <Input
+              aria-label="buscar objeto"
+              w="20vw"
+              size="lg"
+              placeholder="Busca un objeto"
+              rightSection={<IconSearch />}
+            />
           </Center>
         </Stack>
         <ScrollArea p="lg" m="md" h="62vh" scrollbarSize={16}>
           <Flex direction="column" gap="sm">
             {lockers?.map((locker) => {
               return (
-                <Box h="auto" bg="myPurple.6" style={{ borderRadius: 20 }} p="sm">
+                <Box
+                  aria-label={`armario número ${locker.number}`}
+                  h="auto"
+                  bg="myPurple.8"
+                  style={{ borderRadius: 20 }}
+                  p="sm"
+                >
                   <Flex direction="column" gap="lg" p="sm">
                     <Flex gap="10vw" justify="center" align="center">
                       <Flex direction="column" gap="1vh" justify="center">
-                        <Title size="xl" c="white">
+                        <Title aria-label={`armario número ${locker.number}`} size="xl" c="white">
                           Armario 0{locker.number}
                         </Title>
                         <Flex gap="md" justify="flex-start">
@@ -56,12 +68,17 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
                             <Text c="white" fw={700}>
                               Ubicación:
                             </Text>{' '}
-                            <Text c="white">{locker.location}</Text>
+                            <Text
+                              aria-label={`ubicación del armario número ${locker.number}`}
+                              c="white"
+                            >
+                              {locker.location}
+                            </Text>
                           </Flex>
                         </Flex>
                       </Flex>
                       <svg
-                        fill="#7072C2"
+                        fill="#F1F2FF"
                         height="60px"
                         width="60px"
                         version="1.1"
@@ -98,12 +115,13 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
                     </Flex>
                     <Center>
                       <Button
+                        aria-label={`ver casillas del armario número ${locker.number}`}
                         onClick={() => {
                           onLockerClick(locker);
                         }}
                         size="md"
                         maw="8vw"
-                        bg="myPurple.3"
+                        bg="myPurple.4"
                         radius="xl"
                       >
                         Ver casillas

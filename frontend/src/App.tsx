@@ -19,7 +19,7 @@ export default function App() {
     <MantineProvider theme={theme}>
       <Router>
         <AuthProvider>
-          <Flex maw="100vw" mah="100vh" style={{ backgroundColor: theme.colors.myPurple[6] }}>
+          <Flex maw="100vw" mah="100vh" style={{ backgroundColor: theme.colors.myPurple[8] }}>
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/perfil" element={<Home />} />

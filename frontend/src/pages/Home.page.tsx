@@ -66,7 +66,7 @@ const Home: React.FC = () => {
         <>
           {' '}
           <SideMenu />
-          <Flex pl="1.5%" style={{ backgroundColor: theme.colors.myPurple[6] }}>
+          <Flex pl="1.5%" style={{ backgroundColor: theme.colors.myPurple[8] }}>
             <Flex maw="100%" gap="lg">
               <Flex direction="column" w="100%">
                 <UserBar />

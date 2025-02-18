@@ -110,7 +110,7 @@ export function ReportsBox() {
             {new Date(report.createdAt).toLocaleDateString()}
           </Box>
           <Box style={{ width: '33.33%', textAlign: 'center' }}>
-            <Text color={report.isSolved ? 'green' : 'red'} fw="bold">
+            <Text color={report.isSolved ? 'green' : '#FF5C5C'} fw="bold">
               {report.isSolved ? 'Resuelto' : 'Pendiente'}
             </Text>
           </Box>

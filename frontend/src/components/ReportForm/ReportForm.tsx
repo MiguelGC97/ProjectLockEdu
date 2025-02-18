@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { toast } from 'react-toastify';
 import { Box, Button, createTheme, MantineProvider, NativeSelect, Textarea } from '@mantine/core';
@@ -6,7 +6,6 @@ import { useAuth } from '@/hooks/AuthProvider';
 import { fetchBoxesByLocker, fetchFormIncident, fetchLockers } from '@/services/fetch';
 import { Boxs, Locker } from '@/types/types';
 import classes from './ReportForm.module.css';
-
 import 'react-toastify/dist/ReactToastify.css';
 
 const theme = createTheme({
@@ -77,11 +76,13 @@ export function ReportForm() {
       boxId: parseInt(selectedBox, 10),
     };
 
+
     console.log('Enviando reporte:', reportData);
 
     try {
       await fetchFormIncident(reportData);
       toast.success('Reporte creado exitosamente');
+
 
       setSelectedLocker('');
       setSelectedBox('');
