@@ -22,7 +22,7 @@ interface NavbarLinkProps {
 function NavbarLink({ icon: Icon, label, active, onClick, to }: NavbarLinkProps) {
   return (
     <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
-      <UnstyledButton onClick={onClick} className={classes.link} data-active={active || undefined}>
+      <UnstyledButton onClick={onClick} className={classes.link} data-active={active || undefined} aria-label={label}>
         <Icon style={{ width: rem(30), height: rem(30) }} stroke={1.5} />
       </UnstyledButton>
     </Tooltip>
@@ -61,7 +61,7 @@ export function SideMenu() {
   return (
     <div mah="100vh" className={classes.navbar}>
       <Center>
-        <Image w="60px" src="/assets/logoApp.png" />
+        <Image w="60px" src="/assets/logoApp.png" alt='Logo de LockEdu' />
       </Center>
 
       <div className={classes.navbarMain}>
