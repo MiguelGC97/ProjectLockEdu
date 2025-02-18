@@ -18,25 +18,25 @@ const renderWithMantine = (component) => {
   return render(<MantineProvider>{component}</MantineProvider>);
 };
 
-//Faker dinamic data generation
-const generateBooking = () => ({
-  id: faker.number.int(),
-  state: faker.helpers.arrayElement(['pending', 'withdrawn', 'returned']),
-  checkIn: faker.date.future().toISOString(),
-  checkOut: faker.date.future().toISOString(),
-  items: [
-    {
-      id: faker.number.int(),
-      description: faker.commerce.productName(),
-      box: {
-        id: faker.number.int(),
-        locker: {
-          id: faker.number.int(),
-        },
-      },
-    },
-  ],
-});
+//Faker dynamic data generation
+// const generateBooking = () => ({
+//   id: faker.number.int(),
+//   state: faker.helpers.arrayElement(['pending', 'withdrawn', 'returned']),
+//   checkIn: faker.date.future().toISOString(),
+//   checkOut: faker.date.future().toISOString(),
+//   items: [
+//     {
+//       id: faker.number.int(),
+//       description: faker.commerce.productName(),
+//       box: {
+//         id: faker.number.int(),
+//         locker: {
+//           id: faker.number.int(),
+//         },
+//       },
+//     },
+//   ],
+// });
 
 describe('BookingHistoryBox', () => {
   const testLocker = {
@@ -367,4 +367,36 @@ describe('BookingHistoryBox', () => {
       expect(deleteBookingById).toHaveBeenCalledWith(1);
     });
   });
+
+  // it('renders correctly with extreme date values', async () => {
+
+  //   const mockBooking = {
+  //     id: faker.number.int(),
+  //     state: 'pending',
+  //     checkIn: faker.date.past({ years: 10 }).toISOString(),
+  //     checkOut: faker.date.future({ years: 10 }).toISOString(),
+  //     items: [
+  //       {
+  //         id: faker.number.int(),
+  //         description: faker.lorem.paragraph(),
+  //         box: {
+  //           id: faker.number.int(),
+  //           locker: {
+  //             id: faker.number.int(),
+  //           },
+  //         },
+  //       },
+  //     ],
+  //   };
+
+  //   vi.mocked(fetchBookingsByUserId).mockResolvedValueOnce([mockBooking]);
+
+  //   renderWithMantine(<BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />);
+
+  //   await waitFor(() => {
+  //     expect(screen.getByText(mockBooking.items[0].description)).toBeInTheDocument();
+  //     expect(screen.getByText(new Date(mockBooking.checkIn).toLocaleDateString('es-ES'))).toBeInTheDocument();
+  //     expect(screen.getByText(new Date(mockBooking.checkOut).toLocaleDateString('es-ES'))).toBeInTheDocument();
+  //   });
+  // });
 });
