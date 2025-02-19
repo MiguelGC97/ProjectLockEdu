@@ -104,6 +104,15 @@ export async function updateIncidenceContent(id: number, content: string): Promi
   }
 }
 
+export async function resolveIncidence(id: number, isSolved: boolean): Promise<any> {
+  try {
+    await instance.put(`${baseUrl}/reports/resolve/${id}`, { isSolved });
+  } catch (error) {
+    console.error('Error updating State:', error);
+    throw error;
+  }
+}
+
 //function to fetchBoxesByLocker
 export async function fetchBoxesByLocker(lockerId: string): Promise<BoxType[] | undefined> {
   try {

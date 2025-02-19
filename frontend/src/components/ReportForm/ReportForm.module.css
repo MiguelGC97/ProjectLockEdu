@@ -23,16 +23,6 @@ Text {
   font-size: 3rem;
 }
 
-/* Agregar estilos para el enfoque (focus) */
-input:focus,
-select:focus,
-textarea:focus,
-button:focus {
-  outline: 2px solid #3C3D85; /* Color de borde al estar enfocado */
-  outline-offset: 4px; /* Espaciado extra para que se vea mejor */
-  box-shadow: 0 0 5px rgba(60, 61, 133, 0.6); /* Sombra suave para mejorar la visibilidad */
-}
-
 ::-webkit-scrollbar {
   width: 20px;
 }

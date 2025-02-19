@@ -30,11 +30,20 @@ Handle ::-webkit-scrollbar-thumb {
   border-radius: 10px;
 }
 
+
+
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #b30000;
+  background: #ffffff;
 }
 
 Table {
   min-width: 500px;
 }
+
+#box-content {
+  position: relative; 
+  display: flex;
+  flex-direction: column; 
+}
+

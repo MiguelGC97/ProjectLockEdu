@@ -22,14 +22,7 @@ const Reports: React.FC = () => {
           <Flex p="xl" direction="column" w="100%">
             <UserBarReport
               onToggleVisibility={toggleReportFormVisibility}
-              role="button"
-              tabIndex={0}
               aria-label="Alternar visibilidad del formulario de reporte"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  toggleReportFormVisibility();
-                }
-              }}
             />
             <Flex direction="row" w="100%" gap="md">
               <ReportsBox />

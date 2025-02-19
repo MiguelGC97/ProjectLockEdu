@@ -9,12 +9,10 @@ const { Op, AccessDeniedError } = require("sequelize");
 exports.getAll = async (req, res) => {
   try {
     const reports = await Report.findAll({
-
-
       include: [
         {
           model: db.user,
-          attributes: ['name', 'avatar'],
+          attributes: ["name", "avatar"],
         },
       ],
     });
@@ -24,11 +22,9 @@ exports.getAll = async (req, res) => {
   }
 };
 
-
 exports.getReportByUsername = async (req, res) => {
   try {
     const { username } = req.params;
-
 
     const user = await User.findOne({
       where: { username: { [Op.like]: `%${username}%` } },
@@ -58,13 +54,19 @@ exports.getReportByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
 
-
     const user = await User.findByPk(userId, {
       include: [
         {
           model: Report,
           as: "reports",
-          attributes: ["id", "content", "isSolved", "boxId", "userId", "createdAt"],
+          attributes: [
+            "id",
+            "content",
+            "isSolved",
+            "boxId",
+            "userId",
+            "createdAt",
+          ],
         },
       ],
     });
@@ -119,7 +121,6 @@ exports.createReport = async (req, res) => {
 
     const newReport = await Report.create(report);
 
-
     const token = utils.generateTokenReport(newReport);
     const reportObj = utils.getCleanReport(newReport);
     return res.json({ report: reportObj, access_token: token });
@@ -155,8 +156,8 @@ exports.resolveReport = async (req, res) => {
 };
 exports.updateDescription = async (req, res) => {
   const id = req.params.id;
-  const { content } = req.body;
-  const userId = req.user.id; 
+  const { content, isSolved } = req.body;
+  const userId = req.user.id;
 
   try {
     const report = await Report.findByPk(id);
@@ -166,7 +167,9 @@ exports.updateDescription = async (req, res) => {
     }
 
     if (report.userId !== userId) {
-      return res.status(403).json({ message: "You are not allowed to update this report" });
+      return res
+        .status(403)
+        .json({ message: "You are not allowed to update this report" });
     }
 
     const createdAt = report.createdAt;
@@ -174,9 +177,24 @@ exports.updateDescription = async (req, res) => {
     const diference = now - createdAt;
     const checkMinutes = diference / (1000 * 60); // Convertir milisegundos a minutos
 
-   
+    if (report.isSolved === true) {
+      return res.status(500).send({
+        message: "El reporte esta cerrado",
+      });
+    }
+
+    if (!req.body.content) {
+      return res.status(403).send({
+        message: "El campo debe tener contenido",
+      });
+    }
+
     if (checkMinutes >= 10) {
-      return res.status(400).json({ message: "Ha excedido el tiempo límite para actualizar este reporte" });
+      return res
+        .status(400)
+        .json({
+          message: "Ha excedido el tiempo límite para actualizar este reporte",
+        });
     }
 
     report.content = content;
@@ -195,7 +213,6 @@ exports.deleteReport = async (req, res) => {
   const id = req.params.id;
   const userId = req.user.id;
 
-
   try {
     const report = await Report.findByPk(id);
 
@@ -210,4 +227,3 @@ exports.deleteReport = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-

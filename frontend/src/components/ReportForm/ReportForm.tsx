@@ -1,12 +1,23 @@
 import { useEffect, useState } from 'react';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { toast } from 'react-toastify';
-import { Box, Button, createTheme, MantineProvider, NativeSelect, Textarea } from '@mantine/core';
+import {
+  Box,
+  Button,
+  createTheme,
+  InputLabel,
+  MantineProvider,
+  NativeSelect,
+  Textarea,
+} from '@mantine/core';
 import { useAuth } from '@/hooks/AuthProvider';
 import { fetchBoxesByLocker, fetchFormIncident, fetchLockers } from '@/services/fetch';
 import { Boxs, Locker } from '@/types/types';
 import classes from './ReportForm.module.css';
+
 import 'react-toastify/dist/ReactToastify.css';
+
+import { ColorSchemeToggle } from '../ColorSchemeToggle/ColorSchemeToggle';
 
 const theme = createTheme({
   components: {
@@ -76,13 +87,11 @@ export function ReportForm() {
       boxId: parseInt(selectedBox, 10),
     };
 
-
     console.log('Enviando reporte:', reportData);
 
     try {
       await fetchFormIncident(reportData);
       toast.success('Reporte creado exitosamente');
-
 
       setSelectedLocker('');
       setSelectedBox('');
@@ -183,13 +192,14 @@ export function ReportForm() {
           data-testid="locker-select"
           aria-label="Selecciona un armario"
           aria-required="true"
-          tabIndex={1}
+          tabIndex={0}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               e.preventDefault();
               handleLockerChange(e.currentTarget.value);
             }
           }}
+          // className="custom-focus"
         />
 
         <NativeSelect
@@ -202,19 +212,19 @@ export function ReportForm() {
           data-testid="box-select"
           aria-label="Selecciona una casilla"
           aria-disabled={!selectedLocker}
-          tabIndex={2}
+          tabIndex={0}
+          className="custom-focus"
         />
 
         <Textarea
+          tabIndex={0}
           mt="md"
           label="Descripción"
           placeholder="Añada su motivo de la incidencia"
           value={description}
           onChange={(e) => setDescription(e.currentTarget.value)}
           data-testid="description-textarea"
-          aria-label="Descripción de la incidencia"
-          aria-required="true"
-          tabIndex={3} // Control de orden
+          aria-label="editar de la incidencia"
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               e.preventDefault();
@@ -232,7 +242,7 @@ export function ReportForm() {
             data-testid="submit-button"
             aria-label="Enviar reporte"
             aria-disabled={!selectedLocker || !selectedBox || !description}
-            tabIndex={4} // Establecer el orden de enfoque
+            tabIndex={0}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 handleSubmit();

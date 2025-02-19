@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
+import { MdOutlineEdit } from 'react-icons/md';
+import { toast } from 'react-toastify';
 import {
   Accordion,
   Avatar,
@@ -15,10 +17,10 @@ import {
   Textarea,
 } from '@mantine/core';
 import { useAuth } from '@/hooks/AuthProvider';
-import { fetchIncidencesByUserId, updateIncidenceContent } from '@/services/fetch';
+import { fetchIncidencesByUserId, resolveIncidence, updateIncidenceContent } from '@/services/fetch';
 import { Incidence } from '@/types/types';
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import classes from './ReportsBox.module.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 export function ReportsBox() {
   const [incidences, setIncidences] = useState<Incidence[]>();
@@ -42,27 +44,56 @@ export function ReportsBox() {
     setModalOpened(true);
   };
 
+  const handleUpdateState = async (id: number, isSolved: boolean) => {
+    try {
+    
+      await resolveIncidence(id, isSolved);
+      
+ 
+      toast.success('Estado de la incidencia actualizado con éxito');
+    } catch (error: any) {
+
+      let errorMessage = 'Error al actualizar el estado. Inténtalo de nuevo.';
+      
+    
+      if (error.response) {
+        errorMessage =
+          error.response.data?.message ||
+          `Error ${error.response.status}: ${error.response.statusText}`;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+     
+      if (error.response?.status === 400) {
+        toast.warning('no se puede actualizar el estado de la incidencia');
+      } else {
+        toast.error(`Error: ${errorMessage}`);
+      }
+    }
+  };
+  
+
   const handleSave = async () => {
     if (!currentIncidence) return;
 
     try {
       const updatedIncidence = await updateIncidenceContent(currentIncidence.id, newContent);
-      toast.success("Incidencia actualizada con éxito");
+      toast.success('Incidencia actualizada con éxito');
       setIncidences((prev) =>
-        prev?.map((inc) =>
-          inc.id === currentIncidence.id ? { ...inc, content: newContent } : inc
-        )
+        prev?.map((inc) => (inc.id === currentIncidence.id ? { ...inc, content: newContent } : inc))
       );
       setModalOpened(false);
     } catch (error: any) {
-      let errorMessage = "Error al actualizar. Inténtalo de nuevo.";
+      let errorMessage = 'Error al actualizar. Inténtalo de nuevo.';
       if (error.response) {
-        errorMessage = error.response.data?.message || `Error ${error.response.status}: ${error.response.statusText}`;
+        errorMessage =
+          error.response.data?.message ||
+          `Error ${error.response.status}: ${error.response.statusText}`;
       } else if (error.message) {
         errorMessage = error.message;
       }
-      if (errorMessage.includes("excedido el tiempo") || error.response?.status === 400) {
-        toast.warning("Han pasado más de 10 minutos no se puede actualizar la incidencia");
+      if (errorMessage.includes('excedido el tiempo') || error.response?.status === 400) {
+        toast.warning('Han pasado más de 10 minutos no se puede actualizar la incidencia');
         setModalOpened(false);
       } else {
         toast.error(`Error: ${errorMessage}`);
@@ -84,7 +115,12 @@ export function ReportsBox() {
   `;
 
   const rows = incidences?.map((report) => (
-    <Accordion.Item key={report.id} value={`incidencia-${report.id}`} aria-labelledby={`incidencia-${report.id}`} data-testid={`incidencia-${report.id}`}>
+    <Accordion.Item
+      key={report.id}
+      value={`incidencia-${report.id}`}
+      aria-labelledby={`incidencia-${report.id}`}
+      data-testid={`incidencia-${report.id}`}
+    >
       <Accordion.Control
         aria-expanded={report.isSolved ? 'true' : 'false'}
         aria-controls={`casilla-${report.boxId}-panel`}
@@ -110,20 +146,49 @@ export function ReportsBox() {
           backgroundColor: '#3C3D85',
           padding: '1rem',
         }}
-        onClick={() => handleEditClick(report)}
-        role="button"
-        aria-label={`Editar incidencia ${report.boxId}`}
-        data-testid={`incidencia-panel-${report.id}`}
       >
-        <Flex align="center" gap="md">
-          <Avatar
-            src={report.user?.avatar}
-            alt={report.user?.name}
-            radius="xl"
-            size="lg"
-          />
-          <Box>
-            <Text c="white">{report.content}</Text>
+        <Flex align="flex-start" gap="md">
+          <Avatar src={report.user?.avatar} alt={report.user?.name} radius="xl" size="lg" />
+
+          <Box id="box-content" style={{ marginTop: 10 , marginLeft: 10 }}>
+            <Box>
+              <Text c="white">{report.content}</Text>
+            </Box>
+
+            <Box id="actions-buttons" style={{ marginTop: 30 }}>
+              <MdOutlineEdit
+                tabIndex={0}
+                id="edit-button"
+                onClick={() => handleEditClick(report)}
+                role="button"
+                aria-label={`Editar incidencia ${report.boxId}`}
+                data-testid={`incidencia-panel-${report.id}`}
+                style={{
+                  color: 'white',
+                  cursor: 'pointer',
+                  height: 40,
+                }}
+              />
+
+              <Button
+                tabIndex={0}
+                aria-label= 'cancelar reporte'
+                onClick={() => handleUpdateState(report.id, true)}
+                size="md"
+                maw="9vw"
+                bg="myPurple.4"
+                radius="xl"
+                data-testid={`withdraw-button`}
+                id="cancel-button"
+                style={{
+                  position: 'absolute',
+                  right: 50,
+                  cursor: 'pointer',
+                }}
+              >
+                Cancelar
+              </Button>
+            </Box>
           </Box>
         </Flex>
       </Accordion.Panel>
@@ -131,41 +196,47 @@ export function ReportsBox() {
   ));
 
   return (
-    <Box bg="transparent" h="80vh" bd="1px solid myPurple.1" w="100%" style={{
-      borderRadius: '83px 0 25px 25px'
-    }}>
+    <Box
+      bg="transparent"
+      h="80vh"
+      bd="1px solid myPurple.1"
+      w="100%"
+      style={{
+        borderRadius: '83px 0 25px 25px',
+      }}
+    >
       <Center>
         <h2>Incidencias</h2>
       </Center>
       <Divider size="xs" color="myPurple.1" />
 
       <ScrollArea p="lg" m="md" h="70vh" scrollbarSize={16}>
-  <Flex direction="column" gap="xl">
-    <Table horizontalSpacing="sm" verticalSpacing="sm">
-      <Table.Thead c="white" aria-label="Encabezado de la tabla de incidencias">
-        <Table.Tr>
-          <Table.Th style={{ textAlign: 'center', width: '33.33%' }}>
-            <Text c="white" fw={700}>
-              Casilla
-            </Text>
-          </Table.Th>
-          <Table.Th style={{ textAlign: 'center', width: '33.33%' }}>
-            <Text c="white" fw={700}>
-              Fecha
-            </Text>
-          </Table.Th>
-          <Table.Th style={{ textAlign: 'center', width: '33.33%' }}>
-            <Text c="white" fw={700}>
-              Estado
-            </Text>
-          </Table.Th>
-          <Table.Td></Table.Td>
-        </Table.Tr>
-      </Table.Thead>
-    </Table>
-    <StyledAccordion>{rows}</StyledAccordion>
-  </Flex>
-</ScrollArea>
+        <Flex direction="column" gap="xl">
+          <Table horizontalSpacing="sm" verticalSpacing="sm">
+            <Table.Thead c="white" aria-label="Encabezado de la tabla de incidencias">
+              <Table.Tr>
+                <Table.Th style={{ textAlign: 'center', width: '33.33%' }}>
+                  <Text c="white" fw={700}>
+                    Casilla
+                  </Text>
+                </Table.Th>
+                <Table.Th style={{ textAlign: 'center', width: '33.33%' }}>
+                  <Text c="white" fw={700}>
+                    Fecha
+                  </Text>
+                </Table.Th>
+                <Table.Th style={{ textAlign: 'center', width: '33.33%' }}>
+                  <Text c="white" fw={700}>
+                    Estado
+                  </Text>
+                </Table.Th>
+                <Table.Td></Table.Td>
+              </Table.Tr>
+            </Table.Thead>
+          </Table>
+          <StyledAccordion>{rows}</StyledAccordion>
+        </Flex>
+      </ScrollArea>
 
       <Modal
         opened={modalOpened}
@@ -175,6 +246,8 @@ export function ReportsBox() {
         data-testid="edit-incidence-modal"
       >
         <Textarea
+          label="Editar reporte"
+          placeholder="Actualice su reporte"
           value={newContent}
           onChange={(e) => setNewContent(e.currentTarget.value)}
           autosize
@@ -184,7 +257,12 @@ export function ReportsBox() {
           data-testid="incidence-content-textarea"
         />
         <Flex justify="flex-end" mt="md">
-          <Button onClick={handleSave} color="#4F51B3" aria-label="Guardar cambios" data-testid="save-incidence-button">
+          <Button
+            onClick={handleSave}
+            color="#4F51B3"
+            aria-label="Guardar cambios"
+            data-testid="save-incidence-button"
+          >
             Guardar
           </Button>
         </Flex>
