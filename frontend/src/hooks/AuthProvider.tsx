@@ -45,6 +45,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const res = await instance.get(`/user/settings/${userId}`);
       setTheme(res.data.settings.theme);
+      console.log(res);
     } catch (error) {
       console.error('Error fetching user theme:', error);
     }

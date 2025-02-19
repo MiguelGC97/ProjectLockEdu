@@ -1,39 +1,36 @@
 import { createTheme, MantineColorsTuple, rem } from '@mantine/core';
 
-// Define color schemes for light and dark themes
-const themes = {
-  dark: [
-    '#DBDCEC',
-    '#BFC0DD',
-    '#A9ABDA',
-    '#7072C2',
-    '#4F51B3',
-    '#3C3D85',
-    '#393A58',
-    '#31324E',
-    '#2A2B44',
-    '#222337',
-  ] as MantineColorsTuple,
+const myPurpleDark: MantineColorsTuple = [
+  '#DBDCEC', //done
+  '#BFC0DD', //done
+  '#A9ABDA', //done
+  '#7072C2', //done
+  '#4F51B3', //done
+  '#3C3D85', //done
+  '#393A58', //done
+  '#31324E', //done
+  '#2A2B44', //done
+  '#222337', //done
+];
 
-  light: [
-    '#F8F9FA',
-    '#E9ECEF',
-    '#DEE2E6',
-    '#CED4DA',
-    '#ADB5BD',
-    '#6C757D',
-    '#495057',
-    '#343A40',
-    '#212529',
-    '#121212',
-  ] as MantineColorsTuple,
-};
+const myPurpleLight: MantineColorsTuple = [
+  '#222337', //done
+  '#2A2B44', //done
+  '#31324E', //done
+  '#393A58', //done
+  '#3C3D85', //done
+  '#4F51B3', //done
+  '#7072C2', //done
+  '#A9ABDA', //done
+  '#e8e9fa', //done
+  '#DBDCEC', //done
+];
 
-// Function to create theme dynamically
+// Function to return theme dynamically based on themeName
 export const getTheme = (themeName: 'light' | 'dark') =>
   createTheme({
     colors: {
-      myPurple: themes[themeName], // Dynamically set based on preference
+      myPurple: themeName === 'dark' ? myPurpleDark : myPurpleLight, // Dynamically assign colors
     },
     shadows: {
       md: '1px 1px 3px rgba(0, 0, 0, .25)',
