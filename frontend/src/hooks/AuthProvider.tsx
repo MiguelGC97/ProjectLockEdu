@@ -1,4 +1,4 @@
-﻿import React, { createContext, useContext, useEffect, useMemo } from 'react';
+﻿import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import instance from '@/services/api';
 import { login as authService } from '@/services/authService';
@@ -21,7 +21,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useLocalStorage('user', null);
-  const [theme, setTheme] = useLocalStorage('theme', 'dark');
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
   const [banner, setBanner] = useLocalStorage('banner', '');
   const [notification, setNotification] = useLocalStorage('notification', true);
   const navigate = useNavigate();
