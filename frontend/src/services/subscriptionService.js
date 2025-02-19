@@ -1,6 +1,7 @@
 import axios from 'axios';
+import instance, { baseUrl } from '@/services/api';
 
-const API = process.env.VITE_BASE_URL;
+const API = baseUrl;
 
 function unregisterAllServiceWorkers() {
   navigator.serviceWorker.getRegistrations().then(function (registrations) {
@@ -12,7 +13,7 @@ function unregisterAllServiceWorkers() {
 
 async function regSw() {
   if ('serviceWorker' in navigator) {
-    let url = process.env.PUBLIC_URL + '/sw.js';
+    let url = baseUrl + '/sw.js';
     const reg = await navigator.serviceWorker.register(url, { scope: '/' });
     return reg;
   }

@@ -1,4 +1,4 @@
-declare module '../../services/subscriptionService.js' {
+declare module './subscriptionService' {
     export function regSw(): Promise<ServiceWorkerRegistration>;
     export function subscribe(serviceWorkerReg: ServiceWorkerRegistration, subscriptionName: string): Promise<void>;
     export function checkIfAlreadySubscribed(): Promise<boolean>;

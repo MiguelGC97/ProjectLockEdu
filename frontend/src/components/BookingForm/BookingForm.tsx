@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from 'react';
+﻿﻿import { useEffect, useRef, useState } from 'react';
 import { IconArrowLeft, IconClock } from '@tabler/icons-react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
@@ -35,16 +35,8 @@ import { useAuth } from '@/hooks/AuthProvider';
 import instance, { baseUrl } from '@/services/api';
 import { fetchBookingDatesByItemIds } from '@/services/fetch';   
 import { BookingFormProps, BoxType, Item } from '@/types/types';
-import './BookingForm.module.css';
 
-import {
-  regSw,
-  subscribe,
-  checkIfAlreadySubscribed,
-  getAllSubscriptions,
-  sendNotificationToSubscriptionName,
-  unregisterFromServiceWorker
-} from '../../services/subscriptionService';
+import './BookingForm.module.css';
 
 dayjs.extend(customParseFormat);
 dayjs.extend(isBetween);
@@ -67,23 +59,6 @@ const BookingForm: React.FC<BookingFormProps> = ({
   const theme = useMantineTheme();
   const { user } = useAuth();
   const [unavailableDates, setUnavailableDates] = useState<{ checkIn: Date; checkOut: Date }[]>([]);
-  const [subscribed, setSubscribed] = useState(false);
-
-  const registerAndSubscribe = async () => {
-    try {
-      const serviceWorkerReg = await regSw();
-      await subscribe(serviceWorkerReg, subscriptionName);
-
-      window.localStorage.setItem("subscription-name", subscriptionName);
-
-      setSubscribed(true);
-      getAllSubscriptions().then((res) => {
-        setSubscriptions(res.data);
-      })
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   const handlePickupTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPickupTime(event.target.value);
@@ -136,8 +111,6 @@ const BookingForm: React.FC<BookingFormProps> = ({
         returnDate: dateRange[1],
         ...response.data,
       });
-
-      
 
       if (onBookingCreated) {
         onBookingCreated();
@@ -326,7 +299,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
                       if (isSelected) {
                         dayStyles = {
                           ...dayStyles,
-                          backgroundColor: '#E7AF2E',
+                          backgroundColor: '#087fc4',
                           color: 'white',
                         };
                       }
