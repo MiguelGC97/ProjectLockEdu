@@ -9,9 +9,9 @@
 }
 
 .panel {
-  background-color: #dedede;
+  background-color: var(--mantine-color-myPurple-0);
 }
 
 .flex-panel {
-  background-color: #dedede;
+  background-color: var(--mantine-color-myPurple-0);
 }

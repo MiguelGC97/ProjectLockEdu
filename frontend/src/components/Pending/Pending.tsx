@@ -47,7 +47,7 @@ const Pending: React.FC<BookingHistoryProps> = ({ locker, box, booking }) => {
     const lockerBoxInfo = lockerId && boxId ? `A0${lockerId}-C0${boxId}` : '';
 
     return (
-      <Table.Tr key={b.id} c="white">
+      <Table.Tr key={b.id} c="myPurple.0">
         <Table.Td aria-label="nombre de la casilla">{lockerBoxInfo}</Table.Td>
 
         <Table.Td aria-label="fecha de recogida">{formatDate(b.checkOut)}</Table.Td>
@@ -60,27 +60,27 @@ const Pending: React.FC<BookingHistoryProps> = ({ locker, box, booking }) => {
   return (
     <Box bg="transparent" h="60vh" bd="1px solid myPurple.1" style={{ borderRadius: 40 }}>
       <Center>
-        <h2>Reservas pendientes</h2>
+        <h2 style={{ color: 'black' }}>Reservas pendientes</h2>
       </Center>
-      <Divider size="xs" color="myPurple.1" />
+      <Divider size="xs" color="myPurple.0" />
 
       <ScrollArea p="lg" m="md" h="50vh" scrollbarSize={16}>
         <Flex direction="column" gap="xl">
           <Table horizontalSpacing="sm" verticalSpacing="sm">
-            <Table.Thead c="white" aria-label="cabecera del cuadro de reservas pendientes">
+            <Table.Thead c="myPurple.0" aria-label="cabecera del cuadro de reservas pendientes">
               <Table.Tr size="xl">
                 <Table.Th>
-                  <Text c="white" fw={700}>
+                  <Text c="myPurple.0" fw={700}>
                     Casilla
                   </Text>
                 </Table.Th>
                 <Table.Th>
-                  <Text c="white" fw={700}>
+                  <Text c="myPurple.0" fw={700}>
                     Fecha de recogida
                   </Text>
                 </Table.Th>
                 <Table.Th>
-                  <Text c="white" fw={700}>
+                  <Text c="myPurple.0" fw={700}>
                     Hora de recogida
                   </Text>
                 </Table.Th>

@@ -23,7 +23,7 @@ const myPurpleLight: MantineColorsTuple = [
   '#7072C2', //done
   '#A9ABDA', //done
   '#e8e9fa', //done
-  '#DBDCEC', //done
+  '#fcfdff', //done
 ];
 
 // Function to return theme dynamically based on themeName

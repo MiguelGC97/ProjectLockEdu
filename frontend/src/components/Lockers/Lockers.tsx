@@ -4,12 +4,15 @@ import { Box, Button, Center, Flex, Input, ScrollArea, Stack, Text, Title } from
 import './Lockers.module.css';
 
 import { useEffect, useState } from 'react';
+import { useAuth } from '@/hooks/AuthProvider';
+import { useTheme } from '@/hooks/ThemeProvider';
 import { fetchLockers } from '@/services/fetch';
 import { Locker, LockersProps } from '@/types/types';
 import { LockersContext } from './context';
 
 const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
   const [lockers, setLockers] = useState<Locker[] | undefined>();
+  const { theme } = useTheme();
 
   useEffect(() => {
     const loadLockers = async () => {
@@ -22,7 +25,8 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
   return (
     <LockersContext.Provider value={lockers}>
       <Box
-        bg="myPurple.4"
+        bg={theme === 'dark' ? 'myPurple.4' : 'transparent'}
+        bd={theme === 'dark' ? null : '1px solid myPurple.0'}
         px="1vw"
         mb="lg"
         h="86vh"
@@ -31,7 +35,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
       >
         <Stack my="4vh" gap="xl">
           <Center>
-            <Title aria-label="titulo de la sesión" fw="600" c="white">
+            <Title aria-label="titulo de la sesión" fw="600" c="myPurple.0">
               Armarios
             </Title>
           </Center>
@@ -39,6 +43,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
           <Center>
             <Input
               aria-label="buscar objeto"
+              bd={theme === 'dark' ? null : '1px solid myPurple.0'}
               w="20vw"
               size="lg"
               placeholder="Busca un objeto"
@@ -53,24 +58,29 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
                 <Box
                   aria-label={`armario número ${locker.number}`}
                   h="auto"
-                  bg="myPurple.8"
+                  bg={theme === 'dark' ? 'myPurple.8' : 'myPurple.8'}
+                  bd={theme === 'dark' ? null : '1px solid myPurple.0'}
                   style={{ borderRadius: 20 }}
                   p="sm"
                 >
                   <Flex direction="column" gap="lg" p="sm">
                     <Flex gap="10vw" justify="center" align="center">
                       <Flex direction="column" gap="1vh" justify="center">
-                        <Title aria-label={`armario número ${locker.number}`} size="xl" c="white">
+                        <Title
+                          aria-label={`armario número ${locker.number}`}
+                          size="xl"
+                          c="myPurple.0"
+                        >
                           Armario 0{locker.number}
                         </Title>
                         <Flex gap="md" justify="flex-start">
                           <Flex gap={5}>
-                            <Text c="white" fw={700}>
+                            <Text c="myPurple.0" fw={700}>
                               Ubicación:
                             </Text>{' '}
                             <Text
                               aria-label={`ubicación del armario número ${locker.number}`}
-                              c="white"
+                              c="myPurple.0"
                             >
                               {locker.location}
                             </Text>
@@ -78,7 +88,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
                         </Flex>
                       </Flex>
                       <svg
-                        fill="#F1F2FF"
+                        fill={theme === 'dark' ? '#f8f7fc' : 'myPurple.0'}
                         height="60px"
                         width="60px"
                         version="1.1"

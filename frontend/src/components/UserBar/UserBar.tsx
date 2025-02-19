@@ -12,14 +12,14 @@ export default function UserBar() {
     <Flex miw={100} mih={20} justify="flex-end" align="center" px="xl" py="md" gap="2vw">
       <ThemeToggle />
       <Flex direction="column" align="flex-end" gap="-1vw">
-        <Text aria-label="nombre y apellido del usuario" c="white" size="lg" fw={600}>
+        <Text aria-label="nombre y apellido del usuario" c="myPurple.0" size="lg" fw={600}>
           {user?.name} {user?.surname}
         </Text>
-        <Text aria-label="correo electrónico del usuario" c="white" ml="" size="lg" fw={300}>
+        <Text aria-label="correo electrónico del usuario" c="myPurple.0" ml="" size="lg" fw={300}>
           {user?.username}
         </Text>
       </Flex>
-      <Avatar size="lg" src={user?.avatar} alt="User's profile photo" bd="3px solid white" />
+      <Avatar size="lg" src={user?.avatar} alt="User's profile photo" bd="3px solid myPurple.0" />
     </Flex>
   );
 }
