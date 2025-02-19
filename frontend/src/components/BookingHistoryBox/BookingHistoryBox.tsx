@@ -228,7 +228,6 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
                   <Table.Th>
                     <Text c="white" fw={700}>Estado</Text>
                   </Table.Th>
-                  <Table.Th> </Table.Th>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>{rows}</Table.Tbody>

@@ -55,7 +55,7 @@ const LoginForm: React.FC = () => {
       style={{ backgroundColor: theme.colors.myPurple[9] }}
     >
       <Flex radius={0} align="center" justify="center" px="auto" direction="column" gap="-5">
-        <Image w="50%" src="/assets/logo-login.png" />
+        <Image w="50%" src="/assets/logo-login.png" alt='logo de lockEdu'/>
         <Text color="white" mt="md" mb={50}>
           Inicia sesión con tus credenciales
         </Text>
