@@ -7,11 +7,9 @@ import {
   Checkbox,
   Flex,
   Image,
-  Paper,
   PasswordInput,
   Text,
   TextInput,
-  Title,
   useMantineTheme,
 } from '@mantine/core';
 import { useAuth } from '../../hooks/AuthProvider';

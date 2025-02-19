@@ -148,7 +148,7 @@ export function ReportsBox() {
         }}
       >
         <Flex align="flex-start" gap="md">
-          <Avatar src={report.user?.avatar} alt={report.user?.name} radius="xl" size="lg" />
+          <Avatar src={report.user?.avatar} alt={report.user?.name} radius="xl" size="lg" aria-label='avatar usuario' tabIndex={0} />
 
           <Box id="box-content" style={{ marginTop: 10 , marginLeft: 10 }}>
             <Box>
@@ -242,7 +242,6 @@ export function ReportsBox() {
         opened={modalOpened}
         onClose={() => setModalOpened(false)}
         centered
-        aria-labelledby="modal-edit-incidence"
         data-testid="edit-incidence-modal"
       >
         <Textarea
