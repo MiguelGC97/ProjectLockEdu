@@ -118,7 +118,7 @@ export function ReportsBox() {
     <Accordion.Item
       key={report.id}
       value={`incidencia-${report.id}`}
-      aria-labelledby={`incidencia-${report.id}`}
+      aria-label={`incidencia-${report.id}`}
       data-testid={`incidencia-${report.id}`}
     >
       <Accordion.Control
@@ -172,7 +172,7 @@ export function ReportsBox() {
 
               <Button
                 tabIndex={0}
-                aria-label= 'cancelar reporte'
+                aria-label= "cancelar reporte"
                 onClick={() => handleUpdateState(report.id, true)}
                 size="md"
                 maw="9vw"
