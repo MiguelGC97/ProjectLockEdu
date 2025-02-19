@@ -29,7 +29,7 @@ module.exports = (app) => {
   router.get(
     "/user/:userId",
     auth.isAuthenticated,
-    permissions.authorize(["ADMIN", "MANAGER"]),
+    permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]),
     reports.getReportByUserId
   );
 
