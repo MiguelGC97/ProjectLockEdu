@@ -1,14 +1,24 @@
-﻿import { useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 
 function useLocalStorage<T>(key: string, initialValue: T | null) {
-  const storedValue = localStorage.getItem(key);
-  const parsedValue = storedValue ? JSON.parse(storedValue) : initialValue;
+  const getStoredValue = () => {
+    const storedValue = localStorage.getItem(key);
+    return storedValue ? JSON.parse(storedValue) : initialValue;
+  };
 
-  const [storedValueState, setStoredValue] = useState<T | null>(parsedValue);
+  const [storedValueState, setStoredValue] = useState<T | null>(getStoredValue);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setStoredValue(getStoredValue());
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   const setValue = (value: T | null) => {
     setStoredValue(value);
-
     if (value === null) {
       localStorage.removeItem(key);
     } else {
