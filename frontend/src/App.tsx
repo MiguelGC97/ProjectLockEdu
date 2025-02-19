@@ -1,12 +1,12 @@
 import '@mantine/core/styles.css';
 
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import { Flex, MantineProvider } from '@mantine/core';
-import AuthProvider from './hooks/AuthProvider';
+import { AuthProvider } from './hooks/AuthProvider';
 import Home from './pages/Home.page';
 import Login from './pages/Login.page';
 import Reports from './pages/Reports.page';
-import { ToastContainer } from 'react-toastify';
 import { theme } from './theme';
 
 import './App.module.css';

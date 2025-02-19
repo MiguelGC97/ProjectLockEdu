@@ -122,3 +122,10 @@ export interface Boxs {
   description: string;
   createdAt: string;
 }
+
+export interface SettingsType {
+  id: number;
+  theme: string;
+  banner: string;
+  notifications: boolean;
+}

@@ -12,9 +12,7 @@ import {
   TextInput,
   useMantineTheme,
 } from '@mantine/core';
-import { useAuth } from '../../hooks/AuthProvider';
-import { login as loginService } from '../../services/authService';
-import classes from '../../App.module.css';
+import { useAuth } from '@/hooks/AuthProvider';
 
 const LoginForm: React.FC = () => {
   const theme = useMantineTheme();
@@ -25,22 +23,20 @@ const LoginForm: React.FC = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
 
     try {
-      const data = await loginService(username, password);
-
-      login(data.user);
-      localStorage.setItem('access_token', data.access_token);
-
-      if (rememberMe) {
-        localStorage.setItem('user', JSON.stringify(data.user));
-      }
-
+      await login(username, password);
       navigate('/perfil');
     } catch (err: any) {
       setError(err.message || 'Login failed');
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSubmit();
     }
   };
 
@@ -52,8 +48,8 @@ const LoginForm: React.FC = () => {
       h="auto"
       style={{ backgroundColor: theme.colors.myPurple[9] }}
     >
-      <Flex radius={0} align="center" justify="center" px="auto" direction="column" gap="-5">
-        <Image w="50%" src="/assets/logo-login.png" alt='logo de lockEdu'/>
+      <Flex radius={0} align="center" justify="center" px="auto" direction="column">
+        <Image w="50%" src="/assets/logo-login.png" alt="logo de lockEdu" />
         <Text color="white" mt="md" mb={50}>
           Inicia sesión con tus credenciales
         </Text>
@@ -85,6 +81,7 @@ const LoginForm: React.FC = () => {
           size="md"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
 
         {/* Remember Me checkbox */}
@@ -115,6 +112,7 @@ const LoginForm: React.FC = () => {
           size="md"
           fw={400}
           onClick={handleSubmit}
+          onKeyDown={handleKeyDown}
         >
           Acceder a mi cuenta
         </Button>

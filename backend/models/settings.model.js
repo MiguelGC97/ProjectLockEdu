@@ -9,7 +9,7 @@ module.exports = (sequelize) => {
             autoIncrement: true,
         },
         theme: {
-            type: DataTypes.ENUM('light','dark'),
+            type: DataTypes.ENUM('light', 'dark'),
             allowNull: false,
             defaultValue: 'dark',
         },
@@ -22,8 +22,8 @@ module.exports = (sequelize) => {
             allowNull: false,
             defaultValue: true,
         }
-        
+
     });
 
-  return Settings;
+    return Settings;
 };

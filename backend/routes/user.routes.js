@@ -34,6 +34,13 @@ module.exports = (app) => {
     users.getByUsername
   );
 
+  router.get(
+    "/settings/:id",
+    permissions.authorize(["ADMIN"]),
+    auth.isAuthenticated,
+    users.getUserSettings
+  );
+
   router.put(
     "/:id",
     auth.isAuthenticated,
