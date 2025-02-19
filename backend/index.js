@@ -96,10 +96,11 @@ const routes = [
   "booking",
   "report",
   "reportLog",
+  "subscription",
   "reportLog.views",
   "user.views",
   "locker.views",
-  'notification.views'
+  "notification.views",
 ];
 
 routes.forEach((route) => require(`./routes/${route}.routes.js`)(app));

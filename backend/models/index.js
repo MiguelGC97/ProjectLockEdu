@@ -51,6 +51,7 @@ db.report = require("./report.model.js")(sequelize, Sequelize);
 db.notification = require("./notification.model.js")(sequelize, Sequelize);
 db.reportLog = require("./reportLog.model.js")(sequelize, Sequelize); 
 db.settings = require("./settings.model.js")(sequelize, Sequelize);
+db.subscription = require("./subscription.model.js")(sequelize, Sequelize);
 
 //Locker-box Association
 db.locker.hasMany(db.box, {
@@ -71,6 +72,17 @@ db.type.hasMany(db.item, {
 });
 db.item.belongsTo(db.type, {
   foreignKey: "typeId",
+  targetKey: "id",
+});
+
+//User-subscription association
+db.user.hasOne(db.subscription, {
+  foreignKey: "userId",
+  sourceKey: "id",
+  onDelete: "CASCADE",
+});
+db.subscription.belongsTo(db.user, {
+  foreignKey: "userId",
   targetKey: "id",
 });
 

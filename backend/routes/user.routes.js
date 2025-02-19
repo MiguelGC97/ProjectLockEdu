@@ -15,36 +15,36 @@ module.exports = (app) => {
 
   router.get(
     "/",
-    auth.isAuthenticated,
-    permissions.authorize(["ADMIN"]),
+    // auth.isAuthenticated,
+    // permissions.authorize(["ADMIN"]),
     users.getAll
   );
 
   router.get(
     "/:id",
-    auth.isAuthenticated,
-    permissions.authorize(["ADMIN"]),
+    // auth.isAuthenticated,
+    // permissions.authorize(["ADMIN"]),
     users.findOne
   );
 
   router.get(
     "/username/:username",
-    permissions.authorize(["ADMIN"]),
-    auth.isAuthenticated,
+    // permissions.authorize(["ADMIN"]),
+    // auth.isAuthenticated,
     users.getByUsername
   );
 
   router.put(
     "/:id",
-    auth.isAuthenticated,
-    permissions.authorize(["ADMIN"]),
+    // auth.isAuthenticated,
+    // permissions.authorize(["ADMIN"]),
     users.update
   );
 
   router.delete(
     "/:id",
-    auth.isAuthenticated,
-    permissions.authorize(["ADMIN"]),
+    // auth.isAuthenticated,
+    // permissions.authorize(["ADMIN"]),
     users.delete
   );
 
