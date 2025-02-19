@@ -8,8 +8,8 @@ module.exports = (app) => {
 
   router.post(
     "/",
-    // auth.isAuthenticated,
-    // permissions.authorize(["ADMIN"]),
+    auth.isAuthenticated,
+    permissions.authorize(["ADMIN"]),
     users.addNewUser
   );
 
