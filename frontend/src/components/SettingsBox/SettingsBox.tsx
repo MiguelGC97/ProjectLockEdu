@@ -61,11 +61,12 @@ export function SettingsBox() {
         variant="unstyled"
         size="lg"
         placeholder="Mi perfil"
+        aria-label='Mi perfil'
         leftSection={<IconUser size={25} color="white" />}
       />
       <Divider size="xs" color="myPurple.1" />
 
-      <Input readOnly variant="unstyled" size="lg" ml={60} placeholder="Cambiar contraseña" />
+      <Input readOnly variant="unstyled" size="lg" ml={60} placeholder="Cambiar contraseña" aria-label='Cambiar contraseña' />
       <Divider size="xs" color="myPurple.1" />
 
       <Stack m={20} mb={50}>
@@ -117,7 +118,8 @@ export function SettingsBox() {
         readOnly
         variant="unstyled"
         size="lg"
-        placeholder="Configuracion"
+        placeholder="Configuración"
+        aria-label='Configuración'
         leftSection={<IconMessageReport size={25} color="white" />}
       />
       <Divider size="xs" color="myPurple.1" />

@@ -52,7 +52,7 @@ const Pending: React.FC<BookingHistoryProps> = ({ locker, box, booking }) => {
 
         <Table.Td aria-label="fecha de recogida">{formatDate(b.checkOut)}</Table.Td>
 
-        <Table.Td aria-label="horario de recogida">{formatTime(b.checkOut)}</Table.Td>
+        <Table.Td aria-label="hora de recogida">{formatTime(b.checkOut)}</Table.Td>
       </Table.Tr>
     );
   });
@@ -84,7 +84,6 @@ const Pending: React.FC<BookingHistoryProps> = ({ locker, box, booking }) => {
                     Hora de recogida
                   </Text>
                 </Table.Th>
-                <Table.Th> </Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>{rows}</Table.Tbody>
