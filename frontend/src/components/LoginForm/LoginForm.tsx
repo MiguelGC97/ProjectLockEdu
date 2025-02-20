@@ -50,7 +50,7 @@ const LoginForm: React.FC = () => {
     >
       <Flex radius={0} align="center" justify="center" px="auto" direction="column">
         <Image w="50%" src="/assets/logo-login.png" alt="logo de lockEdu" />
-        <Text color="white" mt="md" mb={50}>
+        <Text color="myPurple.0" mt="md" mb={50}>
           Inicia sesión con tus credenciales
         </Text>
 
@@ -59,7 +59,12 @@ const LoginForm: React.FC = () => {
           data-testid="username-input"
           leftSection={<IconAt />}
           radius="xl"
-          c="white"
+          styles={{
+            label: {
+              color: 'var(--mantine-color-myPurple-0)',
+            },
+            input: { border: '1px solid var(--mantine-color-myPurple-0)' },
+          }}
           miw="40%"
           label="Correo eletrónico"
           placeholder="Escribe tu correo"
@@ -73,7 +78,12 @@ const LoginForm: React.FC = () => {
           data-testid="password-input"
           leftSection={<IconKey />}
           radius="xl"
-          c="white"
+          styles={{
+            label: {
+              color: 'var(--mantine-color-myPurple-0)',
+            },
+            input: { border: '1px solid var(--mantine-color-myPurple-0)' },
+          }}
           label="Contraseña"
           placeholder="Escribe tu contraseña"
           miw="40%"
@@ -87,7 +97,7 @@ const LoginForm: React.FC = () => {
         {/* Remember Me checkbox */}
         <Checkbox
           color="myPurple.3"
-          c="white"
+          c="myPurple.0"
           label="Mantenerme conectado"
           mt="xl"
           size="md"
@@ -118,7 +128,7 @@ const LoginForm: React.FC = () => {
         </Button>
 
         {/* Link to the registration page (optional) */}
-        <Anchor c="white" href="" size="sm" mt="md" align="center">
+        <Anchor c="myPurple.0" href="" size="sm" mt="md" align="center">
           ¿Olvidaste tu contraseña?
         </Anchor>
       </Flex>

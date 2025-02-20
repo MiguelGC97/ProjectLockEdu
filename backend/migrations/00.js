@@ -431,7 +431,7 @@ var migrationCommands = function (transaction) {
     {
       fn: "createTable",
       params: [
-        "reportlog",
+        "reportLog",
         {
           id: {
             type: DataTypes.INTEGER,
@@ -621,7 +621,7 @@ var rollbackCommands = function (transaction) {
     {
       fn: "dropTable",
       params: [
-        "reportlog",
+        "reportLog",
         {
           transaction: transaction,
         },

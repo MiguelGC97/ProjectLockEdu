@@ -1,6 +1,6 @@
 ﻿.card {
   display: flex;
-  height: rem(220px);
+  /* height: rem(220px); */
   width: 100%;
   background-size: cover;
   background-position: center;
@@ -21,12 +21,12 @@
 }
 
 .title {
-  color: var(--mantine-color-white);
+  color: var(--mantine-color-myPurple-0);
   margin-bottom: calc(var(--mantine-spacing-xs) / 2);
 }
 
 .description {
-  color: var(--mantine-color-white);
+  color: var(--mantine-color-myPurple-0);
   max-width: rem(220px);
 }
 

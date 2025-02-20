@@ -1,5 +1,4 @@
 ﻿h2 {
-  color: var(--mantine-color-white);
   padding: -10;
 }
 
@@ -8,7 +7,7 @@ Box {
 }
 
 Text {
-  color: var(--mantine-color-white);
+  color: var(--mantine-color-myPurple-0);
 }
 
 .hour {
