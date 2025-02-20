@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IconAt, IconKey } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -16,19 +16,34 @@ import { useAuth } from '@/hooks/AuthProvider';
 
 const LoginForm: React.FC = () => {
   const theme = useMantineTheme();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (user?.role) {
+      if (user.role === 'ADMIN') navigate('/armarios');
+      else if (user.role === 'MANAGER') navigate('/incidencias-manager');
+      else navigate('/perfil');
+    }
+  }, [user, navigate]);
+
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
 
     try {
       await login(username, password);
-      navigate('/perfil');
+
+      if (user?.role === 'ADMIN') {
+        navigate('/armarios');
+      } else if (user?.role === 'MANAGER') {
+        navigate('/incidencias-manager');
+      } else {
+        navigate('/perfil');
+      }
     } catch (err: any) {
       setError(err.message || 'Login failed');
     }

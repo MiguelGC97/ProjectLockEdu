@@ -89,7 +89,7 @@ export interface Incidence {
 
 //enum for roles
 
-enum roles {
+export enum roles {
   TEACHER,
   ADMIN,
   MANAGER,
@@ -102,7 +102,7 @@ export interface UserType {
   password: string;
   username: string;
   avatar: string;
-  role: roles;
+  role: 'TEACHER' | 'ADMIN' | 'MANAGER';
 }
 
 export interface Incidence {

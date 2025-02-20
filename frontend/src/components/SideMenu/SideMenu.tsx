@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   IconCalendarTime,
+  IconCircleKey,
   IconLogout,
   IconMessageReport,
+  IconReport,
   IconSettings,
   IconUser,
+  IconUsers,
 } from '@tabler/icons-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Center, Flex, Image, rem, Stack, Tooltip, UnstyledButton } from '@mantine/core';
@@ -20,10 +23,15 @@ interface NavbarLinkProps {
 }
 
 function NavbarLink({ icon: Icon, label, active, onClick, to }: NavbarLinkProps) {
+  const navigate = useNavigate();
+
   return (
     <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
       <UnstyledButton
-        onClick={onClick}
+        onClick={() => {
+          if (to) navigate(to);
+          if (onClick) onClick();
+        }}
         className={classes.link}
         data-active={active || undefined}
         aria-label={label}
@@ -34,52 +42,88 @@ function NavbarLink({ icon: Icon, label, active, onClick, to }: NavbarLinkProps)
   );
 }
 
-const menuData = [
+const menuDataTeacher = [
   { icon: IconUser, label: 'Perfil', to: '/perfil' },
   { icon: IconCalendarTime, label: 'Historial de reservas', to: '/historial-reservas' },
   { icon: IconMessageReport, label: 'Incidencias', to: '/incidencias' },
   { icon: IconSettings, label: 'Configuraciones', to: '/configuraciones' },
 ];
 
+const menuDataAdmin = [
+  { icon: IconCircleKey, label: 'Armarios', to: '/armarios' },
+  { icon: IconUsers, label: 'Usuarios', to: '/usuarios' },
+  { icon: IconSettings, label: 'Configuraciones', to: '/configuraciones-admin' },
+];
+
+const menuDataManager = [
+  { icon: IconReport, label: 'Incidencias', to: '/incidencias-manager' },
+  { icon: IconSettings, label: 'Configuraciones', to: '/configuraciones-manager' },
+];
+
 export function SideMenu() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
+  const [menu, setMenu] = useState(getUserType());
 
-  const activeIndex = menuData.findIndex((link) => link.to === location.pathname);
+  useEffect(() => {
+    setMenu(getUserType());
+  }, [user]);
+
+  function getUserType() {
+    switch (user?.role) {
+      case 'TEACHER':
+        return menuDataTeacher;
+      case 'ADMIN':
+        return menuDataAdmin;
+      case 'MANAGER':
+        return menuDataManager;
+      default:
+        console.log(`Sorry, we could not define user's role.`);
+        return [];
+    }
+  }
+
+  const activeIndex = menu.findIndex((link) => link.to === location.pathname);
 
   const handleLogout = () => {
     logout();
   };
 
-  const navigateToHomePage = () => {
-    navigate('/perfil');
-  };
-  const iconLinks = menuData.map((link, index) => (
+  const iconLinks = menu.map((link, index) => (
     <NavbarLink
       {...link}
       key={link.label}
       active={index === activeIndex}
-      onClick={() => {
-        navigate(link.to);
-      }}
+      onClick={() => navigate(link.to)}
     />
   ));
 
   return (
-    <div mah="100vh" className={classes.navbar}>
-      <Center onClick={navigateToHomePage} style={{ cursor: 'pointer' }}>
-        <Image w="60px" src="/assets/logoApp.png" alt="Logo de LockEdu" />
-      </Center>
+    <div className={classes.navbar}>
+      <Flex
+        pt="10px"
+        h="100%"
+        direction="column"
+        align="stretch"
+        gap="45vh"
+        justify="space-between"
+      >
+        <Flex h="100vh" direction="column" gap="10px">
+          <Center style={{ cursor: 'pointer' }}>
+            <Image w="60px" src="/assets/logoApp.png" alt="Logo de LockEdu" />
+          </Center>
 
-      <div className={classes.navbarMain}>
-        <Stack justify="center" gap={0}>
-          {iconLinks}
-        </Stack>
-      </div>
+          <div className={classes.navbarMain}>
+            <Stack justify="center" gap={0}>
+              {iconLinks}
+            </Stack>
+          </div>
+        </Flex>
 
-      <Flex direction="column" justify="flex-end" mb="6vh" align="flex-end" h="55vh">
-        <NavbarLink icon={IconLogout} label="Salir" onClick={handleLogout} />
+        <Flex direction="column" align="flex-end" h="100vh">
+          <NavbarLink c="myPurple.0" icon={IconLogout} label="Salir" onClick={handleLogout} />
+        </Flex>
       </Flex>
     </div>
   );
