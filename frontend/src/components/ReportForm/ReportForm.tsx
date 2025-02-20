@@ -1,11 +1,21 @@
 import { useEffect, useState } from 'react';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { toast } from 'react-toastify';
-import { Box, Button, createTheme, MantineProvider, NativeSelect, Textarea } from '@mantine/core';
+import {
+  Box,
+  Button,
+  createTheme,
+  InputLabel,
+  MantineProvider,
+  NativeSelect,
+  Textarea,
+} from '@mantine/core';
 import { useAuth } from '@/hooks/AuthProvider';
+import { useTheme } from '@/hooks/ThemeProvider';
 import { fetchBoxesByLocker, fetchFormIncident, fetchLockers } from '@/services/fetch';
 import { Boxs, Locker } from '@/types/types';
 import classes from './ReportForm.module.css';
+
 import 'react-toastify/dist/ReactToastify.css';
 
 const theme = createTheme({
@@ -24,6 +34,7 @@ const theme = createTheme({
 });
 
 export function ReportForm() {
+  const { theme } = useTheme();
   const [lockers, setLockers] = useState<Locker[]>([]);
   const [boxes, setBoxes] = useState<Boxs[]>([]);
   const [selectedLocker, setSelectedLocker] = useState('');
@@ -76,13 +87,11 @@ export function ReportForm() {
       boxId: parseInt(selectedBox, 10),
     };
 
-
     console.log('Enviando reporte:', reportData);
 
     try {
       await fetchFormIncident(reportData);
       toast.success('Reporte creado exitosamente');
-
 
       setSelectedLocker('');
       setSelectedBox('');
@@ -125,9 +134,10 @@ export function ReportForm() {
   ];
 
   return (
-    <MantineProvider theme={theme}>
+    <>
       <Box
-        bg="#4F51B3"
+        bg={theme === 'dark' ? 'myPurple.4' : 'myPurple.8'}
+        bd={theme === 'dark' ? null : '1px solid myPurple.0'}
         style={{
           borderRadius: '20px',
           borderTopLeftRadius: '0',
@@ -155,7 +165,7 @@ export function ReportForm() {
           <Box>
             <IconArrowLeft
               size={30}
-              color="white"
+              color="myPurple.0"
               aria-label="Volver al menú anterior"
               tabIndex={0} // Permite la navegación por teclado
               onKeyDown={(e) => e.key === 'Enter' && console.log('Volver')}
@@ -165,7 +175,7 @@ export function ReportForm() {
           <Box style={{ flexGrow: 1 }}>
             <h2
               data-testid="reportForm"
-              style={{ color: 'white', margin: 0, textAlign: 'center' }}
+              style={{ color: 'var(--mantine-color-myPurple-0)', margin: 0, textAlign: 'center' }}
               aria-live="polite"
               tabIndex={0}
             >
@@ -179,17 +189,19 @@ export function ReportForm() {
           label="Armario"
           data={lockerOptions}
           value={selectedLocker}
+          c="myPurple.0"
           onChange={(e) => handleLockerChange(e.currentTarget.value)}
           data-testid="locker-select"
           aria-label="Selecciona un armario"
           aria-required="true"
-          tabIndex={1}
+          tabIndex={0}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               e.preventDefault();
               handleLockerChange(e.currentTarget.value);
             }
           }}
+          // className="custom-focus"
         />
 
         <NativeSelect
@@ -197,24 +209,26 @@ export function ReportForm() {
           label="Casilla"
           data={boxOptions}
           value={selectedBox}
+          c="myPurple.0"
           onChange={(e) => setSelectedBox(e.currentTarget.value)}
           disabled={!selectedLocker}
           data-testid="box-select"
           aria-label="Selecciona una casilla"
           aria-disabled={!selectedLocker}
-          tabIndex={2}
+          tabIndex={0}
+          className="custom-focus"
         />
 
         <Textarea
+          tabIndex={0}
           mt="md"
           label="Descripción"
+          c="myPurple.0"
           placeholder="Añada su motivo de la incidencia"
           value={description}
           onChange={(e) => setDescription(e.currentTarget.value)}
           data-testid="description-textarea"
-          aria-label="Descripción de la incidencia"
-          aria-required="true"
-          tabIndex={3} // Control de orden
+          aria-label="editar de la incidencia"
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               e.preventDefault();
@@ -232,7 +246,7 @@ export function ReportForm() {
             data-testid="submit-button"
             aria-label="Enviar reporte"
             aria-disabled={!selectedLocker || !selectedBox || !description}
-            tabIndex={4} // Establecer el orden de enfoque
+            tabIndex={0}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 handleSubmit();
@@ -243,6 +257,6 @@ export function ReportForm() {
           </Button>
         </Box>
       </Box>
-    </MantineProvider>
+    </>
   );
 }

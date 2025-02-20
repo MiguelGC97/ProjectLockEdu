@@ -55,6 +55,7 @@ export interface ObjectsProps {
 }
 
 export interface BookingFormProps {
+  locker: Locker;
   box: BoxType;
   items: string[];
   onReturnToBox: () => void;
@@ -121,4 +122,11 @@ export interface Boxs {
   id: number;
   description: string;
   createdAt: string;
+}
+
+export interface SettingsType {
+  id: number;
+  theme: string;
+  banner: string;
+  notifications: boolean;
 }

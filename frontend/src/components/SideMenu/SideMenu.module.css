@@ -22,6 +22,7 @@
   color: var(--mantine-color-white);
 
   &:hover {
+    box-shadow: var(--mantine-shadow-lg);
     background-color: var(--mantine-color-white);
     color: var(--mantine-color-myPurple-4);
   }
@@ -34,4 +35,8 @@
       color: var(--mantine-color-white);
     }
   }
+}
+
+Image {
+  cursor: pointer;
 }

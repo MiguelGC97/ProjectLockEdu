@@ -12,11 +12,12 @@ import Objects from '@/components/Objects/Objects';
 import Pending from '@/components/Pending/Pending';
 import { SideMenu } from '@/components/SideMenu/SideMenu';
 import UserBar from '@/components/UserBar/UserBar';
+import { useAuth } from '@/hooks/AuthProvider';
 import { fetchBookingsByUserIdAndState } from '@/services/fetch';
 import { Booking, BoxType, Locker } from '@/types/types';
 
 const Home: React.FC = () => {
-  const theme = useMantineTheme();
+  const { theme } = useAuth();
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [selectedLocker, setSelectedLocker] = useState<Locker | null>(null);
   const [selectedBox, setSelectedBox] = useState<BoxType | null>(null);
@@ -66,7 +67,7 @@ const Home: React.FC = () => {
         <>
           {' '}
           <SideMenu />
-          <Flex pl="1.5%" style={{ backgroundColor: theme.colors.myPurple[8] }}>
+          <Flex pl="1.5%" w="100%" style={{ backgroundColor: 'var(--mantine-color-myPurple-9)' }}>
             <Flex maw="100%" gap="lg">
               <Flex direction="column" w="100%">
                 <UserBar />

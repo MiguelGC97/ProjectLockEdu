@@ -8,8 +8,8 @@ module.exports = (app) => {
 
   router.post(
     "/",
-    // auth.isAuthenticated,
-    // permissions.authorize(["ADMIN"]),
+    auth.isAuthenticated,
+    permissions.authorize(["ADMIN"]),
     users.addNewUser
   );
 
@@ -32,6 +32,13 @@ module.exports = (app) => {
     // permissions.authorize(["ADMIN"]),
     // auth.isAuthenticated,
     users.getByUsername
+  );
+
+  router.get(
+    "/settings/:id",
+    permissions.authorize(["ADMIN"]),
+    auth.isAuthenticated,
+    users.getUserSettings
   );
 
   router.put(

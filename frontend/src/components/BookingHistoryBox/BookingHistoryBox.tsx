@@ -33,7 +33,7 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
         const data = await fetchBookingsByUserId(user.id);
         setBookings(data);
       } catch (error) {
-        console.error("Error fetching bookings:", error);
+        console.error('Error fetching bookings:', error);
       }
     };
 
@@ -56,13 +56,13 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
   const getStateColor = (state: string): string => {
     switch (state) {
       case 'pending':
-        return 'yellow';
+        return 'myPurple.10';
       case 'withdrawn':
-        return 'green';
+        return 'myPurple.12';
       case 'returned':
-        return 'white';
+        return 'myPurple.0';
       default:
-        return 'white';
+        return 'myPurple.0';
     }
   };
 
@@ -130,20 +130,24 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
     const lockerBoxInfo = lockerId && boxId ? `A0${lockerId}-C0${boxId}` : '';
 
     const dateColor =
-      b.state === 'pending' ? 'yellow' : b.state === 'withdrawn' ? 'yellow' : 'white';
+      b.state === 'pending'
+        ? 'myPurple.10'
+        : b.state === 'withdrawn'
+          ? 'myPurple.10'
+          : 'myPurple.0';
 
     return (
-      <Table.Tr key={b.id} c="white">
+      <Table.Tr key={b.id} c="myPurple.0">
         <Table.Td>{lockerBoxInfo}</Table.Td>
 
         <Table.Td>
-          <Text c={b.state === 'pending' ? 'yellow' : 'white'}>
+          <Text c={b.state === 'pending' ? 'myPurple.10' : 'myPurple.0'}>
             {formatDate(b.checkOut)} | {formatTime(b.checkOut)}
           </Text>
         </Table.Td>
 
         <Table.Td>
-          <Text c={b.state === 'withdrawn' ? 'yellow' : 'white'}>
+          <Text c={b.state === 'withdrawn' ? 'myPurple.10' : 'myPurple.0'}>
             {formatDate(b.checkIn)} | {formatTime(b.checkIn)}
           </Text>
         </Table.Td>
@@ -183,11 +187,11 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
           )}
         </Table.Td>
 
-        <Table.Td c="red">
+        <Table.Td c="myPurple.11">
           <IconTrash
             onClick={() => handleDeleteBooking(b.id)}
             style={{ cursor: 'pointer' }}
-            color="#FF5C5C"
+            c="myPurple.11"
             data-testid={`delete-booking`}
           />
         </Table.Td>
@@ -203,32 +207,43 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
       style={{ borderRadius: '83px 0 25px 25px' }}
     >
       <Center>
-        <h2 data-testid="history-title">Historial de reservas</h2>
+        <h2 style={{ color: 'var(--mantine-color-myPurple-0' }} data-testid="history-title">
+          Historial de reservas
+        </h2>
       </Center>
-      <Divider size="xs" color="myPurple.1" />
+      <Divider size="xs" color="myPurple.0" />
 
       <ScrollArea p="lg" m="md" h="50vh" scrollbarSize={16}>
         <Flex direction="column" gap="xl">
           {bookings && bookings.length > 0 ? (
-            <Table horizontalSpacing="sm" verticalSpacing="sm">
-              <Table.Thead c="white">
+            <Table horizontalSpacing="sm" verticalSpacing="sm" borderColor="myPurple.0">
+              <Table.Thead c="myPurple.0">
                 <Table.Tr size="xl">
                   <Table.Th>
-                    <Text c="white" fw={700}>Casilla</Text>
+                    <Text c="myPurple.0" fw={700}>
+                      Casilla
+                    </Text>
                   </Table.Th>
                   <Table.Th>
-                    <Text c="white" fw={700}>Fecha de recogida</Text>
+                    <Text c="myPurple.0" fw={700}>
+                      Fecha de recogida
+                    </Text>
                   </Table.Th>
                   <Table.Th>
-                    <Text c="white" fw={700}>Fecha de devolución</Text>
+                    <Text c="myPurple.0" fw={700}>
+                      Fecha de devolución
+                    </Text>
                   </Table.Th>
                   <Table.Th>
-                    <Text c="white" fw={700}>Objetos reservados</Text>
+                    <Text c="myPurple.0" fw={700}>
+                      Objetos reservados
+                    </Text>
                   </Table.Th>
                   <Table.Th>
-                    <Text c="white" fw={700}>Estado</Text>
+                    <Text c="myPurple.0" fw={700}>
+                      Estado
+                    </Text>
                   </Table.Th>
-                  <Table.Th> </Table.Th>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>{rows}</Table.Tbody>

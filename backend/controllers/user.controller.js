@@ -1,6 +1,7 @@
 const db = require("../models");
 
 const User = db.user;
+const Settings = db.settings;
 
 const utils = require("../utils");
 const bcrypt = require("bcryptjs");
@@ -153,6 +154,31 @@ exports.updatePassword = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getUserSettings = async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const userSettings = await Settings.findOne({ where: { userId: userId } });
+
+    if (!userSettings) {
+      return res.status(404).json({ message: "User settings not found." });
+    }
+
+    res.status(200).json({
+      settings: {
+        notifications: userSettings.notifications,
+        theme: userSettings.theme,
+        banner: userSettings.banner
+      }
+    });
+
+    console.log("User settings were successfully retrieved.");
+  } catch (error) {
+    console.error("Error fetching user settings:", error);
+    res.status(500).json({ message: "Internal server error." });
   }
 };
 
