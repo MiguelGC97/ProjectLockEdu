@@ -76,7 +76,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
           <a>
             <IconArrowLeft
               aria-label="volver a armarios"
-              color="#DBDCEC"
+              c="myPurple.0"
               size="30px"
               onClick={onReturn}
             />
@@ -93,6 +93,8 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
             w="20vw"
             size="lg"
             placeholder="Busca un objeto"
+            bd={theme === 'dark' ? null : '1px solid myPurple.0'}
+            style={{ borderRadius: '5px' }}
             rightSection={<IconSearch />}
           />
         </Center>

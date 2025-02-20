@@ -82,7 +82,7 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
           <Stack mb="2vh" gap="xl">
             <Flex gap="29%">
               <a>
-                <IconArrowLeft color="myPurple.0" size="30px" onClick={onReturn} />
+                <IconArrowLeft color="#222337" size="30px" onClick={onReturn} />
               </a>
 
               <Title fw="600" c="myPurple.0">
@@ -121,8 +121,13 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
                             }}
                           >
                             <Checkbox
-                              c="myPurple.2"
+                              styles={{
+                                label: {
+                                  color: 'myPurple.0',
+                                },
+                              }}
                               color="myPurple.4"
+                              c="myPurple.0"
                               ml="1vw"
                               value={`${object.id}`}
                               label={object.description}

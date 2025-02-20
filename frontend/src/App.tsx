@@ -1,8 +1,8 @@
 import '@mantine/core/styles.css';
 
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
 import { Flex, useMantineTheme } from '@mantine/core';
+import ToastContainerComponent from './components/ToastContainerComponent/ToastContainerComponent';
 import { AuthProvider, useAuth } from './hooks/AuthProvider';
 import { ThemeProvider, useTheme } from './hooks/ThemeProvider';
 import BookingHistory from './pages/BookingsHistory.page';
@@ -22,7 +22,6 @@ export default function App() {
           <ThemeWrapper />
         </AuthProvider>
       </Router>
-      <ToastContainer position="top-right" autoClose={3000} />
     </ThemeProvider>
   );
 }
@@ -40,6 +39,7 @@ const ThemeWrapper = () => {
         <Route path="/historial-reservas" element={<BookingHistory />} />
         <Route path="/configuraciones" element={<Settings />} />
       </Routes>
+      <ToastContainerComponent />
     </Flex>
   );
 };

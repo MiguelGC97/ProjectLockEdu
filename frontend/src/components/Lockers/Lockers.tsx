@@ -44,6 +44,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
             <Input
               aria-label="buscar objeto"
               bd={theme === 'dark' ? null : '1px solid myPurple.0'}
+              style={{ borderRadius: '5px' }}
               w="20vw"
               size="lg"
               placeholder="Busca un objeto"

@@ -56,16 +56,16 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
         boxId: 6,
-        userId: 2,
+        userId: 1,
       },
       {
         content:
           "Buenas tardes, uno de los monitores en la zona de trabajo tiene la pantalla con líneas horizontales, parece defectuoso.",
-        isSolved: false,
+        isSolved: true,
         createdAt: new Date(),
         updatedAt: new Date(),
         boxId: 7,
-        userId: 2,
+        userId: 1,
       },
       {
         content:
@@ -74,7 +74,7 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
         boxId: 8,
-        userId: 2,
+        userId: 1,
       },
     ]);
   },

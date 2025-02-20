@@ -17,8 +17,6 @@ import classes from './ReportForm.module.css';
 
 import 'react-toastify/dist/ReactToastify.css';
 
-import { ColorSchemeToggle } from '../ColorSchemeToggle/ColorSchemeToggle';
-
 const theme = createTheme({
   components: {
     Input: {
@@ -35,6 +33,7 @@ const theme = createTheme({
 });
 
 export function ReportForm() {
+  const { theme } = useAuth();
   const [lockers, setLockers] = useState<Locker[]>([]);
   const [boxes, setBoxes] = useState<Boxs[]>([]);
   const [selectedLocker, setSelectedLocker] = useState('');
@@ -134,9 +133,10 @@ export function ReportForm() {
   ];
 
   return (
-    <MantineProvider theme={theme}>
+    <>
       <Box
-        bg="#4F51B3"
+        bg={theme === 'dark' ? 'myPurple.4' : 'myPurple.8'}
+        bd={theme === 'dark' ? null : '1px solid myPurple.0'}
         style={{
           borderRadius: '20px',
           borderTopLeftRadius: '0',
@@ -164,7 +164,7 @@ export function ReportForm() {
           <Box>
             <IconArrowLeft
               size={30}
-              color="white"
+              color="myPurple.0"
               aria-label="Volver al menú anterior"
               tabIndex={0} // Permite la navegación por teclado
               onKeyDown={(e) => e.key === 'Enter' && console.log('Volver')}
@@ -174,7 +174,7 @@ export function ReportForm() {
           <Box style={{ flexGrow: 1 }}>
             <h2
               data-testid="reportForm"
-              style={{ color: 'white', margin: 0, textAlign: 'center' }}
+              style={{ color: 'var(--mantine-color-myPurple-0)', margin: 0, textAlign: 'center' }}
               aria-live="polite"
               tabIndex={0}
             >
@@ -188,6 +188,7 @@ export function ReportForm() {
           label="Armario"
           data={lockerOptions}
           value={selectedLocker}
+          c="myPurple.0"
           onChange={(e) => handleLockerChange(e.currentTarget.value)}
           data-testid="locker-select"
           aria-label="Selecciona un armario"
@@ -207,6 +208,7 @@ export function ReportForm() {
           label="Casilla"
           data={boxOptions}
           value={selectedBox}
+          c="myPurple.0"
           onChange={(e) => setSelectedBox(e.currentTarget.value)}
           disabled={!selectedLocker}
           data-testid="box-select"
@@ -220,6 +222,7 @@ export function ReportForm() {
           tabIndex={0}
           mt="md"
           label="Descripción"
+          c="myPurple.0"
           placeholder="Añada su motivo de la incidencia"
           value={description}
           onChange={(e) => setDescription(e.currentTarget.value)}
@@ -253,6 +256,6 @@ export function ReportForm() {
           </Button>
         </Box>
       </Box>
-    </MantineProvider>
+    </>
   );
 }

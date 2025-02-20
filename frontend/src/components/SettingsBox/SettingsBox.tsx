@@ -67,7 +67,7 @@ export function SettingsBox() {
       bg="transparent"
       h="80vh"
       style={{
-        border: '1px solid var(--mantine-color-myPurple-1)',
+        border: '1px solid var(--mantine-color-myPurple-0)',
         borderRadius: '83px 0 25px 25px',
         width: '100%',
       }}
@@ -75,35 +75,35 @@ export function SettingsBox() {
       <Center className={classes.banner} />
       <Divider size="xs" color="myPurple.1" />
 
-      <Input
-        readOnly
-        variant="unstyled"
-        size="lg"
-        placeholder="Mi perfil"
-        aria-label="Mi perfil"
-        leftSection={<IconUser size={25} color="white" />}
-      />
+      <Flex justify="center" align="center">
+        <Text size="xl" py="20px" c="myPurple.0">
+          Configuraciones
+        </Text>
+      </Flex>
       <Divider size="xs" color="myPurple.1" />
 
-      <Input
-        readOnly
-        variant="unstyled"
-        size="lg"
-        ml={60}
-        placeholder="Cambiar contraseña"
-        aria-label="Cambiar contraseña"
-      />
+      <Flex ml="40px" justify="flex-start" align="center">
+        <Text size="xl" py="20px" c="myPurple.0">
+          Cambiar contraseña
+        </Text>
+      </Flex>
+
       <Divider size="xs" color="myPurple.1" />
 
       <Stack m={20} mb={50}>
         <PasswordInput
-          w={220}
+          w={320}
           ml={100}
           label="Contraseña actual"
           styles={{
             label: {
-              color: 'white',
-              fontSize: '15px',
+              color: 'var(--mantine-color-myPurple-0)',
+            },
+            input: { border: '1px solid var(--mantine-color-myPurple-0)' },
+          }}
+          sx={{
+            label: {
+              color: 'purple', // Change label color to purple
             },
           }}
           visible={visible}
@@ -112,13 +112,13 @@ export function SettingsBox() {
         />
         <Flex justify="space-between" align="flex-end">
           <PasswordInput
-            w={220}
+            w={320}
             ml={100}
             styles={{
               label: {
-                color: 'white',
-                fontSize: '15px',
+                color: 'var(--mantine-color-myPurple-0)',
               },
+              input: { border: '1px solid var(--mantine-color-myPurple-0)' },
             }}
             label="Nueva contraseña"
             visible={visible}
@@ -132,23 +132,20 @@ export function SettingsBox() {
             px="50"
             mr="50"
             radius="xl"
-            color="#4F51B3"
+            color="myPurple.4"
           >
             Guardar
           </Button>
         </Flex>
       </Stack>
 
-      <Divider size="xs" color="myPurple.1" mt={30} />
+      <Divider size="xs" color="myPurple.0" mt={30} />
 
-      <Input
-        readOnly
-        variant="unstyled"
-        size="lg"
-        placeholder="Configuración"
-        aria-label="Configuración"
-        leftSection={<IconMessageReport size={25} color="white" />}
-      />
+      <Flex ml="40px" justify="flex-start" align="center">
+        <Text size="xl" py="20px" c="myPurple.0">
+          Notificaciones
+        </Text>
+      </Flex>
       <Divider size="xs" color="myPurple.1" />
 
       <Flex h="200px" w="100%" justify="space-between" align="center">
@@ -158,14 +155,10 @@ export function SettingsBox() {
             ml={50}
             mt={10}
             size="md"
-            styles={{
-              label: {
-                color: 'white',
-              },
-            }}
             label="Recibir notificaciones de mis recordatorios"
-            color="white"
-            iconColor="#191970"
+            color="myPurple.4"
+            c="myPurple.0"
+            iconColor="white"
             onChange={(e) => {
               updateNotification(e.currentTarget.checked);
               handleSave();
@@ -189,12 +182,12 @@ export function SettingsBox() {
       </Flex>
       {showNotification && (
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: -40 }}
           exit={{ opacity: 0, y: -10 }} // Smooth fade out
           transition={{ duration: 0.5 }}
         >
-          <Text ml="50px" c="#b2e8a0">
+          <Text ml="50px" c="myPurple.12">
             ✔ ¡Tus preferencias de notificaciones se han guardado!
           </Text>
         </motion.div>

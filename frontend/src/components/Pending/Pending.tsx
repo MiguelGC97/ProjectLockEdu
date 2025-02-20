@@ -66,7 +66,7 @@ const Pending: React.FC<BookingHistoryProps> = ({ locker, box, booking }) => {
 
       <ScrollArea p="lg" m="md" h="50vh" scrollbarSize={16}>
         <Flex direction="column" gap="xl">
-          <Table horizontalSpacing="sm" verticalSpacing="sm">
+          <Table horizontalSpacing="sm" verticalSpacing="sm" borderColor="myPurple.0">
             <Table.Thead c="myPurple.0" aria-label="cabecera del cuadro de reservas pendientes">
               <Table.Tr size="xl">
                 <Table.Th>
