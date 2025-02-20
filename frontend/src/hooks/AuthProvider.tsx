@@ -1,4 +1,4 @@
-﻿import React, { createContext, useContext, useEffect, useMemo } from 'react';
+﻿import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import instance from '@/services/api';
 import { login as authService } from '@/services/authService';
@@ -21,13 +21,13 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useLocalStorage('user', null);
-  const [theme, setTheme] = useLocalStorage('theme', 'dark');
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
   const [banner, setBanner] = useLocalStorage('banner', '');
   const [notification, setNotification] = useLocalStorage('notification', true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('access_token');
     if (token) {
       instance
         .get('/signin', { headers: { Authorization: `Bearer ${token}` } })
@@ -37,7 +37,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           fetchUserBanner(res.data.user.id);
           fetchUserNotificationPreference(res.data.user.id);
         })
-        .catch(() => localStorage.removeItem('authToken'));
+        .catch((error) => {
+          console.error('Token validation failed:', error);
+
+          if (error.response?.status === 401) {
+            localStorage.removeItem('access_token');
+          }
+        });
     }
   }, [setUser]);
 
@@ -45,6 +51,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const res = await instance.get(`/user/settings/${userId}`);
       setTheme(res.data.settings.theme);
+      console.log(res);
     } catch (error) {
       console.error('Error fetching user theme:', error);
     }
@@ -77,9 +84,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (username: string, password: string) => {
     try {
       const data = await authService(username, password);
-      const { token, user } = data;
+      const { access_token, user } = data;
 
-      localStorage.setItem('authToken', token);
+      localStorage.setItem('access_token', access_token);
       setUser(user);
       fetchUserThemePreference(user.id);
       fetchUserBanner(user.id);
@@ -91,7 +98,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('theme');
+    localStorage.removeItem('banner');
     setUser(null);
     setTheme('dark');
     setBanner('');

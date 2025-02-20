@@ -33,7 +33,7 @@ import 'dayjs/locale/es';
 
 import { useAuth } from '@/hooks/AuthProvider';
 import instance, { baseUrl } from '@/services/api';
-import { fetchBookingDatesByItemIds } from '@/services/fetch';   
+import { fetchBookingDatesByItemIds } from '@/services/fetch';
 import { BookingFormProps, BoxType, Item } from '@/types/types';
 
 import './BookingForm.module.css';
@@ -56,7 +56,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
   const [returnTime, setReturnTime] = useState<string>('');
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
   const currentDate = dayjs();
-  const theme = useMantineTheme();
+  const { theme } = useAuth();
   const { user } = useAuth();
   const [unavailableDates, setUnavailableDates] = useState<{ checkIn: Date; checkOut: Date }[]>([]);
 
@@ -182,16 +182,19 @@ const BookingForm: React.FC<BookingFormProps> = ({
     return (
       <Box
         style={{
-          backgroundColor: theme.colors.myPurple[4],
-          // width: '',
+          backgroundColor:
+            theme === 'dark'
+              ? 'var(--mantine-color-myPurple-4)'
+              : 'var(--mantine-color-myPurple-8)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-start',
           width: '34vw',
           borderRadius: 20,
           padding: '2rem',
-          color: 'white',
+          color: 'var(--mantine-color-myPurple-0)',
         }}
+        bd={theme === 'dark' ? null : '1px solid myPurple.0'}
       >
         <Title order={3}>Reserva Confirmada</Title>
         <Text>Armario: {confirmedBooking.box.name}</Text>
@@ -208,7 +211,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
             <li key={item.id}>{item.description}</li>
           ))}
         </ul>
-        <Button onClick={onReturnToBox} bg="myPurple.8" mt="lg">
+        <Button onClick={onReturnToBox} bg="myPurple.4" mt="lg">
           Entendido!
         </Button>
       </Box>
@@ -219,10 +222,11 @@ const BookingForm: React.FC<BookingFormProps> = ({
     <>
       <Box
         style={{
-          backgroundColor: theme.colors.myPurple[4],
           borderBottomLeftRadius: 40,
           borderBottomRightRadius: 40,
         }}
+        bg={theme === 'dark' ? 'myPurple.4' : 'myPurple.8'}
+        bd={theme === 'dark' ? null : '1px solid myPurple.0'}
         p="3%"
         mb="lg"
         h="86vh"
@@ -240,6 +244,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
                   p="2vw"
                   h="100%"
                   w="24vw"
+                  bd={theme === 'dark' ? null : '1px solid myPurple.0'}
                 >
                   <DatePicker
                     type="range"
@@ -309,23 +314,25 @@ const BookingForm: React.FC<BookingFormProps> = ({
                   />
                 </Box>
 
-                <Text mt="md" size="md" c="white" fw={500}>
+                <Text mt="md" size="md" c="MyPurple.0" fw={500}>
                   {dateRange[0] && dateRange[1]
                     ? `Reservar del ${dayjs(dateRange[0]).format('DD/MM/YYYY')} al ${dayjs(dateRange[1]).format('DD/MM/YYYY')}.`
                     : 'Selecciona un rango de fechas para reservar.'}
                 </Text>
 
-                <Flex justify="center" align="center" gap="md" mt="md" c="white">
+                <Flex justify="center" align="center" gap="md" mt="md" c="myPurple.0">
                   <TimeInput
                     label="Hora de recogida"
                     value={pickupTime ?? ''}
                     onChange={handlePickupTimeChange}
+                    styles={{ input: { border: '1px solid var(--mantine-color-myPurple-0' } }}
                   />
 
                   <TimeInput
                     label="Hora de devolución"
                     value={returnTime ?? ''}
                     onChange={handleReturnTimeChange}
+                    styles={{ input: { border: '1px solid var(--mantine-color-myPurple-0' } }}
                   />
                 </Flex>
               </DatesProvider>
@@ -338,7 +345,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
               mb="md"
               align="center"
               justify="center"
-              c="white"
+              c="myPurple.0"
             >
               <Stack mt="md">
                 {filteredObjects.length > 0 ? (

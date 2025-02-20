@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Flex, FocusTrap } from '@mantine/core';
+import { Flex, FocusTrap, useMantineTheme } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { ReportForm } from '@/components/ReportForm/ReportForm';
 import { ReportsBox } from '@/components/ReportsBox/ReportsBox';
 import { SideMenu } from '@/components/SideMenu/SideMenu';
 import UserBarReport from '@/components/UserBarReport/UserBarReport';
+import { useTheme } from '@/hooks/ThemeProvider';
 
 const Reports: React.FC = () => {
   const isMobile = useMediaQuery('(max-width: 768px)');

@@ -1,5 +1,5 @@
 h2 {
-  color: var(--mantine-color-white);
+  color: var(--mantine-color-myPurple-0);
   padding: -10;
 }
 
@@ -8,7 +8,7 @@ Box {
 }
 
 Text {
-  color: var(--mantine-color-white);
+  color: var(--mantine-color-myPurple-0);
 }
 
 .hour {
@@ -30,8 +30,6 @@ Handle ::-webkit-scrollbar-thumb {
   border-radius: 10px;
 }
 
-
-
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #ffffff;
@@ -42,8 +40,7 @@ Table {
 }
 
 #box-content {
-  position: relative; 
+  position: relative;
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
 }
-

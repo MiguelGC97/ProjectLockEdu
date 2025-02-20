@@ -162,7 +162,7 @@
     top: 20vh;
     margin-inline: auto;
     width: fit-content;
-    background-color: white;
+    background-color: (--);
     border-radius: 30px;
   }
 
