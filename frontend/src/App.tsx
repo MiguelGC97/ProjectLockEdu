@@ -2,7 +2,7 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Flex, useMantineTheme } from '@mantine/core';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import ToastContainerComponent from './components/ToastContainerComponent/ToastContainerComponent';
-import { AuthProvider } from './hooks/AuthProvider';
+import { AuthProvider, useAuth } from './hooks/AuthProvider'; // Import useAuth hook to check loading
 import { ThemeProvider } from './hooks/ThemeProvider';
 import BookingHistory from './pages/BookingsHistory.page';
 import Home from './pages/Home.page';
@@ -16,7 +16,6 @@ import SettingsManager from './pages/SettingsManager.page';
 import UsersAdmin from './pages/UsersAdmin.page';
 
 // ✅ Import BrowserRouter correctly
-
 export default function App() {
   return (
     <ThemeProvider>
@@ -31,6 +30,11 @@ export default function App() {
 
 const ThemeWrapper = () => {
   const theme = useMantineTheme();
+  const { loading } = useAuth();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Flex maw="100vw" mah="100vh" style={{ backgroundColor: theme.colors.myPurple[9] }}>
@@ -39,19 +43,23 @@ const ThemeWrapper = () => {
         <Route path="/" element={<Login />} />
 
         {/* Role-Based Protected Routes */}
-        <Route element={<ProtectedRoute allowedRoles={['TEACHER']} />}>
+        <Route element={<ProtectedRoute allowedRoles={['TEACHER']} redirectPath="/perfil" />}>
           <Route path="/perfil" element={<Home />} />
           <Route path="/historial-reservas" element={<BookingHistory />} />
           <Route path="/incidencias" element={<Reports />} />
           <Route path="/configuraciones" element={<Settings />} />
         </Route>
 
-        <Route element={<ProtectedRoute allowedRoles={['MANAGER']} />}>
+        <Route
+          element={
+            <ProtectedRoute allowedRoles={['MANAGER']} redirectPath="/incidencias-manager" />
+          }
+        >
           <Route path="/incidencias-manager" element={<ReportsManager />} />
           <Route path="/configuraciones-manager" element={<SettingsManager />} />
         </Route>
 
-        <Route element={<ProtectedRoute allowedRoles={['ADMIN']} redirectPath="/" />}>
+        <Route element={<ProtectedRoute allowedRoles={['ADMIN']} redirectPath="/armarios" />}>
           <Route path="/armarios" element={<LockersAdmin />} />
           <Route path="/usuarios" element={<UsersAdmin />} />
           <Route path="/configuraciones-admin" element={<SettingsAdmin />} />

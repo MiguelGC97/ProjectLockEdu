@@ -16,7 +16,14 @@ const db = require("./models/index.js");
 const app = express();
 
 
-app.use(cors({ origin: "http://localhost:5173" }));
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -30,19 +37,23 @@ app.use(express.static(path.join(__dirname, "public")));
 const sessionStore = new sequelizeStore({
   db: db.sequelize,
 });
+
 db.sessionStore = sessionStore;
 db.session = session;
 
 
 app.use(
-  db.session({
-    secret: process.env.SESSION_SECRET,
-    store: db.sessionStore,
+  session({
+    secret: process.env.JWT_SECRET,  // Change this to a secure, private string
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 24 * 60 * 60 * 1000 },
+    cookie: {
+      secure: false, // Set to 'true' if you're using HTTPS
+      maxAge: 1000 * 60 * 60 * 24, // 24 hours
+    },
   })
 );
+
 
 const authSession = require("./middlewares/auth.session.js");
 app.use(authSession.setUserLocals);

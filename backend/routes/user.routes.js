@@ -1,6 +1,8 @@
 module.exports = (app) => {
   const users = require("../controllers/user.controller.js");
   const auth = require("../middlewares/auth.js");
+  const authForReact = require("../middlewares/authForReact.session.js");
+  const authSession = require("../middlewares/auth.session.js");
 
   const permissions = require("../middlewares/permissions.js");
 
@@ -55,7 +57,9 @@ module.exports = (app) => {
     users.delete
   );
 
-  router.post("/signin", auth.signin);
+  router.post("/signin", authForReact.signin);
+
+
 
   app.use("/api/users", router);
 };

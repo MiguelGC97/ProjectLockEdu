@@ -49,6 +49,8 @@ const findCurrentUser = (req, res) => {
     username: req.body.username,
     avatar: req.body.avatar,
     name: req.body.name,
+    role: req.session.user.role,
+    surname: req.session.user.surname,
   }
 
 

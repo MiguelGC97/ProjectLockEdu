@@ -10,18 +10,18 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles, redirectP
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>; // Show loading while checking session
   }
 
   if (!user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/" replace />; // Redirect to login if no user
   }
 
   if (!allowedRoles.includes(user?.role)) {
-    return <Navigate to={redirectPath} replace />;
+    return <Navigate to={redirectPath} replace />; // Redirect if user role is not allowed
   }
 
-  return <Outlet />;
+  return <Outlet />; // Render the protected route if the user is authenticated and has the right role
 };
 
 export default ProtectedRoute;

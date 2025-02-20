@@ -36,7 +36,7 @@ function NavbarLink({ icon: Icon, label, active, onClick, to }: NavbarLinkProps)
         data-active={active || undefined}
         aria-label={label}
       >
-        <Icon style={{ width: rem(30), height: rem(30) }} stroke={1.5} />
+        <Icon style={{ width: rem(30), height: rem(30), color: 'white' }} stroke={1.5} />
       </UnstyledButton>
     </Tooltip>
   );

@@ -23,7 +23,7 @@
 
   &:hover {
     box-shadow: var(--mantine-shadow-lg);
-    background-color: var(--mantine-color-white);
+    background-color: var(--mantine-color-myPurple-8);
     color: var(--mantine-color-myPurple-4);
   }
 
