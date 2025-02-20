@@ -38,6 +38,14 @@ import { BookingFormProps, BoxType, Item } from '@/types/types';
 
 import './BookingForm.module.css';
 
+import {
+  regSw,
+  subscribe,
+  checkIfAlreadySubscribed,
+  unregisterFromServiceWorker,
+  getAllSubscriptions,
+} from '@/services/subscriptionService';
+
 dayjs.extend(customParseFormat);
 dayjs.extend(isBetween);
 dayjs.locale('es');
@@ -59,6 +67,50 @@ const BookingForm: React.FC<BookingFormProps> = ({
   const theme = useMantineTheme();
   const { user } = useAuth();
   const [unavailableDates, setUnavailableDates] = useState<{ checkIn: Date; checkOut: Date }[]>([]);
+  const [subscribed, setSubscribed] = useState<boolean>(false);
+  const [pushSupported, setPushSupported] = useState<boolean>(false);
+
+  const registerAndSubscribe = async (): Promise<void> => {
+    try {
+      const subscriptionName: string = "Test name";
+      const serviceWorkerReg: ServiceWorkerRegistration = await regSw();
+      await subscribe(serviceWorkerReg, subscriptionName);
+
+      window.localStorage.setItem("subscription-name", subscriptionName);
+      setSubscribed(true);
+
+      const subscriptions = await getAllSubscriptions();
+      console.log('Subscriptions:', subscriptions.data);
+    } catch (error: unknown) {
+      console.error('Error while subscribing:', error);
+    }
+  };
+
+  const checkSubscriptionState = async (): Promise<void> => {
+    const subscriptionState: boolean = await checkIfAlreadySubscribed();
+    setSubscribed(subscriptionState);
+
+    if (subscriptionState) {
+      const aux: string | null = window.localStorage.getItem("subscription-name");
+      if (aux) {
+        console.log('User already subscribed:', aux);
+      }
+    }
+  };
+
+  const handleEnableNotifications = async (): Promise<void> => {
+    if (!pushSupported) {
+      console.error('This browser does not support push notifications');
+      return;
+    }
+
+    const permission = await Notification.requestPermission();
+    if (permission === 'granted') {
+      await registerAndSubscribe();
+    } else {
+      console.error('Notifications request refused');
+    }
+  };
 
   const handlePickupTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPickupTime(event.target.value);
@@ -103,6 +155,12 @@ const BookingForm: React.FC<BookingFormProps> = ({
 
     try {
       const response = await instance.post(`${baseUrl}/bookings`, bookingData);
+    
+      const alreadyAskedForSubscription = localStorage.getItem("askedForSubscription");
+      if (!alreadyAskedForSubscription && pushSupported) {
+        await handleEnableNotifications();
+        localStorage.setItem("askedForSubscription", "true");
+      }
 
       setConfirmedBooking({
         box,
