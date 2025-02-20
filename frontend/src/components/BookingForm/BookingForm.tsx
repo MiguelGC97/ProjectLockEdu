@@ -72,9 +72,11 @@ const BookingForm: React.FC<BookingFormProps> = ({
   const [pushSupported, setPushSupported] = useState<boolean>(false);
 
   const registerAndSubscribe = async (): Promise<void> => {
+    console.log('registerAndSubscribe');
     try {
       const subscriptionName: string = "Test name";
       const serviceWorkerReg: ServiceWorkerRegistration = await regSw();
+      console.log('registerAndSubscribe - subscribe');
       await subscribe(serviceWorkerReg, subscriptionName);
 
       window.localStorage.setItem("subscription-name", subscriptionName);
@@ -100,12 +102,13 @@ const BookingForm: React.FC<BookingFormProps> = ({
   };
 
   const handleEnableNotifications = async (): Promise<void> => {
-    if (!pushSupported) {
-      console.error('This browser does not support push notifications');
-      return;
-    }
+    // if (!pushSupported) {
+    //   console.error('This browser does not support push notifications');
+    //   return;
+    // }
 
     const permission = await Notification.requestPermission();
+    console.log('permission: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ', permission);
     if (permission === 'granted') {
       await registerAndSubscribe();
     } else {
@@ -167,16 +170,17 @@ const BookingForm: React.FC<BookingFormProps> = ({
   };
 
   const handleBookingConfirmation = async () => {
+    console.log("handleBookingConfirmation - llegó aquíiiiiiiiiiiiiiiiiiiiiiiiiiii")
     if (!dateRange[0] || !dateRange[1] || !pickupTime || !returnTime) {
       setError('Selecciona uno o varios días y ambas horas para confirmar la reserva');
       return;
     }
-
+    console.log("handleBookingConfirmation - llegó aquíiiiiiiiiiiiiiiiiiiiiiiiiiii 1")
     if (dayjs(dateRange[1]).isBefore(dayjs(dateRange[0]))) {
       setError('La fecha de devolución no puede ser anterior a la fecha de recogida.');
       return;
     }
-
+    console.log("handleBookingConfirmation - llegó aquíiiiiiiiiiiiiiiiiiiiiiiiiiii 2")
     const description = 'Reserva de prueba';
     const state = 'pending';
     const itemIds = filteredObjects.map((object) => object.id.toString());
@@ -190,6 +194,8 @@ const BookingForm: React.FC<BookingFormProps> = ({
       'YYYY-MM-DD HH:mm'
     ).toISOString();
 
+    console.log("handleBookingConfirmation - llegó aquíiiiiiiiiiiiiiiiiiiiiiiiiiii 3")
+
     const bookingData = {
       description,
       checkIn,
@@ -198,15 +204,15 @@ const BookingForm: React.FC<BookingFormProps> = ({
       itemIds,
       userId,
     };
-
+    console.log("handleBookingConfirmation - llegó aquíiiiiiiiiiiiiiiiiiiiiiiiiiii 4")
     try {
       const response = await instance.post(`${baseUrl}/bookings`, bookingData);
     
-      const alreadyAskedForSubscription = localStorage.getItem("askedForSubscription");
-      if (!alreadyAskedForSubscription && pushSupported) {
+      // const alreadyAskedForSubscription = localStorage.getItem("askedForSubscription");
+      // if (!alreadyAskedForSubscription && pushSupported) {
         await handleEnableNotifications();
         localStorage.setItem("askedForSubscription", "true");
-      }
+      // }
 
       setConfirmedBooking({
         box,
