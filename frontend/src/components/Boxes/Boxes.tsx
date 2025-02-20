@@ -27,7 +27,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [boxes, setBoxes] = useState<BoxType[]>();
-  const { theme } = useAuth();
+  const { theme } = useTheme();
 
   useEffect(() => {
     setLoading(true);
@@ -76,7 +76,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
           <a>
             <IconArrowLeft
               aria-label="volver a armarios"
-              color="myPurple.0"
+              color="#DBDCEC"
               size="30px"
               onClick={onReturn}
             />
@@ -135,7 +135,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
                     {' '}
                     <path
                       d="M8.75 7.75H15.25M8.75 10.75H15.25M15 14V16M6 20V21M18 20V21M6 20H18C19.1046 20 20 19.1046 20 18V6C20 4.89543 19.1046 4 18 4H6C4.89543 4 4 4.89543 4 6V18C4 19.1046 4.89543 20 6 20Z"
-                      fill={theme === 'dark' ? '#f8f7fc' : 'myPurple.0'}
+                      stroke={theme === 'dark' ? '#f8f7fc' : 'myPurple.0'}
                       stroke-width="2"
                       stroke-linecap="round"
                       stroke-linejoin="round"

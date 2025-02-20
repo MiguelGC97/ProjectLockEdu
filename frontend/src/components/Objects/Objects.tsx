@@ -22,6 +22,7 @@ import { Item, ObjectsProps } from '@/types/types';
 
 import './Objects.module.css';
 
+import { useTheme } from '@/hooks/ThemeProvider';
 import { ObjectsContext } from './context';
 
 const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => {
@@ -29,7 +30,7 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [value, setValue] = useState<string[]>([]);
-  const theme = useMantineTheme();
+  const { theme } = useTheme();
   const [opened, { open, close }] = useDisclosure(false);
 
   useEffect(() => {
@@ -68,10 +69,11 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
         </Modal>
         <Box
           style={{
-            backgroundColor: theme.colors.myPurple[4],
             borderBottomLeftRadius: 40,
             borderBottomRightRadius: 40,
           }}
+          bg={theme === 'dark' ? 'myPurple.4' : 'transparent'}
+          bd={theme === 'dark' ? null : '1px solid myPurple.0'}
           p="3%"
           mb="lg"
           h="86vh"
@@ -80,10 +82,10 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
           <Stack mb="2vh" gap="xl">
             <Flex gap="29%">
               <a>
-                <IconArrowLeft color="white" size="30px" onClick={onReturn} />
+                <IconArrowLeft color="myPurple.0" size="30px" onClick={onReturn} />
               </a>
 
-              <Title fw="600" c="white">
+              <Title fw="600" c="myPurple.0">
                 Casilla C0{box.id}
               </Title>
             </Flex>
@@ -91,11 +93,11 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
           <Flex
             direction="column"
             style={{
-              border: '1px solid #DBDCEC',
+              border: '1px solid var(--mantine-color-myPurple-0)',
               borderBottomLeftRadius: 30,
               borderBottomRightRadius: 30,
-              backgroundColor: theme.colors.myPurple[8],
             }}
+            bg="myPurple.8"
             pb="xl"
           >
             <Image
@@ -104,7 +106,7 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
               mah="20vh"
               onClick={open}
             />
-            <Divider c="#DBDCEC" />
+            <Divider color="myPurple.0" />
             <ScrollArea h="36vh" scrollbarSize={16} mb="xl">
               <Flex direction="column" gap="sm" py="xl" mb="md">
                 <Checkbox.Group value={value} onChange={setValue}>
@@ -116,22 +118,22 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
                             key={object.id}
                             style={{
                               cursor: 'pointer',
-                              borderBottom: '3 solid #fff',
                             }}
                           >
                             <Checkbox
-                              c="white"
+                              c="myPurple.2"
+                              color="myPurple.4"
                               ml="1vw"
                               value={`${object.id}`}
                               label={object.description}
                             />
                           </Flex>
-                          <Divider c="#DBDCEC" />
+                          <Divider color="myPurple.0" />
                         </>
                       ))
                     ) : (
                       <Center>
-                        <Text c="white">No hay ningun objeto disponible en esta casilla.</Text>
+                        <Text c="myPurple.0">No hay ningun objeto disponible en esta casilla.</Text>
                       </Center>
                     )}
                   </Stack>

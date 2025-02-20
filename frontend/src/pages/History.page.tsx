@@ -14,11 +14,11 @@ import UserBar from '@/components/UserBar/UserBar';
 import { BoxType, Locker } from '@/types/types';
 
 const History: React.FC = () => {
-  const theme = useMantineTheme();
   const matches = useMediaQuery('(min-width: 85em)');
   const matches2 = useMediaQuery('(max-width: 93em)');
   const [selectedLocker, setSelectedLocker] = useState<Locker | null>(null);
   const [selectedBox, setSelectedBox] = useState<BoxType | null>(null);
+  const theme = useMantineTheme();
 
   const handleLockerClick = (locker: Locker) => {
     setSelectedLocker(locker);
@@ -41,7 +41,7 @@ const History: React.FC = () => {
     <>
       {matches ? (
         matches2 ? (
-          <Flex style={{ backgroundColor: theme.colors.myPurple[9] }}>
+          <Flex style={{ backgroundColor: theme.colors.myPurple[9] }}>>
             <Flex w="100%" gap="lg">
               <SideMenu />
               <Flex direction="column" w="100%">
@@ -70,7 +70,7 @@ const History: React.FC = () => {
             </Flex>
           </Flex>
         ) : (
-          <Flex style={{ backgroundColor: theme.colors.myPurple[6] }}>
+          <Flex style={{ backgroundColor: theme.colors.myPurple[9] }}>>
             <Flex w="100%" gap="lg">
               <SideMenu />
               <Flex direction="column" w="100%">
@@ -100,7 +100,7 @@ const History: React.FC = () => {
           </Flex>
         )
       ) : (
-        <Flex style={{ backgroundColor: theme.colors.white }}>
+        <Flex style={{ backgroundColor: theme.colors.myPurple[9] }}>>
           <Flex w="100%" gap="lg">
             <MobileMenu />
             <Flex direction="column" w="100%">

@@ -1,6 +1,6 @@
 ﻿.card {
   display: flex;
-  height: rem(220px);
+  /* height: rem(220px); */
   width: 100%;
   background-size: cover;
   background-position: center;

@@ -28,7 +28,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
-    localStorage.setItem;
     if (token) {
       instance
         .get('/signin', { headers: { Authorization: `Bearer ${token}` } })
@@ -38,7 +37,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           fetchUserBanner(res.data.user.id);
           fetchUserNotificationPreference(res.data.user.id);
         })
-        .catch(() => localStorage.removeItem('access_token'));
+        .catch((error) => {
+          console.error('Token validation failed:', error);
+
+          if (error.response?.status === 401) {
+            localStorage.removeItem('access_token');
+          }
+        });
     }
   }, [setUser]);
 
@@ -94,6 +99,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     localStorage.removeItem('access_token');
+    localStorage.removeItem('theme');
+    localStorage.removeItem('banner');
     setUser(null);
     setTheme('dark');
     setBanner('');

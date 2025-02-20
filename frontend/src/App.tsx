@@ -2,7 +2,7 @@ import '@mantine/core/styles.css';
 
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import { Flex } from '@mantine/core';
+import { Flex, useMantineTheme } from '@mantine/core';
 import { AuthProvider, useAuth } from './hooks/AuthProvider';
 import { ThemeProvider, useTheme } from './hooks/ThemeProvider';
 import BookingHistory from './pages/BookingsHistory.page';
@@ -29,10 +29,10 @@ export default function App() {
 
 // New component to handle dynamic background color
 const ThemeWrapper = () => {
-  const { theme } = useAuth(); // Get the current theme
+  const theme = useMantineTheme();
 
   return (
-    <Flex maw="100vw" mah="100vh">
+    <Flex maw="100vw" mah="100vh" style={{ backgroundColor: theme.colors.myPurple[9] }}>
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/perfil" element={<Home />} />

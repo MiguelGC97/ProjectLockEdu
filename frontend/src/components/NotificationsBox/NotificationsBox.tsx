@@ -70,7 +70,7 @@ export function NotificationsBox() {
             style={{ borderRadius: 40 }}
           >
             <Center>
-              <h2 style={{ color: theme === 'dark' ? 'white' : 'black' }}>Notificaciones</h2>
+              <h2 style={{ color: 'var(--mantine-color-myPurple-0)' }}>Notificaciones</h2>
             </Center>
             <Divider size="xs" color="myPurple.1" />
 
@@ -146,7 +146,7 @@ export function NotificationsBox() {
             style={{ borderRadius: 40 }}
           >
             <Center>
-              <h2 style={{ color: theme === 'dark' ? 'white' : 'black' }}>Notificaciones</h2>
+              <h2 style={{ color: 'var(--mantine-color-myPurple-0)' }}>Notificaciones</h2>
             </Center>
             <Divider size="xs" color="myPurple.1" />
 
@@ -217,7 +217,7 @@ export function NotificationsBox() {
         //component for mobile and tablet -- needs to be changed
         <Box bg="transparent" h="50vh" bd="1px solid myPurple.1" style={{ borderRadius: 40 }}>
           <Center>
-            <h2 style={{ color: theme === 'dark' ? 'white' : 'black' }}>Notificaciones</h2>
+            <h2 style={{ color: 'var(--mantine-color-myPurple-0)' }}>Notificaciones</h2>
           </Center>
           <Divider size="xs" color="myPurple.1" />
 

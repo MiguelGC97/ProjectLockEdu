@@ -11,7 +11,7 @@ import { Booking, BookingHistoryProps, PendingProps } from '@/types/types';
 const Pending: React.FC<BookingHistoryProps> = ({ locker, box, booking }) => {
   const [bookings, setBookings] = useState<Booking[]>();
 
-  const { user } = useAuth();
+  const { user, theme } = useAuth();
   const state = 'pending';
 
   useEffect(() => {
@@ -60,7 +60,7 @@ const Pending: React.FC<BookingHistoryProps> = ({ locker, box, booking }) => {
   return (
     <Box bg="transparent" h="60vh" bd="1px solid myPurple.1" style={{ borderRadius: 40 }}>
       <Center>
-        <h2 style={{ color: 'black' }}>Reservas pendientes</h2>
+        <h2 style={{ color: 'var(--mantine-color-myPurple-0)' }}>Reservas pendientes</h2>
       </Center>
       <Divider size="xs" color="myPurple.0" />
 
