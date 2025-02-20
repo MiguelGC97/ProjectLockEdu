@@ -59,7 +59,12 @@ const LoginForm: React.FC = () => {
           data-testid="username-input"
           leftSection={<IconAt />}
           radius="xl"
-          c="myPurple.0"
+          styles={{
+            label: {
+              color: 'var(--mantine-color-myPurple-0)',
+            },
+            input: { border: '1px solid var(--mantine-color-myPurple-0)' },
+          }}
           miw="40%"
           label="Correo eletrónico"
           placeholder="Escribe tu correo"
@@ -73,7 +78,12 @@ const LoginForm: React.FC = () => {
           data-testid="password-input"
           leftSection={<IconKey />}
           radius="xl"
-          c="myPurple.0"
+          styles={{
+            label: {
+              color: 'var(--mantine-color-myPurple-0)',
+            },
+            input: { border: '1px solid var(--mantine-color-myPurple-0)' },
+          }}
           label="Contraseña"
           placeholder="Escribe tu contraseña"
           miw="40%"

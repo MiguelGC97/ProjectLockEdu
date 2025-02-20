@@ -2,6 +2,7 @@ import React from 'react';
 import { TbAlertHexagon } from 'react-icons/tb';
 import { Avatar, Button, Flex, Text } from '@mantine/core';
 import { useAuth } from '@/hooks/AuthProvider';
+import { useTheme } from '@/hooks/ThemeProvider';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
 
 interface UserBarReportProps {
@@ -9,7 +10,8 @@ interface UserBarReportProps {
 }
 
 export default function UserBarReport({ onToggleVisibility }: UserBarReportProps) {
-  const { user, theme } = useAuth();
+  const { user } = useAuth();
+  const { theme } = useTheme();
 
   return (
     <Flex miw={100} mih={20} justify="flex-end" px="xl" py="md" gap="2vw">
