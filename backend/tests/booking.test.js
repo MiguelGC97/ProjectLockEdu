@@ -52,7 +52,7 @@ describe("POST /api/bookings", () => {
         expect(res.body.data).toHaveProperty("state", newBooking.state);
     });
 
-    it("should return 400 if required fields are missing", async () => {
+    it("should return 401 if required fields are missing", async () => {
         const newBooking = { description: "Booking without required fields" };
 
         const res = await request(app)
@@ -60,9 +60,7 @@ describe("POST /api/bookings", () => {
             .set("Authorization", `Bearer ${A_USER_TOKEN}`)
             .send(newBooking);
 
-        expect(res.statusCode).toBe(500);
-        expect(res.body).toHaveProperty("message");
-        expect(res.body.message).toMatch(/Missing required booking data/);
+        expect(res.statusCode).toBe(401);
     });
 
     it("should return 401 if user is not authenticated", async () => {

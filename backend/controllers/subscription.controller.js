@@ -4,68 +4,91 @@ const { Op } = require("sequelize");
 
 const webPush = require('web-push');
 
-exports.create = (req, res) => {
-
-  if (!req.body.subscription || typeof req.body.subscription !== 'object') {
-    return res.status(400).send({ message: 'Subscription object is required' });
-  }
-
-  if (!req.body.subscription.endpoint || typeof req.body.subscription.endpoint !== 'string') {
-    return res.status(400).send({ message: 'Endpoint is required and must be a string' });
-  }
-
-  if (req.body.subscription.expirationTime && typeof req.body.subscription.expirationTime !== 'string') {
-    return res.status(400).send({ message: 'Expiration time must be a string' });
-  }
-
-  if (!req.body.subscription.keys || typeof req.body.subscription.keys !== 'object') {
-    return res.status(400).send({ message: 'Keys are required and must be an object' });
-  }
-
-  if (!req.body.subscriptionName || typeof req.body.subscriptionName !== 'string') {
-    return res.status(400).send({ message: 'Subscription name is required and must be a string' });
-  }
-
-  if (!req.user.id || typeof req.user.id !== 'number') {
-    return res.status(400).send({ message: 'User ID is required and must be a number' });
-  }
-
-  const subscription = {
-    endpoint: req.body.subscription.endpoint,
-    expirationTime: req.body.subscription.expirationTime,
-    keys: JSON.stringify(req.body.subscription.keys),
-    subscriptionName: req.body.subscriptionName,
-    userId: req.user.id,
+const sendNotification = async (subscriptionRecipient, title, description) => {
+  
+  const options = {
+    vapidDetails: {
+      subject: 'mailto:miguelangelgutierrezcarreno@alumno.ieselrincon.es',
+      publicKey: process.env.PUBLIC_KEY,
+      privateKey: process.env.PRIVATE_KEY,
+    },
   };
+  try {
+    await webPush.sendNotification(
+      subscriptionRecipient,
+      JSON.stringify({
+        title,
+        description,
+        image: 'images/lockerApp-new.png',
+      }),
+      options
+    );
+  } catch (error) {
+    throw (error);
+  }
+}
 
-  Subscription.create(subscription)
-    .then(async (data) => {
-      Subscription.findAll()
-        .then((subscriptionsInDB) => {
-          for (let s of subscriptionsInDB) {
-            const subscriptionRecipient = {
-              endpoint: s.dataValues.endpoint,
-              expirationTime: s.dataValues.expirationTime,
-              keys: JSON.parse(s.dataValues.keys),
-            };
+exports.create = async (req, res) => {  // <- Asegúrate de que la función es async
+  try {
+    if (!req.body.endpoint || typeof req.body.endpoint !== 'string') {
+      return res.status(400).send({ message: 'Endpoint is required and must be a string' });
+    }
 
-            const title = `New Subscription`;
-            const description = `${data.subscriptionName} is now subscribed`;
-            sendNotification(subscriptionRecipient, title, description);
-          }
-          res.status(201).send(data);
-        })
-        .catch((err) => {
-          res.status(500).send({
-            message: err.message || 'Some error happened',
-          });
-        });
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || 'Some error happened',
-      });
+    if (req.body.expirationTime && typeof req.body.expirationTime !== 'string') {
+      return res.status(400).send({ message: 'Expiration time must be a string' });
+    }
+
+    if (!req.body.keys || typeof req.body.keys !== 'object') {
+      return res.status(400).send({ message: 'Keys are required and must be an object' });
+    }
+
+    if (!req.body.keys.auth || typeof req.body.keys.auth !== 'string' || Buffer.from(req.body.keys.auth, 'base64').length < 16) {
+      return res.status(400).send({ message: 'Subscription auth key is required, must be a string, and at least 16 bytes long' });
+    }
+
+    if (!req.body.subscriptionName || typeof req.body.subscriptionName !== 'string') {
+      return res.status(400).send({ message: 'Subscription name is required and must be a string' });
+    }
+
+    if (!req.user.id || typeof req.user.id !== 'number') {
+      return res.status(400).send({ message: 'User ID is required and must be a number' });
+    }
+
+    const existingSubscription = await Subscription.findOne({
+      where: { subscriptionName: req.body.subscriptionName, userId: req.user.id }
     });
+
+    if (existingSubscription) {
+      return res.status(400).send({ message: 'A subscription with this name already exists' });
+    }
+
+    const subscription = await Subscription.create({
+      endpoint: req.body.endpoint,
+      expirationTime: req.body.expirationTime,
+      keys: JSON.stringify(req.body.keys),
+      subscriptionName: req.body.subscriptionName,
+      userId: req.user.id,
+    });
+
+    const subscriptionsInDB = await Subscription.findAll();
+
+    for (let s of subscriptionsInDB) {
+      const subscriptionRecipient = {
+        endpoint: s.dataValues.endpoint,
+        expirationTime: s.dataValues.expirationTime,
+        keys: JSON.parse(s.dataValues.keys),
+      };
+
+      const title = `New Subscription`;
+      const description = `${subscription.subscriptionName} is now subscribed`;
+    }
+
+    res.status(201).send(subscription);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message || 'Some error happened',
+    });
+  }
 };
 
 exports.findAll = (req, res) => {
@@ -102,7 +125,7 @@ exports.sendNotificationToSubscriptionName = (req, res) => {
         };
         const title = `Just for ${req.body.subscriptionName}`;
         const description = req.body.notificationMessage;
-        sendNotification(subscriptionRecipient, title, description);
+        // sendNotification(subscriptionRecipient, title, description);
       }
       res.send('Notification sent');
     })
@@ -119,11 +142,11 @@ exports.sendNotificationToUserId = (req, res) => {
     return res.status(400).send({ message: 'Notification message is required and must be a string' });
   }
 
-  if (!req.body.userId || typeof req.body.userId !== 'number') {
+  if (!req.user.id|| typeof req.user.id !== 'number') {
     return res.status(400).send({ message: 'User ID is required and must be a number' });
   }
 
-  const userId = req.body.userId;
+  const userId = req.user.id;
 
   Subscription.findAll({
     where: {
@@ -139,7 +162,7 @@ exports.sendNotificationToUserId = (req, res) => {
         };
         const title = req.body.title;
         const description = req.body.description;
-        sendNotification(subscriptionRecipient, title, description);
+        // sendNotification(subscriptionRecipient, title, description);
       }
       res.send('Notification sent');
     })
@@ -152,13 +175,13 @@ exports.sendNotificationToUserId = (req, res) => {
 
 exports.findOne = (req, res) => {
 
-  if (!req.params.endpoint || typeof req.params.endpoint !== 'string') {
+  if (!req.body.endpoint || typeof req.body.endpoint !== 'string') {
     return res.status(400).send({ message: 'Endpoint is required and must be a string' });
   }
 
   Subscription.findOne({
     where: {
-      endpoint: req.params.endpoint,
+      endpoint: req.body.endpoint,
     },
   })
     .then((subscription) => {
@@ -176,24 +199,12 @@ exports.findOne = (req, res) => {
 
 exports.update = (req, res) => {
 
-  if (!req.params.endpoint || typeof req.params.endpoint !== 'string') {
+  if (!req.body.endpoint || typeof req.body.endpoint !== 'string') {
     return res.status(400).send({ message: 'Endpoint is required and must be a string' });
   }
 
-  if (!req.body.subscription || typeof req.body.subscription !== 'object') {
-    return res.status(400).send({ message: 'Subscription object is required' });
-  }
-
-  if (req.body.subscription.endpoint && typeof req.body.subscription.endpoint !== 'string') {
-    return res.status(400).send({ message: 'Endpoint must be a string' });
-  }
-
-  if (req.body.subscription.expirationTime && typeof req.body.subscription.expirationTime !== 'string') {
+  if (req.body.expirationTime && typeof req.body.expirationTime !== 'string') {
     return res.status(400).send({ message: 'Expiration time must be a string' });
-  }
-
-  if (req.body.subscription.keys && typeof req.body.subscription.keys !== 'object') {
-    return res.status(400).send({ message: 'Keys must be an object' });
   }
 
   if (req.body.subscriptionName && typeof req.body.subscriptionName !== 'string') {
@@ -201,9 +212,8 @@ exports.update = (req, res) => {
   }
 
   const updateData = {
-    endpoint: req.body.subscription.endpoint,
-    expirationTime: req.body.subscription.expirationTime,
-    keys: req.body.subscription.keys ? JSON.stringify(req.body.subscription.keys) : undefined,
+    endpoint: req.body.endpoint,
+    expirationTime: req.body.expirationTime,
     subscriptionName: req.body.subscriptionName,
   };
 
@@ -212,7 +222,7 @@ exports.update = (req, res) => {
 
   Subscription.findOne({
     where: {
-      endpoint: req.params.endpoint,
+      endpoint: req.body.endpoint,
     },
   })
     .then((subscription) => {
@@ -270,7 +280,7 @@ exports.deleteByEndpoint = (req, res) => {
                 };
                 const title = `Subscription to ${subscriptionToDelete.subscriptionName} deleted`;
                 const description = '';
-                sendNotification(subscriptionRecipient, title, description);
+                // sendNotification(subscriptionRecipient, title, description);
               }
               res.status(200).send('Subscription deleted');
             })
@@ -292,26 +302,3 @@ exports.deleteByEndpoint = (req, res) => {
       });
     });
 };
-
-const sendNotification = async (subscriptionRecipient, title, description) => {
-  const options = {
-    vapidDetails: {
-      subject: 'mailto:miguelangelgutierrezcarreno@alumno.ieselrincon.es',
-      publicKey: process.env.PUBLIC_KEY,
-      privateKey: process.env.PRIVATE_KEY,
-    },
-  };
-  try {
-    await webPush.sendNotification(
-      subscriptionRecipient,
-      JSON.stringify({
-        title,
-        description,
-        image: 'images/lockerApp-new.png',
-      }),
-      options
-    );
-  } catch (error) {
-    throw (error);
-  }
-}

@@ -11,14 +11,17 @@ module.exports = app => {
     router.post("/sendNotificationToSubscriptionName", auth.isAuthenticated,
         permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]), subscriptions.sendNotificationToSubscriptionName);
 
+    router.post("/sendNotificationToUserId", auth.isAuthenticated,
+        permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]), subscriptions.sendNotificationToUserId);
+
     router.post("/deleteByEndpoint", auth.isAuthenticated,
         permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]), subscriptions.deleteByEndpoint);
 
+    router.post("/getSubscriptionByEndpoint", auth.isAuthenticated,
+        permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]), subscriptions.findOne);
+
     router.get("/", auth.isAuthenticated,
         permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]), subscriptions.findAll);
-
-    router.get("/:id", auth.isAuthenticated,
-        permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]), subscriptions.findOne);
 
     router.put("/", auth.isAuthenticated,
         permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]), subscriptions.update);

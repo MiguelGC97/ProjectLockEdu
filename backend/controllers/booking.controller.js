@@ -56,7 +56,7 @@ exports.newBooking = async (req, res) => {
       .json({ message: "Booking created successfully", data: booking });
   } catch (error) {
     await t.rollback();
-    res.status(500).json({ error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
