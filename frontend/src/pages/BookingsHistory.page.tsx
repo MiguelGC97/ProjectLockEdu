@@ -11,7 +11,6 @@ import { SideMenu } from '@/components/SideMenu/SideMenu';
 import UserBar from '@/components/UserBar/UserBar';
 
 const BookingsHistory: React.FC = () => {
-  const theme = useMantineTheme();
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   return (

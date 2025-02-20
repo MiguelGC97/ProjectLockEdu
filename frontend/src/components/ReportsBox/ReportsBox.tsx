@@ -17,6 +17,7 @@ import {
   Textarea,
 } from '@mantine/core';
 import { useAuth } from '@/hooks/AuthProvider';
+import { useTheme } from '@/hooks/ThemeProvider';
 import {
   fetchIncidencesByUserId,
   resolveIncidence,
@@ -32,7 +33,8 @@ export function ReportsBox() {
   const [modalOpened, setModalOpened] = useState(false);
   const [currentIncidence, setCurrentIncidence] = useState<Incidence | null>(null);
   const [newContent, setNewContent] = useState<string>('');
-  const { user, theme } = useAuth();
+  const { user } = useAuth();
+  const { theme } = useTheme();
 
   useEffect(() => {
     const loadIncidences = async () => {
@@ -104,11 +106,10 @@ export function ReportsBox() {
   const StyledAccordion = styled(Accordion)`
     .mantine-Accordion-control {
       background-color: transparent;
-      color: ${({ theme }) =>
-        theme === 'dark' ? 'var(--mantine-color-myPurple-0)' : 'var(--mantine-color-myPurple-0)'};
+      color: var(--mantine-color-myPurple-0);
       border-bottom: 1px solid
         ${({ theme }) =>
-          theme === 'dark' ? 'var(--mantine-color-myPurple-2)' : 'var(--mantine-color-myPurple-0)'};
+          theme === 'dark' ? 'var(--mantine-color-myPurple-0)' : 'var(--mantine-color-myPurple-0)'};
 
       &:hover {
         background-color: transparent;
@@ -118,9 +119,9 @@ export function ReportsBox() {
 
       &.mantine-Accordion-control-active {
         background-color: ${({ theme }) =>
-          theme === 'dark' ? 'var(--mantine-color-myPurple-6)' : 'var(--mantine-color-myPurple-3)'};
+          theme === 'dark' ? 'var(--mantine-color-myPurple-0)' : 'var(--mantine-color-myPurple-0)'};
         color: ${({ theme }) =>
-          theme === 'dark' ? 'var(--mantine-color-myPurple-0)' : 'var(--mantine-color-myPurple-9)'};
+          theme === 'dark' ? 'var(--mantine-color-myPurple-0)' : 'var(--mantine-color-myPurple-0)'};
       }
     }
   `;
@@ -175,12 +176,13 @@ export function ReportsBox() {
       >
         <Flex align="flex-start" gap="md">
           <Avatar
-            src={report.user?.avatar}
-            alt={report.user?.name}
+            src={user?.avatar}
+            alt={user?.name}
             radius="xl"
             size="lg"
             aria-label="avatar usuario"
             tabIndex={0}
+            bd="3px solid myPurple.0"
           />
 
           <Box id="box-content" style={{ marginTop: 10, marginLeft: 10 }}>

@@ -28,9 +28,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
+
     if (token) {
       instance
-        .get('/signin', { headers: { Authorization: `Bearer ${token}` } })
+        .get('/users/signin', { headers: { Authorization: `Bearer ${token}` } })
         .then((res) => {
           setUser(res.data.user);
           fetchUserThemePreference(res.data.user.id);

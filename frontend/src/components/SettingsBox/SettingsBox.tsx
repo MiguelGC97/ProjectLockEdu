@@ -84,7 +84,7 @@ export function SettingsBox() {
 
       <Flex ml="40px" justify="flex-start" align="center">
         <Text size="xl" py="20px" c="myPurple.0">
-          Cambiar contraseña
+          Cambiar contraseña:
         </Text>
       </Flex>
 
@@ -143,7 +143,7 @@ export function SettingsBox() {
 
       <Flex ml="40px" justify="flex-start" align="center">
         <Text size="xl" py="20px" c="myPurple.0">
-          Notificaciones
+          Notificaciones:
         </Text>
       </Flex>
       <Divider size="xs" color="myPurple.1" />
@@ -153,7 +153,6 @@ export function SettingsBox() {
           <Checkbox
             checked={notification}
             ml={50}
-            mt={10}
             size="md"
             label="Recibir notificaciones de mis recordatorios"
             color="myPurple.4"
@@ -182,9 +181,9 @@ export function SettingsBox() {
       </Flex>
       {showNotification && (
         <motion.div
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: -40 }}
-          exit={{ opacity: 0, y: -10 }} // Smooth fade out
+          initial={{ opacity: 0, y: -70 }}
+          animate={{ opacity: 1, y: -60 }}
+          exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.5 }}
         >
           <Text ml="50px" c="myPurple.12">

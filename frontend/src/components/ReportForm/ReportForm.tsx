@@ -11,6 +11,7 @@ import {
   Textarea,
 } from '@mantine/core';
 import { useAuth } from '@/hooks/AuthProvider';
+import { useTheme } from '@/hooks/ThemeProvider';
 import { fetchBoxesByLocker, fetchFormIncident, fetchLockers } from '@/services/fetch';
 import { Boxs, Locker } from '@/types/types';
 import classes from './ReportForm.module.css';
@@ -33,7 +34,7 @@ const theme = createTheme({
 });
 
 export function ReportForm() {
-  const { theme } = useAuth();
+  const { theme } = useTheme();
   const [lockers, setLockers] = useState<Locker[]>([]);
   const [boxes, setBoxes] = useState<Boxs[]>([]);
   const [selectedLocker, setSelectedLocker] = useState('');

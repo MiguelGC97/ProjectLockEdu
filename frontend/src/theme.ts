@@ -25,8 +25,8 @@ const myPurpleLight: MantineColorsTuple = [
   '#4F51B3', // done
   '#7072C2', // done
   '#A9ABDA', // done
-  '#e8e9fa', // done
-  '#fcfdff', // done
+  '#ebe8ff', // done
+  '#ffff', // done
   '#BE8809', // YELLOW LIGHT MODE - myPurple.10
   '#C01B26', // RED LIGHT MODE - myPurple.11
   '#1E8052', // GREEN LIGHT MODE - myPurple.12
