@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from 'react';
+﻿﻿import { useEffect, useRef, useState } from 'react';
 import { IconArrowLeft, IconClock } from '@tabler/icons-react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
@@ -33,7 +33,7 @@ import 'dayjs/locale/es';
 
 import { useAuth } from '@/hooks/AuthProvider';
 import instance, { baseUrl } from '@/services/api';
-import { fetchBookingDatesByItemIds } from '@/services/fetch';   
+import { fetchBookingDatesByItemIds } from '@/services/fetch';
 import { BookingFormProps, BoxType, Item } from '@/types/types';
 
 import './BookingForm.module.css';
@@ -43,6 +43,7 @@ dayjs.extend(isBetween);
 dayjs.locale('es');
 
 const BookingForm: React.FC<BookingFormProps> = ({
+  locker,
   box,
   items,
   onReturnToBox,
@@ -68,9 +69,54 @@ const BookingForm: React.FC<BookingFormProps> = ({
     setReturnTime(event.target.value);
   };
 
+  const calculateReturnTimeLimit = (date: Date): string | null => {
+    const selectedDate = dayjs(date).startOf('day');
+  
+   
+    const activeBooking = unavailableDates.find(({ checkIn }) => {
+      return dayjs(checkIn).isSame(selectedDate, 'day');
+    });
+  
+    if (activeBooking) {
+      
+      const limitTime = dayjs(activeBooking.checkIn).subtract(5, 'minute').format('HH:mm');
+      return limitTime;
+    }
+  
+    return null; 
+  };
+
+  const handleDateRangeChange = (newRange: [Date | null, Date | null]) => {
+    if (newRange[0] && newRange[1]) {
+      const start = dayjs(newRange[0]);
+      const end = dayjs(newRange[1]);
+
+      const isInvalidRange = unavailableDates.some(({ checkIn, checkOut }) => {
+        const checkInDate = dayjs(checkIn);
+        const checkOutDate = dayjs(checkOut);
+
+        return start.isBefore(checkInDate) && end.isAfter(checkOutDate);
+      });
+
+      if (isInvalidRange) {
+        setError('Algunos de los días que has seleccionado ya están reservados');
+        return;
+      }
+
+      const returnTimeLimit = calculateReturnTimeLimit(newRange[1]);
+
+      if (returnTimeLimit) {
+        setReturnTime(returnTimeLimit);
+      }
+    }
+
+    setError(null);
+    setDateRange(newRange);
+  };
+
   const handleBookingConfirmation = async () => {
     if (!dateRange[0] || !dateRange[1] || !pickupTime || !returnTime) {
-      setError('Por favor, selecciona uno o varios días y ambos horarios.');
+      setError('Selecciona uno o varios días y ambas horas para confirmar la reserva');
       return;
     }
 
@@ -107,8 +153,14 @@ const BookingForm: React.FC<BookingFormProps> = ({
       setConfirmedBooking({
         box,
         items: filteredObjects,
-        pickupDate: dateRange[0],
-        returnDate: dateRange[1],
+        pickupDate: dayjs(
+          `${dayjs(dateRange[0]).format('YYYY-MM-DD')} ${pickupTime}`,
+          'YYYY-MM-DD HH:mm'
+        ).toDate(),
+        returnDate: dayjs(
+          `${dayjs(dateRange[1]).format('YYYY-MM-DD')} ${returnTime}`,
+          'YYYY-MM-DD HH:mm'
+        ).toDate(),
         ...response.data,
       });
 
@@ -176,7 +228,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
     }
   }, [filteredObjects]);
 
-  useEffect(() => {}, [dateRange]);
+  useEffect(() => { }, [dateRange]);
 
   if (confirmedBooking) {
     return (
@@ -194,12 +246,12 @@ const BookingForm: React.FC<BookingFormProps> = ({
         }}
       >
         <Title order={3}>Reserva Confirmada</Title>
-        <Text>Armario: {confirmedBooking.box.name}</Text>
+        <Text>Casilla {confirmedBooking.box.id}</Text>
         <Text>
-          Fecha de recogida: {dayjs(confirmedBooking.pickupDate).format('YYYY-MM-DD HH:mm')}
+          Fecha de recogida: {dayjs(confirmedBooking.pickupDate).format('DD-MM-YYYY HH:mm')}
         </Text>
         <Text>
-          Fecha de devolución: {dayjs(confirmedBooking.returnDate).format('YYYY-MM-DD HH:mm')}
+          Fecha de devolución: {dayjs(confirmedBooking.returnDate).format('DD-MM-YYYY  HH:mm')}
         </Text>
         <br />
         <Text>Items Reservados:</Text>
@@ -244,7 +296,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
                   <DatePicker
                     type="range"
                     value={dateRange}
-                    onChange={setDateRange}
+                    onChange={handleDateRangeChange}
                     size="md"
                     p="1px"
                     allowSingleDateInRange
@@ -259,7 +311,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
                         // Excludes dates if checkIn after current date
                         if (checkInDate.isAfter(now)) {
                           return dayjs(date).isBetween(
-                            checkInDate.startOf('day'), // Starts unavailable dates range
+                            checkInDate.startOf('day'), // Start of unavailable dates range
                             checkOutDate.endOf('day'), // End of unavailable dates range
                             null,
                             '[]' // Includes range limits
@@ -287,11 +339,42 @@ const BookingForm: React.FC<BookingFormProps> = ({
 
                       const isSelected = dateRange?.some((d) => d && dayjs(d).isSame(date, 'day'));
 
+                      const isInRange = dateRange[0] && dateRange[1] && dayjs(date).isBetween(
+                        dayjs(dateRange[0]).startOf('day'),
+                        dayjs(dateRange[1]).endOf('day'),
+                        'day',
+                        '[]'
+                      );
+
+                      const isFirstUnavailableDay = unavailableDates.some((unavailable) => {
+                        const checkOutDate = dayjs(unavailable.checkOut);
+                        return dayjs(date).isSame(checkOutDate, 'day');
+                      });
+
                       let dayStyles: React.CSSProperties = {};
 
                       if (isUnavailable) {
                         dayStyles = {
                           backgroundColor: '#a83435',
+                          opacity: 1,
+                          color: 'white',
+                        };
+                      }
+
+
+
+                      if (isInRange) {
+                        dayStyles = {
+                          backgroundColor: '#E7AF2E',
+                          color: 'white',
+                        };
+                      }
+
+                      if (isFirstUnavailableDay) {
+                        dayStyles = {
+                          ...dayStyles,
+                          backgroundColor: '#d16465',
+
                           color: 'white',
                         };
                       }
@@ -310,9 +393,15 @@ const BookingForm: React.FC<BookingFormProps> = ({
                 </Box>
 
                 <Text mt="md" size="md" c="white" fw={500}>
-                  {dateRange[0] && dateRange[1]
-                    ? `Reservar del ${dayjs(dateRange[0]).format('DD/MM/YYYY')} al ${dayjs(dateRange[1]).format('DD/MM/YYYY')}.`
-                    : 'Selecciona un rango de fechas para reservar.'}
+                  {dateRange[0] && dateRange[1] ? (
+                    dayjs(dateRange[0]).isSame(dateRange[1], 'day') ? (
+                      `Reservar el ${dayjs(dateRange[0]).format('DD/MM/YYYY')}`
+                    ) : (
+                      `Reservar del ${dayjs(dateRange[0]).format('DD/MM/YYYY')} al ${dayjs(dateRange[1]).format('DD/MM/YYYY')}`
+                    )
+                  ) : (
+                    'Selecciona un rango de fechas para reservar.'
+                  )}
                 </Text>
 
                 <Flex justify="center" align="center" gap="md" mt="md" c="white">
@@ -326,6 +415,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
                     label="Hora de devolución"
                     value={returnTime ?? ''}
                     onChange={handleReturnTimeChange}
+                    maxTime={dateRange[1] ? calculateReturnTimeLimit(dateRange[1]) ?? undefined : undefined} 
                   />
                 </Flex>
               </DatesProvider>
@@ -357,6 +447,26 @@ const BookingForm: React.FC<BookingFormProps> = ({
             </Flex>
           </ScrollArea>
 
+          {error && (
+            <Flex justify="center" mt="sm">
+              <Text
+                size="md"
+                fw={700}
+                c="#FF6961"
+                ta="center"
+                style={{
+                  backgroundColor: '#393A58',
+                  padding: '8px 16px',
+                  borderRadius: '8px',
+                  border: '1px solid #FF6961',
+                }}
+              >
+                {error}
+              </Text>
+            </Flex>
+          )}
+
+
           <Flex mx="auto" gap="2vw" maw="90%">
             <Button
               onClick={onReturnToBox}
@@ -377,7 +487,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
               mx="auto"
               mt="1vh"
               onClick={handleBookingConfirmation}
-              disabled={!pickupTime || !returnTime}
+            // disabled={!pickupTime || !returnTime}
             >
               Confirmar
             </Button>
