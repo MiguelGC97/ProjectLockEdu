@@ -27,7 +27,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('access_token');
+    localStorage.setItem;
     if (token) {
       instance
         .get('/signin', { headers: { Authorization: `Bearer ${token}` } })
@@ -37,7 +38,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           fetchUserBanner(res.data.user.id);
           fetchUserNotificationPreference(res.data.user.id);
         })
-        .catch(() => localStorage.removeItem('authToken'));
+        .catch(() => localStorage.removeItem('access_token'));
     }
   }, [setUser]);
 
@@ -78,9 +79,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (username: string, password: string) => {
     try {
       const data = await authService(username, password);
-      const { token, user } = data;
+      const { access_token, user } = data;
 
-      localStorage.setItem('authToken', token);
+      localStorage.setItem('access_token', access_token);
       setUser(user);
       fetchUserThemePreference(user.id);
       fetchUserBanner(user.id);
@@ -92,7 +93,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem('access_token');
     setUser(null);
     setTheme('dark');
     setBanner('');

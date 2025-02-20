@@ -4,8 +4,7 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { Flex } from '@mantine/core';
 import { AuthProvider, useAuth } from './hooks/AuthProvider';
-import { ThemeProvider, useTheme } from './hooks/ThemeProvider'; // Import useTheme
-
+import { ThemeProvider, useTheme } from './hooks/ThemeProvider';
 import BookingHistory from './pages/BookingsHistory.page';
 import Home from './pages/Home.page';
 import Login from './pages/Login.page';

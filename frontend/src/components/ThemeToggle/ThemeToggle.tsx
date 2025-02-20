@@ -1,10 +1,12 @@
 ﻿import React from 'react';
 import { IconMoon, IconSunHigh } from '@tabler/icons-react';
 import { Button } from '@mantine/core';
+import { useAuth } from '@/hooks/AuthProvider';
 import { useTheme } from '@/hooks/ThemeProvider';
 
 const ThemeToggle = () => {
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useAuth();
+  const { toggleTheme } = useTheme();
 
   return (
     <div>
