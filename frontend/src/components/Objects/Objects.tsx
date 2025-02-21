@@ -82,7 +82,7 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
           <Stack mb="2vh" gap="xl">
             <Flex gap="29%">
               <a>
-                <IconArrowLeft color="#222337" size="30px" onClick={onReturn} />
+                <IconArrowLeft size="30px" onClick={onReturn} />
               </a>
 
               <Title fw="600" c="myPurple.0">

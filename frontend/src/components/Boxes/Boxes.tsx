@@ -76,7 +76,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
           <a>
             <IconArrowLeft
               aria-label="volver a armarios"
-              c="myPurple.0"
+              // c="myPurple.0"
               size="30px"
               onClick={onReturn}
             />

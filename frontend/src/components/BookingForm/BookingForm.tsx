@@ -315,10 +315,10 @@ const BookingForm: React.FC<BookingFormProps> = ({
                   />
                 </Box>
 
-                <Text mt="md" size="md" c="MyPurple.0" fw={500}>
+                <Text mt="md" size="md" c="var(--mantine-color-myPurple-0)" fw={500}>
                   {dateRange[0] && dateRange[1]
                     ? `Reservar del ${dayjs(dateRange[0]).format('DD/MM/YYYY')} al ${dayjs(dateRange[1]).format('DD/MM/YYYY')}.`
-                    : 'Selecciona un rango de fechas para reservar.'}
+                    : 'Selecciona un rango de fechas para reservar:'}
                 </Text>
 
                 <Flex justify="center" align="center" gap="md" mt="md" c="myPurple.0">
