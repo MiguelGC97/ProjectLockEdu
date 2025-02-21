@@ -6,9 +6,12 @@ import {
   Flex,
   Input,
   Modal,
+  NumberInput,
   ScrollArea,
+  Select,
   Stack,
   Text,
+  TextInput,
   Title,
   Tooltip,
 } from '@mantine/core';
@@ -20,7 +23,7 @@ import { MdOutlineEdit } from 'react-icons/md';
 import { useDisclosure } from '@mantine/hooks';
 import { useAuth } from '@/hooks/AuthProvider';
 import { useTheme } from '@/hooks/ThemeProvider';
-import { fetchLockers } from '@/services/fetch';
+import { createLocker, deleteLocker, fetchLockers, updateLocker } from '@/services/fetch';
 import { Locker, LockersProps } from '@/types/types';
 import { LockersContext } from './context';
 
@@ -31,6 +34,15 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
   const [openedCreate, { open: openCreate, close: closeCreate }] = useDisclosure(false);
   const [openedEdit, { open: openEdit, close: closeEdit }] = useDisclosure(false);
   const [openedDelete, { open: openDelete, close: closeDelete }] = useDisclosure(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [lockerToDelete, setLockerToDelete] = useState<any | null>(null);
+  const [lockerToEdit, setLockerToEdit] = useState<Locker | null>(null);
+
+  const [newLocker, setNewLocker] = useState<any>({
+    description: '',
+    number: null,
+    location: '',
+  });
 
   useEffect(() => {
     const loadLockers = async () => {
@@ -43,17 +55,217 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
     };
     loadLockers();
   }, []);
+
+  const handleChange = (field: keyof any, value: string) => {
+    setNewLocker((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const openDeleteModal = (locker: any) => {
+    setLockerToDelete(locker);
+    openDelete();
+  };
+
+  const openEditModal = (locker: Locker) => {
+    setLockerToEdit(locker);
+    openEdit();
+  };
+
+  const handleCreateLocker = async () => {
+    try {
+      const response = await createLocker(newLocker);
+      if (response) {
+        setLockers((prev) => (prev ? [...prev, response.locker] : [response.locker]));
+        closeCreate();
+        setNewLocker({
+          description: '',
+          number: null,
+          location: '',
+        });
+        setErrorMessage(null);
+      }
+    } catch (error: any) {
+      if (error.response && error.response.status === 409) {
+        setErrorMessage(error.response.data.message);
+      } else {
+        console.error('Error creating locker:', error);
+        setErrorMessage('Ocurrió un error al crear el armario.');
+      }
+    }
+  };
+
+  const handleDeleteLocker = async (lockerId: number) => {
+    try {
+      const response = await deleteLocker(lockerId);
+      if (response) {
+        setLockers((prev) => prev?.filter((locker) => locker.id !== lockerId));
+        closeDelete();
+        setErrorMessage(null);
+      }
+    } catch (error: any) {
+      if (error.response && error.response.status === 404) {
+        setErrorMessage(error.response.data.message);
+      } else {
+        setErrorMessage('Ocurrió un error al eliminar el armario.');
+      }
+    }
+  };
+
+  const handleUpdateLocker = async () => {
+    try {
+      setErrorMessage('');
+
+      if (!lockerToEdit) {
+        return;
+      }
+
+      const updatedLocker = {
+        ...lockerToEdit,
+        number: lockerToEdit.number,
+        description: lockerToEdit.description,
+        location: lockerToEdit.location,
+      };
+
+      const response = await updateLocker(updatedLocker);
+
+      if (response) {
+        setLockers((prevLockers) =>
+          prevLockers?.map((locker) =>
+            locker.id === lockerToEdit.id ? { ...locker, ...updatedLocker } : locker
+          )
+        );
+        closeEdit();
+      }
+    } catch (error: any) {
+      // const errorMessage = error.response?.data?.message || 'Ha ocurrido un error inesperado.';
+
+      switch (error.response?.status) {
+        case 404:
+          setErrorMessage('El armario no fue encontrado.');
+          break;
+        case 409:
+          setErrorMessage('El número del armario ya está en uso.');
+          break;
+        case 400:
+          setErrorMessage('La solicitud contiene datos incorrectos.');
+          break;
+        default:
+          setErrorMessage('Error en la solicitud.');
+          break;
+      }
+    }
+  };
+
   return (
     <LockersContext.Provider value={lockers}>
-      <Modal opened={openedCreate} onClose={closeCreate} title="Crear armario">
-        Olá, aqui você criará um locker
+      <Modal size="lg" opened={openedCreate} onClose={closeCreate} title="Crear nuevo armario">
+        <Flex direction="column" gap="md">
+          {errorMessage && (
+            <Text c="myPurple.11" size="sm" fw={500}>
+              {errorMessage}
+            </Text>
+          )}
+
+          <TextInput
+            label="Numero"
+            placeholder="Ingrese el numero"
+            value={newLocker.number}
+            onChange={(e) => handleChange('number', e.target.value)}
+            withAsterisk
+          />
+          <TextInput
+            label="Descripción"
+            placeholder="Ingrese la descripción"
+            value={newLocker.description}
+            onChange={(e) => handleChange('description', e.target.value)}
+            withAsterisk
+          />
+          <TextInput
+            label="Ubicación"
+            placeholder="Ingrese la ubicación"
+            value={newLocker.location}
+            onChange={(e) => handleChange('location', e.target.value)}
+            withAsterisk
+          />
+
+          <Button size="md" onClick={handleCreateLocker} color="myPurple.4" fullWidth>
+            Crear armario
+          </Button>
+        </Flex>
       </Modal>
+
+      <Modal size="lg" opened={openedDelete} onClose={closeDelete} title="Eliminar armario">
+        {lockerToDelete ? (
+          <>
+            <Text size="md">
+              ¿Estás seguro de que deseas eliminar el armario{' '}
+              <strong>0{lockerToDelete.number}</strong>? Todas sus casillas y objetos se eliminarán
+              también.
+            </Text>
+
+            {errorMessage && (
+              <Text color="red" size="sm" fw={500} mt="sm">
+                {errorMessage}
+              </Text>
+            )}
+
+            <Flex gap="md" justify="space-between" mt="md">
+              <Button size="md" onClick={closeDelete} color="gray">
+                Cancelar
+              </Button>
+              <Button
+                size="md"
+                onClick={() => handleDeleteLocker(lockerToDelete.id)}
+                color="#C01B26"
+              >
+                Eliminar armario
+              </Button>
+            </Flex>
+          </>
+        ) : (
+          <Text>Cargando...</Text>
+        )}
+      </Modal>
+
       <Modal opened={openedEdit} onClose={closeEdit} title="Editar armario">
-        Olá, aqui você editará um locker
+        {errorMessage && (
+          <Text c="myPurple.11" size="sm" fw={500}>
+            {errorMessage}
+          </Text>
+        )}
+
+        {lockerToEdit ? (
+          <Flex direction="column" gap="md">
+            <NumberInput
+              label="Numero"
+              placeholder="Ingrese el nuevo numero"
+              value={lockerToEdit?.number}
+              onChange={(value) => setLockerToEdit({ ...lockerToEdit, number: value })}
+              min={1}
+            />
+
+            <TextInput
+              label="Descripción"
+              placeholder="Ingrese la nueva descripción"
+              value={lockerToEdit?.description}
+              onChange={(e) => setLockerToEdit({ ...lockerToEdit, description: e.target.value })}
+            />
+
+            <TextInput
+              label="Ubicación"
+              placeholder="Ingrese la nueva ubicación"
+              value={lockerToEdit?.location}
+              onChange={(e) => setLockerToEdit({ ...lockerToEdit, location: e.target.value })}
+            />
+
+            <Button size="md" onClick={handleUpdateLocker} color="myPurple.4" fullWidth>
+              Confirmar cambios
+            </Button>
+          </Flex>
+        ) : (
+          <Text>Cargando...</Text>
+        )}
       </Modal>
-      <Modal opened={openedDelete} onClose={closeDelete} title="Borrar armario">
-        Olá, aqui você confirmará que quer deletar um locker
-      </Modal>
+
       <Box
         bg={theme === 'dark' ? 'myPurple.4' : 'transparent'}
         bd={theme === 'dark' ? null : '1px solid myPurple.0'}
@@ -104,7 +316,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
                           size="xl"
                           c="myPurple.0"
                         >
-                          Armario 0{locker.number}
+                          Armario {locker.number}
                         </Title>
                         <Flex gap="md" justify="flex-start">
                           <Flex gap={5}>
@@ -159,7 +371,11 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
                     <Flex w="100%" justify={user?.role === 'TEACHER' ? 'center' : 'space-between'}>
                       {user?.role === 'ADMIN' ? (
                         <Tooltip label="Editar armario">
-                          <Button onClick={openEdit} c="myPurple.0" variant="transparent">
+                          <Button
+                            onClick={() => openEditModal(locker)}
+                            c="myPurple.0"
+                            variant="transparent"
+                          >
                             <MdOutlineEdit size={24} />
                           </Button>
                         </Tooltip>
@@ -178,7 +394,11 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
                       </Button>
                       {user?.role === 'ADMIN' ? (
                         <Tooltip label="Borrar armario">
-                          <Button onClick={openDelete} c="myPurple.11" variant="transparent">
+                          <Button
+                            onClick={() => openDeleteModal(locker)}
+                            c="myPurple.11"
+                            variant="transparent"
+                          >
                             <IconTrash size={24} />
                           </Button>
                         </Tooltip>

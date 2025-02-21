@@ -85,6 +85,7 @@ const UsersBox: React.FC = () => {
       }
     }
   };
+
   const handleDeleteUser = async (userId: number) => {
     try {
       const response = await deleteUser(userId);
