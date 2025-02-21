@@ -23,7 +23,7 @@ module.exports = {
         name: "Sarah",
         surname: "Soares",
         username: "saraS@gmail.com",
-        password: hashedPassword2,
+        password: hashedPassword1,
         avatar: "https://www.lanacion.com.ar/resizer/v2/despues-de-que-elmo-preguntara-como-le-iba-a-todo-VB4CYJUPMNFC7GZGI4ITRLALHA.jpg?auth=352e2d4bea8c1e990533b526f05265e4d32424fbbf431228f6ab7cb52195fd60&width=420&height=280&quality=70&smart=truegit add ",
         role: "TEACHER",
         createdAt: new Date(),
