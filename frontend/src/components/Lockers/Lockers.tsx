@@ -4,7 +4,6 @@ import { Box, Button, Center, Flex, Input, ScrollArea, Stack, Text, Title } from
 import './Lockers.module.css';
 
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/hooks/AuthProvider';
 import { useTheme } from '@/hooks/ThemeProvider';
 import { fetchLockers } from '@/services/fetch';
 import { Locker, LockersProps } from '@/types/types';
@@ -16,12 +15,15 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
 
   useEffect(() => {
     const loadLockers = async () => {
-      const data = await fetchLockers();
-      setLockers(data || []);
+      try {
+        const data = await fetchLockers();
+        setLockers(data || []);
+      } catch (error) {
+        console.error('Error fetching lockers:', error);
+      }
     };
     loadLockers();
   }, []);
-
   return (
     <LockersContext.Provider value={lockers}>
       <Box

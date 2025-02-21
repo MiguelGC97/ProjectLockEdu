@@ -28,31 +28,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
-  // Check session on mount
   useEffect(() => {
     const sessionSid = Cookies.get('connect.sid');
-    if (sessionSid) {
-      instance
-        .get('/users/signin', { withCredentials: true })
-        .then((res) => {
-          setUser(res.data.user);
-          fetchUserPreferences(res.data.user.id);
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error('Session validation failed:', error.response || error);
-          Cookies.remove('connect.sid');
-          setLoading(false);
-          navigate('/');
-        });
-    } else {
+    const savedUser = sessionStorage.getItem('user');
+
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
       setLoading(false);
+      return;
     }
+
+    if (!sessionSid) {
+      setLoading(false);
+      return;
+    }
+
+    instance
+      .get('/users/validateSession', { withCredentials: true })
+      .then((res) => {
+        const userData = res.data.user;
+        sessionStorage.setItem('user', JSON.stringify(userData));
+        setUser(userData);
+        fetchUserPreferences(userData.id);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Session validation failed:', error.response || error);
+        Cookies.remove('connect.sid');
+        sessionStorage.removeItem('user');
+        setLoading(false);
+        navigate('/');
+      });
   }, [navigate]);
 
   const fetchUserPreferences = async (userId: number) => {
     try {
-      const res = await instance.get(`/user/settings/${userId}`, { withCredentials: true });
+      const res = await instance.get(`/users/settings/${userId}`, { withCredentials: true });
       setTheme(res.data.settings.theme);
       setBanner(res.data.settings.banner);
       setNotification(res.data.settings.notifications);
@@ -67,22 +78,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (username: string, password: string) => {
     try {
-      const response = await authService(username, password); // Backend login
-
-      // The response from your backend should contain the user data, not session_id
+      const response = await authService(username, password);
       const { user } = response;
 
-      console.log(user);
+      sessionStorage.setItem('user', JSON.stringify(user));
 
-      // Now that you have user data, set it in your context
       setUser(user);
-
-      // Fetch additional user preferences if needed
       fetchUserPreferences(user.id);
 
-      // Redirect based on user role
       if (user.role === 'ADMIN') {
-        navigate('/armarios');
+        navigate('/panel-admin');
       } else if (user.role === 'TEACHER') {
         navigate('/perfil');
       } else {
@@ -93,17 +98,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Logout function to remove session and reset context
   const logout = () => {
-    Cookies.remove('connect.sid'); // Remove session cookie
-    setUser(null); // Clear user data
-    setTheme('dark'); // Reset theme to default
-    setBanner(''); // Reset banner
-    setNotification(true); // Reset notification preference
-    navigate('/', { replace: true }); // Redirect to login page
+    Cookies.remove('connect.sid');
+    sessionStorage.removeItem('user');
+    setUser(null);
+    setTheme('dark');
+    setBanner('');
+    setNotification(true);
+    navigate('/', { replace: true });
   };
 
-  // Memoize context values to prevent unnecessary re-renders
   const value = useMemo(
     () => ({
       user,

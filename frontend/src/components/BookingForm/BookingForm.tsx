@@ -32,6 +32,7 @@ import isBetween from 'dayjs/plugin/isBetween';
 import 'dayjs/locale/es';
 
 import { useAuth } from '@/hooks/AuthProvider';
+import { useTheme } from '@/hooks/ThemeProvider';
 import instance, { baseUrl } from '@/services/api';
 import { fetchBookingDatesByItemIds } from '@/services/fetch';
 import { BookingFormProps, BoxType, Item } from '@/types/types';
@@ -56,7 +57,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
   const [returnTime, setReturnTime] = useState<string>('');
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
   const currentDate = dayjs();
-  const { theme } = useAuth();
+  const { theme } = useTheme();
   const { user } = useAuth();
   const [unavailableDates, setUnavailableDates] = useState<{ checkIn: Date; checkOut: Date }[]>([]);
 
@@ -82,7 +83,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
     const description = 'Reserva de prueba';
     const state = 'pending';
     const itemIds = filteredObjects.map((object) => object.id.toString());
-    const userId = user.id;
+    const userId = user?.id;
     const checkOut = dayjs(
       `${dayjs(dateRange[0]).format('YYYY-MM-DD')} ${pickupTime}`,
       'YYYY-MM-DD HH:mm'

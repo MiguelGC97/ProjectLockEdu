@@ -14,12 +14,11 @@ export default function UserBarReport({ onToggleVisibility }: UserBarReportProps
   const { theme } = useTheme();
 
   return (
-    <Flex miw={100} mih={20} justify="flex-end" px="xl" py="md" gap="2vw">
+    <Flex miw={100} mih={20} justify="flex-end" align="center" px="xl" py="xl" gap="2vw">
       <ThemeToggle />
       <Button
         color="myPurple.4"
         size="lg"
-        h="2.8em"
         w="8em"
         p="5px"
         radioGroup="md"

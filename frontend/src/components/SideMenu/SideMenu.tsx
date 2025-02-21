@@ -36,7 +36,7 @@ function NavbarLink({ icon: Icon, label, active, onClick, to }: NavbarLinkProps)
         data-active={active || undefined}
         aria-label={label}
       >
-        <Icon style={{ width: rem(30), height: rem(30), color: 'white' }} stroke={1.5} />
+        <Icon style={{ width: rem(30), height: rem(30) }} stroke={1.5} />
       </UnstyledButton>
     </Tooltip>
   );
@@ -50,8 +50,7 @@ const menuDataTeacher = [
 ];
 
 const menuDataAdmin = [
-  { icon: IconCircleKey, label: 'Armarios', to: '/armarios' },
-  { icon: IconUsers, label: 'Usuarios', to: '/usuarios' },
+  { icon: IconUsers, label: 'Panel de Admin', to: '/panel-admin' },
   { icon: IconSettings, label: 'Configuraciones', to: '/configuraciones-admin' },
 ];
 
@@ -121,8 +120,13 @@ export function SideMenu() {
           </div>
         </Flex>
 
-        <Flex direction="column" align="flex-end" h="100vh">
-          <NavbarLink c="myPurple.0" icon={IconLogout} label="Salir" onClick={handleLogout} />
+        <Flex
+          direction="column"
+          align="flex-end"
+          pt={user?.role === 'TEACHER' ? '' : '150px'}
+          h="100vh"
+        >
+          <NavbarLink icon={IconLogout} label="Salir" onClick={handleLogout} />
         </Flex>
       </Flex>
     </div>

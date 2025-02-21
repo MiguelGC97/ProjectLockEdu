@@ -99,7 +99,7 @@ export interface UserType {
   id: number;
   name: string;
   surname: string;
-  password: string;
+  // password: string;
   username: string;
   avatar: string;
   role: 'TEACHER' | 'ADMIN' | 'MANAGER';

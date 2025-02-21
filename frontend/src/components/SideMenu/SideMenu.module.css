@@ -19,12 +19,12 @@
   align-items: center;
   justify-content: center;
   gap: rem(50px);
-  color: var(--mantine-color-white);
+  color: var(--mantine-color-black);
 
   &:hover {
     box-shadow: var(--mantine-shadow-lg);
     background-color: var(--mantine-color-myPurple-8);
-    color: var(--mantine-color-myPurple-4);
+    color: var(--mantine-color-black);
   }
 
   &[data-active] {
@@ -32,11 +32,23 @@
     &:hover {
       box-shadow: var(--mantine-shadow-sm);
       background-color: var(--mantine-color-myPurple-5);
-      color: var(--mantine-color-white);
+      color: var(--mantine-color-myPurple-0);
     }
   }
 }
 
 Image {
   cursor: pointer;
+}
+
+.link {
+  transition: color 0.2s ease-in-out;
+}
+
+.link svg {
+  color: white; /* Default color */
+}
+
+.link:hover svg {
+  color: var(--mantine-color-myPurple-0); /* Change color on hover */
 }

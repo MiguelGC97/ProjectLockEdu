@@ -12,7 +12,6 @@ const { store } = require("./controllers/reportLog.views.controller.js");
 const sequelizeStore = require("connect-session-sequelize")(session.Store);
 const db = require("./models/index.js");
 
-
 const app = express();
 
 
@@ -28,9 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
 app.set("view engine", "ejs");
-
 app.use(express.static(path.join(__dirname, "public")));
 
 
@@ -42,32 +39,30 @@ db.sessionStore = sessionStore;
 db.session = session;
 
 
-app.use(
-  session({
-    secret: process.env.JWT_SECRET,  // Change this to a secure, private string
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: false, // Set to 'true' if you're using HTTPS
-      maxAge: 1000 * 60 * 60 * 24, // 24 hours
-    },
-  })
-);
+app.use(session({
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 30 * 60 * 1000,
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    sameSite: 'strict',
+  },
+}));
 
 
-const authSession = require("./middlewares/auth.session.js");
+const authSession = require("./middlewares/authForReact.session.js");
 app.use(authSession.setUserLocals);
-
 
 app.use((req, res, next) => {
   let token = req.headers["authorization"];
+
   if (!token) return next();
 
   if (token.startsWith("Basic ")) {
     const base64Credentials = token.split(" ")[1];
-    const credentials = Buffer.from(base64Credentials, "base64").toString(
-      "ascii"
-    );
+    const credentials = Buffer.from(base64Credentials, "base64").toString("ascii");
     const [username, password] = credentials.split(":");
     req.body.username = username;
     req.body.password = password;
@@ -88,6 +83,7 @@ app.use((req, res, next) => {
     }
   });
 });
+
 
 app.get("/", (req, res) => {
   if (req.session.user) {
@@ -110,11 +106,10 @@ const routes = [
   "reportLog.views",
   "user.views",
   "locker.views",
-  'notification.views'
+  "notification.views"
 ];
 
 routes.forEach((route) => require(`./routes/${route}.routes.js`)(app));
-
 
 async function runSeeders() {
   const seeders = [
@@ -137,19 +132,13 @@ async function runSeeders() {
 
 
 const server = http.createServer(app);
-
-
 const wss = new WebSocket.Server({ server });
 
 wss.on("connection", (ws) => {
-
-
   ws.send(JSON.stringify({ message: "Bienvenido al servidor WebSocket." }));
-
 
   ws.on("message", (message) => {
     console.log(`Mensaje recibido: ${message}`);
-
 
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
@@ -158,14 +147,8 @@ wss.on("connection", (ws) => {
     });
   });
 
-
-  ws.on("close", () => {
-    console.log("Cliente desconectado.");
-  });
-
-  ws.on("error", (error) => {
-    console.error("WebSocket error:", error);
-  });
+  ws.on("close", () => console.log("Cliente desconectado."));
+  ws.on("error", (error) => console.error("WebSocket error:", error));
 });
 
 

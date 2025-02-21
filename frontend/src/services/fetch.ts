@@ -5,7 +5,7 @@ import { Booking, BoxType, Incidence, Item, Locker, UserType } from '@/types/typ
 // function to fetch lockers
 export async function fetchLockers(): Promise<Locker[] | undefined> {
   try {
-    const response = await instance.get(`${baseUrl}/lockers`);
+    const response = await instance.get(`${baseUrl}/lockers`, { withCredentials: true });
     if (response.status >= 200 && response.status < 300 && Array.isArray(response.data)) {
       return response.data;
     } else {
@@ -234,5 +234,21 @@ export async function updatePassword(user: UserType, password: string): Promise<
   } catch (error) {
     console.error('Error user password:', error);
     throw error;
+  }
+}
+
+export async function fetchAllUsers(): Promise<any[] | undefined> {
+  try {
+    const response = await instance.get(`${baseUrl}/users`, { withCredentials: true });
+    if (response.status >= 200 && response.status < 300 && Array.isArray(response.data.data)) {
+      return response.data.data;
+      console.log(response.data.data);
+    } else {
+      console.error('Unexpected response format', response.data.data);
+      return [];
+    }
+  } catch (error: any) {
+    console.error('Error fetching all users:', error.message);
+    return []; // Devuelve un arreglo vacío para evitar romper la app.
   }
 }

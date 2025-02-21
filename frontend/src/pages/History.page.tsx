@@ -42,7 +42,7 @@ const History: React.FC = () => {
       {matches ? (
         matches2 ? (
           <Flex style={{ backgroundColor: theme.colors.myPurple[9] }}>
-            <Flex w="100%" gap="lg">
+            <Flex w="100%" h="100%">
               <SideMenu />
               <Flex direction="column" w="100%">
                 <UserBar />

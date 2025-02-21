@@ -31,17 +31,17 @@ exports.signin = async (req, res) => {
       return res.status(401).json({ message: "Password not valid!" });
     }
 
-    // Successfully authenticated, store user in session
+
     req.session.user = {
       username: data.username,
       id: data.id,
       name: data.name,
-      surname: data.surname,  // Use surname instead of repeating 'name'
+      surname: data.surname,
       avatar: data.avatar,
       role: data.role,
     };
 
-    // You don't need to manually set session_id here; it's automatically handled
+
     return res.status(200).json({ user: req.session.user });
 
   } catch (err) {
@@ -62,9 +62,11 @@ exports.setUserLocals = (req, res, next) => {
   next();
 };
 
-exports.validateSession = (req, res) => {
-  if (req.session && req.session.user) {
-    return res.status(200).json({ user: req.session.user });
+
+
+exports.isAuthenticated = (req, res, next) => {
+  if (req.session?.user) {
+    return next();
   }
-  return res.status(401).json({ message: 'Session expired or invalid' });
+  return res.status(401).json({ message: "Unauthorized: No valid session" });
 };

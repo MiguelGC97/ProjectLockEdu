@@ -1,42 +1,43 @@
 module.exports = (app) => {
   const settings = require("../controllers/settings.controller.js");
-  // const permissions = require("../middlewares/permissions.js");
-  // const auth = require("../middlewares/auth.js");
+  const permissions = require("../middlewares/permissions.js");
+  const auth = require("../middlewares/auth.js");
+  const authForReact = require("../middlewares/authForReact.session.js");
 
   var router = require("express").Router();
 
   router.post(
     "/",
-    // auth.isAuthenticated,
-    // permissions.authorize(["ADMIN"]),
+    authForReact.isAuthenticated,
+    permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]),
     settings.addSettings
   );
 
   router.get(
     "/",
-    // auth.isAuthenticated,
-    // permissions.authorize(["ADMIN"]),
+    authForReact.isAuthenticated,
+    permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]),
     settings.getAll
   );
 
   router.get(
     "/:id",
-    // auth.isAuthenticated,
-    // permissions.authorize(["ADMIN"]),
+    authForReact.isAuthenticated,
+    permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]),
     settings.getOne
   );
 
   router.put(
     "/:id",
-    // auth.isAuthenticated,
-    // permissions.authorize(["ADMIN"]),
+    authForReact.isAuthenticated,
+    permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]),
     settings.update
   );
 
   router.delete(
     "/:id",
-    // auth.isAuthenticated,
-    // permissions.authorize(["ADMIN"]),
+    authForReact.isAuthenticated,
+    permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]),
     settings.delete
   );
 

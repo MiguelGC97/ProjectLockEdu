@@ -5,15 +5,14 @@ import ToastContainerComponent from './components/ToastContainerComponent/ToastC
 import { AuthProvider, useAuth } from './hooks/AuthProvider'; // Import useAuth hook to check loading
 import { ThemeProvider } from './hooks/ThemeProvider';
 import BookingHistory from './pages/BookingsHistory.page';
+import DashboardAdmin from './pages/DashboardAdmin.page';
 import Home from './pages/Home.page';
-import LockersAdmin from './pages/LockersAdmin.page';
 import Login from './pages/Login.page';
 import Reports from './pages/Reports.page';
 import ReportsManager from './pages/ReportsManager.page';
 import Settings from './pages/Settings.page';
 import SettingsAdmin from './pages/SettingsAdmin.page';
 import SettingsManager from './pages/SettingsManager.page';
-import UsersAdmin from './pages/UsersAdmin.page';
 
 // ✅ Import BrowserRouter correctly
 export default function App() {
@@ -59,9 +58,8 @@ const ThemeWrapper = () => {
           <Route path="/configuraciones-manager" element={<SettingsManager />} />
         </Route>
 
-        <Route element={<ProtectedRoute allowedRoles={['ADMIN']} redirectPath="/armarios" />}>
-          <Route path="/armarios" element={<LockersAdmin />} />
-          <Route path="/usuarios" element={<UsersAdmin />} />
+        <Route element={<ProtectedRoute allowedRoles={['ADMIN']} redirectPath="/panel-admin" />}>
+          <Route path="/panel-admin" element={<DashboardAdmin />} />
           <Route path="/configuraciones-admin" element={<SettingsAdmin />} />
         </Route>
       </Routes>
