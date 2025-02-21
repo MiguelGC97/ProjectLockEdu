@@ -1,9 +1,24 @@
-﻿import { IconSearch } from '@tabler/icons-react';
-import { Box, Button, Center, Flex, Input, ScrollArea, Stack, Text, Title } from '@mantine/core';
+﻿import { IconCirclePlus, IconSearch, IconTrash } from '@tabler/icons-react';
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  Input,
+  Modal,
+  ScrollArea,
+  Stack,
+  Text,
+  Title,
+  Tooltip,
+} from '@mantine/core';
 
 import './Lockers.module.css';
 
 import { useEffect, useState } from 'react';
+import { MdOutlineEdit } from 'react-icons/md';
+import { useDisclosure } from '@mantine/hooks';
+import { useAuth } from '@/hooks/AuthProvider';
 import { useTheme } from '@/hooks/ThemeProvider';
 import { fetchLockers } from '@/services/fetch';
 import { Locker, LockersProps } from '@/types/types';
@@ -12,6 +27,10 @@ import { LockersContext } from './context';
 const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
   const [lockers, setLockers] = useState<Locker[] | undefined>();
   const { theme } = useTheme();
+  const { user } = useAuth();
+  const [openedCreate, { open: openCreate, close: closeCreate }] = useDisclosure(false);
+  const [openedEdit, { open: openEdit, close: closeEdit }] = useDisclosure(false);
+  const [openedDelete, { open: openDelete, close: closeDelete }] = useDisclosure(false);
 
   useEffect(() => {
     const loadLockers = async () => {
@@ -26,6 +45,15 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
   }, []);
   return (
     <LockersContext.Provider value={lockers}>
+      <Modal opened={openedCreate} onClose={closeCreate} title="Crear armario">
+        Olá, aqui você criará um locker
+      </Modal>
+      <Modal opened={openedEdit} onClose={closeEdit} title="Editar armario">
+        Olá, aqui você editará um locker
+      </Modal>
+      <Modal opened={openedDelete} onClose={closeDelete} title="Deletar armario">
+        Olá, aqui você confirmará que quer deletar um locker
+      </Modal>
       <Box
         bg={theme === 'dark' ? 'myPurple.4' : 'transparent'}
         bd={theme === 'dark' ? null : '1px solid myPurple.0'}
@@ -43,18 +71,20 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
           </Center>
           {/* Search input for lockers */}
           <Center>
-            <Input
-              aria-label="buscar objeto"
-              bd={theme === 'dark' ? null : '1px solid myPurple.0'}
-              style={{ borderRadius: '5px' }}
-              w="20vw"
-              size="lg"
-              placeholder="Busca un objeto"
-              rightSection={<IconSearch />}
-            />
+            {user?.role === 'TEACHER' ? (
+              <Input
+                aria-label="buscar objeto"
+                bd={theme === 'dark' ? null : '1px solid myPurple.0'}
+                style={{ borderRadius: '5px' }}
+                w="20vw"
+                size="lg"
+                placeholder="Busca un objeto"
+                rightSection={<IconSearch />}
+              />
+            ) : null}
           </Center>
         </Stack>
-        <ScrollArea p="lg" m="md" h="62vh" scrollbarSize={16}>
+        <ScrollArea p="lg" m="md" h={user?.role === 'TEACHER' ? '62vh' : '61vh'} scrollbarSize={16}>
           <Flex direction="column" gap="sm">
             {lockers?.map((locker) => {
               return (
@@ -126,7 +156,14 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
                         </g>
                       </svg>
                     </Flex>
-                    <Center>
+                    <Flex w="100%" justify="space-between">
+                      {user?.role === 'ADMIN' ? (
+                        <Tooltip label="Editar armario">
+                          <Button onClick={openEdit} c="myPurple.0" variant="transparent">
+                            <MdOutlineEdit size={24} />
+                          </Button>
+                        </Tooltip>
+                      ) : null}
                       <Button
                         aria-label={`ver casillas del armario número ${locker.number}`}
                         onClick={() => {
@@ -139,13 +176,39 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
                       >
                         Ver casillas
                       </Button>
-                    </Center>
+                      {user?.role === 'ADMIN' ? (
+                        <Tooltip label="Borrar armario">
+                          <Button onClick={openDelete} c="myPurple.11" variant="transparent">
+                            <IconTrash size={24} />
+                          </Button>
+                        </Tooltip>
+                      ) : null}
+                    </Flex>
                   </Flex>
                 </Box>
               );
             })}
           </Flex>
         </ScrollArea>
+        {user?.role === 'ADMIN' ? (
+          <Flex h="4%" gap={10} mr="25px" justify="flex-end" align="center">
+            <Text c="myPurple.0" size="xl" fw={700}>
+              Añadir nuevo armario
+            </Text>
+
+            <IconCirclePlus
+              cursor="pointer"
+              onClick={openCreate}
+              color="var(--mantine-color-myPurple-0)"
+              size={36}
+              style={{
+                transition: 'transform 0.2s ease-in-out',
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.2)')}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+            />
+          </Flex>
+        ) : null}
       </Box>
     </LockersContext.Provider>
   );

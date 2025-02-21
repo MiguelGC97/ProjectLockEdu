@@ -165,7 +165,7 @@ export function ReportForm() {
           <Box>
             <IconArrowLeft
               size={30}
-              color="myPurple.0"
+              color="var(--mantine-color-myPurple-0)"
               aria-label="Volver al menú anterior"
               tabIndex={0} // Permite la navegación por teclado
               onKeyDown={(e) => e.key === 'Enter' && console.log('Volver')}
