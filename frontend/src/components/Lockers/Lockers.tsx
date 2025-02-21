@@ -51,7 +51,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
       <Modal opened={openedEdit} onClose={closeEdit} title="Editar armario">
         Olá, aqui você editará um locker
       </Modal>
-      <Modal opened={openedDelete} onClose={closeDelete} title="Deletar armario">
+      <Modal opened={openedDelete} onClose={closeDelete} title="Borrar armario">
         Olá, aqui você confirmará que quer deletar um locker
       </Modal>
       <Box
@@ -156,7 +156,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
                         </g>
                       </svg>
                     </Flex>
-                    <Flex w="100%" justify="space-between">
+                    <Flex w="100%" justify={user?.role === 'TEACHER' ? 'center' : 'space-between'}>
                       {user?.role === 'ADMIN' ? (
                         <Tooltip label="Editar armario">
                           <Button onClick={openEdit} c="myPurple.0" variant="transparent">

@@ -120,7 +120,7 @@ const LoginForm: React.FC = () => {
 
         {/* Error message if login fails */}
         {error && (
-          <Text data-testid="login-error" c="red" size="sm" align="center" mt="md">
+          <Text data-testid="login-error" c="red" size="md" align="center" mt="md">
             {error}
           </Text>
         )}

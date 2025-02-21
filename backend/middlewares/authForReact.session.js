@@ -14,7 +14,7 @@ exports.login = async (req, res) => {
 
 exports.signin = async (req, res) => {
   if (!req.body.username || !req.body.password) {
-    return res.status(400).json({ message: "Username or Password required." });
+    return res.status(400).json({ message: "Correo eletrónico y contraseña son obligatorios." });
   }
 
   const user = req.body.username;
@@ -23,12 +23,12 @@ exports.signin = async (req, res) => {
   try {
     const data = await User.findOne({ where: { username: user } });
     if (!data) {
-      return res.status(404).json({ message: "User not found!" });
+      return res.status(404).json({ message: "Usuario no encontrado." });
     }
 
     const result = await bcrypt.compare(pwd, data.password);
     if (!result) {
-      return res.status(401).json({ message: "Password not valid!" });
+      return res.status(401).json({ message: "Contraseña incorrecta." });
     }
 
 
@@ -45,7 +45,7 @@ exports.signin = async (req, res) => {
     return res.status(200).json({ user: req.session.user });
 
   } catch (err) {
-    return res.status(500).json({ message: err.message || "Some error occurred while processing the request." });
+    return res.status(500).json({ message: err.message || "Algun error ocurrió." });
   }
 };
 

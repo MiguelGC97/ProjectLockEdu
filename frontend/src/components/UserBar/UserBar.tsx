@@ -25,9 +25,11 @@ export default function UserBar() {
           <Text aria-label="nombre y apellido del usuario" c="myPurple.0" size="lg" fw={600}>
             {user?.name} {user?.surname}{' '}
           </Text>
-          <Text size="lg" fw={600} c="myPurple.12">
-            ({user?.role === 'ADMIN' ? user?.role : null})
-          </Text>
+          {user?.role === 'TEACHER' ? null : (
+            <Text size="lg" fw={600} c="myPurple.12">
+              ({user?.role === 'ADMIN' ? user?.role : null})
+            </Text>
+          )}
         </Flex>
         <Text aria-label="correo electrónico del usuario" c="myPurple.0" ml="" size="lg" fw={300}>
           {user?.username}

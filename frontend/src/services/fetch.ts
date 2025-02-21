@@ -1,4 +1,5 @@
-﻿import { useAuth } from '@/hooks/AuthProvider';
+﻿import axios from 'axios';
+import { useAuth } from '@/hooks/AuthProvider';
 import instance, { baseUrl } from '@/services/api';
 import { Booking, BoxType, Incidence, Item, Locker, UserType } from '@/types/types';
 
@@ -242,7 +243,6 @@ export async function fetchAllUsers(): Promise<any[] | undefined> {
     const response = await instance.get(`${baseUrl}/users`, { withCredentials: true });
     if (response.status >= 200 && response.status < 300 && Array.isArray(response.data.data)) {
       return response.data.data;
-      console.log(response.data.data);
     } else {
       console.error('Unexpected response format', response.data.data);
       return [];
@@ -252,3 +252,36 @@ export async function fetchAllUsers(): Promise<any[] | undefined> {
     return []; // Devuelve un arreglo vacío para evitar romper la app.
   }
 }
+
+export async function createUser(user: any): Promise<any | undefined> {
+  try {
+    const response = await instance.post(`${baseUrl}/users`, user);
+
+    return response.data;
+  } catch (error: any) {
+    console.error('Error al crear el usuario:', error.response?.data || error.message);
+    throw error;
+  }
+}
+
+export async function deleteUser(userId: any): Promise<any | undefined> {
+  try {
+    const response = await instance.delete(`${baseUrl}/users/${userId}`);
+
+    return response.data;
+  } catch (error: any) {
+    console.error('Error al borrar el usuario:', error.response?.data || error.message);
+    throw error;
+  }
+}
+
+export const updateUser = async (user: UserType): Promise<any | undefined> => {
+  try {
+    const response = await instance.put(`${baseUrl}/users/${user.id}`, user);
+
+    return response.data;
+  } catch (error) {
+    console.error('Error updating user:', error);
+    throw error;
+  }
+};

@@ -130,9 +130,10 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
                   cursor: 'pointer',
                   borderRadius: 20,
                 }}
+                p="lg"
                 bg={theme === 'dark' ? 'myPurple.8' : 'myPurple.8'}
                 bd={theme === 'dark' ? 'none' : '1px solid myPurple.0'}
-                p="lg"
+                onClick={() => (user?.role === 'TEACHER' ? onBoxClick(box) : null)}
               >
                 <Flex w="100%" align="center" justify="space-between">
                   <Stack>
@@ -169,7 +170,11 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
                     </g>
                   </svg>
                 </Flex>
-                <Flex pt={13} w="100%" justify="space-between">
+                <Flex
+                  w="100%"
+                  pt={user?.role === 'ADMIN' ? '10px' : null}
+                  justify={user?.role === 'TEACHER' ? 'center' : 'space-between'}
+                >
                   {user?.role === 'ADMIN' ? (
                     <Tooltip label="Editar armario">
                       <Button onClick={openEdit} c="myPurple.0" variant="transparent">
@@ -177,16 +182,18 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
                       </Button>
                     </Tooltip>
                   ) : null}
-                  <Button
-                    aria-label={`ver casillas del armario número ${locker.number}`}
-                    onClick={() => onBoxClick(box)}
-                    size="md"
-                    maw="8vw"
-                    bg="myPurple.4"
-                    radius="xl"
-                  >
-                    Ver Objetos
-                  </Button>
+                  {user?.role === 'ADMIN' ? (
+                    <Button
+                      aria-label={`ver casillas del armario número ${locker.number}`}
+                      onClick={() => onBoxClick(box)}
+                      size="md"
+                      maw="8vw"
+                      bg="myPurple.4"
+                      radius="xl"
+                    >
+                      Ver Objetos
+                    </Button>
+                  ) : null}
                   {user?.role === 'ADMIN' ? (
                     <Tooltip label="Borrar armario">
                       <Button onClick={openDelete} c="myPurple.11" variant="transparent">

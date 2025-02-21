@@ -47,7 +47,7 @@ exports.findOne = async (req, res) => {
   }
 };
 
-exports.addNewUser = async (req, res) => {
+exports.addNewUserDeprecated = async (req, res) => {
   try {
     // Validate request
     if (!req.body.password || !req.body.username) {
@@ -91,8 +91,6 @@ exports.addNewUser = async (req, res) => {
     const newUser = await User.create(user);
 
 
-    const token = utils.generateToken(newUser);
-    const userObj = utils.getCleanUser(newUser);
     return res.json({ user: userObj, access_token: token });
   } catch (err) {
 
@@ -102,14 +100,54 @@ exports.addNewUser = async (req, res) => {
   }
 };
 
+
+exports.addNewUser = async (req, res) => {
+  try {
+    const { name, surname, password, username, avatar, role } = req.body;
+
+    if (!username || !password || !role) {
+      return res.status(400).send({ message: "Correo eletrónico, contraseña y rol son obligatorios!" });
+    }
+
+    const existingUser = await User.findOne({ where: { username } });
+    if (existingUser) {
+      return res.status(409).send({ message: "User already exists!" });
+    }
+
+    const hashedPassword = bcrypt.hashSync(password, 10);
+
+    const newUser = await User.create({
+      name,
+      surname,
+      username,
+      password: hashedPassword,
+      avatar,
+      role,
+    });
+
+    const userObj = utils.getCleanUser(newUser);
+
+    return res.status(201).json({
+      user: userObj,
+      message: "Usuario creado con éxito!"
+    });
+
+  } catch (err) {
+    return res.status(500).send({ message: err.message || "Internal server error" });
+  }
+};
+
+
+
+
 exports.delete = async (req, res) => {
   const deleting = await User.destroy({ where: { id: req.params.id } });
   const status = deleting ? 200 : 404;
-  const message = deleting ? "User deleted" : "User not found";
-  res.status(status).json({ message });
+  const message = deleting ? "Usuario borrado" : "User no fue encontrado";
+  return res.status(status).json({ message: message });
 };
 
-exports.update = async (req, res) => {
+exports.updateDeprecated = async (req, res) => {
   try {
     const id = req.params.id;
 
@@ -131,6 +169,36 @@ exports.update = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+exports.update = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+
+    if (req.body.password) {
+      req.body.password = await bcrypt.hash(req.body.password, 10);
+    }
+
+
+    const [updated] = await User.update(req.body, { where: { id } });
+
+    if (updated) {
+
+      const updatedUser = await User.findByPk(id);
+      res.status(200).json({
+        message: "¡Usuario actualizado con suceso!",
+        data: updatedUser,
+      });
+    } else {
+      res.status(404).json({ message: "Error al editar usuario. Intente novamente." });
+    }
+  } catch (error) {
+
+    console.error("Update error:", error);
+    res.status(500).json({ error: "Un error ocurrió al editar usuario" });
+  }
+};
+
 
 exports.updatePassword = async (req, res) => {
   try {

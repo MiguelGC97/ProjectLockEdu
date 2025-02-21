@@ -76,7 +76,7 @@ function getCleanUser(user) {
     name: user.name,
     username: user.username,
     surname: user.surname,
-    password: user.password,
+    password: null,
     email: user.email,
     avatar: user.avatar,
     role: user.role,

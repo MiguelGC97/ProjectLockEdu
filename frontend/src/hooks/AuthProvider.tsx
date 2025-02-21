@@ -93,8 +93,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } else {
         navigate('/incidencias-manager');
       }
-    } catch (error) {
-      console.error('Login failed:', error);
+    } catch (error: any) {
+      console.error('Error al acceder a cuenta:', error.response?.data || error.message);
+      throw error;
     }
   };
 

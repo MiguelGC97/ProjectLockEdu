@@ -19,6 +19,6 @@ export const login = async (username: string, password: string) => {
 
     return response.data; // You can choose to return user data here if needed
   } catch (error: any) {
-    throw new Error(error.response?.data?.message || 'Login failed');
+    throw new Error(error.response.data.message || 'La autenticación ha fallado.');
   }
 };
