@@ -7,10 +7,10 @@ import { Booking, BoxType, Incidence, Item, Locker, UserType } from '@/types/typ
 export async function fetchLockers(): Promise<Locker[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/lockers`, { withCredentials: true });
-    if (response.status >= 200 && response.status < 300 && Array.isArray(response.data)) {
-      return response.data;
+    if (response.status >= 200 && response.status < 300 && Array.isArray(response.data.data)) {
+      return response.data.data;
     } else {
-      console.error('Unexpected response format', response.data);
+      console.error('Unexpected response format', response.data.data);
       return [];
     }
   } catch (error: any) {
@@ -282,6 +282,39 @@ export const updateUser = async (user: UserType): Promise<any | undefined> => {
     return response.data;
   } catch (error) {
     console.error('Error updating user:', error);
+    throw error;
+  }
+};
+
+export const createLocker = async (locker: any): Promise<any | undefined> => {
+  try {
+    const response = await instance.post(`${baseUrl}/lockers`, locker);
+
+    return response.data;
+  } catch (error: any) {
+    console.error('Error al crear el armario:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export async function deleteLocker(lockerId: any): Promise<any | undefined> {
+  try {
+    const response = await instance.delete(`${baseUrl}/lockers/${lockerId}`);
+
+    return response.data;
+  } catch (error: any) {
+    console.error('Error al borrar el armario:', error.response?.data || error.message);
+    throw error;
+  }
+}
+
+export const updateLocker = async (locker: Locker): Promise<any | undefined> => {
+  try {
+    const response = await instance.put(`${baseUrl}/lockers/${locker.id}`, locker);
+
+    return response.data;
+  } catch (error) {
+    console.error('Error updating locker:', error);
     throw error;
   }
 };

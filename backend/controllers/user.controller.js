@@ -111,7 +111,7 @@ exports.addNewUser = async (req, res) => {
 
     const existingUser = await User.findOne({ where: { username } });
     if (existingUser) {
-      return res.status(409).send({ message: "User already exists!" });
+      return res.status(409).send({ message: "Este usuario ya existe." });
     }
 
     const hashedPassword = bcrypt.hashSync(password, 10);
@@ -129,7 +129,7 @@ exports.addNewUser = async (req, res) => {
 
     return res.status(201).json({
       user: userObj,
-      message: "Usuario creado con éxito!"
+      message: "¡Usuario creado con éxito!"
     });
 
   } catch (err) {
@@ -173,12 +173,17 @@ exports.updateDeprecated = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     const id = req.params.id;
+    const { username } = req.body;
 
 
     if (req.body.password) {
       req.body.password = await bcrypt.hash(req.body.password, 10);
     }
 
+    const existingUser = await User.findOne({ where: { username } });
+    if (existingUser) {
+      return res.status(409).send({ message: "Este usuario ya existe." });
+    }
 
     const [updated] = await User.update(req.body, { where: { id } });
 
