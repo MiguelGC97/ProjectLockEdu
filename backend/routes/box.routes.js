@@ -3,12 +3,13 @@ module.exports = (app) => {
   const auth = require("../middlewares/auth.js");
   const upload = require("../multer/upload");
   const permissions = require("../middlewares/permissions.js");
+  const authForReact = require("../middlewares/authForReact.session.js");
 
   var router = require("express").Router();
 
   router.post(
     "/",
-    auth.isAuthenticated,
+    authForReact.isAuthenticated,
     permissions.authorize(["ADMIN"]),
     upload.single("file"),
     boxes.addBox
@@ -20,14 +21,14 @@ module.exports = (app) => {
 
   router.put(
     "/:id",
-    auth.isAuthenticated,
+    authForReact.isAuthenticated,
     permissions.authorize(["ADMIN"]),
     boxes.update
   );
 
   router.delete(
     "/:id",
-    auth.isAuthenticated,
+    authForReact.isAuthenticated,
     permissions.authorize(["ADMIN"]),
     boxes.delete
   );

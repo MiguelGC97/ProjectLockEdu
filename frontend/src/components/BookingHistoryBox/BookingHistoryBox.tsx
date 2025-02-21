@@ -202,7 +202,7 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
   return (
     <Box
       bg="transparent"
-      h="60vh"
+      h="100%"
       bd="1px solid myPurple.1"
       style={{ borderRadius: '83px 0 25px 25px' }}
     >

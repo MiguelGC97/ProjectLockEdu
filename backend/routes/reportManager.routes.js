@@ -2,12 +2,13 @@ module.exports = (app) => {
   const users = require("../controllers/user.controller.js");
   const auth = require("../middlewares/auth.js");
   const permissions = require("../middlewares/permissions.js");
+  const authForReact = require("../middlewares/authForReact.session.js");
 
   var router = require("express").Router();
 
   router.get(
     "/",
-    auth.isAuthenticated,
+    authForReact.isAuthenticated,
     permissions.authorize(["MANAGER"]),
     users.updatePassword
   );

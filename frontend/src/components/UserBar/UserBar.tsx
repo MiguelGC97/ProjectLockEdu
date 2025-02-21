@@ -9,12 +9,28 @@ export default function UserBar() {
   const { user } = useAuth();
 
   return (
-    <Flex miw={100} mih={20} justify="flex-end" align="center" px="xl" py="md" gap="2vw">
+    <Flex
+      position="fixed"
+      miw={100}
+      mih={20}
+      justify="flex-end"
+      align="center"
+      px="xl"
+      py="lg"
+      gap="2vw"
+    >
       <ThemeToggle />
       <Flex direction="column" align="flex-end" gap="-1vw">
-        <Text aria-label="nombre y apellido del usuario" c="myPurple.0" size="lg" fw={600}>
-          {user?.name} {user?.surname}
-        </Text>
+        <Flex gap="5" align="center">
+          <Text aria-label="nombre y apellido del usuario" c="myPurple.0" size="lg" fw={600}>
+            {user?.name} {user?.surname}{' '}
+          </Text>
+          {user?.role === 'TEACHER' ? null : (
+            <Text size="lg" fw={600} c="myPurple.12">
+              ({user?.role === 'ADMIN' ? user?.role : null})
+            </Text>
+          )}
+        </Flex>
         <Text aria-label="correo electrónico del usuario" c="myPurple.0" ml="" size="lg" fw={300}>
           {user?.username}
         </Text>

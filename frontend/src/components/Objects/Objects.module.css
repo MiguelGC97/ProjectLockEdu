@@ -43,3 +43,7 @@ Input {
 Image {
   cursor: pointer;
 }
+
+IconAreaLeft {
+  color: var(--mantine-color-myPurple-0);
+}

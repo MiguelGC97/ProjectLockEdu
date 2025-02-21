@@ -16,7 +16,7 @@ import { useAuth } from '@/hooks/AuthProvider';
 
 const LoginForm: React.FC = () => {
   const theme = useMantineTheme();
-  const { login } = useAuth();
+  const { login, user, loading } = useAuth(); // Use loading from AuthProvider
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -27,8 +27,7 @@ const LoginForm: React.FC = () => {
     if (e) e.preventDefault();
 
     try {
-      await login(username, password);
-      navigate('/perfil');
+      await login(username, password); // Call login method from AuthProvider
     } catch (err: any) {
       setError(err.message || 'Login failed');
     }
@@ -39,6 +38,20 @@ const LoginForm: React.FC = () => {
       handleSubmit();
     }
   };
+
+  // Redirect after login
+  React.useEffect(() => {
+    if (user) {
+      // Redirect based on user role
+      if (user.role === 'ADMIN') {
+        navigate('/panel-admin');
+      } else if (user.role === 'TEACHER') {
+        navigate('/perfil');
+      } else if (user.role === 'MANAGER') {
+        navigate('/incidencias-manager');
+      }
+    }
+  }, [user, navigate]);
 
   return (
     <Flex
@@ -107,7 +120,7 @@ const LoginForm: React.FC = () => {
 
         {/* Error message if login fails */}
         {error && (
-          <Text data-testid="login-error" c="red" size="sm" align="center" mt="md">
+          <Text data-testid="login-error" c="red" size="md" align="center" mt="md">
             {error}
           </Text>
         )}
@@ -123,6 +136,7 @@ const LoginForm: React.FC = () => {
           fw={400}
           onClick={handleSubmit}
           onKeyDown={handleKeyDown}
+          loading={loading} // Show loading spinner when login is in progress
         >
           Acceder a mi cuenta
         </Button>

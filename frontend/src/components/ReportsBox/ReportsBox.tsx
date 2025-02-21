@@ -232,7 +232,7 @@ export function ReportsBox() {
   return (
     <Box
       bg="transparent"
-      h="80vh"
+      h="100%"
       bd="1px solid myPurple.1"
       w="100%"
       style={{

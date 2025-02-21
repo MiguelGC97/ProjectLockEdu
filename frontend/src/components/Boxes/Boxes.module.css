@@ -49,3 +49,7 @@ a {
 Image {
   color: var(--mantine-color-myPurple-0);
 }
+
+IconAreaLeft {
+  color: var(--mantine-color-myPurple-0);
+}

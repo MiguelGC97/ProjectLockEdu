@@ -76,6 +76,7 @@ module.exports = {
         boxId: 8,
         userId: 1,
       },
+
     ]);
   },
 
