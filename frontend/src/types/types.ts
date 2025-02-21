@@ -55,6 +55,7 @@ export interface ObjectsProps {
 }
 
 export interface BookingFormProps {
+  locker: Locker;
   box: BoxType;
   items: string[];
   onReturnToBox: () => void;
