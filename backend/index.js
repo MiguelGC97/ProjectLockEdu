@@ -1,12 +1,14 @@
 require("dotenv").config();
 const express = require("express");
-const path = require("path");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const session = require("express-session");
 const http = require("http");
 const WebSocket = require("ws");
+const fs = require('fs');
+const path = require('path');
+
 
 const { store } = require("./controllers/reportLog.views.controller.js");
 const sequelizeStore = require("connect-session-sequelize")(session.Store);
@@ -30,6 +32,34 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 
+const uploadsDir = path.resolve(__dirname, 'public/uploads');
+
+const clearUploadsFolder = () => {
+  if (fs.existsSync(uploadsDir)) {
+    try {
+      const files = fs.readdirSync(uploadsDir);
+      for (const file of files) {
+        const filePath = path.join(uploadsDir, file);
+        fs.unlinkSync(filePath);
+        console.log(`Deleted ${file} from uploads`);
+      }
+    } catch (err) {
+      console.error('Error deleting files from uploads:', err);
+    }
+  }
+};
+
+process.on('SIGINT', async () => {
+  console.log('\nShutting down server... Cleaning up uploads folder.');
+  clearUploadsFolder();
+  setTimeout(() => process.exit(), 1000);
+});
+
+process.on('SIGTERM', async () => {
+  console.log('\nServer is shutting down... Cleaning up uploads folder.');
+  clearUploadsFolder();
+  setTimeout(() => process.exit(), 1000);
+});
 
 const sessionStore = new sequelizeStore({
   db: db.sequelize,
