@@ -136,8 +136,6 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
         closeEdit();
       }
     } catch (error: any) {
-      // const errorMessage = error.response?.data?.message || 'Ha ocurrido un error inesperado.';
-
       switch (error.response?.status) {
         case 404:
           setErrorMessage('El armario no fue encontrado.');

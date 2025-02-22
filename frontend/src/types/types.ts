@@ -18,6 +18,13 @@ export interface BoxType {
   locker: Locker;
 }
 
+export interface BoxEditType {
+  id?: number;
+  description: string;
+  filename: string | null;
+  lockerId: number;
+}
+
 export interface LockersProps {
   onLockerClick: (locker: Locker) => void;
 }

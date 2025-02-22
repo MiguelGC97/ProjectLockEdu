@@ -1,7 +1,7 @@
 ﻿import axios from 'axios';
 import { useAuth } from '@/hooks/AuthProvider';
 import instance, { baseUrl } from '@/services/api';
-import { Booking, BoxType, Incidence, Item, Locker, UserType } from '@/types/types';
+import { Booking, BoxEditType, BoxType, Incidence, Item, Locker, UserType } from '@/types/types';
 
 // function to fetch lockers
 export async function fetchLockers(): Promise<Locker[] | undefined> {
@@ -316,5 +316,93 @@ export const updateLocker = async (locker: Locker): Promise<any | undefined> => 
   } catch (error) {
     console.error('Error updating locker:', error);
     throw error;
+  }
+};
+
+// export const createBoxDeprecated  = async (
+//   box: BoxEditType,
+//   currentLockerId: number,
+//   file: any
+// ): Promise<any | undefined> => {
+//   try {
+//     const newBox = {
+//       description: box.description,
+//       lockerId: currentLockerId,
+//       filename:
+//     };
+
+//     try {
+//       const responseFile = await instance.post(`${baseUrl}/boxes/upload`, file);
+//       return responseFile();
+//     } catch (error) {
+//       throw error;
+//     }
+
+//     const response = await instance.post(`${baseUrl}/boxes`, newBox);
+//     return response.data;
+//   } catch (error: any) {
+//     console.error('Error creating box:', error.response?.data || error.message);
+//     throw new Error(error.response?.data?.message || 'Unexpected error while creating box');
+//   }
+// };
+
+export const uploadBoxImage = async (file: any): Promise<string | undefined> => {
+  try {
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file); // Attach the file to FormData
+
+      const response = await instance.post(`${baseUrl}/boxes/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Required for file uploads
+        },
+      });
+
+      // Return the file path (assuming the backend returns `filepath`)
+      return response.data.filepath;
+    }
+  } catch (error: any) {
+    console.error('Error uploading file:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || 'File upload failed');
+  }
+};
+
+export const createBox = async (
+  box: BoxEditType,
+  currentLockerId: number,
+  filePath: string | undefined
+): Promise<any | undefined> => {
+  try {
+    const newBox = {
+      description: box.description,
+      lockerId: currentLockerId,
+      filename: filePath,
+    };
+
+    const response = await instance.post(`${baseUrl}/boxes`, newBox);
+    return response.data;
+  } catch (error: any) {
+    console.error('Error creating box:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || 'Unexpected error while creating box');
+  }
+};
+
+export const deleteBox = async (boxId: number): Promise<any | undefined> => {
+  try {
+    const response = await instance.delete(`${baseUrl}/boxes/${boxId}`);
+    return response;
+  } catch (error: any) {
+    console.error('Error deleting box:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || 'Error while deleting the box.');
+  }
+};
+
+export const updateBox = async (box: any): Promise<any | undefined> => {
+  try {
+    const response = await instance.put(`${baseUrl}/boxes/${box.id}`, box);
+    return response.data;
+  } catch (error: any) {
+    console.error('Error updating box:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || 'Error while updating the box.');
   }
 };

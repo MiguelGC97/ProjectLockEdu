@@ -35,6 +35,7 @@
     lockers.update
   );
 
+
   router.delete(
     "/:id",
     authForReact.isAuthenticated,
