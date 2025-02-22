@@ -32,6 +32,7 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
   const [value, setValue] = useState<string[]>([]);
   const { theme } = useTheme();
   const [opened, { open, close }] = useDisclosure(false);
+  const src = `http://localhost:8080/${box?.filename}`;
 
   useEffect(() => {
     const loadObjects = async () => {
@@ -61,11 +62,7 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
     <ObjectsContext.Provider value={objects}>
       <>
         <Modal opened={opened} onClose={close} title="Authentication" centered size="55rem">
-          <Image
-            src="/assets/gomadridpride_locker-in-the-city-1.jpg"
-            fallbackSrc="/assets/fallback.png"
-            onClick={open}
-          />
+          <Image src={src} fallbackSrc="/assets/fallback.png" onClick={open} />
         </Modal>
         <Box
           style={{
@@ -104,12 +101,7 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
             bg="myPurple.8"
             pb="xl"
           >
-            <Image
-              src="/assets/gomadridpride_locker-in-the-city-1.jpg"
-              fallbackSrc="/assets/fallback.png"
-              mah="20vh"
-              onClick={open}
-            />
+            <Image src={src} fallbackSrc="/assets/fallback.png" mah="20vh" onClick={open} />
             <Divider color="myPurple.0" />
             <ScrollArea h="36vh" scrollbarSize={16} mb="xl">
               <Flex direction="column" gap="sm" py="xl" mb="md">

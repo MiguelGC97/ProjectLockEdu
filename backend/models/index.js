@@ -49,7 +49,7 @@ db.user = require("./user.model.js")(sequelize, Sequelize);
 db.booking = require("./booking.model.js")(sequelize, Sequelize);
 db.report = require("./report.model.js")(sequelize, Sequelize);
 db.notification = require("./notification.model.js")(sequelize, Sequelize);
-db.reportLog = require("./reportLog.model.js")(sequelize, Sequelize); 
+db.reportLog = require("./reportLog.model.js")(sequelize, Sequelize);
 db.settings = require("./settings.model.js")(sequelize, Sequelize);
 
 //Locker-box Association
@@ -62,6 +62,13 @@ db.box.belongsTo(db.locker, {
   foreignKey: "lockerId",
   targetKey: "id",
 });
+
+// // Locker-box Association (one-to-many)
+// db.locker.hasMany(db.box, {
+//   onDelete: "CASCADE",
+// });
+// db.box.belongsTo(db.locker);
+
 
 //Type-item association
 db.type.hasMany(db.item, {
