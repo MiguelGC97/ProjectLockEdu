@@ -11,11 +11,7 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
-    const sessionId = Cookies.get('connect.sid');
-
-    if (sessionId) {
-      console.log('Session ID:', sessionId);
-    }
+    Cookies.get('connect.sid');
 
     return config;
   },

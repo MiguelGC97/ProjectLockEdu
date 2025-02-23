@@ -3,15 +3,50 @@ module.exports = {
     await queryInterface.bulkInsert(
       "types",
       [
-        { typeName: "Portátil", createdAt: new Date(), updatedAt: new Date() },
         {
-          typeName: "Periférico",
+          typeName: "Otros/No definido",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
-        { typeName: "Cable", createdAt: new Date(), updatedAt: new Date() },
+        { typeName: "Portátiles", createdAt: new Date(), updatedAt: new Date() },
         {
-          typeName: "Herramienta",
+          typeName: "Periféricos",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        { typeName: "Cables", createdAt: new Date(), updatedAt: new Date() },
+        {
+          typeName: "Herramientas",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          typeName: "Pantallas",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          typeName: "Almacenamiento",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          typeName: "Redes y Internet",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          typeName: "Papelería",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          typeName: "Energía",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          typeName: "Mobiliario",
           createdAt: new Date(),
           updatedAt: new Date(),
         },

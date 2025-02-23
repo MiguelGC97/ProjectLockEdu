@@ -7,7 +7,6 @@ exports.authorize = (allowedRoles) => {
     try {
 
       const userRole = req.session?.user?.role;
-      console.log("User role is:", userRole)
 
       if (!userRole) {
         return res.status(403).json({ message: "Role is missing or invalid." });

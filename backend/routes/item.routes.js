@@ -13,7 +13,9 @@
     items.addItem
   );
 
-  router.get("/", items.getAll);
+  router.get("/", permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]), authForReact.isAuthenticated, items.getAll);
+
+  router.put("/:id", permissions.authorize(["ADMIN"]), authForReact.isAuthenticated, items.update);
 
   router.delete("/:id", permissions.authorize(["ADMIN"]), authForReact.isAuthenticated, items.delete);
 

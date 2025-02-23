@@ -78,7 +78,6 @@ export function SideMenu() {
       case 'MANAGER':
         return menuDataManager;
       default:
-        console.log(`Sorry, we could not define user's role.`);
         return [];
     }
   }

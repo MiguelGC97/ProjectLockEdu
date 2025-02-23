@@ -86,7 +86,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       return response;
     } catch (error: any) {
-      console.log('Failed to update avatar:', error);
       throw new Error(error.response?.data?.message || 'Error updating user avatar.');
     }
   };
@@ -95,13 +94,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const response = await updateUser(userToEdit);
       if (response?.loggedUser) {
-        console.log('setUser is called and updated', response?.loggedUser);
         setUser(response.loggedUser);
         sessionStorage.setItem('user', JSON.stringify(response.loggedUser));
       }
       return response;
     } catch (error: any) {
-      console.log('Failed to update user data:', error);
       throw new Error(error.response?.data?.message || 'Error updating user details.');
     }
   };

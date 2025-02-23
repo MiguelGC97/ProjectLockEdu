@@ -44,7 +44,7 @@ const UsersBox: React.FC = () => {
   const { user, updateUserDetails, updateUserAvatar } = useAuth();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [userToDelete, setUserToDelete] = useState<UserType | null>(null);
+  const [userToDelete, setUserToDelete] = useState<any | null>(null);
   const [userToEdit, setUserToEdit] = useState<any | null>(null);
   const icon = <IconPhotoPlus size={18} stroke={1.5} />;
   const [file, setFile] = useState(null);
@@ -110,8 +110,6 @@ const UsersBox: React.FC = () => {
         });
         setErrorMessage(null);
       }
-
-      console.log('User created:', response);
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
         setErrorMessage(error.response.data.message);
@@ -122,11 +120,24 @@ const UsersBox: React.FC = () => {
     }
   };
 
-  const handleDeleteUser = async (userId: number) => {
+  const handleDeleteUser = async (receivedUser: any) => {
     try {
-      const response = await deleteUser(userId);
+      if (receivedUser.avatar !== null && receivedUser.avatar !== 'no-image') {
+        const filename = receivedUser.avatar;
+        try {
+          const sliced = filename.slice(9);
+
+          await instance.delete(`${baseUrl}/users/delete-avatar/${sliced}`);
+        } catch (error: any) {
+          if (error.response?.status !== 404) {
+            throw error;
+          }
+        }
+      }
+
+      const response = await deleteUser(receivedUser.id);
       if (response) {
-        setUsers((prev) => prev?.filter((u) => u.id !== userId));
+        setUsers((prev) => prev?.filter((u) => u.id !== receivedUser.id));
         closeDelete();
         setErrorMessage(null);
       }
@@ -142,20 +153,16 @@ const UsersBox: React.FC = () => {
   const handleUpdateUserDetails = async () => {
     try {
       if (!userToEdit) {
-        console.log('there is no user to edit');
         return;
       }
       const response = await updateUserDetails(userToEdit);
       if (response) {
-        console.log('Isso é o que o front recebe quando você clica:', response);
         setUsers((prevUsers) =>
           prevUsers?.map((usr) => (usr.id === userToEdit.id ? { ...usr, ...userToEdit } : usr))
         );
         closeEdit();
       }
     } catch (error: any) {
-      console.log('Error updating avatar:', error);
-
       setErrorMessage(
         error.response?.status === 404
           ? 'El usuario no fue encontrado.'
@@ -175,7 +182,6 @@ const UsersBox: React.FC = () => {
       setErrorMessage('');
 
       let newFilename = userToEdit.avatar || 'no-image';
-      console.log('Initial avatar:', newFilename);
 
       if (image) {
         if (newFilename !== 'no-image') {
@@ -189,7 +195,6 @@ const UsersBox: React.FC = () => {
           }
         }
         newFilename = await uploadAvatar(image);
-        console.log('New avatar uploaded:', newFilename);
       }
 
       let responseUpdate = null;
@@ -202,7 +207,6 @@ const UsersBox: React.FC = () => {
 
       if (responseUpdate?.updatedUser) {
         closeEdit();
-        console.log('Response update:', responseUpdate);
 
         setSuccessMessage('¡Avatar actualizado con éxito!');
 
@@ -217,12 +221,8 @@ const UsersBox: React.FC = () => {
         );
 
         setUserToEdit((prev) => prev && { ...prev, avatar: responseUpdate.updatedUser.avatar });
-
-        console.log('Updated user to edit:', userToEdit);
       }
     } catch (error: any) {
-      console.log('Error updating avatar:', error);
-
       setErrorMessage(
         error.response?.status === 404
           ? 'El usuario no fue encontrado.'
@@ -302,12 +302,14 @@ const UsersBox: React.FC = () => {
             label="Nombre"
             placeholder="Ingrese el nombre"
             value={newUser.name}
+            maxLength={15}
             onChange={(e) => handleChange('name', e.target.value)}
           />
           <TextInput
             label="Apellido"
             placeholder="Ingrese el apellido"
             value={newUser.surname}
+            maxLength={15}
             onChange={(e) => handleChange('surname', e.target.value)}
           />
           <TextInput
@@ -386,12 +388,14 @@ const UsersBox: React.FC = () => {
                     label="Nombre"
                     placeholder="Ingrese el nombre"
                     value={userToEdit.name}
+                    maxLength={15}
                     onChange={(e) => setUserToEdit({ ...userToEdit, name: e.target.value })}
                   />
                   <TextInput
                     label="Apellido"
                     placeholder="Ingrese el apellido"
                     value={userToEdit.surname}
+                    maxLength={15}
                     onChange={(e) => setUserToEdit({ ...userToEdit, surname: e.target.value })}
                   />
                   <TextInput
@@ -481,7 +485,7 @@ const UsersBox: React.FC = () => {
               <Button size="md" onClick={closeDelete} color="gray">
                 Cancelar
               </Button>
-              <Button size="md" onClick={() => handleDeleteUser(userToDelete.id)} color="#C01B26">
+              <Button size="md" onClick={() => handleDeleteUser(userToDelete)} color="#C01B26">
                 Eliminar usuario
               </Button>
             </Flex>
