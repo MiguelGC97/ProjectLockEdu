@@ -1,12 +1,13 @@
 ﻿import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
-import instance from '@/services/api';
+import instance, { baseUrl } from '@/services/api';
 import { login as authService } from '@/services/authService';
+import { updateAvatar, updateUser } from '@/services/fetch';
 import { UserType } from '@/types/types';
 
 interface AuthContextType {
-  user: UserType | null;
+  user: any | null;
   theme: string;
   banner: string;
   notification: boolean;
@@ -16,12 +17,14 @@ interface AuthContextType {
   updateTheme: (newTheme: string) => void;
   updateBanner: (newBanner: string) => void;
   updateNotification: (newNotification: boolean) => void;
+  updateUserAvatar: (userToEdit: any, avatar: string) => Promise<any | undefined>;
+  updateUserDetails: (userToEdit: any) => Promise<any | undefined>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<UserType | null>(null);
+  const [user, setUser] = useState<any | null>(null);
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
   const [banner, setBanner] = useState<string>('');
   const [notification, setNotification] = useState<boolean>(true);
@@ -63,12 +66,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchUserPreferences = async (userId: number) => {
     try {
-      const res = await instance.get(`/users/settings/${userId}`, { withCredentials: true });
+      const res = await instance.get(`${baseUrl}/users/settings/${userId}`, {
+        withCredentials: true,
+      });
       setTheme(res.data.settings.theme);
       setBanner(res.data.settings.banner);
       setNotification(res.data.settings.notifications);
     } catch (error) {
       console.error('Error fetching user preferences:', error);
+    }
+  };
+
+  const updateUserAvatar = async (userToEdit: any, avatar: string): Promise<any | undefined> => {
+    try {
+      const response = await updateAvatar(userToEdit, avatar);
+      if (response?.loggedUser) {
+        setUser(response.loggedUser);
+        sessionStorage.setItem('user', JSON.stringify(response.loggedUser));
+      }
+      return response;
+    } catch (error: any) {
+      console.log('Failed to update avatar:', error);
+      throw new Error(error.response?.data?.message || 'Error updating user avatar.');
+    }
+  };
+
+  const updateUserDetails = async (userToEdit: any): Promise<any | undefined> => {
+    try {
+      const response = await updateUser(userToEdit);
+      if (response?.loggedUser) {
+        console.log('setUser is called and updated', response?.loggedUser);
+        setUser(response.loggedUser);
+        sessionStorage.setItem('user', JSON.stringify(response.loggedUser));
+      }
+      return response;
+    } catch (error: any) {
+      console.log('Failed to update user data:', error);
+      throw new Error(error.response?.data?.message || 'Error updating user details.');
     }
   };
 
@@ -121,6 +155,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       updateTheme,
       updateBanner,
       updateNotification,
+      updateUserDetails,
+      updateUserAvatar,
     }),
     [user, theme, banner, notification, loading]
   );

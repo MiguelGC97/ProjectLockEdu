@@ -222,7 +222,8 @@ export async function deleteBookingById(bookingId: number): Promise<void> {
     throw error;
   }
 }
-export async function updatePassword(user: UserType, password: string): Promise<string> {
+
+export async function updatePasswordDeprecated(user: UserType, password: string): Promise<string> {
   try {
     const userId = user?.id;
     const response = await instance.put(`${baseUrl}/users/${userId}`, { password });
@@ -235,6 +236,58 @@ export async function updatePassword(user: UserType, password: string): Promise<
   } catch (error) {
     console.error('Error user password:', error);
     throw error;
+  }
+}
+
+export async function updatePassword(
+  user: any,
+  oldPassword: string,
+  newPassword: string
+): Promise<any | undefined> {
+  try {
+    const userId = user?.id;
+    const response = await instance.put(`${baseUrl}/users/password/${userId}`, {
+      oldPassword,
+      newPassword,
+    });
+
+    if (response.status >= 200 && response.status < 300) {
+      return response.data.message;
+    }
+  } catch (error: any) {
+    if (error.response) {
+      console.error('Error updating user password:', error.response.data);
+      throw new Error(error.response?.data?.message || 'An error occurred while updating password');
+    } else {
+      console.error('Error updating user password:', error);
+      throw new Error('An error occurred while updating password');
+    }
+  }
+}
+
+export async function updateOwnPassword(
+  user: any,
+  oldPassword: string,
+  newPassword: string
+): Promise<any | undefined> {
+  try {
+    const userId = user?.id;
+    const response = await instance.put(`${baseUrl}/users/own-password/${userId}`, {
+      oldPassword,
+      newPassword,
+    });
+
+    if (response.status >= 200 && response.status < 300) {
+      return response.data.message;
+    }
+  } catch (error: any) {
+    if (error.response) {
+      console.error('Error updating user password:', error.response.data);
+      throw new Error(error.response?.data?.message || 'An error occurred while updating password');
+    } else {
+      console.error('Error updating user password:', error);
+      throw new Error('An error occurred while updating password');
+    }
   }
 }
 
@@ -253,14 +306,25 @@ export async function fetchAllUsers(): Promise<any[] | undefined> {
   }
 }
 
-export async function createUser(user: any): Promise<any | undefined> {
+export async function createUser(
+  user: any,
+  filepath: string | undefined
+): Promise<any | undefined> {
   try {
-    const response = await instance.post(`${baseUrl}/users`, user);
+    const newUser = {
+      name: user.name,
+      surname: user.surname,
+      username: user.username,
+      password: user.password,
+      avatar: filepath,
+      role: user.role,
+    };
+    const response = await instance.post(`${baseUrl}/users`, newUser);
 
     return response.data;
   } catch (error: any) {
-    console.error('Error al crear el usuario:', error.response?.data || error.message);
-    throw error;
+    console.error('Error creating user:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || 'Unexpected error while creating user');
   }
 }
 
@@ -275,10 +339,15 @@ export async function deleteUser(userId: any): Promise<any | undefined> {
   }
 }
 
-export const updateUser = async (user: UserType): Promise<any | undefined> => {
-  try {
-    const response = await instance.put(`${baseUrl}/users/${user.id}`, user);
+export const updateUser = async (userToEdit: any): Promise<any | undefined> => {
+  if (!userToEdit.id) {
+    console.log('Error: El ID del usuario es inválido');
+    return;
+  }
 
+  try {
+    console.log('userToEdit no service é esse', userToEdit);
+    const response = await instance.put(`${baseUrl}/users/${userToEdit.id}`, userToEdit);
     return response.data;
   } catch (error) {
     console.error('Error updating user:', error);
@@ -319,46 +388,38 @@ export const updateLocker = async (locker: Locker): Promise<any | undefined> => 
   }
 };
 
-// export const createBoxDeprecated  = async (
-//   box: BoxEditType,
-//   currentLockerId: number,
-//   file: any
-// ): Promise<any | undefined> => {
-//   try {
-//     const newBox = {
-//       description: box.description,
-//       lockerId: currentLockerId,
-//       filename:
-//     };
-
-//     try {
-//       const responseFile = await instance.post(`${baseUrl}/boxes/upload`, file);
-//       return responseFile();
-//     } catch (error) {
-//       throw error;
-//     }
-
-//     const response = await instance.post(`${baseUrl}/boxes`, newBox);
-//     return response.data;
-//   } catch (error: any) {
-//     console.error('Error creating box:', error.response?.data || error.message);
-//     throw new Error(error.response?.data?.message || 'Unexpected error while creating box');
-//   }
-// };
-
 export const uploadBoxImage = async (file: any): Promise<string | undefined> => {
   try {
     if (file) {
       const formData = new FormData();
-      formData.append('file', file); // Attach the file to FormData
+      formData.append('file', file);
 
       const response = await instance.post(`${baseUrl}/boxes/upload`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data', // Required for file uploads
+          'Content-Type': 'multipart/form-data',
         },
       });
 
-      // Return the file path (assuming the backend returns `filepath`)
+      return response.data.filepath;
+    }
+  } catch (error: any) {
+    console.error('Error uploading file:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || 'File upload failed');
+  }
+};
+
+export const uploadBanner = async (file: any): Promise<string | undefined> => {
+  try {
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await instance.post(`${baseUrl}/settings/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
       return response.data.filepath;
     }
   } catch (error: any) {
@@ -404,5 +465,41 @@ export const updateBox = async (box: any): Promise<any | undefined> => {
   } catch (error: any) {
     console.error('Error updating box:', error.response?.data || error.message);
     throw new Error(error.response?.data?.message || 'Error while updating the box.');
+  }
+};
+
+export const uploadAvatar = async (file: any): Promise<any | undefined> => {
+  try {
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await instance.post(`${baseUrl}/users/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      return response.data.filepath;
+    }
+  } catch (error: any) {
+    console.error('Error uploading file:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || 'File upload failed');
+  }
+};
+
+export const updateAvatar = async (user: any, avatar: string): Promise<any | undefined> => {
+  try {
+    const response = await instance.put(
+      `${baseUrl}/users/update-avatar/${user.id}`,
+      { avatar },
+      { headers: { 'Content-Type': 'application/json' } }
+    );
+
+    console.log('Avatar update response:', response.data);
+    return response.data;
+  } catch (error: any) {
+    console.error('Error updating avatar:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || 'Error while updating the avatar.');
   }
 };

@@ -146,7 +146,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
             </Center>
           </Stack>
           <ScrollArea p="lg" m="md" h="62vh" scrollbarSize={16}>
-            <Flex direction="column" gap="sm">
+            <Flex direction="column" h="auto" gap="sm">
               {!boxes || boxes.length === 0 ? (
                 <Flex justify="center" align="center">
                   <Text size="lg" c="myPurple.0">
@@ -173,7 +173,12 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
                           <Title aria-label="número de la casilla" size="xl" c="myPurple.0">
                             Casilla C{box.id}
                           </Title>
-                          <Text aria-label="descripción de la casilla" size="md" c="myPurple.0">
+                          <Text
+                            aria-label="descripción de la casilla"
+                            lineClamp={1}
+                            size="md"
+                            c="myPurple.0"
+                          >
                             {box.description}
                           </Text>
                         </Stack>
@@ -406,12 +411,13 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
             value={newBox.description}
             onChange={(e) => handleChange('description', e.target.value)}
             withAsterisk
+            maxLength={60}
           />
 
           <FileInput
             rightSection={icon}
             label="Sube la imagen de la casilla"
-            placeholder="Imagen nueva de la casilla"
+            placeholder="Imagen de la casilla"
             rightSectionPointerEvents="none"
             mt="md"
             onChange={(file) => setFile(file)}

@@ -3,6 +3,7 @@ import { TbAlertHexagon } from 'react-icons/tb';
 import { Avatar, Button, Flex, Text } from '@mantine/core';
 import { useAuth } from '@/hooks/AuthProvider';
 import { useTheme } from '@/hooks/ThemeProvider';
+import { imageBaseUrl } from '@/services/api';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
 
 interface UserBarReportProps {
@@ -12,6 +13,7 @@ interface UserBarReportProps {
 export default function UserBarReport({ onToggleVisibility }: UserBarReportProps) {
   const { user } = useAuth();
   const { theme } = useTheme();
+  const src = imageBaseUrl + user?.avatar;
 
   return (
     <Flex miw={100} mih={20} justify="flex-end" align="center" px="xl" py="xl" gap="2vw">
@@ -40,11 +42,11 @@ export default function UserBarReport({ onToggleVisibility }: UserBarReportProps
         <Text c="myPurple.0" size="lg" fw={600}>
           {user?.name} {user?.surname}
         </Text>
-        <Text c="myPurple.0" ml="" size="lg" fw={300}>
+        <Text c="myPurple.0" ml="" size="lg" fw={400}>
           {user?.username}
         </Text>
       </Flex>
-      <Avatar size="lg" src={user?.avatar} alt="User profile photo" bd="3px solid myPurple.0" />
+      <Avatar size="lg" src={src} alt="User profile photo" bd="3px solid myPurple.0" />
     </Flex>
   );
 }

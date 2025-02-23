@@ -1,5 +1,5 @@
 ﻿import { useEffect, useState } from 'react';
-import { IconCirclePlus, IconTrash } from '@tabler/icons-react';
+import { IconCirclePlus, IconPhotoPlus, IconTrash } from '@tabler/icons-react';
 import { MdOutlineEdit } from 'react-icons/md';
 import {
   Avatar,
@@ -7,6 +7,7 @@ import {
   Button,
   Center,
   Divider,
+  FileInput,
   Flex,
   Group,
   Image,
@@ -15,6 +16,7 @@ import {
   ScrollArea,
   Select,
   Table,
+  Tabs,
   Text,
   TextInput,
   Title,
@@ -22,7 +24,15 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useAuth } from '@/hooks/AuthProvider';
-import { createUser, deleteUser, fetchAllUsers, updateUser } from '@/services/fetch';
+import instance, { baseUrl, imageBaseUrl } from '@/services/api';
+import {
+  createUser,
+  deleteUser,
+  fetchAllUsers,
+  updateAvatar,
+  updateUser,
+  uploadAvatar,
+} from '@/services/fetch';
 import { UserType } from '@/types/types';
 import classes from './UsersBox.module.css';
 
@@ -31,19 +41,32 @@ const UsersBox: React.FC = () => {
   const [openedCreate, { open: openCreate, close: closeCreate }] = useDisclosure(false);
   const [openedEdit, { open: openEdit, close: closeEdit }] = useDisclosure(false);
   const [openedDelete, { open: openDelete, close: closeDelete }] = useDisclosure(false);
-  const { user } = useAuth();
+  const { user, updateUserDetails, updateUserAvatar } = useAuth();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [userToDelete, setUserToDelete] = useState<UserType | null>(null);
-  const [userToEdit, setUserToEdit] = useState<UserType | null>(null);
+  const [userToEdit, setUserToEdit] = useState<any | null>(null);
+  const icon = <IconPhotoPlus size={18} stroke={1.5} />;
+  const [file, setFile] = useState(null);
+  // const [newImage, setNewImage] = useState(null);
 
   const [newUser, setNewUser] = useState<any>({
     name: '',
     surname: '',
     username: '',
     password: '',
-    avatar: '',
+    avatar: 'no-image',
     role: '',
   });
+
+  useEffect(() => {
+    if (userToEdit) {
+      setUserToEdit((prev: any) => ({
+        ...prev,
+        avatar: prev?.avatar || 'no-image',
+      }));
+    }
+  }, [userToEdit]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -57,25 +80,38 @@ const UsersBox: React.FC = () => {
     setNewUser((prev) => ({ ...prev, [field]: value }));
   };
 
-  const openDeleteModal = (user: UserType) => {
-    setUserToDelete(user);
+  const openDeleteModal = (userReceived: any) => {
+    setUserToDelete(userReceived);
     openDelete();
   };
 
-  const openEditModal = (user: UserType) => {
-    setUserToEdit(user);
+  const openEditModal = (userReceived: any) => {
+    setUserToEdit(userReceived);
     openEdit();
   };
 
-  const handleCreateUser = async () => {
+  const handleCreateUser = async (image: any) => {
     try {
-      const response = await createUser(newUser);
+      const avatarPath = await uploadAvatar(image);
+
+      const response = await createUser(newUser, avatarPath);
+
       if (response) {
         setUsers((prev) => (prev ? [...prev, response.user] : [response.user]));
         closeCreate();
-        setNewUser({ name: '', surname: '', username: '', password: '', avatar: '', role: '' });
+
+        setNewUser({
+          name: '',
+          surname: '',
+          username: '',
+          password: '',
+          avatar: 'no-image',
+          role: '',
+        });
         setErrorMessage(null);
       }
+
+      console.log('User created:', response);
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
         setErrorMessage(error.response.data.message);
@@ -103,19 +139,97 @@ const UsersBox: React.FC = () => {
     }
   };
 
-  const handleUpdateUser = async () => {
+  const handleUpdateUserDetails = async () => {
     try {
-      if (!userToEdit) return;
-      const response = await updateUser(userToEdit);
+      if (!userToEdit) {
+        console.log('there is no user to edit');
+        return;
+      }
+      const response = await updateUserDetails(userToEdit);
       if (response) {
+        console.log('Isso é o que o front recebe quando você clica:', response);
         setUsers((prevUsers) =>
-          prevUsers?.map((user) => (user.id === userToEdit.id ? { ...user, ...userToEdit } : user))
+          prevUsers?.map((usr) => (usr.id === userToEdit.id ? { ...usr, ...userToEdit } : usr))
         );
         closeEdit();
       }
-    } catch (error) {
-      console.error('Error updating user:', error);
-      setErrorMessage('Ocurrió un error al actualizar el usuario');
+    } catch (error: any) {
+      console.log('Error updating avatar:', error);
+
+      setErrorMessage(
+        error.response?.status === 404
+          ? 'El usuario no fue encontrado.'
+          : error.response?.status === 400
+            ? 'La solicitud contiene datos incorrectos.'
+            : error.response?.status === 409
+              ? 'Ya existe un usuario con este correo.'
+              : 'Un erro ocurrió al actualizar el usuario.'
+      );
+    }
+  };
+
+  const handleUpdateAvatar = async (image: any) => {
+    if (!userToEdit) return;
+
+    try {
+      setErrorMessage('');
+
+      let newFilename = userToEdit.avatar || 'no-image';
+      console.log('Initial avatar:', newFilename);
+
+      if (image) {
+        if (newFilename !== 'no-image') {
+          try {
+            const sliced = newFilename.slice(9);
+            await instance.delete(`${baseUrl}/users/delete-avatar/${sliced}`);
+          } catch (error: any) {
+            if (error.response?.status !== 404) {
+              throw error;
+            }
+          }
+        }
+        newFilename = await uploadAvatar(image);
+        console.log('New avatar uploaded:', newFilename);
+      }
+
+      let responseUpdate = null;
+
+      if (userToEdit?.role === 'TEACHER' || userToEdit?.role === 'MANAGER') {
+        responseUpdate = await updateAvatar(userToEdit, newFilename);
+      } else {
+        responseUpdate = await updateUserAvatar(userToEdit, newFilename);
+      }
+
+      if (responseUpdate?.updatedUser) {
+        closeEdit();
+        console.log('Response update:', responseUpdate);
+
+        setSuccessMessage('¡Avatar actualizado con éxito!');
+
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 1500);
+
+        setUsers((prevUsers) =>
+          prevUsers?.map((usr) =>
+            usr.id === userToEdit.id ? { ...usr, avatar: responseUpdate.updatedUser.avatar } : usr
+          )
+        );
+
+        setUserToEdit((prev) => prev && { ...prev, avatar: responseUpdate.updatedUser.avatar });
+
+        console.log('Updated user to edit:', userToEdit);
+      }
+    } catch (error: any) {
+      console.log('Error updating avatar:', error);
+
+      setErrorMessage(
+        error.response?.status === 404
+          ? 'El usuario no fue encontrado.'
+          : error.response?.status === 400
+            ? 'La solicitud contiene datos incorrectos.'
+            : 'Error al actualizar el avatar.'
+      );
     }
   };
 
@@ -133,11 +247,13 @@ const UsersBox: React.FC = () => {
     const roleColor =
       role === 'ADMIN' ? 'myPurple.12' : role === 'TEACHER' ? 'myPurple.0' : 'myPurple.10';
 
+    const src = imageBaseUrl + avatar;
+
     return (
       <Table.Tr key={id} c="myPurple.0">
         <Table.Td>
           <Flex align="center" gap={10}>
-            <Avatar size="lg" src={avatar} alt="User's profile photo" bd="3px solid myPurple.0" />
+            <Avatar size="lg" src={src} alt="User's profile photo" bd="3px solid myPurple.0" />
             <Flex direction="column">
               <Text fw={700}>{userFullName}</Text>
               <Text fw={400}>{u.username}</Text>
@@ -208,16 +324,11 @@ const UsersBox: React.FC = () => {
             onChange={(e) => handleChange('password', e.target.value)}
             withAsterisk
           />
-          <TextInput
-            label="Avatar (URL)"
-            placeholder="Ingrese la URL del avatar"
-            onChange={(e) => handleChange('avatar', e.target.value)}
-          />
+
           <Select
             label="Rol"
             placeholder="Seleccione un rol"
             data={[
-              { value: 'ADMIN', label: 'Administrador' },
               { value: 'TEACHER', label: 'Profesor' },
               { value: 'MANAGER', label: 'Gestor de incidencias' },
             ]}
@@ -225,58 +336,125 @@ const UsersBox: React.FC = () => {
             onChange={(value) => handleChange('role', value || '')}
             withAsterisk
           />
-          <Button size="md" onClick={handleCreateUser} color="myPurple.4" fullWidth>
-            Crear usuario
+
+          <FileInput
+            rightSection={icon}
+            label="Sube una imagen de perfil"
+            placeholder="Imagen de perfil"
+            rightSectionPointerEvents="none"
+            mt="md"
+            onChange={(file) => {
+              setFile(file);
+            }}
+          />
+
+          <Button
+            size="md"
+            onClick={() => {
+              handleCreateUser(file);
+            }}
+            color="myPurple.4"
+            fullWidth
+          >
+            Crear nuevo usuario
           </Button>
         </Flex>
       </Modal>
 
       <Modal opened={openedEdit} onClose={closeEdit} title="Editar usuario">
         {userToEdit ? (
-          <Flex direction="column" gap="md">
-            <TextInput
-              label="Nombre"
-              placeholder="Ingrese el nombre"
-              value={userToEdit.name}
-              onChange={(e) => setUserToEdit({ ...userToEdit, name: e.target.value })}
-            />
-            <TextInput
-              label="Apellido"
-              placeholder="Ingrese el apellido"
-              value={userToEdit.surname}
-              onChange={(e) => setUserToEdit({ ...userToEdit, surname: e.target.value })}
-            />
-            <TextInput
-              label="Correo electrónico"
-              placeholder="Ingrese el correo electrónico"
-              value={userToEdit.username}
-              onChange={(e) => setUserToEdit({ ...userToEdit, username: e.target.value })}
-            />
-            <PasswordInput
-              label="Contraseña nueva"
-              placeholder="Ingrese la contraseña nueva"
-              onChange={(e) => setUserToEdit({ ...userToEdit, password: e.target.value })}
-            />
-            <TextInput
-              label="Avatar (URL)"
-              placeholder="Ingrese la URL del nuevo avatar"
-              onChange={(e) => setUserToEdit({ ...userToEdit, avatar: e.target.value })}
-            />
-            <Select
-              label="Rol"
-              placeholder="Seleccione un rol"
-              data={[
-                { value: 'ADMIN', label: 'Administrador' },
-                { value: 'TEACHER', label: 'Profesor' },
-                { value: 'MANAGER', label: 'Gestor de incidencias' },
-              ]}
-              value={userToEdit.role}
-              onChange={(value) => setUserToEdit({ ...userToEdit, role: value || '' })}
-            />
-            <Button size="md" onClick={handleUpdateUser} color="myPurple.4" fullWidth>
-              Confirmar cambios
-            </Button>
-          </Flex>
+          <>
+            {successMessage && (
+              <Text c="myPurple.12" size="sm" fw={500}>
+                {successMessage}
+              </Text>
+            )}
+            <Tabs defaultValue="otherFields">
+              <Tabs.List>
+                <Tabs.Tab value="otherFields">Cambiar detalles</Tabs.Tab>
+                <Tabs.Tab value="avatar">Cambiar avatar</Tabs.Tab>
+              </Tabs.List>
+
+              <Tabs.Panel value="otherFields">
+                {errorMessage && (
+                  <Text c="myPurple.11" size="sm" fw={500}>
+                    {errorMessage}
+                  </Text>
+                )}{' '}
+                <Flex direction="column" gap="md">
+                  <TextInput
+                    label="Nombre"
+                    placeholder="Ingrese el nombre"
+                    value={userToEdit.name}
+                    onChange={(e) => setUserToEdit({ ...userToEdit, name: e.target.value })}
+                  />
+                  <TextInput
+                    label="Apellido"
+                    placeholder="Ingrese el apellido"
+                    value={userToEdit.surname}
+                    onChange={(e) => setUserToEdit({ ...userToEdit, surname: e.target.value })}
+                  />
+                  <TextInput
+                    label="Correo electrónico"
+                    placeholder="Ingrese el correo electrónico"
+                    value={userToEdit.username}
+                    onChange={(e) => setUserToEdit({ ...userToEdit, username: e.target.value })}
+                  />
+                  <PasswordInput
+                    label="Contraseña nueva"
+                    placeholder="Ingrese la contraseña nueva"
+                    onChange={(e) => setUserToEdit({ ...userToEdit, password: e.target.value })}
+                  />
+
+                  {userToEdit?.id === user?.id ? null : (
+                    <Select
+                      label="Rol"
+                      placeholder="Seleccione un rol"
+                      data={[
+                        { value: 'TEACHER', label: 'Profesor' },
+                        { value: 'MANAGER', label: 'Gestor de incidencias' },
+                      ]}
+                      value={userToEdit?.role}
+                      onChange={(value) => setUserToEdit({ ...userToEdit, role: value || '' })}
+                    />
+                  )}
+
+                  <Button size="md" onClick={handleUpdateUserDetails} color="myPurple.4" fullWidth>
+                    Confirmar cambios
+                  </Button>
+                </Flex>
+              </Tabs.Panel>
+
+              <Tabs.Panel value="avatar">
+                {errorMessage && (
+                  <Text c="myPurple.11" size="sm" fw={500}>
+                    {errorMessage}
+                  </Text>
+                )}{' '}
+                <Flex direction="column" gap={20}>
+                  <FileInput
+                    rightSection={icon}
+                    label="Sube una imagen de perfil"
+                    placeholder="Imagen de perfil"
+                    rightSectionPointerEvents="none"
+                    mt="md"
+                    onChange={(file: any) => {
+                      setFile(file);
+                    }}
+                  />
+
+                  <Button
+                    size="md"
+                    onClick={() => handleUpdateAvatar(file)}
+                    color="myPurple.4"
+                    fullWidth
+                  >
+                    Confirmar nuevo avatar
+                  </Button>
+                </Flex>
+              </Tabs.Panel>
+            </Tabs>
+          </>
         ) : (
           <Text>Cargando...</Text>
         )}

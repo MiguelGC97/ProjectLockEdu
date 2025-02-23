@@ -28,7 +28,7 @@ exports.getByUsername = async (req, res) => {
   }
 };
 
-exports.findOne = async (req, res) => {
+exports.findOneById = async (req, res) => {
   const id = req.params.id;
 
   try {
@@ -47,58 +47,6 @@ exports.findOne = async (req, res) => {
   }
 };
 
-exports.addNewUserDeprecated = async (req, res) => {
-  try {
-    // Validate request
-    if (!req.body.password || !req.body.username) {
-      return res.status(400).send({
-        message: "Content can not be empty!",
-      });
-    }
-
-
-    let user = {
-      name: req.body.name,
-      surname: req.body.surname,
-      password: req.body.password,
-      username: req.body.username,
-      avatar: req.body.avatar,
-      role: req.body.role,
-    };
-
-
-    const existingUser = await User.findOne({
-      where: { username: user.username },
-    });
-    if (existingUser) {
-      const isPasswordValid = bcrypt.compareSync(
-        user.password,
-        existingUser.password
-      );
-      if (!isPasswordValid) {
-        return res.status(401).send("Password not valid!");
-      }
-
-
-      const token = utils.generateToken(existingUser);
-      const userObj = utils.getCleanUser(existingUser);
-      return res.json({ user: userObj, access_token: token });
-    }
-
-
-    user.password = bcrypt.hashSync(req.body.password);
-
-    const newUser = await User.create(user);
-
-
-    return res.json({ user: userObj, access_token: token });
-  } catch (err) {
-
-    res.status(401).send({
-      message: err.message || "Unathorized",
-    });
-  }
-};
 
 
 exports.addNewUser = async (req, res) => {
@@ -138,8 +86,6 @@ exports.addNewUser = async (req, res) => {
 };
 
 
-
-
 exports.delete = async (req, res) => {
   const deleting = await User.destroy({ where: { id: req.params.id } });
   const status = deleting ? 200 : 404;
@@ -147,30 +93,9 @@ exports.delete = async (req, res) => {
   return res.status(status).json({ message: message });
 };
 
+
+
 exports.updateDeprecated = async (req, res) => {
-  try {
-    const id = req.params.id;
-
-    if (req.body.password) {
-      req.body.password = await bcrypt.hash(req.body.password, 10);
-    }
-
-    const [updated] = await User.update(req.body, { where: { id } });
-
-    if (updated) {
-      res.status(200).json({
-        message: "User updated",
-        data: req.body,
-      });
-    } else {
-      res.status(404).json({ message: "User not found" });
-    }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-exports.update = async (req, res) => {
   try {
     const id = req.params.id;
     const { username } = req.body;
@@ -204,31 +129,275 @@ exports.update = async (req, res) => {
   }
 };
 
+exports.updateDeprecated2 = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { username, password } = req.body;
+
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado." });
+    }
+
+    if (username) {
+      const existingUser = await User.findOne({
+        where: { username, id: { [Op.ne]: id } },
+      });
+
+      if (existingUser) {
+        return res.status(409).json({ message: "Este correo ya existe." });
+      }
+    }
+
+    // Prepare data for update
+    const updateData = {};
+    if (username) updateData.username = username;
+    if (password) updateData.password = await bcrypt.hash(password, 10);
+
+    // Perform update
+    const [updated] = await User.update(updateData, { where: { id } });
+
+    if (updated) {
+      const userUpdated = await User.findByPk(id);
+      const loggedUser = req.session.user;
+
+      return res.status(200).json({
+        message: "¡Usuario actualizado con éxito!",
+        userUpdated,
+        loggedUser,
+      });
+    } else {
+      return res.status(400).json({ message: "No se realizó ningún cambio." });
+    }
+  } catch (error) {
+    console.error("Update error:", error);
+    return res.status(500).json({ error: "Un error ocurrió al editar usuario" });
+  }
+};
+
+
+exports.updateDeprecated3 = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { username, password, name, surname, role } = req.body;
+
+    // Find the user by ID
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado." });
+    }
+
+    // Check if username exists for another user
+    if (username) {
+      const existingUser = await User.findOne({
+        where: { username, id: { [Op.ne]: id } }, // Exclude the current user
+      });
+
+      if (existingUser) {
+        return res.status(409).json({ message: "Este correo ya existe." });
+      }
+    }
+
+    // Prepare the data to update
+    const updateData = {};
+    if (username) updateData.username = username;
+    if (name) updateData.name = name;
+    if (surname) updateData.surname = surname;
+    if (role) updateData.role = role;
+    if (password) updateData.password = await bcrypt.hash(password, 10);
+
+    // Perform the update
+    const [updated] = await User.update(updateData, { where: { id } });
+
+    if (updated) {
+      // After update, fetch the updated user
+      const updatedUser = await User.findByPk(id);
+
+      if (req.session.user.id === id) {
+        req.session.user = updatedUser;
+      }
+
+      return res.status(200).json({
+        message: "¡Usuario actualizado con éxito!",
+        updatedUser,
+        loggedUser: req.session.user,
+      });
+    } else {
+      return res.status(400).json({ message: "No se realizó ningún cambio." });
+    }
+  } catch (error) {
+    console.error("Update error:", error);
+    return res.status(500).json({ error: "Un error ocurrió al editar usuario" });
+  }
+};
+
+
+exports.update = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { username, password, name, surname, role } = req.body;
+
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado." });
+    }
+
+    if (username) {
+      const existingUser = await User.findOne({
+        where: { username, id: { [Op.ne]: id } },
+      });
+
+      if (existingUser) {
+        return res.status(409).json({ message: "Este correo ya existe." });
+      }
+    }
+
+    const updateData = {};
+    if (username) updateData.username = username;
+    if (name) updateData.name = name;
+    if (surname) updateData.surname = surname;
+    if (role) updateData.role = role;
+    if (password) updateData.password = await bcrypt.hash(password, 10);
+
+    const [updated] = await User.update(updateData, { where: { id } });
+
+    if (updated) {
+      const updatedUser = await User.findByPk(id);
+
+      console.log("updatedUser is: ", updatedUser);
+
+      if (req.session.user.id === updatedUser.id) {
+        console.log("the req session update is being executed okkkkkk")
+        req.session.user = {
+          ...req.session.user,
+          id: updatedUser.id,
+          name: updatedUser.name,
+          surname: updatedUser.surname,
+          username: updatedUser.username,
+          avatar: updatedUser.avatar || null,
+          role: updatedUser.role,
+        };
+        req.session.save();
+      }
+
+
+      return res.status(200).json({
+        message: "¡Usuario actualizado con éxito!",
+        updatedUser,
+        loggedUser: req.session.user,
+      });
+    } else {
+      return res.status(400).json({ message: "No se realizó ningún cambio." });
+    }
+  } catch (error) {
+    console.error("Update error:", error);
+    return res.status(500).json({ error: "Un error ocurrió al editar usuario" });
+  }
+};
+
+
+
+
 
 exports.updatePassword = async (req, res) => {
   try {
-    const id = req.params.id;
+    const { id } = req.params;
+    const { oldPassword, newPassword } = req.body;
 
-    if (req.body.password) {
-      req.body.password = await bcrypt.hash(req.body.password, 10);
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-
-
-    const [updated] = await User.update(req.body.password, { where: { id } });
-
-    if (updated) {
-      res.status(200).json({
-        message: "Profile updated",
-        data: req.body,
-      });
-    } else {
-      res.status(404).json({ message: "User not found" });
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Contraseña actual incorrecta" });
     }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await user.update({ password: hashedPassword });
+
+    res.status(200).json({ message: "¡Contraseña actualizada correctamente!" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error updating password:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
   }
 };
+
+exports.updateOwnPassword = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { oldPassword, newPassword } = req.body;
+
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Contraseña actual incorrecta" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await user.update({ password: hashedPassword });
+
+    res.status(200).json({ message: "¡Contraseña actualizada correctamente!" });
+  } catch (error) {
+    console.error("Error updating password:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+};
+
+exports.updateAvatar = async (req, res) => {
+  try {
+
+    const id = req.params.id;
+    const { avatar } = req.body;
+
+    // if (!avatar) {
+    //   return res.status(400).json({ message: "Avatar URL is required" });
+    // }
+
+    const [updated] = await User.update(
+      { avatar },
+      { where: { id: id } }
+    );
+
+    if (updated) {
+      const updatedUser = await User.findByPk(id);
+
+      console.log("updatedUser is: ", updatedUser);
+
+      if (req.session.user.id === updatedUser.id) {
+        req.session.user = {
+          ...req.session.user,
+          id: updatedUser.id,
+          name: updatedUser.name,
+          surname: updatedUser.surname,
+          username: updatedUser.username,
+          avatar: updatedUser.avatar || null,
+        };
+        req.session.save();
+      }
+
+
+      return res.status(200).json({
+        message: "¡Avatar actualizado con éxito!",
+        updatedUser,
+        loggedUser: req.session.user,
+      });
+    } else {
+      return res.status(404).json({ message: "Usuario no encontrado." });
+    }
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+
 
 exports.getUserSettings = async (req, res) => {
   const userId = req.params.id;
