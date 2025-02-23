@@ -140,6 +140,7 @@ module.exports = (app) => {
     }
   });
 
+
   router.put(
     "/update-avatar/:id",
     authForReact.isAuthenticated,

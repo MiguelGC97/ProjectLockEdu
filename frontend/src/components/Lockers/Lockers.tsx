@@ -163,13 +163,15 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
             </Text>
           )}
 
-          <TextInput
+          <NumberInput
             label="Numero"
-            placeholder="Ingrese el numero"
+            placeholder="Ingrese el nuevo número"
             value={newLocker.number}
-            onChange={(e) => handleChange('number', e.target.value)}
+            onChange={(value) => handleChange('number', value)}
+            min={1}
             withAsterisk
           />
+
           <TextInput
             label="Descripción"
             placeholder="Ingrese la descripción"

@@ -264,10 +264,8 @@ exports.update = async (req, res) => {
     if (updated) {
       const updatedUser = await User.findByPk(id);
 
-      console.log("updatedUser is: ", updatedUser);
 
       if (req.session.user.id === updatedUser.id) {
-        console.log("the req session update is being executed okkkkkk")
         req.session.user = {
           ...req.session.user,
           id: updatedUser.id,
@@ -369,7 +367,6 @@ exports.updateAvatar = async (req, res) => {
     if (updated) {
       const updatedUser = await User.findByPk(id);
 
-      console.log("updatedUser is: ", updatedUser);
 
       if (req.session.user.id === updatedUser.id) {
         req.session.user = {
@@ -417,7 +414,6 @@ exports.getUserSettings = async (req, res) => {
       }
     });
 
-    console.log("User settings were successfully retrieved.");
   } catch (error) {
     console.error("Error fetching user settings:", error);
     res.status(500).json({ message: "Internal server error." });

@@ -16,7 +16,7 @@ module.exports = (app) => {
   router.get(
     "/",
     authForReact.isAuthenticated,
-    permissions.authorize(["ADMIN"]),
+    permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]),
     types.getAll
   );
 

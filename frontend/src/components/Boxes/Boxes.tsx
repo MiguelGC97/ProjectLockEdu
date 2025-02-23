@@ -320,14 +320,12 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
         });
         setErrorMessage(null);
       }
-
-      console.log('Box created:', response);
     } catch (error: any) {
       console.error('Error creating box:', error.message);
     }
   };
 
-  const handleDeleteBox = async (boxId: number) => {
+  const handleDeleteBoxDeprecated = async (boxId: number) => {
     try {
       const response = await deleteBox(boxId);
       if (response) {
@@ -344,23 +342,48 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
     }
   };
 
+  const handleDeleteBox = async (receivedBox: any) => {
+    try {
+      if (receivedBox.filename !== null && receivedBox.filename !== 'no-image') {
+        const fileToDelete = receivedBox.filename;
+        try {
+          const sliced = fileToDelete.slice(9);
+          await instance.delete(`${baseUrl}/boxes/delete-box-image/${sliced}`);
+        } catch (error: any) {
+          if (error.response?.status !== 404) {
+            throw error;
+          }
+        }
+      }
+
+      const response = await deleteBox(receivedBox.id);
+      if (response) {
+        setBoxes((prev) => prev?.filter((b) => b.id !== receivedBox.id));
+        closeDelete();
+        setErrorMessage(null);
+      }
+    } catch (error: any) {
+      if (error.response && error.response.status === 404) {
+        setErrorMessage(error.response.data.message);
+      } else {
+        setErrorMessage('Ocurrió un error al eliminar el usuario');
+      }
+    }
+  };
+
   const handleUpdateBox = async () => {
     if (!boxToEdit) return;
 
     try {
       setErrorMessage('');
-      console.log('Updating box with ID:', boxToEdit.id);
 
       let newFilename = boxToEdit.filename || 'no-image';
 
-      console.log(boxToEdit);
-
       if (newImage) {
-        console.log('Uploading new image...');
         if (boxToEdit.filename !== 'no-image') {
           try {
             const sliced = newFilename.slice(9);
-            console.log(sliced);
+
             await instance.delete(`${baseUrl}/boxes/delete-box-image/${sliced}`);
           } catch (error: any) {
             if (error.response?.status !== 404) {
@@ -372,7 +395,6 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
       }
 
       const updatedBox = { ...boxToEdit, filename: newFilename };
-      console.log('Sending update request:', `${baseUrl}/boxes/${boxToEdit.id}`, updatedBox);
 
       const responseUpdate = await updateBox(updatedBox);
 
@@ -455,7 +477,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
               <Button size="md" onClick={closeDelete} color="gray">
                 Cancelar
               </Button>
-              <Button size="md" onClick={() => handleDeleteBox(boxToDelete.id)} color="#C01B26">
+              <Button size="md" onClick={() => handleDeleteBox(boxToDelete)} color="#C01B26">
                 Eliminar casilla
               </Button>
             </Flex>

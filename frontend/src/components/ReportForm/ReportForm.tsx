@@ -87,8 +87,6 @@ export function ReportForm() {
       boxId: parseInt(selectedBox, 10),
     };
 
-    console.log('Enviando reporte:', reportData);
-
     try {
       await fetchFormIncident(reportData);
       toast.success('Reporte creado exitosamente');

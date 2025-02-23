@@ -32,6 +32,19 @@ export async function fetchBoxes(): Promise<BoxType[] | undefined> {
   }
 }
 
+// Function to fetch boxes
+export async function fetchObjectTypes(): Promise<any[] | undefined> {
+  try {
+    const response = await instance.get(`${baseUrl}/types`);
+    if (Array.isArray(response.data.data)) {
+      return response.data.data;
+    }
+  } catch (error) {
+    console.error('Error fetching object types:', error);
+    return [];
+  }
+}
+
 // function to fetch incidences
 export async function fetchIncidences(): Promise<Incidence[] | undefined> {
   try {
@@ -341,12 +354,10 @@ export async function deleteUser(userId: any): Promise<any | undefined> {
 
 export const updateUser = async (userToEdit: any): Promise<any | undefined> => {
   if (!userToEdit.id) {
-    console.log('Error: El ID del usuario es inválido');
     return;
   }
 
   try {
-    console.log('userToEdit no service é esse', userToEdit);
     const response = await instance.put(`${baseUrl}/users/${userToEdit.id}`, userToEdit);
     return response.data;
   } catch (error) {
@@ -496,10 +507,42 @@ export const updateAvatar = async (user: any, avatar: string): Promise<any | und
       { headers: { 'Content-Type': 'application/json' } }
     );
 
-    console.log('Avatar update response:', response.data);
     return response.data;
   } catch (error: any) {
     console.error('Error updating avatar:', error.response?.data || error.message);
     throw new Error(error.response?.data?.message || 'Error while updating the avatar.');
+  }
+};
+
+export const createItem = async (newItem: any): Promise<any | undefined> => {
+  try {
+    const response = await instance.post(`${baseUrl}/items`, newItem);
+
+    return response.data;
+  } catch (error: any) {
+    console.error('Error al crear el objeto:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export async function deleteItem(itemId: any): Promise<any | undefined> {
+  try {
+    const response = await instance.delete(`${baseUrl}/items/${itemId}`);
+
+    return response.data;
+  } catch (error: any) {
+    console.error('Error al borrar el armario:', error.response?.data || error.message);
+    throw error;
+  }
+}
+
+export const updateItem = async (itemToUpdate: any): Promise<any | undefined> => {
+  try {
+    const response = await instance.put(`${baseUrl}/items/${itemToUpdate.id}`, itemToUpdate);
+
+    return response.data;
+  } catch (error) {
+    console.error('Error updating item:', error);
+    throw error;
   }
 };

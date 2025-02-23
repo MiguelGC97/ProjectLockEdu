@@ -41,7 +41,6 @@ const clearUploadsFolder = () => {
       for (const file of files) {
         const filePath = path.join(uploadsDir, file);
         fs.unlinkSync(filePath);
-        console.log(`Deleted ${file} from uploads`);
       }
     } catch (err) {
       console.error('Error deleting files from uploads:', err);
@@ -168,7 +167,6 @@ wss.on("connection", (ws) => {
   ws.send(JSON.stringify({ message: "Bienvenido al servidor WebSocket." }));
 
   ws.on("message", (message) => {
-    console.log(`Mensaje recibido: ${message}`);
 
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
