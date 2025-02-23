@@ -1,7 +1,7 @@
 module.exports = (app) => {
   const boxes = require("../controllers/box.controller.js");
   const auth = require("../middlewares/auth.js");
-  const upload = require("../multer/upload");
+  const { uploadBoxImage } = require("../multer/upload");
   const deleteImg = require('../multer/delete');
   const permissions = require("../middlewares/permissions.js");
   const authForReact = require("../middlewares/authForReact.session.js");
@@ -21,7 +21,7 @@ module.exports = (app) => {
   );
 
 
-  router.post('/upload', upload.single('file'), (req, res) => {
+  router.post('/upload', uploadBoxImage.single('file'), (req, res) => {
     if (req.file) {
       res.json({
         message: 'Imagen de la casilla subida con éxito.',

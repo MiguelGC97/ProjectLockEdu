@@ -3,10 +3,12 @@ import { IconMoon, IconSunHigh } from '@tabler/icons-react';
 import { Avatar, Button, Flex, Text } from '@mantine/core';
 import { useAuth } from '@/hooks/AuthProvider';
 import { useTheme } from '@/hooks/ThemeProvider';
+import { imageBaseUrl } from '@/services/api';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
 
 export default function UserBar() {
   const { user } = useAuth();
+  const src = imageBaseUrl + user?.avatar;
 
   return (
     <Flex
@@ -31,11 +33,11 @@ export default function UserBar() {
             </Text>
           )}
         </Flex>
-        <Text aria-label="correo electrónico del usuario" c="myPurple.0" ml="" size="lg" fw={300}>
+        <Text aria-label="correo electrónico del usuario" c="myPurple.0" ml="" size="lg" fw={400}>
           {user?.username}
         </Text>
       </Flex>
-      <Avatar size="lg" src={user?.avatar} alt="User's profile photo" bd="3px solid myPurple.0" />
+      <Avatar size="lg" src={src} alt="User's profile photo" bd="3px solid myPurple.0" />
     </Flex>
   );
 }

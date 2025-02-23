@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { IconMessageReport, IconUser } from '@tabler/icons-react';
+import { IconMessageReport, IconPhotoPlus, IconUser } from '@tabler/icons-react';
 import bcrypt from 'bcryptjs';
 import { motion } from 'framer-motion';
 import {
@@ -8,64 +8,129 @@ import {
   Center,
   Checkbox,
   Divider,
+  FileInput,
   Flex,
   Input,
   PasswordInput,
+  ScrollArea,
   Stack,
   Text,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useAuth } from '@/hooks/AuthProvider';
-import { updatePassword } from '@/services/fetch';
+import instance, { baseUrl } from '@/services/api';
+import { updateAvatar, updateOwnPassword, uploadAvatar } from '@/services/fetch';
 import classes from './SettingsBox.module.css';
 
 export function SettingsBox() {
-  const [currentPassword, setCurrentPassword] = useState('');
+  const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [visible, { toggle }] = useDisclosure(false);
   const [showNotification, setShowNotification] = useState(false);
+  const [showPasswordNotification, setShowPasswordNotification] = useState(false);
+  const [showAvatarNotification, setShowAvatarNotification] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<any>(null);
+  const icon = <IconPhotoPlus size={18} stroke={1.5} />;
+  const [file, setFile] = useState(null);
 
-  const { user, notification, updateNotification } = useAuth();
+  const { user, notification, updateNotification, updateUserAvatar } = useAuth();
 
-  const checkPassword = useCallback(
-    async (password: string) => {
-      if (!user?.password) return false;
-      return await bcrypt.compare(password, user.password);
-    },
-    [user]
-  );
-
-  const handleSave = () => {
+  const handleSaveNotifications = () => {
     setShowNotification(true);
     setTimeout(() => {
       setShowNotification(false);
     }, 1500);
   };
 
+  const handleSavePassword = () => {
+    setShowPasswordNotification(true);
+    setTimeout(() => {
+      setShowPasswordNotification(false);
+    }, 1500);
+  };
+
+  const handleSaveAvatar = () => {
+    setShowAvatarNotification(true);
+    setTimeout(() => {
+      setShowAvatarNotification(false);
+    }, 1500);
+  };
+
   const handleChangePassword = useCallback(async () => {
     try {
+      setErrorMessage(null);
+
       if (!user) {
-        console.error('No user is logged in.');
+        console.error('El usuario no está logado.');
         return;
       }
 
-      const isCurrentPasswordValid = await checkPassword(currentPassword);
-      if (!isCurrentPasswordValid) {
-        console.error('Current password is incorrect');
-        return;
-      }
+      user?.role === 'TEACHER' && (await updateOwnPassword(user, oldPassword, newPassword));
 
-      await updatePassword(user, newPassword);
+      setOldPassword('');
+      setNewPassword('');
+
+      setErrorMessage(null);
+      handleSavePassword();
+
       console.log('Password updated successfully');
-    } catch (error) {
-      console.error('Error changing password:', error);
+    } catch (error: any) {
+      const errorMessage = error?.message || 'Un error desconocido ocurrió.';
+      setErrorMessage(errorMessage);
+      console.error('Error during password update:', error);
+
+      setOldPassword('');
+      setNewPassword('');
     }
-  }, [currentPassword, newPassword, checkPassword, user]);
+  }, [oldPassword, newPassword, user]);
+
+  const handleUpdateAvatar = async () => {
+    if (!user) return;
+
+    try {
+      setErrorMessage('');
+
+      let newFilename = user?.avatar || 'no-image';
+
+      console.log(newFilename);
+
+      if (file) {
+        if (newFilename !== 'no-image') {
+          try {
+            const sliced = newFilename.slice(9);
+            console.log(sliced);
+            await instance.delete(`${baseUrl}/users/delete-avatar/${sliced}`);
+          } catch (error: any) {
+            if (error.response?.status !== 404) {
+              throw error;
+            }
+          }
+        }
+        newFilename = await uploadAvatar(file);
+        console.log('New filename received from backend:', newFilename);
+      }
+
+      const responseUpdate = await updateUserAvatar(user, newFilename);
+
+      if (responseUpdate.status === 200) {
+        setShowAvatarNotification(true);
+      }
+    } catch (error: any) {
+      console.error('Update failed:', error.response?.data);
+      setErrorMessage(
+        error.response?.status === 404
+          ? 'El usuario no fue encontrado.'
+          : error.response?.status === 400
+            ? 'La solicitud contiene datos incorrectos.'
+            : 'Error en la solicitud.'
+      );
+    }
+  };
 
   return (
-    <Box
+    <ScrollArea
       bg="transparent"
-      h="80vh"
+      h="auto"
       style={{
         border: '1px solid var(--mantine-color-myPurple-0)',
         borderRadius: '83px 0 25px 25px',
@@ -103,12 +168,13 @@ export function SettingsBox() {
           }}
           sx={{
             label: {
-              color: 'purple', // Change label color to purple
+              color: 'purple',
             },
           }}
+          value={oldPassword}
           visible={visible}
           onVisibilityChange={toggle}
-          onChange={(e) => setCurrentPassword(e.target.value)}
+          onChange={(e) => setOldPassword(e.target.value)}
         />
         <Flex justify="space-between" align="flex-end">
           <PasswordInput
@@ -121,12 +187,15 @@ export function SettingsBox() {
               input: { border: '1px solid var(--mantine-color-myPurple-0)' },
             }}
             label="Nueva contraseña"
+            value={newPassword}
             visible={visible}
             onVisibilityChange={toggle}
             onChange={(e) => setNewPassword(e.target.value)}
           />
           <Button
-            onClick={handleChangePassword}
+            onClick={() => {
+              handleChangePassword();
+            }}
             variant="filled"
             size="md"
             px="50"
@@ -137,33 +206,52 @@ export function SettingsBox() {
             Guardar
           </Button>
         </Flex>
+        {showPasswordNotification && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Text ml="50px" c="myPurple.12">
+              ✔ ¡Tu nueva contraseña se ha guardado!
+            </Text>
+          </motion.div>
+        )}
+
+        {errorMessage && (
+          <Text c="myPurple.11" size="md" ml="100px" fw={500}>
+            {errorMessage}
+          </Text>
+        )}
       </Stack>
 
-      <Divider size="xs" color="myPurple.0" mt={30} />
-
-      <Flex ml="40px" justify="flex-start" align="center">
-        <Text size="xl" py="20px" c="myPurple.0">
-          Notificaciones:
-        </Text>
-      </Flex>
-      <Divider size="xs" color="myPurple.1" />
-
-      <Flex h="200px" w="100%" justify="space-between" align="center">
-        <Flex px="20px" mr="50" h="100%" w="100%" justify="space-between" align="center">
-          <Checkbox
-            checked={notification}
-            ml={50}
-            size="md"
-            label="Recibir notificaciones de mis recordatorios"
-            color="myPurple.4"
-            c="myPurple.0"
-            iconColor="white"
-            onChange={(e) => {
-              updateNotification(e.currentTarget.checked);
-              handleSave();
-            }}
-          />
-          {/* <Button
+      {user?.role === 'TEACHER' || user?.role === 'MANAGER' ? (
+        <>
+          {' '}
+          <Divider size="xs" color="myPurple.0" mt={30} />
+          <Flex ml="40px" justify="flex-start" align="center">
+            <Text size="xl" py="20px" c="myPurple.0">
+              Notificaciones:
+            </Text>
+          </Flex>
+          <Divider size="xs" color="myPurple.1" />
+          <Flex h="200px" w="100%" justify="space-between" align="center">
+            <Flex px="20px" mr="50" h="100%" w="100%" justify="space-between" align="center">
+              <Checkbox
+                checked={notification}
+                ml={50}
+                size="md"
+                label="Recibir notificaciones de mis recordatorios"
+                color="myPurple.4"
+                c="myPurple.0"
+                iconColor="white"
+                onChange={(e) => {
+                  updateNotification(e.currentTarget.checked);
+                  handleSaveNotifications();
+                }}
+              />
+              {/* <Button
             variant="filled"
             size="md"
             px="50"
@@ -177,8 +265,48 @@ export function SettingsBox() {
           >
             Guardar
           </Button> */}
-        </Flex>
-      </Flex>
+            </Flex>
+          </Flex>
+          <Divider size="xs" color="myPurple.0" mt={30} />
+          <Flex ml="40px" justify="flex-start" align="center">
+            <Text size="xl" py="20px" c="myPurple.0">
+              Imagen de perfil:
+            </Text>
+          </Flex>
+          <Divider size="xs" color="myPurple.1" />
+          <Flex h="200px" w="100%" justify="space-between" align="center">
+            <Flex px="20px" mr="50" h="100%" w="100%" justify="space-between" align="center">
+              <FileInput
+                styles={{
+                  label: {
+                    color: 'var(--mantine-color-myPurple-0)',
+                  },
+                  input: { border: '1px solid var(--mantine-color-myPurple-0)' },
+                }}
+                ml="40px"
+                rightSection={icon}
+                label="Sube una imagen nueva de perfil"
+                c="myPurple.0"
+                placeholder="Imagen nueva de perfil"
+                rightSectionPointerEvents="none"
+                onChange={(file) => setFile(file)}
+                size="lg"
+              />
+              <Button
+                variant="filled"
+                size="md"
+                px="50"
+                radius="xl"
+                color="#4F51B3"
+                onClick={handleUpdateAvatar}
+              >
+                Guardar
+              </Button>
+            </Flex>
+          </Flex>
+        </>
+      ) : null}
+
       {showNotification && (
         <motion.div
           initial={{ opacity: 0, y: -70 }}
@@ -191,6 +319,6 @@ export function SettingsBox() {
           </Text>
         </motion.div>
       )}
-    </Box>
+    </ScrollArea>
   );
 }

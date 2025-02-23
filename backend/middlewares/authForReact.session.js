@@ -41,6 +41,8 @@ exports.signin = async (req, res) => {
       role: data.role,
     };
 
+    req.session.save();
+
 
     return res.status(200).json({ user: req.session.user });
 

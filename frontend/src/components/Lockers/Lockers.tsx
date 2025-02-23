@@ -173,6 +173,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
           <TextInput
             label="Descripción"
             placeholder="Ingrese la descripción"
+            maxLength={60}
             value={newLocker.description}
             onChange={(e) => handleChange('description', e.target.value)}
             withAsterisk
@@ -181,6 +182,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
             label="Ubicación"
             placeholder="Ingrese la ubicación"
             value={newLocker.location}
+            maxLength={10}
             onChange={(e) => handleChange('location', e.target.value)}
             withAsterisk
           />
@@ -233,18 +235,19 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
 
         {lockerToEdit ? (
           <Flex direction="column" gap="md">
-            <NumberInput
+            {/* <NumberInput
               label="Numero"
               placeholder="Ingrese el nuevo numero"
               value={lockerToEdit?.number}
               onChange={(value) => setLockerToEdit({ ...lockerToEdit, number: value })}
               min={1}
-            />
+            /> */}
 
             <TextInput
               label="Descripción"
               placeholder="Ingrese la nueva descripción"
               value={lockerToEdit?.description}
+              maxLength={60}
               onChange={(e) => setLockerToEdit({ ...lockerToEdit, description: e.target.value })}
             />
 
@@ -252,6 +255,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
               label="Ubicación"
               placeholder="Ingrese la nueva ubicación"
               value={lockerToEdit?.location}
+              maxLength={10}
               onChange={(e) => setLockerToEdit({ ...lockerToEdit, location: e.target.value })}
             />
 
@@ -308,20 +312,37 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
                 >
                   <Flex direction="column" gap="lg" p="sm">
                     <Flex gap="10vw" justify="center" align="center">
-                      <Flex direction="column" gap="1vh" justify="center">
+                      <Flex direction="column" gap="1vh" justify="center" miw="45%">
                         <Title
                           aria-label={`armario número ${locker.number}`}
                           size="xl"
                           c="myPurple.0"
+                          tt="uppercase"
                         >
                           Armario {locker.number}
                         </Title>
                         <Flex gap="md" justify="flex-start">
                           <Flex gap={5}>
+                            <Text
+                              aria-label={`descripción del armario número ${locker.number}`}
+                              c="myPurple.0"
+                              lineClamp={3}
+                              maw={220}
+                            >
+                              <Text c="myPurple.0" fw={700}>
+                                Descripción:
+                              </Text>{' '}
+                              {locker.description}
+                            </Text>
+                          </Flex>
+                        </Flex>
+                        <Flex gap="sm" justify="flex-start">
+                          <Flex gap={5}>
                             <Text c="myPurple.0" fw={700}>
                               Ubicación:
                             </Text>{' '}
                             <Text
+                              maw="100px"
                               aria-label={`ubicación del armario número ${locker.number}`}
                               c="myPurple.0"
                             >

@@ -39,6 +39,7 @@ exports.signin = async (req, res) => {
         req.session.user = {
             username: data.username,
             id: data.id,
+            avatar: data.avatar,
         };
 
         return res.redirect("/locker");

@@ -97,17 +97,17 @@ exports.update = async (req, res) => {
 
 
 
-    const existingLocker = await Locker.findOne({
-      where: { number: number }
-    });
+    // const existingLocker = await Locker.findOne({
+    //   where: { number: number }
+    // });
 
     if (!number || !description || !location) {
       return res.status(400).json({ message: 'Todos los campos son obligatorios.' });
     }
 
-    if (existingLocker) {
-      return res.status(409).json({ message: 'Ya existe un armario con este numero.' });
-    }
+    // if (existingLocker) {
+    //   return res.status(409).json({ message: 'Ya existe un armario con este numero.' });
+    // }
 
     const [updated] = await Locker.update(
       { number, description, location },

@@ -3,6 +3,8 @@ module.exports = (app) => {
   const auth = require("../middlewares/auth.js");
   const authForReact = require("../middlewares/authForReact.session.js");
   const authSession = require("../middlewares/auth.session.js");
+  const { uploadAvatar } = require("../multer/upload");
+  const deleteImg = require('../multer/delete');
 
   const permissions = require("../middlewares/permissions.js");
 
@@ -15,6 +17,35 @@ module.exports = (app) => {
     users.addNewUser
   );
 
+  router.post('/upload', uploadAvatar.single('file'), (req, res) => {
+    if (req.file) {
+      res.json({
+        message: 'Avatar subido con éxito.',
+        filepath: `/uploads/${req.file.filename}`,
+      });
+    } else {
+      res.status(400).json({ message: 'Ningun archivo enviado.' });
+    }
+  });
+
+  router.delete('/delete-avatar/:filename', async (req, res) => {
+    try {
+      const { filename } = req.params;
+
+      if (!filename) {
+        return res.status(400).json({ message: 'Filename is required' });
+      }
+
+      await deleteImg(filename);
+
+      res.json({ message: 'Old image deleted successfully' });
+
+    } catch (error) {
+      console.error('Error deleting file:', error.message);
+      res.status(500).json({ message: error.message || 'Error deleting the image' });
+    }
+  });
+
   router.get(
     "/",
     authForReact.isAuthenticated,
@@ -26,7 +57,7 @@ module.exports = (app) => {
     "/:id",
     authForReact.isAuthenticated,
     permissions.authorize(["ADMIN"]),
-    users.findOne
+    users.findOneById
   );
 
   router.get(
@@ -66,6 +97,55 @@ module.exports = (app) => {
     return res.status(401).json({ message: "Session expired or invalid" });
   });
 
+  router.put(
+    "/password/:id",
+    authForReact.isAuthenticated,
+    permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]),
+    users.updatePassword
+  );
+
+  router.put(
+    "/own-password/:id",
+    authForReact.isAuthenticated,
+    permissions.authorize(["TEACHER"]),
+    users.updateOwnPassword
+  );
+
+  router.post('/upload', uploadAvatar.single('file'), permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]), (req, res) => {
+    if (req.file) {
+      res.json({
+        message: 'Imagen de perfil subida con éxito.',
+        filepath: `/uploads/${req.file.filename}`,
+      });
+    } else {
+      res.status(400).json({ message: 'Ningun archivo enviado.' });
+    }
+  });
+
+  router.delete('/delete-avatar/:filename', permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]), async (req, res) => {
+    try {
+      const { filename } = req.params;
+
+      if (!filename) {
+        return res.status(400).json({ message: 'Filename is required' });
+      }
+
+      await deleteImg(filename);
+
+      res.json({ message: 'Old image deleted successfully' });
+
+    } catch (error) {
+      console.error('Error deleting file:', error.message);
+      res.status(500).json({ message: error.message || 'Error deleting the image' });
+    }
+  });
+
+  router.put(
+    "/update-avatar/:id",
+    authForReact.isAuthenticated,
+    permissions.authorize(["TEACHER", "ADMIN", "MANAGER"]),
+    users.updateAvatar
+  );
 
   app.use("/api/users", router);
 };
