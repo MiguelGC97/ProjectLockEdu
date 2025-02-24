@@ -95,39 +95,6 @@ exports.delete = async (req, res) => {
 
 
 
-exports.updateDeprecated = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const { username } = req.body;
-
-
-    if (req.body.password) {
-      req.body.password = await bcrypt.hash(req.body.password, 10);
-    }
-
-    const existingUser = await User.findOne({ where: { username } });
-    if (existingUser) {
-      return res.status(409).send({ message: "Este usuario ya existe." });
-    }
-
-    const [updated] = await User.update(req.body, { where: { id } });
-
-    if (updated) {
-
-      const updatedUser = await User.findByPk(id);
-      res.status(200).json({
-        message: "¡Usuario actualizado con suceso!",
-        data: updatedUser,
-      });
-    } else {
-      res.status(404).json({ message: "Error al editar usuario. Intente novamente." });
-    }
-  } catch (error) {
-
-    console.error("Update error:", error);
-    res.status(500).json({ error: "Un error ocurrió al editar usuario" });
-  }
-};
 
 exports.updateDeprecated2 = async (req, res) => {
   try {
@@ -176,61 +143,6 @@ exports.updateDeprecated2 = async (req, res) => {
 };
 
 
-exports.updateDeprecated3 = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const { username, password, name, surname, role } = req.body;
-
-    // Find the user by ID
-    const user = await User.findByPk(id);
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado." });
-    }
-
-    // Check if username exists for another user
-    if (username) {
-      const existingUser = await User.findOne({
-        where: { username, id: { [Op.ne]: id } }, // Exclude the current user
-      });
-
-      if (existingUser) {
-        return res.status(409).json({ message: "Este correo ya existe." });
-      }
-    }
-
-    // Prepare the data to update
-    const updateData = {};
-    if (username) updateData.username = username;
-    if (name) updateData.name = name;
-    if (surname) updateData.surname = surname;
-    if (role) updateData.role = role;
-    if (password) updateData.password = await bcrypt.hash(password, 10);
-
-    // Perform the update
-    const [updated] = await User.update(updateData, { where: { id } });
-
-    if (updated) {
-      // After update, fetch the updated user
-      const updatedUser = await User.findByPk(id);
-
-      if (req.session.user.id === id) {
-        req.session.user = updatedUser;
-      }
-
-      return res.status(200).json({
-        message: "¡Usuario actualizado con éxito!",
-        updatedUser,
-        loggedUser: req.session.user,
-      });
-    } else {
-      return res.status(400).json({ message: "No se realizó ningún cambio." });
-    }
-  } catch (error) {
-    console.error("Update error:", error);
-    return res.status(500).json({ error: "Un error ocurrió al editar usuario" });
-  }
-};
-
 
 exports.update = async (req, res) => {
   try {
@@ -264,6 +176,8 @@ exports.update = async (req, res) => {
     if (updated) {
       const updatedUser = await User.findByPk(id);
 
+      const updatedUserClean = utils.getCleanUser(updatedUser);
+
 
       if (req.session.user.id === updatedUser.id) {
         req.session.user = {
@@ -281,7 +195,7 @@ exports.update = async (req, res) => {
 
       return res.status(200).json({
         message: "¡Usuario actualizado con éxito!",
-        updatedUser,
+        updatedUserClean,
         loggedUser: req.session.user,
       });
     } else {
@@ -380,10 +294,11 @@ exports.updateAvatar = async (req, res) => {
         req.session.save();
       }
 
+      const updatedUserClean = utils.getCleanUser(updatedUser);
 
       return res.status(200).json({
         message: "¡Avatar actualizado con éxito!",
-        updatedUser,
+        updatedUserClean,
         loggedUser: req.session.user,
       });
     } else {
