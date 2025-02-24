@@ -70,14 +70,14 @@
 
 ## About The Project
 
-[![LockEDU Home Page][product-screenshot]](https://github.com/MiguelGC97/ProjectLockEdu)
+[![LockEDU Teacher's Dashboard][teacher-dash]](https://github.com/MiguelGC97/ProjectLockEdu)
 
 LockEDU is a full-stack locker management system created as part of the Web Development course at IES El Rincón. This project addresses a significant gap in the institute’s item management process by providing an efficient and user-friendly solution for reserving and managing items stored in lockers.
 
 The app is designed specifically for teachers at the institute. Using the application, a teacher can:
 
 - Browse through lockers and their respective compartments (or boxes).
-- Select one or more items from a locker to reserve for a specified period within a single day.
+- Select one or more items from a locker to reserve for a specified period.
 - Receive notifications for check-in and check-out time of borrowed items.
 - Manage bookings seamlessly, ensuring transparency and accountability.
 
@@ -90,9 +90,8 @@ In addition to item reservations, the app offers a robust reporting system:
 
 By tracking who has borrowed each item and for how long, this project serves as a comprehensive control system, ensuring proper usage and management of the institute's resources.
 
-[![LockEDU Admin Lockers Page][admin-locker]](https://github.com/MiguelGC97/ProjectLockEdu)
-[![LockEDU Admin Report Log Page][admin-report]](https://github.com/MiguelGC97/ProjectLockEdu)
-[![LockEDU Admin Notifications Page][admin-notification]](https://github.com/MiguelGC97/ProjectLockEdu)
+[![LockEDU Teacher's Report Page][teacher-report]](https://github.com/MiguelGC97/ProjectLockEdu)
+[![LockEDU Teacher' Admin Dashboard][admin-dash]](https://github.com/MiguelGC97/ProjectLockEdu)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -144,38 +143,47 @@ These are the technologies and tools you need to use this application.
 
    ```
    JWT_SECRET=your_jwt_secret
-   DB_HOST=your_db_host
-   DB_USERNAME=your_db_username
-   DB_PASSWORD=your_db_password
-   DB_DATABASE=your_db_name
-   DB_PORT=your_db_port
+   SESSION_SECRET=your_session_secret
 
+   DB_USERNAME_DEV=root
+   DB_PASSWORD_DEV=your_db_password
+   DB_ROOT_PASSWORD_DEV=your_db_password
+   DB_DATABASE_DEV=your_db_name
+   DB_DIALECT_DEV=mysql
+   DB_PORT_DEV=3306
+   DB_HOST_DEV=your_db_host
 
-   DB_DIALECT=mysql
-   NODE_ENV=development
+   HOST_PORT_DEV=your_port
+   NODE_ENV_DEV=development
    ```
 
-   - frontend `.env`
+- frontend `.env`
 
-   ```
-   VITE_BASE_URL=your_base_url
-   ```
+```
+VITE_BASE_URL=your_base_url
+VITE_IMAGE_BASE_URL=your_backend_url_without_the_api_part
+
+```
 
 4. Create a database schema in MySQL workbench with the exact name of your DB_DATABASE environment variable
 
 5. Run the backend first
 
-   ```
-   cd backend
-   node index.js
-   ```
+```
+
+cd backend
+node index.js
+
+```
 
 6. Then, run the frontend
 
-   ```
-   cd ../frontend
-   npm run dev
-   ```
+```
+
+cd ../frontend
+npm run dev
+
+```
 
 7. You're all set!
 
@@ -207,10 +215,10 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-[product-screenshot]: images/home-page.png
-[admin-locker]: images/lockedu-locker.png
-[admin-report]: images/lockedu-report.png
-[admin-notification]: images/lockedu-notification.png
+[loginpage]: images/app-login.png
+[teacher-dash]: images/app-teacher
+[admin-dash]: images/app-admin.png
+[teacher-report]: images/app-report.png
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://react.dev/
 [Node.js]: https://img.shields.io/badge/Node.js-303030?style=for-the-badge&logo=node.js&logoColor=3C873A
@@ -225,3 +233,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 [Mantine-url]: https://mantine.dev
 [Ejs.dev]: https://img.shields.io/badge/ejs-B4CA65?style=for-the-badge&logo=ejs&logoColor=A91E50
 [Ejs-url]: https://ejs.co/
+
+```
+
+```

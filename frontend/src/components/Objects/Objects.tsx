@@ -408,28 +408,32 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
                           const type = objectTypes?.find((type) => type.id === object.typeId);
                           return (
                             <>
-                              <Flex
-                                key={object.id}
-                                style={{
-                                  cursor: 'pointer',
-                                }}
-                              >
-                                <Checkbox
-                                  styles={{
-                                    label: {
-                                      color: 'myPurple.0',
-                                    },
+                              <Flex justify="space-between" align="center" pr="md">
+                                <Flex
+                                  key={object.id}
+                                  style={{
+                                    cursor: 'pointer',
                                   }}
-                                  color="myPurple.4"
-                                  c="myPurple.0"
-                                  ml="1vw"
-                                  value={`${object.id}`}
-                                  label={object.description}
-                                />
-                                <Text fw={600} ml={10} c="myPurple.0" maw="100%" truncate>
-                                  <Text>{type ? type.typeName : 'Sin categoría'}</Text>{' '}
-                                  {/* Display the category name */}
-                                </Text>
+                                  w="300px"
+                                >
+                                  <Checkbox
+                                    styles={{
+                                      label: {
+                                        color: 'myPurple.0',
+                                        fontWeight: 600,
+                                        truncate: true,
+                                      },
+                                    }}
+                                    color="myPurple.4"
+                                    c="myPurple.0"
+                                    ml="1vw"
+                                    size="md"
+                                    value={`${object.id}`}
+                                    label={object.description}
+                                    maw="100%"
+                                  />
+                                </Flex>
+                                <Text c="myPurple.0">{type ? type.typeName : 'Sin categoría'}</Text>
                               </Flex>
                               <Divider color="myPurple.0" />
                             </>

@@ -28,6 +28,8 @@ import classes from './ReportsBox.module.css';
 
 import 'react-toastify/dist/ReactToastify.css';
 
+import { imageBaseUrl } from '@/services/api';
+
 export function ReportsBox() {
   const [incidences, setIncidences] = useState<Incidence[]>();
   const [modalOpened, setModalOpened] = useState(false);
@@ -35,6 +37,7 @@ export function ReportsBox() {
   const [newContent, setNewContent] = useState<string>('');
   const { user } = useAuth();
   const { theme } = useTheme();
+  const src = imageBaseUrl + user?.avatar;
 
   useEffect(() => {
     const loadIncidences = async () => {
@@ -176,7 +179,7 @@ export function ReportsBox() {
       >
         <Flex align="flex-start" gap="md">
           <Avatar
-            src={user?.avatar}
+            src={src}
             alt={user?.name}
             radius="xl"
             size="lg"

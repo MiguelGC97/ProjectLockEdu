@@ -205,7 +205,7 @@ const UsersBox: React.FC = () => {
         responseUpdate = await updateUserAvatar(userToEdit, newFilename);
       }
 
-      if (responseUpdate?.updatedUser) {
+      if (responseUpdate?.updatedUserClean && responseUpdate?.updatedUserClean.avatar) {
         closeEdit();
 
         setSuccessMessage('¡Avatar actualizado con éxito!');
@@ -216,11 +216,15 @@ const UsersBox: React.FC = () => {
 
         setUsers((prevUsers) =>
           prevUsers?.map((usr) =>
-            usr.id === userToEdit.id ? { ...usr, avatar: responseUpdate.updatedUser.avatar } : usr
+            usr.id === userToEdit.id
+              ? { ...usr, avatar: responseUpdate.updatedUserClean.avatar }
+              : usr
           )
         );
 
-        setUserToEdit((prev) => prev && { ...prev, avatar: responseUpdate.updatedUser.avatar });
+        setUserToEdit(
+          (prev) => prev && { ...prev, avatar: responseUpdate.updatedUserClean.avatar }
+        );
       }
     } catch (error: any) {
       setErrorMessage(
