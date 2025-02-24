@@ -91,6 +91,7 @@ In addition to item reservations, the app offers a robust reporting system:
 By tracking who has borrowed each item and for how long, this project serves as a comprehensive control system, ensuring proper usage and management of the institute's resources.
 
 [![LockEDU Teacher's Report Page][teacher-report]](https://github.com/MiguelGC97/ProjectLockEdu)
+<br/>
 [![LockEDU Teacher' Admin Dashboard][admin-dash]](https://github.com/MiguelGC97/ProjectLockEdu)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -145,7 +146,7 @@ These are the technologies and tools you need to use this application.
    JWT_SECRET=your_jwt_secret
    SESSION_SECRET=your_session_secret
 
-   DB_USERNAME_DEV=root
+   DB_USERNAME_DEV=your_db_username
    DB_PASSWORD_DEV=your_db_password
    DB_ROOT_PASSWORD_DEV=your_db_password
    DB_DATABASE_DEV=your_db_name
@@ -153,7 +154,7 @@ These are the technologies and tools you need to use this application.
    DB_PORT_DEV=3306
    DB_HOST_DEV=your_db_host
 
-   HOST_PORT_DEV=your_port
+   HOST_PORT_DEV=your_host_port
    NODE_ENV_DEV=development
    ```
 
@@ -216,7 +217,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 [loginpage]: images/app-login.png
-[teacher-dash]: images/app-teacher
+[teacher-dash]: images/app-teacher.png
 [admin-dash]: images/app-admin.png
 [teacher-report]: images/app-report.png
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
