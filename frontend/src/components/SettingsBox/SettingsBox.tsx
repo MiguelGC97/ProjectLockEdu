@@ -113,8 +113,10 @@ export function SettingsBox() {
 
       const responseUpdate = await updateUserAvatar(user, newFilename);
 
-      if (responseUpdate.status === 200) {
-        setShowAvatarNotification(true);
+      if (responseUpdate.containsError) {
+        setErrorMessage(responseUpdate.errorMessage);
+      } else {
+        handleSaveAvatar();
       }
     } catch (error: any) {
       console.error('Update failed:', error.response?.data);
@@ -282,19 +284,33 @@ export function SettingsBox() {
             <Divider size="xs" color="myPurple.1" />
             <Flex h="200px" w="100%" justify="space-between" align="center">
               <Flex px="20px" mr="50" h="100%" w="100%" justify="space-between" align="center">
-                <Checkbox
-                  checked={notification}
-                  ml={50}
-                  size="md"
-                  label="Recibir notificaciones de mis recordatorios"
-                  color="myPurple.4"
-                  c="myPurple.0"
-                  iconColor="white"
-                  onChange={(e) => {
-                    updateNotification(e.currentTarget.checked);
-                    handleSaveNotifications();
-                  }}
-                />
+                <Flex direction="column">
+                  <Checkbox
+                    checked={notification}
+                    ml={50}
+                    size="md"
+                    label="Recibir notificaciones de mis recordatorios"
+                    color="myPurple.4"
+                    c="myPurple.0"
+                    iconColor="white"
+                    onChange={(e) => {
+                      updateNotification(e.currentTarget.checked);
+                      handleSaveNotifications();
+                    }}
+                  />
+                  {showNotification && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 40 }}
+                      animate={{ opacity: 1, y: 30 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <Text ml="50px" c="myPurple.12">
+                        ✔ ¡Tus preferencias de notificaciones se han guardado!
+                      </Text>
+                    </motion.div>
+                  )}
+                </Flex>
                 {/* <Button
             variant="filled"
             size="md"
@@ -320,22 +336,37 @@ export function SettingsBox() {
             <Divider size="xs" color="myPurple.1" />
             <Flex h="200px" w="100%" justify="space-between" align="center">
               <Flex px="20px" mr="50" h="100%" w="100%" justify="space-between" align="center">
-                <FileInput
-                  styles={{
-                    label: {
-                      color: 'var(--mantine-color-myPurple-0)',
-                    },
-                    input: { border: '1px solid var(--mantine-color-myPurple-0)' },
-                  }}
-                  ml="40px"
-                  rightSection={icon}
-                  label="Sube una imagen nueva de perfil"
-                  c="myPurple.0"
-                  placeholder="Imagen nueva de perfil"
-                  rightSectionPointerEvents="none"
-                  onChange={(file) => setFile(file)}
-                  size="lg"
-                />
+                <Flex direction="column">
+                  <FileInput
+                    styles={{
+                      label: {
+                        color: 'var(--mantine-color-myPurple-0)',
+                      },
+                      input: { border: '1px solid var(--mantine-color-myPurple-0)' },
+                    }}
+                    mb="30px"
+                    ml="40px"
+                    rightSection={icon}
+                    label="Sube una imagen nueva de perfil"
+                    c="myPurple.0"
+                    placeholder="Imagen nueva de perfil"
+                    rightSectionPointerEvents="none"
+                    onChange={(file) => setFile(file)}
+                    size="lg"
+                  />
+                  {showAvatarNotification && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 2 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <Text ml="50px" c="myPurple.12">
+                        ✔ ¡Tus nueva imagen de perfil se ha guardado!
+                      </Text>
+                    </motion.div>
+                  )}
+                </Flex>
                 <Button
                   variant="filled"
                   size="md"
@@ -350,19 +381,6 @@ export function SettingsBox() {
             </Flex>
           </>
         ) : null}
-
-        {showNotification && (
-          <motion.div
-            initial={{ opacity: 0, y: -70 }}
-            animate={{ opacity: 1, y: -60 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Text ml="50px" c="myPurple.12">
-              ✔ ¡Tus preferencias de notificaciones se han guardado!
-            </Text>
-          </motion.div>
-        )}
       </ScrollArea>
     </>
   );
