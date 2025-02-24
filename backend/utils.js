@@ -1,10 +1,9 @@
-// generate token using secret from process.env.JWT_SECRET
+
 var jwt = require("jsonwebtoken");
 
-// generate token and return it
+
 function generateToken(user) {
-  //1. Don't use password and other sensitive fields
-  //2. Use the information that are useful in other parts
+
   if (!user) return null;
 
   var u = {
@@ -18,29 +17,29 @@ function generateToken(user) {
     role: user.role,
   };
 
-  // .env should contain a line like JWT_SECRET=V3RY#1MP0RT@NT$3CR3T#
+
   return jwt.sign(u, process.env.JWT_SECRET, {
-    expiresIn: 60 * 60 * 24, // expires in 24 hours
+    expiresIn: 60 * 60 * 24,
   });
 }
 
 
 function formatDate(report) {
-  
+
   if (!report.createdAt || typeof createdAt !== 'string') {
     throw new Error("Not a valid format.");
   }
 
-  
+
   const isoDate = (report.createdAt).replace(" ", "T");
 
-  // create object date
+
   const date = new Date(isoDate);
   if (isNaN(date.getTime())) {
     throw new Error("Date Invalid");
   }
 
-  //new format "DD/MM/YYYY HH:mm"
+
   const options = {
     day: '2-digit',
     month: '2-digit',
@@ -64,11 +63,11 @@ function generateTokenReport(report) {
   };
 
   return jwt.sign(r, process.env.JWT_SECRET, {
-    expiresIn: 60 * 60 * 24, // expires in 24 hours
+    expiresIn: 60 * 60 * 24,
   });
 }
 
-// return basic user details
+
 function getCleanUser(user) {
   if (!user) return null;
 
@@ -77,7 +76,7 @@ function getCleanUser(user) {
     name: user.name,
     username: user.username,
     surname: user.surname,
-    password: user.password,
+    password: null,
     email: user.email,
     avatar: user.avatar,
     role: user.role,

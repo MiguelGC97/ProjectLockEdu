@@ -7,49 +7,51 @@ import {
   Checkbox,
   Flex,
   Image,
-  Paper,
   PasswordInput,
   Text,
   TextInput,
-  Title,
   useMantineTheme,
 } from '@mantine/core';
-import { useAuth } from '../../hooks/AuthProvider';
-import { login as loginService } from '../../services/authService';
-import classes from '../../App.module.css';
+import { useAuth } from '@/hooks/AuthProvider';
 
 const LoginForm: React.FC = () => {
   const theme = useMantineTheme();
-  const { login } = useAuth(); // Use the login function from context
+  const { login, user, loading } = useAuth(); // Use loading from AuthProvider
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
 
     try {
-      // call the login service with the username and password
-      const data = await loginService(username, password);
-
-      // Assuming the response data contains the user and access token
-      login(data.user); // Update the Auth context with the logged-in user
-      localStorage.setItem('access_token', data.access_token); // Store token in localStorage
-
-      // Optionally store the user in localStorage if 'Remember Me' is checked
-      if (rememberMe) {
-        localStorage.setItem('user', JSON.stringify(data.user));
-      }
-
-      // Redirect to the profile or dashboard page
-      navigate('/perfil');
+      await login(username, password); // Call login method from AuthProvider
     } catch (err: any) {
-      // If login fails, display an error message
       setError(err.message || 'Login failed');
     }
   };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSubmit();
+    }
+  };
+
+  // Redirect after login
+  React.useEffect(() => {
+    if (user) {
+      // Redirect based on user role
+      if (user.role === 'ADMIN') {
+        navigate('/panel-admin');
+      } else if (user.role === 'TEACHER') {
+        navigate('/perfil');
+      } else if (user.role === 'MANAGER') {
+        navigate('/incidencias-manager');
+      }
+    }
+  }, [user, navigate]);
 
   return (
     <Flex
@@ -59,9 +61,9 @@ const LoginForm: React.FC = () => {
       h="auto"
       style={{ backgroundColor: theme.colors.myPurple[9] }}
     >
-      <Flex radius={0} align="center" justify="center" px="auto" direction="column" gap="-5">
-        <Image w="50%" src="/assets/logo-login.png" />
-        <Text color="white" mt="md" mb={50}>
+      <Flex radius={0} align="center" justify="center" px="auto" direction="column">
+        <Image w="50%" src="/assets/logo-login.png" alt="logo de lockEdu" />
+        <Text color="myPurple.0" mt="md" mb={50}>
           Inicia sesión con tus credenciales
         </Text>
 
@@ -70,7 +72,12 @@ const LoginForm: React.FC = () => {
           data-testid="username-input"
           leftSection={<IconAt />}
           radius="xl"
-          c="white"
+          styles={{
+            label: {
+              color: 'var(--mantine-color-myPurple-0)',
+            },
+            input: { border: '1px solid var(--mantine-color-myPurple-0)' },
+          }}
           miw="40%"
           label="Correo eletrónico"
           placeholder="Escribe tu correo"
@@ -84,7 +91,12 @@ const LoginForm: React.FC = () => {
           data-testid="password-input"
           leftSection={<IconKey />}
           radius="xl"
-          c="white"
+          styles={{
+            label: {
+              color: 'var(--mantine-color-myPurple-0)',
+            },
+            input: { border: '1px solid var(--mantine-color-myPurple-0)' },
+          }}
           label="Contraseña"
           placeholder="Escribe tu contraseña"
           miw="40%"
@@ -92,12 +104,13 @@ const LoginForm: React.FC = () => {
           size="md"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
 
         {/* Remember Me checkbox */}
         <Checkbox
           color="myPurple.3"
-          c="white"
+          c="myPurple.0"
           label="Mantenerme conectado"
           mt="xl"
           size="md"
@@ -107,7 +120,7 @@ const LoginForm: React.FC = () => {
 
         {/* Error message if login fails */}
         {error && (
-          <Text data-testid="login-error" c="red" size="sm" align="center" mt="md">
+          <Text data-testid="login-error" c="red" size="md" align="center" mt="md">
             {error}
           </Text>
         )}
@@ -122,12 +135,14 @@ const LoginForm: React.FC = () => {
           size="md"
           fw={400}
           onClick={handleSubmit}
+          onKeyDown={handleKeyDown}
+          loading={loading} // Show loading spinner when login is in progress
         >
           Acceder a mi cuenta
         </Button>
 
         {/* Link to the registration page (optional) */}
-        <Anchor c="white" href="" size="sm" mt="md" align="center">
+        <Anchor c="myPurple.0" href="" size="sm" mt="md" align="center">
           ¿Olvidaste tu contraseña?
         </Anchor>
       </Flex>

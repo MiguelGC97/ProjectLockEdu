@@ -2,40 +2,41 @@ module.exports = (app) => {
   const types = require("../controllers/type.controller.js");
   const permissions = require("../middlewares/permissions.js");
   const auth = require("../middlewares/auth.js");
+  const authForReact = require("../middlewares/authForReact.session.js");
 
   var router = require("express").Router();
 
   router.post(
     "/",
-    auth.isAuthenticated,
+    authForReact.isAuthenticated,
     permissions.authorize(["ADMIN"]),
     types.addType
   );
 
   router.get(
     "/",
-    auth.isAuthenticated,
-    permissions.authorize(["ADMIN"]),
+    authForReact.isAuthenticated,
+    permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]),
     types.getAll
   );
 
   router.get(
     "/:id",
-    auth.isAuthenticated,
+    authForReact.isAuthenticated,
     permissions.authorize(["ADMIN"]),
     types.getOne
   );
 
   router.put(
     "/:id",
-    auth.isAuthenticated,
+    authForReact.isAuthenticated,
     permissions.authorize(["ADMIN"]),
     types.update
   );
 
   router.delete(
     "/:id",
-    auth.isAuthenticated,
+    authForReact.isAuthenticated,
     permissions.authorize(["ADMIN"]),
     types.delete
   );

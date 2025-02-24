@@ -1,18 +1,24 @@
-﻿import { useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 
 function useLocalStorage<T>(key: string, initialValue: T | null) {
-  // Get from localStorage or use initial value
-  const storedValue = localStorage.getItem(key);
-  const parsedValue = storedValue ? JSON.parse(storedValue) : initialValue;
+  const getStoredValue = () => {
+    const storedValue = localStorage.getItem(key);
+    return storedValue ? JSON.parse(storedValue) : initialValue;
+  };
 
-  // State to store the value in memory
-  const [storedValueState, setStoredValue] = useState<T | null>(parsedValue);
+  const [storedValueState, setStoredValue] = useState<T | null>(getStoredValue);
 
-  // Set value to both state and localStorage
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setStoredValue(getStoredValue());
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   const setValue = (value: T | null) => {
     setStoredValue(value);
-
-    // If value is null, remove the key from localStorage
     if (value === null) {
       localStorage.removeItem(key);
     } else {

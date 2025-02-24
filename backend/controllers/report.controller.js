@@ -9,13 +9,10 @@ const { Op, AccessDeniedError } = require("sequelize");
 exports.getAll = async (req, res) => {
   try {
     const reports = await Report.findAll({
-     
-      //create a function to change data format
-
       include: [
         {
-          model: db.user, 
-          attributes: ['name', 'avatar'], 
+          model: db.user,
+          attributes: ["name", "avatar"],
         },
       ],
     });
@@ -25,19 +22,17 @@ exports.getAll = async (req, res) => {
   }
 };
 
-
 exports.getReportByUsername = async (req, res) => {
   try {
-    const { username } = req.params; // Extraer el username correctamente
+    const { username } = req.params;
 
-    // Buscar al usuario por username, incluyendo los reportes relacionados
     const user = await User.findOne({
       where: { username: { [Op.like]: `%${username}%` } },
       include: [
         {
           model: Report,
-          as: "reports", // Alias definido en la relación
-          attributes: ["id", "content", "isSolved"], // Campos a incluir
+          as: "reports",
+          attributes: ["id", "content", "isSolved"],
         },
       ],
     });
@@ -57,21 +52,27 @@ exports.getReportByUsername = async (req, res) => {
 
 exports.getReportByUserId = async (req, res) => {
   try {
-    const { userId } = req.params; 
+    const { userId } = req.params;
 
-  
     const user = await User.findByPk(userId, {
       include: [
         {
           model: Report,
-          as: "reports", 
-          attributes: ["id", "content", "isSolved", "boxId", "userId","createdAt"], 
+          as: "reports",
+          attributes: [
+            "id",
+            "content",
+            "isSolved",
+            "boxId",
+            "userId",
+            "createdAt",
+          ],
         },
       ],
     });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" + userId});
+      return res.status(404).json({ message: "User not found" + userId });
     }
 
     res.status(200).json({
@@ -115,12 +116,11 @@ exports.createReport = async (req, res) => {
       content: req.body.content,
       isSolved: req.body.isSolved ?? false,
       userId: req.body.userId,
-      boxId:req.body.boxId,
+      boxId: req.body.boxId,
     };
 
     const newReport = await Report.create(report);
 
-    // Generate token and return data
     const token = utils.generateTokenReport(newReport);
     const reportObj = utils.getCleanReport(newReport);
     return res.json({ report: reportObj, access_token: token });
@@ -154,72 +154,76 @@ exports.resolveReport = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-
 exports.updateDescription = async (req, res) => {
   const id = req.params.id;
-  const { content } = req.body;
+  const { content, isSolved } = req.body;
+  const userId = req.user.id;
 
   try {
-    const [updated] = await Report.update({ content }, {
-      where: { id },
-    });
+    const report = await Report.findByPk(id);
 
-    if (updated) {
-      res.status(200).json({
-        message: "Incidence content updated",
-        data: { content },
-      });
-    } else {
-      res.status(404).json({ message: "Incidence not found" });
+    if (!report) {
+      return res.status(404).json({ message: "Report not found" });
     }
+
+    if (report.userId !== userId) {
+      return res
+        .status(403)
+        .json({ message: "You are not allowed to update this report" });
+    }
+
+    const createdAt = report.createdAt;
+    const now = new Date();
+    const diference = now - createdAt;
+    const checkMinutes = diference / (1000 * 60); // Convertir milisegundos a minutos
+
+    if (report.isSolved === true) {
+      return res.status(500).send({
+        message: "El reporte esta cerrado",
+      });
+    }
+
+    if (!req.body.content) {
+      return res.status(403).send({
+        message: "El campo debe tener contenido",
+      });
+    }
+
+    if (checkMinutes >= 10) {
+      return res
+        .status(400)
+        .json({
+          message: "Ha excedido el tiempo límite para actualizar este reporte",
+        });
+    }
+
+    report.content = content;
+    await report.save();
+
+    return res.status(200).json({
+      message: "Incidence content updated",
+      data: { content },
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
+exports.deleteReport = async (req, res) => {
+  const id = req.params.id;
+  const userId = req.user.id;
 
-// exports.updateDescription = async (req, res) => {
-//   const { id } = req.params.id;
-//   const { content } = req.body.content;
+  try {
+    const report = await Report.findByPk(id);
 
-//   try {
-//     // Buscar el reporte por ID
-//     const report = await Report.findByPk(id);
+    if (!report) {
+      return res.status(404).json({ message: "Report not found" });
+    }
 
-//     if (!report) {
-//       return res.status(404).json({ message: "Report not found" });
-//     }
+    await report.destroy();
 
-//     // Actualizar solo el contenido del reporte
-//     report.content = content;
-//     await report.save();
-
-//     return res.status(200).json(report);
-//   } catch (error) {
-//     return res.status(500).json({ message: error.message });
-//   }
-// };
-
-// exports.updateStatus = async (req, res) => {
-  
-//     const id = req.params.id;
-
-//     try {
-//       const [updated] = await Report.update(req.body.isSolved, {
-//         where: { id },
-//       });
-
-//       if (updated) {
-//         res.status(200).json({
-//           message: "state updated",
-//           data: req.body,
-//         });
-//       } else {
-//         res.status(404).json({ message: "report not found" });
-//       }
-//     } catch (error) {
-//       res.status(500).json({ error: error.message });
-//     }
-  
-//   };
+    return res.status(200).json({ message: "Report deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

@@ -1,0 +1,49 @@
+<%
+  const roleTranslations = {
+    ADMIN: "Admin",
+    TEACHER: "Docente",
+    MANAGER: "Manager"
+  };
+  const translatedRole = roleTranslations[notification.user.role] || notification.user.role;
+%>
+
+<%
+    const now = new Date();
+    const checkIn = new Date(notification.booking.checkIn);
+    const diffMs = now - checkIn; 
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+%>
+
+<div class="notification-card warning">
+    <div class="notification-content">
+        <p class="notification-title">Advertencia</p>
+        <% if (notification.user) { %>
+            <p><%= notification.user.name %> <%= notification.user.surname %> - <strong><%= translatedRole %> </strong> </p>
+            <% } %>
+        <p>
+            <%= notification.content %> por 
+            <% if (diffDays > 0) { %>
+                <%= diffDays %> días y <%= diffHours %> horas.
+            <% } else { %>
+                <%= diffHours %> horas y <%= diffMinutes %> minutos.
+            <% } %>
+        </p>
+    </div>
+
+    <div class="notification-buttons">
+        <form action="notification/read/<%= notification.id %>" method="POST">
+          <button type="submit" class="read-button" <%= notification.isRead ? 'disabled' : '' %>>
+            <img src="<%= notification.isRead ? 'images/eye-open.svg' : 'images/eye-closed.svg' %>" alt="Marcar como leído">
+          </button>
+        </form>
+    
+        <form action="notification/delete/<%= notification.id %>" method="POST">
+          <button class="delete-button">
+            <img src="images/trash-icon.svg" alt="Eliminar">
+          </button>
+        </form>
+    
+      </div>
+</div>

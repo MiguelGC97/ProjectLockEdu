@@ -1,0 +1,68 @@
+<link rel="stylesheet" href="/css/notifications/createStyles.css">
+<div>
+    <h2>Crear nueva notificación</h2>
+    <form action="/notification" method="POST">
+        <label for="type">Tipo de notificación:</label>
+        <select name="type" id="type" onchange="updateContent()" required>
+            <option value="" selected disabled>Selecciona un tipo</option>
+            <option value="info">Información</option>
+            <option value="reminder">Recordatorio</option>
+            <option value="warning">Aviso</option>
+        </select>
+        <br>
+
+        <label for="userId">Usuario</label>
+        <select name="userId" id="userId" required>
+            <option value="" selected disabled>Selecciona a un usuario</option>
+            <% users.forEach(user => { %>
+                <option value= "<%= user.id %>" data-bookings='<%= JSON.stringify(user.bookings) %>'><%= user.name %> <%= user.surname %></option>
+            <% }) %>
+
+        </select>
+        <br>
+
+        <label for="bookingId">Reservas:</label>
+        <select name="bookingId" id="bookingId" required>
+            <option value="" selected disabled>Selecciona una reserva</option>
+        </select>
+        <br>
+
+        <label for="content">Texto que se mostrará:</label>
+        <p id="contentText">Selecciona un tipo de notificación para ver el texto.</p>
+        <input type="hidden" id="content" name="content">
+        <br>
+
+        <button class="formButton" type="submit"><strong>Crear</strong></button>
+    </form>
+</div>
+
+<script>
+function updateContent() {
+    const type = document.getElementById("type").value;
+    const contentText = document.getElementById("contentText");
+    const contentInput = document.getElementById("content");
+    const messages = {
+        info: "Nueva reserva en",
+        reminder: "Tiene una recogida próxima",
+        warning: "Tiene una devolución retrasada"
+    };
+    contentText.textContent = messages[type] || "Selecciona un tipo de notificación";
+    contentInput.value = messages[type] || "";
+}
+
+document.getElementById("userId").addEventListener("change", function() {
+    const selectedUser = this.options[this.selectedIndex];
+    const bookings = JSON.parse(selectedUser.getAttribute("data-bookings") || "[]");
+    
+    const bookingSelect = document.getElementById("bookingId");
+    bookingSelect.innerHTML = '<option value="" selected disabled>Selecciona una reserva</option>';
+    
+    bookings.forEach(booking => {
+        const option = document.createElement("option");
+        option.value = booking.id;
+        option.textContent = `Reserva número ${booking.id}`;
+        bookingSelect.appendChild(option);
+    });
+});
+</script>
+

@@ -1,0 +1,586 @@
+/* reportlog content css */
+
+@font-face {
+  font-family: "Quicksand";
+  src: url("../fonts/Quicksand-Regular.ttf");
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Quicksand", sans-serif;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  #mainContentContainer {
+    background-color: #2a2b44;
+    width: 100%;
+    height: 100%;
+    padding: 15vh 2vw;
+    /* display: flex;
+    flex-direction: column; */
+  }
+
+  /* #logSection {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+  } */
+
+  /* .reportlog-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #393a58;
+    width: 100%;
+    height: 15vh;
+    padding: 20px;
+    border: 1px solid #f1f2ff;
+    border-radius: 10px;
+  } */
+
+  .reportlog-section-header {
+    display: flex;
+    color: #ffff;
+    align-items: flex-start;
+    width: 100%;
+    min-width: 20%;
+    padding: 0 5vw;
+  }
+
+  #reportlogsSection {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    /* padding: 70px;
+    height: 100%;
+    width: 100%;
+    background-color: #5f60bd;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    position: relative; */
+  }
+
+  /* .reportlog-info {
+    display: flex;
+    flex-direction: column;
+  } */
+
+  .action-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 20px;
+    height: auto;
+  }
+
+  .edit-icon {
+    height: 24px;
+  }
+
+  .delete-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    height: 26px;
+  }
+
+  /* .see-boxes-button {
+    all: unset;
+    color: #ffff;
+    background-color: #7072c2;
+    padding: 5px 50px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.7s;
+  } */
+
+  .add-reportlog-button {
+    all: unset;
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    top: 75%;
+    left: 70%;
+    color: #ffff;
+    background-color: rgb(135, 136, 214);
+    width: 100px;
+    height: 100px;
+    border-radius: 100px;
+    cursor: pointer;
+    filter: drop-shadow(0px 1px 10px rgb(47, 44, 65));
+  }
+
+  .add-reportlog-button > button {
+    all: unset;
+    color: #ffff;
+    font-size: 4rem;
+  }
+
+  .add-reportlog-button > p {
+    display: none;
+  }
+
+  /* modal and overlay */
+
+  .black-overlay {
+    position: fixed;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  
+  .modal {
+    position: fixed;
+    z-index: 3;
+    width: fit-content;
+    height: 50vh;
+    left: 0;
+    right: 0;
+    top: 20vh;
+    color: white;
+    margin-inline: auto;
+    background-color: white;
+    border-radius: 30px;
+  }
+
+  .modal-title {
+    font-size: 18px;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .modal-header > a {
+    all: unset;
+  }
+
+  .modal-header > a > button {
+    all: unset;
+    color: #ffff;
+    background-color:#4f51b3;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  .reportlog-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 50px;
+  }
+
+  .reportlog-form > input {
+    padding: 7px;
+    border-radius: 10px;
+    border: 1px solid #4f51b3;
+  }
+
+  .add-reportlog-confirm {
+    all: unset;
+    color: #ffff;
+    display: flex;
+    justify-content: center;
+    background-color: #4f51b3;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+
+  .table-container {
+    max-width: 100%;
+    height: 40em;
+    max-width: 100%;
+    /* margin-left: 2em;
+    margin-right: 2em; */
+    background-color: #4f51b3;
+    border-radius: 10px 0 10px 10px;
+    /* overflow-x: auto; */
+  }
+
+  .table {
+    max-width: 100%;
+    border-collapse: collapse;
+  }
+
+  .not-visible {
+    display: none;
+  }
+
+  .table th,
+  .table td {
+    padding: 14px;
+    text-align: center;
+    border-bottom: 1px solid white;
+    color: white;
+    font-size: medium;
+  }
+
+  .table th {
+    background-color: #2a2b44;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .table tbody tr {
+    background-color: #333366;
+  }
+
+  .table tbody tr:hover {
+    background-color: #4f51b3;
+  }
+
+  .dropdown-content {
+    display: none;
+  }
+
+  .dropdown-btn {
+    background-color: transparent;
+    border-color: transparent;
+    cursor: pointer;
+  }
+
+  .dropdown-content.show {
+    display: table-row;
+    background-color: #5f60bd;
+  }
+
+  .comment-container {
+    font-size: medium;
+  }
+}
+
+@media (min-width: 768px) {
+  .visible {
+    display: none;
+  }
+
+  #mainContentContainer {
+    background-color: #2a2b44;
+    width: 100%;
+    height: 90vh;
+    padding: 10px 30px 30px 130px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  #lockersSection, 
+  /* si antes era #lockersSection, tras el reemplazo: */
+  #reportlogsSection {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 70px;
+    height: 100%;
+    width: 100%;
+    background-color: #5f60bd;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    position: relative;
+  }
+
+  .reportlog-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #393a58;
+    width: 49%;
+    height: 15vh;
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  .reportlog-section-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .reportlog-section-title {
+    color: #ffff;
+    font-weight: 600;
+    font-size: 36px;
+    margin: 20px 0;
+  }
+
+  .reportlog-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: #ffff;
+  }
+
+  .info-and-image {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .reportlog-box-title {
+    color: #ffff;
+    font-weight: 600;
+    font-size: 24px;
+    margin: 20px 0;
+  }
+
+  /* table */
+
+  .table-container {
+    width: 70em;
+    max-width: 67.5%;
+    min-width: 55%;
+    text-align: center;
+    overflow-x: auto;
+    margin-top: 2.5em;
+    margin-left: 1.2em;
+    background-color: #4f51b3;
+    border-radius: 10px 0 0 0;
+  }
+
+  .table {
+    width: 100%;
+    border-radius: 10px;
+    border-collapse: collapse;
+  }
+
+  .table th,
+  .table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid white;
+    color: white;
+  }
+
+  .table th {
+    background-color: #2a2b44;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .table tbody tr {
+    background-color: #333366;
+  }
+
+  .table tbody tr:hover {
+    background-color: #4f51b3;
+  }
+
+  table td .dropdown-btn {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  table td .dropdown-btn:focus {
+    outline: none;
+  }
+
+  .dropdown-content {
+    display: none;
+  }
+
+  .dropdown-content td {
+    background-color: #4f51b3 !important;
+    color: white;
+    padding: 10px;
+    text-align: left;
+  }
+
+  .dropdown-content.show {
+    display: table-row;
+  }
+
+  .comment-container {
+    padding: 10px;
+    font-size: 0.9rem;
+    color: #ddd;
+    word-wrap: break-word;
+    max-height: 100px;
+    overflow: auto;
+  }
+
+  .action-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 20px;
+    height: auto;
+  }
+
+  .edit-icon {
+    height: 24px;
+  }
+
+  .delete-button {
+    height: 26px;
+  }
+
+  .see-boxes-button {
+    all: unset;
+    color: #ffff;
+    background-color: #7072c2;
+    padding: 5px 50px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.7s;
+  }
+
+  .see-boxes-button:hover {
+    background-color: rgb(90, 92, 187);
+    padding: 5px 80px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 18px;
+    padding: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: rgb(193, 194, 218);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #4f51b3;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  .add-reportlog-button {
+    all: unset;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    top: 45%;
+    left: 80%;
+    color: #000;
+    background-color: rgb(175, 176, 238);
+    width: 150px;
+    height: 150px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.7s;
+  }
+
+  .add-reportlog-button:hover {
+    top: 43%;
+    left: 78%;
+    width: 180px;
+    height: 180px;
+    background-color: rgb(143, 145, 231);
+  }
+
+  .add-reportlog-button > button {
+    all: unset;
+    color: #000;
+    font-size: 4rem;
+  }
+
+  /* modal and overlay */
+
+  .black-overlay {
+    position: fixed;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  .modal {
+    position: fixed;
+    z-index: 3;
+    width: fit-content;
+    height: 40vh;
+    left: 0;
+    right: 0;
+    top: 20vh;
+    margin-inline: auto;
+    background-color: white;
+    border-radius: 30px;
+  }
+
+  .modal-title {
+    font-size: 18px;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .modal-header > a {
+    all: unset;
+  }
+
+  .modal-header > a > button {
+    all: unset;
+    color: #ffff;
+    background-color: #4f51b3;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  .reportlog-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 50px;
+  }
+
+  .reportlog-form > input {
+    padding: 7px;
+    border-radius: 10px;
+    border: 1px solid #4f51b3;
+  }
+
+  .add-reportlog-confirm {
+    all: unset;
+    color: #ffff;
+    display: flex;
+    justify-content: center;
+    background-color: #4f51b3;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+
+  .delete-form > button {
+    all: unset;
+  }
+
+  .delete-form {
+    cursor: pointer;
+  }
+
+  #logout-form > button {
+    all: unset;
+  }
+}

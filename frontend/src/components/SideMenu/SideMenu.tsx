@@ -1,12 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   IconCalendarTime,
+  IconCircleKey,
   IconLogout,
   IconMessageReport,
+  IconReport,
   IconSettings,
   IconUser,
+  IconUsers,
 } from '@tabler/icons-react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Center, Flex, Image, rem, Stack, Tooltip, UnstyledButton } from '@mantine/core';
 import { useAuth } from '@/hooks/AuthProvider';
 import classes from './SideMenu.module.css';
@@ -16,68 +19,114 @@ interface NavbarLinkProps {
   label: string;
   active?: boolean;
   onClick?(): void;
-  to?: string; // Add a to prop for the route path
+  to?: string;
 }
 
 function NavbarLink({ icon: Icon, label, active, onClick, to }: NavbarLinkProps) {
+  const navigate = useNavigate();
+
   return (
     <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
-      <UnstyledButton onClick={onClick} className={classes.link} data-active={active || undefined}>
+      <UnstyledButton
+        onClick={() => {
+          if (to) navigate(to);
+          if (onClick) onClick();
+        }}
+        className={classes.link}
+        data-active={active || undefined}
+        aria-label={label}
+      >
         <Icon style={{ width: rem(30), height: rem(30) }} stroke={1.5} />
       </UnstyledButton>
     </Tooltip>
   );
 }
 
-const menuData = [
+const menuDataTeacher = [
   { icon: IconUser, label: 'Perfil', to: '/perfil' },
   { icon: IconCalendarTime, label: 'Historial de reservas', to: '/historial-reservas' },
   { icon: IconMessageReport, label: 'Incidencias', to: '/incidencias' },
   { icon: IconSettings, label: 'Configuraciones', to: '/configuraciones' },
 ];
 
+const menuDataAdmin = [
+  { icon: IconUsers, label: 'Panel de Admin', to: '/panel-admin' },
+  { icon: IconSettings, label: 'Configuraciones', to: '/configuraciones-admin' },
+];
+
+const menuDataManager = [
+  { icon: IconReport, label: 'Incidencias', to: '/incidencias-manager' },
+  { icon: IconSettings, label: 'Configuraciones', to: '/configuraciones-manager' },
+];
+
 export function SideMenu() {
-
-  // const [active, setActive] = useState(0);
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
   const location = useLocation();
-  const { logout } = useAuth(); // Get the logout function from AuthContext
+  const { user, logout } = useAuth();
+  const [menu, setMenu] = useState(getUserType());
 
-  //Finds active link index by current page
-  const activeIndex = menuData.findIndex(link => link.to === location.pathname);
+  useEffect(() => {
+    setMenu(getUserType());
+  }, [user]);
+
+  function getUserType() {
+    switch (user?.role) {
+      case 'TEACHER':
+        return menuDataTeacher;
+      case 'ADMIN':
+        return menuDataAdmin;
+      case 'MANAGER':
+        return menuDataManager;
+      default:
+        return [];
+    }
+  }
+
+  const activeIndex = menu.findIndex((link) => link.to === location.pathname);
 
   const handleLogout = () => {
-    logout(); // Clear user state and navigate to login page
+    logout();
   };
 
-  const iconLinks = menuData.map((link, index) => (
+  const iconLinks = menu.map((link, index) => (
     <NavbarLink
       {...link}
       key={link.label}
       active={index === activeIndex}
-      onClick={() => {
-        // setActive(index);
-        // if (link.to) {
-          navigate(link.to); // Navigate to the page when clicked
-        //}
-      }}
+      onClick={() => navigate(link.to)}
     />
   ));
 
   return (
-    <div mah="100vh" className={classes.navbar}>
-      <Center>
-        <Image w="60px" src="/assets/logoApp.png" />
-      </Center>
+    <div className={classes.navbar}>
+      <Flex
+        pt="10px"
+        h="100%"
+        direction="column"
+        align="stretch"
+        gap="45vh"
+        justify="space-between"
+      >
+        <Flex h="100vh" direction="column" gap="10px">
+          <Center style={{ cursor: 'pointer' }}>
+            <Image w="60px" src="/assets/logoApp.png" alt="Logo de LockEdu" />
+          </Center>
 
-      <div className={classes.navbarMain}>
-        <Stack justify="center" gap={0}>
-          {iconLinks}
-        </Stack>
-      </div>
+          <div className={classes.navbarMain}>
+            <Stack justify="center" gap={0}>
+              {iconLinks}
+            </Stack>
+          </div>
+        </Flex>
 
-      <Flex direction="column" justify="flex-end" mb="6vh" align="flex-end" h="55vh">
-        <NavbarLink icon={IconLogout} label="Salir" onClick={handleLogout} />
+        <Flex
+          direction="column"
+          align="flex-end"
+          pt={user?.role === 'TEACHER' ? '' : '150px'}
+          h="100vh"
+        >
+          <NavbarLink icon={IconLogout} label="Salir" onClick={handleLogout} />
+        </Flex>
       </Flex>
     </div>
   );

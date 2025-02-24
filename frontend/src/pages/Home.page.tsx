@@ -9,14 +9,15 @@ import Boxes from '@/components/Boxes/Boxes';
 import Lockers from '@/components/Lockers/Lockers';
 import { NotificationsBox } from '@/components/NotificationsBox/NotificationsBox';
 import Objects from '@/components/Objects/Objects';
-import  Pending from '@/components/Pending/Pending';
+import Pending from '@/components/Pending/Pending';
 import { SideMenu } from '@/components/SideMenu/SideMenu';
 import UserBar from '@/components/UserBar/UserBar';
-import { BoxType, Locker, Booking } from '@/types/types';
+import { useAuth } from '@/hooks/AuthProvider';
 import { fetchBookingsByUserIdAndState } from '@/services/fetch';
+import { Booking, BoxType, Locker } from '@/types/types';
 
 const Home: React.FC = () => {
-  const theme = useMantineTheme();
+  const { theme } = useAuth();
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [selectedLocker, setSelectedLocker] = useState<Locker | null>(null);
   const [selectedBox, setSelectedBox] = useState<BoxType | null>(null);
@@ -25,13 +26,10 @@ const Home: React.FC = () => {
   const [pendingBookings, setPendingBookings] = useState<Booking[]>([]);
 
   const handleLockerClick = (locker: Locker) => {
-    console.log('Locker selected:', locker); // Debugging log
     setSelectedLocker(locker);
-    console.log('Updated selectedLocker state:', selectedLocker); // This may not immediately reflect the updated state due to React's asynchronous state update
   };
 
   const handleBoxClick = (box: BoxType) => {
-    console.log('Box clicked:', box);
     setSelectedBox(box);
   };
 
@@ -57,7 +55,6 @@ const Home: React.FC = () => {
   };
 
   const updatePendingBookings = async () => {
-    // Fetch the latest pending bookings after creating a new booking
     const data = await fetchBookingsByUserIdAndState(1, 'pending');
     setPendingBookings(data);
   };
@@ -70,7 +67,7 @@ const Home: React.FC = () => {
         <>
           {' '}
           <SideMenu />
-          <Flex pl="1.5%" style={{ backgroundColor: theme.colors.myPurple[6] }}>
+          <Flex pl="1.5%" w="100%" style={{ backgroundColor: 'var(--mantine-color-myPurple-9)' }}>
             <Flex maw="100%" gap="lg">
               <Flex direction="column" w="100%">
                 <UserBar />
@@ -97,9 +94,9 @@ const Home: React.FC = () => {
                       onCreateBooking={handleCreateBookingClick}
                     />
                   ) : createBooking ? (
-                    <BookingForm 
-                      box={selectedBox} 
-                      items={selectedItems} 
+                    <BookingForm
+                      box={selectedBox}
+                      items={selectedItems}
                       onReturnToBox={handleReturnToBox}
                       onReturn={handleReturnToLockers}
                       onBookingCreated={updatePendingBookings}

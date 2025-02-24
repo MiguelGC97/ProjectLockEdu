@@ -1,56 +1,286 @@
 ﻿import { useEffect, useState } from 'react';
-import { IconArrowLeft, IconSearch } from '@tabler/icons-react';
+import {
+  IconArrowLeft,
+  IconCirclePlus,
+  IconPhotoPlus,
+  IconSearch,
+  IconTrash,
+} from '@tabler/icons-react';
 import { useLocation } from 'react-router-dom';
 import {
   Box,
   Button,
   Center,
+  FileInput,
   Flex,
   Image,
   Input,
+  Modal,
   ScrollArea,
+  Skeleton,
   Stack,
   Text,
+  TextInput,
   Title,
+  Tooltip,
   useMantineTheme,
 } from '@mantine/core';
-import { fetchBoxes } from '@/services/fetch';
-import { BoxesProps, BoxType } from '@/types/types';
+import { useDisclosure } from '@mantine/hooks';
+import { useAuth } from '@/hooks/AuthProvider';
+import { useTheme } from '@/hooks/ThemeProvider';
+import { createBox, deleteBox, fetchBoxes, updateBox, uploadBoxImage } from '@/services/fetch';
+import { BoxEditType, BoxesProps, BoxType } from '@/types/types';
 
 import './Boxes.module.css';
 
+import { MdOutlineEdit } from 'react-icons/md';
+import instance, { baseUrl } from '@/services/api';
+
 const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
-  const location = useLocation();
-  const { boxId, selectedValues } = location.state || {};
+  const routerLocation = useLocation();
+  const { boxId, selectedValues } = routerLocation.state || {};
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [boxes, setBoxes] = useState<BoxType[]>();
-  const theme = useMantineTheme();
-  
+  const { theme } = useTheme();
+  const { user } = useAuth();
+  const [openedCreate, { open: openCreate, close: closeCreate }] = useDisclosure(false);
+  const [openedEdit, { open: openEdit, close: closeEdit }] = useDisclosure(false);
+  const [openedDelete, { open: openDelete, close: closeDelete }] = useDisclosure(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [boxToDelete, setBoxToDelete] = useState<any | null>(null);
+  const [boxToEdit, setBoxToEdit] = useState<any | null>(null);
+  const icon = <IconPhotoPlus size={18} stroke={1.5} />;
+  const [file, setFile] = useState(null);
+  const [newImage, setNewImage] = useState(null);
 
-  console.log('Box ID:', boxId); // box.id passed from Objects component
-  console.log('Selected Values:', selectedValues);
+  const [newBox, setNewBox] = useState<any>({
+    lockerId: locker?.id,
+    description: '',
+    filename: 'no-image',
+  });
 
   useEffect(() => {
-    setLoading(true); // Set loading state before starting the request
-    setError(null); // Clear previous errors
+    if (!locker) return;
+
+    setNewBox((prev) => ({
+      ...prev,
+      lockerId: locker?.id || prev.lockerId,
+    }));
+  }, [locker]);
+
+  useEffect(() => {
+    if (boxToEdit) {
+      setBoxToEdit((prev: any) => ({
+        ...prev,
+        filename: prev?.filename || 'no-image',
+      }));
+    }
+  }, [boxToEdit]);
+
+  useEffect(() => {
+    if (!locker) {
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
 
     const loadBoxes = async () => {
-      const data = await fetchBoxes();
-      setBoxes(data?.filter((b) => b.lockerId === locker.id));
+      try {
+        const data = await fetchBoxes();
+        setBoxes(data?.filter((b) => b.lockerId === locker.id));
+      } catch (error) {
+        setError('Error fetching boxes');
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadBoxes();
-    setLoading(false);
-  }, [locker]); // Dependency array ensures this effect runs when `locker` changes;
+  }, [locker]);
 
-  if (loading) {
+  const wholeComponent = () => {
     return (
       <Center>
-        <Text>Loading boxes...</Text>
+        <Box
+          style={{
+            borderBottomLeftRadius: 40,
+            borderBottomRightRadius: 40,
+          }}
+          bg={theme === 'dark' ? 'myPurple.4' : 'transparent'}
+          bd={theme === 'dark' ? null : '1px solid myPurple.0'}
+          px="1vw"
+          mb="lg"
+          h="86vh"
+          w="34.5vw"
+        >
+          <Stack my="4vh" gap="xl">
+            <Flex gap="18%">
+              <a>
+                <IconArrowLeft
+                  aria-label="volver a armarios"
+                  color="var(--mantine-color-myPurple-0)"
+                  size="30px"
+                  onClick={onReturn}
+                />
+              </a>
+
+              <Title fw="600" c="myPurple.0">
+                Casillas - Armario {locker?.number}
+              </Title>
+            </Flex>
+
+            <Center>
+              {user?.role === 'TEACHER' ? (
+                <Input
+                  aria-label="buscar objeto"
+                  w="20vw"
+                  size="lg"
+                  placeholder="Busca un objeto"
+                  bd={theme === 'dark' ? null : '1px solid myPurple.0'}
+                  style={{ borderRadius: '5px' }}
+                  rightSection={<IconSearch />}
+                />
+              ) : null}
+            </Center>
+          </Stack>
+          <ScrollArea p="lg" m="md" h="62vh" scrollbarSize={16}>
+            <Flex direction="column" h="auto" gap="sm">
+              {!boxes || boxes.length === 0 ? (
+                <Flex justify="center" align="center">
+                  <Text size="lg" c="myPurple.0">
+                    No hay casillas en este armario.
+                  </Text>
+                </Flex>
+              ) : (
+                boxes?.map((box) => (
+                  <Skeleton visible={loading}>
+                    <Box
+                      aria-label={`casilla ${box.description}`}
+                      key={box.id}
+                      style={{
+                        cursor: 'pointer',
+                        borderRadius: 20,
+                      }}
+                      p="lg"
+                      bg={theme === 'dark' ? 'myPurple.8' : 'myPurple.8'}
+                      bd={theme === 'dark' ? 'none' : '1px solid myPurple.0'}
+                      onClick={() => (user?.role === 'TEACHER' ? onBoxClick(box) : null)}
+                    >
+                      <Flex w="100%" align="center" justify="space-between">
+                        <Stack>
+                          <Title aria-label="número de la casilla" size="xl" c="myPurple.0">
+                            Casilla C{box.id}
+                          </Title>
+                          <Text
+                            aria-label="descripción de la casilla"
+                            lineClamp={1}
+                            size="md"
+                            c="myPurple.0"
+                          >
+                            {box.description}
+                          </Text>
+                        </Stack>
+                        <svg
+                          width="80px"
+                          height="80px"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          stroke="#000000"
+                        >
+                          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                          <g
+                            id="SVGRepo_tracerCarrier"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          ></g>
+                          <g id="SVGRepo_iconCarrier">
+                            {' '}
+                            <path
+                              d="M8.75 7.75H15.25M8.75 10.75H15.25M15 14V16M6 20V21M18 20V21M6 20H18C19.1046 20 20 19.1046 20 18V6C20 4.89543 19.1046 4 18 4H6C4.89543 4 4 4.89543 4 6V18C4 19.1046 4.89543 20 6 20Z"
+                              stroke={theme === 'dark' ? '#f8f7fc' : 'myPurple.0'}
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            ></path>{' '}
+                          </g>
+                        </svg>
+                      </Flex>
+                      <Flex
+                        w="100%"
+                        pt={user?.role === 'ADMIN' ? '10px' : null}
+                        justify={user?.role === 'TEACHER' ? 'center' : 'space-between'}
+                      >
+                        {user?.role === 'ADMIN' ? (
+                          <Tooltip label="Editar armario">
+                            <Button
+                              onClick={() => {
+                                openEditModal(box);
+                              }}
+                              c="myPurple.0"
+                              variant="transparent"
+                            >
+                              <MdOutlineEdit size={24} />
+                            </Button>
+                          </Tooltip>
+                        ) : null}
+                        {user?.role === 'ADMIN' ? (
+                          <Button
+                            aria-label={`ver casillas del armario número ${locker.number}`}
+                            onClick={() => onBoxClick(box)}
+                            size="md"
+                            maw="8vw"
+                            bg="myPurple.4"
+                            radius="xl"
+                          >
+                            Ver Objetos
+                          </Button>
+                        ) : null}
+                        {user?.role === 'ADMIN' ? (
+                          <Tooltip label="Borrar armario">
+                            <Button
+                              onClick={() => {
+                                openDeleteModal(box);
+                              }}
+                              c="myPurple.11"
+                              variant="transparent"
+                            >
+                              <IconTrash size={24} />
+                            </Button>
+                          </Tooltip>
+                        ) : null}
+                      </Flex>
+                    </Box>
+                  </Skeleton>
+                ))
+              )}
+            </Flex>
+          </ScrollArea>
+          {user?.role === 'ADMIN' ? (
+            <Flex h="4%" gap={10} mr="25px" justify="flex-end" align="center">
+              <Text c="myPurple.0" size="xl" fw={700}>
+                Añadir nueva casilla al armario {locker?.number}
+              </Text>
+
+              <IconCirclePlus
+                cursor="pointer"
+                onClick={openCreate}
+                color="var(--mantine-color-myPurple-0)"
+                size={36}
+                style={{
+                  transition: 'transform 0.2s ease-in-out',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.2)')}
+                onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+              />
+            </Flex>
+          ) : null}
+        </Box>
       </Center>
     );
-  }
+  };
 
   if (error) {
     return (
@@ -60,104 +290,241 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
     );
   }
 
+  const handleChange = (field: keyof BoxEditType, value: string | File | null) => {
+    setNewBox((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const openDeleteModal = (box: any) => {
+    setBoxToDelete(box);
+    openDelete();
+  };
+
+  const openEditModal = (box: any) => {
+    setBoxToEdit(box);
+    openEdit();
+  };
+
+  const handleCreateBox = async (box: any, currentLockerId: number, file: any) => {
+    try {
+      const filepath = await uploadBoxImage(file);
+
+      const response = await createBox(box, currentLockerId, filepath);
+
+      if (response) {
+        setBoxes((prev) => (prev ? [...prev, response.box] : [response.box]));
+        closeCreate();
+        setNewBox({
+          lockerId: locker?.id,
+          description: '',
+          filename: 'no-image',
+        });
+        setErrorMessage(null);
+      }
+    } catch (error: any) {
+      console.error('Error creating box:', error.message);
+    }
+  };
+
+  const handleDeleteBoxDeprecated = async (boxId: number) => {
+    try {
+      const response = await deleteBox(boxId);
+      if (response) {
+        setBoxes((prev) => prev?.filter((box) => box.id !== boxId));
+        closeDelete();
+        setErrorMessage(null);
+      }
+    } catch (error: any) {
+      if (error.response && error.response.status === 404) {
+        setErrorMessage(error.response.data.message);
+      } else {
+        setErrorMessage('Ocurrió un error al eliminar la casilla.');
+      }
+    }
+  };
+
+  const handleDeleteBox = async (receivedBox: any) => {
+    try {
+      if (receivedBox.filename !== null && receivedBox.filename !== 'no-image') {
+        const fileToDelete = receivedBox.filename;
+        try {
+          const sliced = fileToDelete.slice(9);
+          await instance.delete(`${baseUrl}/boxes/delete-box-image/${sliced}`);
+        } catch (error: any) {
+          if (error.response?.status !== 404) {
+            throw error;
+          }
+        }
+      }
+
+      const response = await deleteBox(receivedBox.id);
+      if (response) {
+        setBoxes((prev) => prev?.filter((b) => b.id !== receivedBox.id));
+        closeDelete();
+        setErrorMessage(null);
+      }
+    } catch (error: any) {
+      if (error.response && error.response.status === 404) {
+        setErrorMessage(error.response.data.message);
+      } else {
+        setErrorMessage('Ocurrió un error al eliminar el usuario');
+      }
+    }
+  };
+
+  const handleUpdateBox = async () => {
+    if (!boxToEdit) return;
+
+    try {
+      setErrorMessage('');
+
+      let newFilename = boxToEdit.filename || 'no-image';
+
+      if (newImage) {
+        if (boxToEdit.filename !== 'no-image') {
+          try {
+            const sliced = newFilename.slice(9);
+
+            await instance.delete(`${baseUrl}/boxes/delete-box-image/${sliced}`);
+          } catch (error: any) {
+            if (error.response?.status !== 404) {
+              throw error;
+            }
+          }
+        }
+        newFilename = await uploadBoxImage(newImage);
+      }
+
+      const updatedBox = { ...boxToEdit, filename: newFilename };
+
+      const responseUpdate = await updateBox(updatedBox);
+
+      if (responseUpdate) {
+        setBoxes((prevBoxes) =>
+          prevBoxes?.map((box) => (box.id === boxToEdit.id ? { ...box, ...updatedBox } : box))
+        );
+        closeEdit();
+        setNewImage(null);
+      }
+    } catch (error: any) {
+      console.error('Update failed:', error.response?.data);
+      setErrorMessage(
+        error.response?.status === 404
+          ? 'La casilla no fue encontrada.'
+          : error.response?.status === 400
+            ? 'La solicitud contiene datos incorrectos.'
+            : 'Error en la solicitud.'
+      );
+    }
+  };
+
   return (
-    <Box
-      style={{
-        backgroundColor: theme.colors.myPurple[4],
-        borderBottomLeftRadius: 40,
-        borderBottomRightRadius: 40,
-      }}
-      px="1vw"
-      mb="lg"
-      h="86vh"
-      w="34.5vw"
-    >
-      <Stack my="4vh" gap="xl">
-        <Flex gap="33%">
-          <a>
-            <IconArrowLeft color="white" size="30px" onClick={onReturn} />
-          </a>
+    <>
+      <Modal size="lg" opened={openedCreate} onClose={closeCreate} title="Crear nueva casilla">
+        <Flex direction="column" gap="md">
+          {errorMessage && (
+            <Text c="myPurple.11" size="sm" fw={500}>
+              {errorMessage}
+            </Text>
+          )}
 
-          <Title fw="600" c="white">
-            Casillas
-          </Title>
-        </Flex>
+          <TextInput
+            label="Descripción"
+            placeholder="Ingrese la descripción"
+            value={newBox.description}
+            onChange={(e) => handleChange('description', e.target.value)}
+            withAsterisk
+            maxLength={60}
+          />
 
-        <Center>
-          <Input w="20vw" size="lg" placeholder="Busca un objeto" rightSection={<IconSearch />} />
-        </Center>
-      </Stack>
-      <ScrollArea p="lg" m="md" h="62vh" scrollbarSize={16}>
-        <Flex direction="column" gap="sm">
-          {boxes?.map((box) => (
-            <Box
-              key={box.id}
-              onClick={() => onBoxClick(box)}
-              style={{
-                cursor: 'pointer',
-                borderRadius: 20,
-                backgroundColor: theme.colors.myPurple[6],
-              }}
-              p="lg"
-            >
-              <Flex w="100%" align="center" justify="space-between">
-                <Stack>
-                  <Title size="xl" c="white">
-                    Casilla C{box.id}
-                  </Title>
-                  <Text size="md" c="white">
-                    {box.description}
-                  </Text>
-                </Stack>
-                <svg
-                  viewBox="0 0 24 24"
-                  version="1.1"
-                  height="60px"
-                  width="60px"
-                  xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  fill="#000000"
-                >
-                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                  <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                  <g id="SVGRepo_iconCarrier">
-                    {' '}
-                    <title>open_door_line</title>{' '}
-                    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                      {' '}
-                      <g
-                        id="System"
-                        transform="translate(-816.000000, -96.000000)"
-                        fill-rule="nonzero"
-                      >
-                        {' '}
-                        <g id="open_door_line" transform="translate(816.000000, 96.000000)">
-                          {' '}
-                          <path
-                            d="M24,0 L24,24 L0,24 L0,0 L24,0 Z M12.5934901,23.257841 L12.5819402,23.2595131 L12.5108777,23.2950439 L12.4918791,23.2987469 L12.4918791,23.2987469 L12.4767152,23.2950439 L12.4056548,23.2595131 C12.3958229,23.2563662 12.3870493,23.2590235 12.3821421,23.2649074 L12.3780323,23.275831 L12.360941,23.7031097 L12.3658947,23.7234994 L12.3769048,23.7357139 L12.4804777,23.8096931 L12.4953491,23.8136134 L12.4953491,23.8136134 L12.5071152,23.8096931 L12.6106902,23.7357139 L12.6232938,23.7196733 L12.6232938,23.7196733 L12.6266527,23.7031097 L12.609561,23.275831 C12.6075724,23.2657013 12.6010112,23.2592993 12.5934901,23.257841 L12.5934901,23.257841 Z M12.8583906,23.1452862 L12.8445485,23.1473072 L12.6598443,23.2396597 L12.6498822,23.2499052 L12.6498822,23.2499052 L12.6471943,23.2611114 L12.6650943,23.6906389 L12.6699349,23.7034178 L12.6699349,23.7034178 L12.678386,23.7104931 L12.8793402,23.8032389 C12.8914285,23.8068999 12.9022333,23.8029875 12.9078286,23.7952264 L12.9118235,23.7811639 L12.8776777,23.1665331 C12.8752882,23.1545897 12.8674102,23.1470016 12.8583906,23.1452862 L12.8583906,23.1452862 Z M12.1430473,23.1473072 C12.1332178,23.1423925 12.1221763,23.1452606 12.1156365,23.1525954 L12.1099173,23.1665331 L12.0757714,23.7811639 C12.0751323,23.7926639 12.0828099,23.8018602 12.0926481,23.8045676 L12.108256,23.8032389 L12.3092106,23.7104931 L12.3186497,23.7024347 L12.3186497,23.7024347 L12.3225043,23.6906389 L12.340401,23.2611114 L12.337245,23.2485176 L12.337245,23.2485176 L12.3277531,23.2396597 L12.1430473,23.1473072 Z"
-                            id="MingCute"
-                            fill-rule="nonzero"
-                          >
-                            {' '}
-                          </path>{' '}
-                          <path
-                            d="M14.2534,2.29104 C15.121985,2.146279 15.916565,2.77536663 15.9938515,3.63333818 L16,3.77063 L16,4.99994 L18,4.99994 C19.0543909,4.99994 19.9181678,5.81581733 19.9945144,6.85067759 L20,6.99994 L20,16.9999 C20,18.0542909 19.18415,18.9180678 18.1492661,18.9944144 L18,18.9999 L16,18.9999 L16,20.2293 C16,21.109855 15.2488492,21.7901453 14.3898362,21.7253089 L14.2534,21.7088 L5.6712,20.2785 C4.76040611,20.1266333 4.07933154,19.3740213 4.00646768,18.4672313 L4,18.3057 L4,5.6942 C4,4.77083556 4.63047491,3.97529117 5.51293334,3.7543449 L5.6712,3.72141 L14.2534,2.29104 Z M14,4.36087 L6,5.6942 L6,18.3057 L14,19.639 L14,4.36087 Z M18,6.99994 L16,6.99994 L16,16.9999 L18,16.9999 L18,6.99994 Z M11.5,10.4999 C12.3284,10.4999 13,11.1715 13,11.9999 C13,12.8284 12.3284,13.4999 11.5,13.4999 C10.6716,13.4999 10,12.8284 10,11.9999 C10,11.1715 10.6716,10.4999 11.5,10.4999 Z"
-                            id="形状"
-                            fill="#7072C2"
-                          >
-                            {' '}
-                          </path>{' '}
-                        </g>{' '}
-                      </g>{' '}
-                    </g>{' '}
-                  </g>
-                </svg>
-              </Flex>
-            </Box>
-          ))}
+          <FileInput
+            rightSection={icon}
+            label="Sube la imagen de la casilla"
+            placeholder="Imagen de la casilla"
+            rightSectionPointerEvents="none"
+            mt="md"
+            onChange={(file) => setFile(file)}
+          />
+
+          <Button
+            size="md"
+            onClick={() => {
+              handleCreateBox(newBox, locker?.id, file);
+            }}
+            color="myPurple.4"
+            fullWidth
+          >
+            Crear casilla
+          </Button>
         </Flex>
-      </ScrollArea>
-    </Box>
+      </Modal>
+
+      <Modal size="lg" opened={openedDelete} onClose={closeDelete} title="Eliminar casilla">
+        {boxToDelete ? (
+          <>
+            <Text size="md">
+              ¿Estás seguro de que deseas eliminar la casilla <strong>C{boxToDelete?.id}</strong>{' '}
+              del armario <strong>{locker?.number}</strong>? Todos sus objetos se eliminarán
+              también.
+            </Text>
+
+            {errorMessage && (
+              <Text color="red" size="sm" fw={500} mt="sm">
+                {errorMessage}
+              </Text>
+            )}
+
+            <Flex gap="md" justify="space-between" mt="md">
+              <Button size="md" onClick={closeDelete} color="gray">
+                Cancelar
+              </Button>
+              <Button size="md" onClick={() => handleDeleteBox(boxToDelete)} color="#C01B26">
+                Eliminar casilla
+              </Button>
+            </Flex>
+          </>
+        ) : (
+          <Text>Cargando...</Text>
+        )}
+      </Modal>
+
+      <Modal opened={openedEdit} onClose={closeEdit} title="Editar casilla">
+        {errorMessage && (
+          <Text c="myPurple.11" size="sm" fw={500}>
+            {errorMessage}
+          </Text>
+        )}
+
+        {boxToEdit ? (
+          <Flex direction="column" gap="md">
+            <TextInput
+              label="Descripción"
+              placeholder="Ingrese la nueva descripción"
+              value={boxToEdit?.description}
+              onChange={(e) =>
+                setBoxToEdit((prev: any) => ({ ...prev, description: e.target.value }))
+              }
+            />
+
+            <FileInput
+              rightSection={icon}
+              label="Sube la imagen nueva de la casilla"
+              placeholder="Imagen nueva de la casilla"
+              rightSectionPointerEvents="none"
+              mt="md"
+              onChange={(file) => setNewImage(file)}
+            />
+
+            <Button size="md" onClick={handleUpdateBox} color="myPurple.4" fullWidth>
+              Confirmar cambios
+            </Button>
+          </Flex>
+        ) : (
+          <Text>Cargando...</Text>
+        )}
+      </Modal>
+
+      {wholeComponent()}
+    </>
   );
 };
 

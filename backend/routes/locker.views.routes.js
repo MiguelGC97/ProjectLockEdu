@@ -1,17 +1,20 @@
 ﻿module.exports = (app) => {
     const locker = require("../controllers/locker.views.controller.js");
+    const authSession = require("../middlewares/auth.session.js");
 
     var router = require("express").Router();
 
-    router.post("/", locker.store);
+    router.post("/", authSession.isAuthenticated, locker.store);
 
-    router.get("/", locker.index);
+    router.get("/", authSession.isAuthenticated, locker.index);
 
-    router.get("/create", locker.create);
+    router.get("/create", authSession.isAuthenticated, locker.create);
 
-    router.get("/:id", locker.edit);
+    router.get("/:id", authSession.isAuthenticated, locker.edit);
 
-    router.put("/:id", locker.update);
+    router.post("/update/:id", authSession.isAuthenticated, locker.update);
+
+    router.post("/:id", authSession.isAuthenticated, locker.destroy);
 
     app.use("/locker", router);
 };

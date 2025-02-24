@@ -1,31 +1,45 @@
-﻿import { IconTrash } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
-import { Box, Button, Center, Divider, Flex, Group, ScrollArea, Table, Text, Title } from '@mantine/core';
+﻿import { useEffect, useState } from 'react';
+import { IconTrash } from '@tabler/icons-react';
+import {
+  Box,
+  Button,
+  Center,
+  Divider,
+  Flex,
+  Group,
+  ScrollArea,
+  Table,
+  Text,
+  Title,
+} from '@mantine/core';
 
 import './BookingHistoryBox.module.css';
 
-import { BookingHistoryProps, Booking, Item } from '@/types/types';
-import { fetchBookingsByUserId, updateBookingState, deleteBookingById } from '@/services/fetch';
 import { useAuth } from '@/hooks/AuthProvider';
+import { deleteBookingById, fetchBookingsByUserId, updateBookingState } from '@/services/fetch';
+import { Booking, BookingHistoryProps, Item } from '@/types/types';
 
-const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking, }) => {
-
+const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking }) => {
   const [bookings, setBookings] = useState<Booking[]>();
   const [items, setItems] = useState<Item[]>();
 
   const { user } = useAuth();
 
   useEffect(() => {
+    if (!user?.id) return;
+
     const loadBookings = async () => {
-      const data = await fetchBookingsByUserId(user.id);
+      try {
+        const data = await fetchBookingsByUserId(user.id);
+        setBookings(data);
+      } catch (error) {
+        console.error('Error fetching bookings:', error);
+      }
+    };
 
-      setBookings(data);
-      console.log(data);
-    }
     loadBookings();
-  }, [])
+  }, [user?.id]);
 
-  // State translation
   const translateState = (state: string): string => {
     switch (state) {
       case 'pending':
@@ -39,28 +53,25 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
     }
   };
 
-  // State coloring
   const getStateColor = (state: string): string => {
     switch (state) {
       case 'pending':
-        return 'yellow';
+        return 'myPurple.10';
       case 'withdrawn':
-        return 'green';
+        return 'myPurple.12';
       case 'returned':
-        return 'white';
+        return 'myPurple.0';
       default:
-        return 'white';
+        return 'myPurple.0';
     }
   };
 
-  // Bookings sorting by state
   const sortedBookings = bookings?.sort((a, b) => {
     const order = { pending: 1, withdrawn: 2, returned: 3 };
     return (order[a.state] || 4) - (order[b.state] || 4);
   });
 
   function formatTime(timeString: string): string {
-    // function for formatting the timestamp to display only the hours and minutes in the notification
     const date = new Date(timeString);
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
@@ -82,19 +93,19 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
     try {
       await deleteBookingById(bookingId);
       setBookings((prevBookings) => prevBookings?.filter((b) => b.id !== bookingId));
-      console.log(`Booking ${bookingId} deleted`);
     } catch (error) {
       console.error(`Error trying to delete booking ${bookingId}:`, error);
     }
   };
 
-  const handleUpdateState = async (bookingId: number, newState: "pending" | "withdrawn" | "returned") => {
+  const handleUpdateState = async (
+    bookingId: number,
+    newState: 'pending' | 'withdrawn' | 'returned'
+  ) => {
     try {
       await updateBookingState(bookingId, newState);
       setBookings((prevBookings) =>
-        prevBookings?.map((b) =>
-          b.id === bookingId ? { ...b, state: newState } : b
-        )
+        prevBookings?.map((b) => (b.id === bookingId ? { ...b, state: newState } : b))
       );
     } catch (error) {
       console.error(`Error updating booking ${bookingId}:`, error);
@@ -116,32 +127,32 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
       <Text c="gray">No hay ítems</Text>
     );
 
-    console.log(itemsDescriptions);
     const lockerBoxInfo = lockerId && boxId ? `A0${lockerId}-C0${boxId}` : '';
 
-    const dateColor = b.state === 'pending' ? 'yellow' : b.state === 'withdrawn' ? 'yellow' : 'white';
+    const dateColor =
+      b.state === 'pending'
+        ? 'myPurple.10'
+        : b.state === 'withdrawn'
+          ? 'myPurple.10'
+          : 'myPurple.0';
 
     return (
-      <Table.Tr key={b.id} c="white">
-        <Table.Td>
-          {lockerBoxInfo}
-        </Table.Td>
+      <Table.Tr key={b.id} c="myPurple.0">
+        <Table.Td>{lockerBoxInfo}</Table.Td>
 
         <Table.Td>
-          <Text c={b.state === 'pending' ? 'yellow' : 'white'}>
+          <Text c={b.state === 'pending' ? 'myPurple.10' : 'myPurple.0'}>
             {formatDate(b.checkOut)} | {formatTime(b.checkOut)}
           </Text>
         </Table.Td>
 
         <Table.Td>
-          <Text c={b.state === 'withdrawn' ? 'yellow' : 'white'}>
+          <Text c={b.state === 'withdrawn' ? 'myPurple.10' : 'myPurple.0'}>
             {formatDate(b.checkIn)} | {formatTime(b.checkIn)}
           </Text>
         </Table.Td>
 
-        <Table.Td>
-          {itemsList}
-        </Table.Td>
+        <Table.Td>{itemsList}</Table.Td>
 
         <Table.Td>
           <Text c={getStateColor(b.state)} fw={700}>
@@ -155,8 +166,9 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
               onClick={() => handleUpdateState(b.id, 'withdrawn')}
               size="md"
               maw="8vw"
-              bg="myPurple.3"
+              bg="myPurple.4"
               radius="xl"
+              data-testid={`withdraw-button`}
             >
               Recoger
             </Button>
@@ -168,17 +180,19 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
               maw="8vw"
               bg="myPurple.3"
               radius="xl"
+              data-testid={`return-button`}
             >
               Devolver
             </Button>
           )}
         </Table.Td>
 
-        <Table.Td c="red">
+        <Table.Td c="myPurple.11">
           <IconTrash
             onClick={() => handleDeleteBooking(b.id)}
             style={{ cursor: 'pointer' }}
-            color="red"
+            c="myPurple.11"
+            data-testid={`delete-booking`}
           />
         </Table.Td>
       </Table.Tr>
@@ -186,47 +200,61 @@ const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking
   });
 
   return (
-    <Box bg="transparent" h="60vh" bd="1px solid myPurple.1" style={{ borderRadius: '83px 0 25px 25px' }}>
+    <Box
+      bg="transparent"
+      h="100%"
+      bd="1px solid myPurple.1"
+      style={{ borderRadius: '83px 0 25px 25px' }}
+    >
       <Center>
-        <h2>Historial de reservas</h2>
+        <h2 style={{ color: 'var(--mantine-color-myPurple-0' }} data-testid="history-title">
+          Historial de reservas
+        </h2>
       </Center>
-      <Divider size="xs" color="myPurple.1" />
+      <Divider size="xs" color="myPurple.0" />
 
       <ScrollArea p="lg" m="md" h="50vh" scrollbarSize={16}>
         <Flex direction="column" gap="xl">
-          <Table horizontalSpacing="sm" verticalSpacing="sm">
-            <Table.Thead c="white">
-              <Table.Tr size="xl">
-                <Table.Th>
-                  <Text c="white" fw={700}>
-                    Casilla
-                  </Text>
-                </Table.Th>
-                <Table.Th>
-                  <Text c="white" fw={700}>
-                    Fecha de recogida
-                  </Text>
-                </Table.Th>
-                <Table.Th>
-                  <Text c="white" fw={700}>
-                    Fecha de devolución
-                  </Text>
-                </Table.Th>
-                <Table.Th>
-                  <Text c="white" fw={700}>
-                    Objetos reservados
-                  </Text>
-                </Table.Th>
-                <Table.Th>
-                  <Text c="white" fw={700}>
-                    Estado
-                  </Text>
-                </Table.Th>
-                <Table.Th> </Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>{rows}</Table.Tbody>
-          </Table>
+          {bookings && bookings.length > 0 ? (
+            <Table horizontalSpacing="sm" verticalSpacing="sm" borderColor="myPurple.0">
+              <Table.Thead c="myPurple.0">
+                <Table.Tr size="xl">
+                  <Table.Th>
+                    <Text c="myPurple.0" fw={700}>
+                      Casilla
+                    </Text>
+                  </Table.Th>
+                  <Table.Th>
+                    <Text c="myPurple.0" fw={700}>
+                      Fecha de recogida
+                    </Text>
+                  </Table.Th>
+                  <Table.Th>
+                    <Text c="myPurple.0" fw={700}>
+                      Fecha de devolución
+                    </Text>
+                  </Table.Th>
+                  <Table.Th>
+                    <Text c="myPurple.0" fw={700}>
+                      Objetos reservados
+                    </Text>
+                  </Table.Th>
+                  <Table.Th>
+                    <Text c="myPurple.0" fw={700}>
+                      Estado
+                    </Text>
+                  </Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>{rows}</Table.Tbody>
+            </Table>
+          ) : (
+            <Center h="40vh">
+              <Text c="gray" size="lg" fw={500}>
+                No tienes reservas registradas.
+              </Text>
+            </Center>
+          )}
         </Flex>
       </ScrollArea>
     </Box>

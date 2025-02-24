@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const db = require("../models");
 const utils = require("../utils");
+
+const db = require("../models");
 const User = db.user;
 
 const validateSigninInput = (user, pwd) => {
@@ -18,16 +19,16 @@ const authenticateUser = async (user, pwd) => {
   return data;
 };
 
-// Función principal de inicio de sesión
+
 exports.signin = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    validateSigninInput(username, password); // Validar entrada
-    const user = await authenticateUser(username, password); // Autenticar usuario
+    validateSigninInput(username, password);
+    const user = await authenticateUser(username, password);
 
-    const token = utils.generateToken(user); // Generar token
-    const userObj = utils.getCleanUser(user); // Obtener detalles del usuario
+    const token = utils.generateToken(user);
+    const userObj = utils.getCleanUser(user);
 
     res.json({ user: userObj, access_token: token });
   } catch (err) {
@@ -36,7 +37,7 @@ exports.signin = async (req, res) => {
   }
 };
 
-// Función para verificar el token JWT
+
 const verifyToken = (token) => {
   if (!token) {
     throw new Error("Token is required.");
@@ -44,7 +45,7 @@ const verifyToken = (token) => {
   return jwt.verify(token, process.env.JWT_SECRET);
 };
 
-// Función para buscar el usuario en la base de datos por ID
+
 const findUserById = async (id) => {
   const user = await User.findByPk(id);
   if (!user) {
@@ -53,24 +54,23 @@ const findUserById = async (id) => {
   return user;
 };
 
-// Middleware de autenticación
+
 exports.isAuthenticated = async (req, res, next) => {
   try {
     const token = req.token;
 
-    const decoded = verifyToken(token); // Verificar token
-    const user = await findUserById(decoded.id); // Verificar usuario
+    const decoded = verifyToken(token);
+    const user = await findUserById(decoded.id);
 
-    // Añadir información del usuario autenticado al objeto req
     req.user = {
       id: user.id,
       username: user.username,
       role: user.role,
     };
 
-    next(); // Continuar al siguiente middleware
+    next();
   } catch (err) {
-    const status = err.message === "Invalid token." ? 401 : 500;
+    const status = err.message === "Unathorized." ? 500 : 401;
     res.status(status).json({ error: true, message: err.message });
   }
 };

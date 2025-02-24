@@ -1,6 +1,6 @@
 ﻿h2 {
   color: var(--mantine-color-white);
-  padding: -10;
+  padding: 10px; /* Corregido el padding */
 }
 
 Box {
@@ -12,7 +12,7 @@ Text {
 }
 
 .label {
- color: #ffffff;
+  color: #ffffff;
 }
 
 .input {
@@ -46,4 +46,20 @@ Text {
 
 Table {
   min-width: 500px;
+}
+
+.thumbsUp {
+  font-size: 24px;
+  animation: floatUp 2s ease-out forwards;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
 }

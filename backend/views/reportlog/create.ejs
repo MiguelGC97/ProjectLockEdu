@@ -1,28 +1,147 @@
-//view that will be rendered when the user wants to create a new report log. this is just a template.
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>comment form</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link rel="stylesheet" href="/css/reportable.css" />
 </head>
 
 <body>
-    <form action="/report" method="POST">
-        <label for="reportId">reportId</label>
-        <input type="text" name="reportId" placeholder="reportId">
-        <br>
-        <label for="userId">userId</label>
-        <input type="text" name="userId" placeholder="userId">
-        <br>
-        <label for="comment">comment</label>
-        <textarea name="comment" placeholder="comment"></textarea>
-        <br>
+  <div id="modalContainer">
+    <div class="black-overlay"></div>
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Nuevo comentario</h2>
+        <a href="/reportlog">
+          <button class="close-modal">X</button>
+        </a>
+      </div>
+      <div class="modal-body">
+        <form class="reportlog-form" action="/reportlog" method="POST">
+          <label for="reportId">Id del reporte</label>
+          <input type="text" id="reportId" name="reportId" />
+          <label for="comment">Comentario</label>
+          <input type="text" id="comment" name="comment" />
+          <button type="submit" class="add-reportlog-confirm">Añadir</button>
+        </form>
+      </div>
+    </div>
+  </div>
 
-        <button type="submit">Submit</button>
-    </form>
+  <%- include('../partials/sidemenu.ejs'); %>
+    <%- include('../partials/userbar.ejs'); %>
+      <main id="mainContainer">
+        <div id="mainContentContainer">
+          <section id="reportlogsSection">
+            <div class="reportlog-section-header">
+              <h1 class="reportlog-section-title">Incidencias</h1>
+            </div>
+            <div class="table-container">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Id Incidencia</th>
+                    <th class="not-visible">Manager</th>
+                    <th>Casilla</th>
+                    <th>Armario</th>
+                    <th class="not-visible">Estado</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% reportLog.forEach((rl)=> { %>
+                    <tr>
+                      <td>
+                        <%= rl.report.id %>
+                      </td>
+                      <td class="not-visible">
+                        <% if (rl.user && rl.user.role==="ADMIN" ) { %>
+                          <span style="color: rgb(237, 198, 43)">
+                            <%= rl.user.name %>
+                          </span>
+                          <% } else { %>
+                            <span>
+                              <%= rl.user ? rl.user.name : "Usuario desconocido" %>
+                            </span>
+                            <% } %>
+                      </td>
+                      <td>
+                        <%= rl.report.box ? rl.report.box.description : 'Sin descripción' %>
+                      </td>
+                      <td>
+                        <%= rl.report.box && rl.report.box.locker ? rl.report.box.locker.description : 'Sin descripción'
+                          %>
+                      </td>
+                      <td class="not-visible">
+                        <% if (rl.report.isSolved) { %>
+                          <span style="color: rgb(161, 255, 161)">Resuelto</span>
+                          <% } else { %>
+                            <span style="color: #ff6161">Pendiente</span>
+                            <% } %>
+                      </td>
+                      <td>
+                        <button class="dropdown-btn">
+                          <span
+                            style="display: inline-block; transform: rotate(45deg); border: solid white; border-width: 0 2px 2px 0; padding: 3px; margin-top: 5px;"></span>
+                        </button>
+                      </td>
+                    </tr>
+
+
+                    <tr class="dropdown-content">
+                      <td colspan="6">
+
+                        <div class="visible">
+                          <% if (rl.report.isSolved) { %>
+                            <span style="color: rgb(161, 255, 161)">Resuelto</span>
+                            <% } else { %>
+                              <span style="color: #ff6161">Pendiente</span>
+                              <% } %>
+                        </div>
+                        <div class="visible">
+                          <% if (rl.user && rl.user.role==="ADMIN" ) { %>
+                            <span style="color: rgb(236, 196, 34)">
+
+                              <%= rl.user.name %>
+                            </span>
+                            <% } else { %>
+                              <span>
+                                <span>Manager: </span>
+                                <%= rl.user ? rl.user.name : "Usuario desconocido" %>
+                              </span>
+                              <% } %>
+                        </div>
+                        <div class="comment-container">
+                          <%= rl.comment || 'Sin comentario' %>
+                        </div>
+                        <div class="action-buttons">
+                          <a href="/reportlog/<%= rl.id %>">
+                            <img class="edit-icon" src="images/edit-icon.svg" alt="Edit icon" />
+                          </a>
+                          <form action="/reportlog/<%= rl.id %>" method="POST" class="delete-form">
+                            <button type="submit" class="delete-button">
+                              <img class="delete-button" src="/images/trash-icon.svg" alt="Delete icon" />
+                            </button>
+                          </form>
+                        </div>
+                      </td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+              </table>
+            </div>
+            <a href="/reportlog/create" class="add-reportlog-button">
+              <button>+</button>
+              <p>Añadir</p>
+            </a>
+          </section>
+        </div>
+
+      </main>
+
+
 
 </body>
 

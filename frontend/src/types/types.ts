@@ -18,6 +18,13 @@ export interface BoxType {
   locker: Locker;
 }
 
+export interface BoxEditType {
+  id?: number;
+  description: string;
+  filename: string | null;
+  lockerId: number;
+}
+
 export interface LockersProps {
   onLockerClick: (locker: Locker) => void;
 }
@@ -35,13 +42,12 @@ export interface Booking {
   description: string;
   checkOut: string;
   checkIn: string;
-  state: 'pending' | 'withdrawn' | 'returned';
+  state: string;
 }
 
 export interface Item {
   id: number;
   description: string;
-  state: string;
   boxId: number;
   typeId: number;
   createdAt: string;
@@ -56,8 +62,9 @@ export interface ObjectsProps {
 }
 
 export interface BookingFormProps {
+  locker: Locker;
   box: BoxType;
-  items: string[]; // This is the array of selected item ids.
+  items: string[];
   onReturnToBox: () => void;
   onReturn: () => void;
   onBookingCreated: () => void;
@@ -90,7 +97,7 @@ export interface Incidence {
 
 //enum for roles
 
-enum roles {
+export enum roles {
   TEACHER,
   ADMIN,
   MANAGER,
@@ -100,10 +107,10 @@ export interface UserType {
   id: number;
   name: string;
   surname: string;
-  password: string;
+  // password: string;
   username: string;
   avatar: string;
-  role: roles;
+  role: 'TEACHER' | 'ADMIN' | 'MANAGER';
 }
 
 export interface Incidence {
@@ -111,15 +118,22 @@ export interface Incidence {
   content: string;
   isSolved: boolean;
   createdAt: string;
-  boxId: number; user: {
+  boxId: number;
+  user: {
     avatar: string;
     name: string;
   };
-
 }
 
 export interface Boxs {
   id: number;
   description: string;
   createdAt: string;
-};
+}
+
+export interface SettingsType {
+  id: number;
+  theme: string;
+  banner: string;
+  notifications: boolean;
+}

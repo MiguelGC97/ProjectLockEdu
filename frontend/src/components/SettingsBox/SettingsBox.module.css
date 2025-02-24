@@ -1,0 +1,19 @@
+* {
+  font-weight: 400;
+}
+
+.banner {
+  background: url('https://images.unsplash.com/photo-1630710577149-9220addf1fd3?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')
+    no-repeat;
+  display: flex;
+  height: 140px;
+  width: 100%;
+  background-size: 100%;
+  background-position: 30% 70%;
+  border-radius: 83px 0 0 0;
+}
+
+.animation {
+  opacity: 100%;
+  transition: all 1s linear;
+}

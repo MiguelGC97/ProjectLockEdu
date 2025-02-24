@@ -2,54 +2,62 @@ module.exports = (app) => {
   const bookings = require("../controllers/booking.controller.js");
   const auth = require("../middlewares/auth.js");
   const permissions = require("../middlewares/permissions.js");
+  const authForReact = require("../middlewares/authForReact.session.js");
 
   var router = require("express").Router();
 
   router.post(
     "/",
-    auth.isAuthenticated,
+    authForReact.isAuthenticated,
     permissions.authorize(["TEACHER", "ADMIN"]),
     bookings.newBooking
   );
 
+  router.post(
+    "/items",
+    authForReact.isAuthenticated,
+    permissions.authorize(["TEACHER", "ADMIN"]),
+    bookings.getDates
+  );
+
   router.get(
     "/",
-    auth.isAuthenticated,
+    authForReact.isAuthenticated,
     permissions.authorize(["TEACHER", "ADMIN"]),
     bookings.getAll
   );
 
   router.get(
     "/:id",
-    auth.isAuthenticated,
+    authForReact.isAuthenticated,
     permissions.authorize(["TEACHER", "ADMIN"]),
     bookings.getOne
   );
 
   router.get(
     "/users/:id",
-    auth.isAuthenticated,
+    authForReact.isAuthenticated,
     permissions.authorize(["TEACHER", "ADMIN"]),
     bookings.getAllbyUserId
   );
 
   router.get(
     "/users/:userId/state/:state",
-    auth.isAuthenticated,
+    authForReact.isAuthenticated,
     permissions.authorize(["TEACHER", "ADMIN"]),
     bookings.getAllbyUserIdAndState
   );
 
   router.put(
     "/:id",
-    auth.isAuthenticated,
+    authForReact.isAuthenticated,
     permissions.authorize(["TEACHER", "ADMIN"]),
     bookings.changeState
   );
 
   router.delete(
     "/:id",
-    auth.isAuthenticated,
+    authForReact.isAuthenticated,
     permissions.authorize(["TEACHER", "ADMIN"]),
     bookings.delete
   );
