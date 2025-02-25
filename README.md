@@ -10,6 +10,13 @@
   <h3 align="center">LockEDU - Panel de Administración: Proyecto Final de CFGS en Desarrollo de Aplicaciones Web</h3>
 
   <p align="center">
+    <strong>Alumna:</strong> Sarah Caroline Soares
+    <br />
+    <br />
+
+  </p>
+
+  <p align="center">
     Como parte de mi proyecto final para la conclusión del ciclo formativo de Desarrollo de Aplicaciones Web, me enfoqué en la implementación y mejora del panel de administración para LockEDU, un sistema de gestión de armarios y reservas diseñado para el IES El Rincón. Mi contribución principal fue desarrollar y adaptar el panel de administración, incluyendo la lógica del frontend, la gestión de roles, y la implementación de funcionalidades clave como el modo claro/oscuro, el manejo de sesiones, y la protección de rutas.
     <br />
     <br />
