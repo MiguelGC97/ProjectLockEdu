@@ -1,23 +1,4 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
-
 <a id="readme-top"></a>
-
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
-
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
 
 <!-- PROJECT LOGO -->
 <br />
@@ -26,206 +7,130 @@
     <img src="images/logo.png" alt="Logo" width="100%" height="100%">
   </a>
 
-  <h3 align="center">LockEDU project</h3>
+  <h3 align="center">LockEDU - Panel de Administración: Proyecto Final de CFGS en Desarrollo de Aplicaciones Web</h3>
 
   <p align="center">
-    LockEDU is a full-stack locker management application developed as part of the second term of the Web Development course at IES El Rincón. This functional application is designed specifically for the institute's teachers, allowing them to reserve items stored in lockers for a specified period. The app keeps a useful log of all reservations and facilitates the management of item returns. This project is part of a series of collaborative efforts undertaken by a team of three students, where we applied the knowledge and skills acquired throughout the course to create a fully-featured and practical application.
-    <br />
-    <!-- <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a> -->
+    Como parte de mi proyecto final para la conclusión del ciclo formativo de Desarrollo de Aplicaciones Web, me enfoqué en la implementación y mejora del panel de administración para LockEDU, un sistema de gestión de armarios y reservas diseñado para el IES El Rincón. Mi contribución principal fue desarrollar y adaptar el panel de administración, incluyendo la lógica del frontend, la gestión de roles, y la implementación de funcionalidades clave como el modo claro/oscuro, el manejo de sesiones, y la protección de rutas.
     <br />
     <br />
-    <a href="https://github.com/MiguelGC97/ProjectLockEdu/">View Demo</a>
-    ·
-    <a href="https://github.com/MiguelGC97/ProjectLockEdu/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
-    ·
-    <a href="https://github.com/MiguelGC97/ProjectLockEdu/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    
   </p>
 </div>
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#authors">Authors</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
-
 <!-- ABOUT THE PROJECT -->
 
-## About The Project
+## Sobre el Proyecto
 
-[![LockEDU Teacher's Dashboard][teacher-dash]](https://github.com/MiguelGC97/ProjectLockEdu)
+El panel de administración de LockEDU es una parte crítica del sistema, diseñado para gestionar usuarios, armarios, casillas y objetos almacenados en la base de datos. Mi trabajo consistió en adaptar y mejorar los CRUDs existentes en el backend para proporcionar una experiencia de usuario más robusta y segura en el frontend. Además, implementé funcionalidades avanzadas como:
 
-LockEDU is a full-stack locker management system created as part of the Web Development course at IES El Rincón. This project addresses a significant gap in the institute’s item management process by providing an efficient and user-friendly solution for reserving and managing items stored in lockers.
+- **Modo claro/oscuro**: Integré un sistema de temas que permite a los usuarios cambiar entre modo claro y oscuro según sus preferencias.
+- **Login por sesión**: Reemplacé la autenticación basada en tokens por un sistema de sesiones más escalable y eficiente.
+- **Axios con sesión**: Adapté la instancia de Axios para utilizar sesiones en lugar de tokens Bearer, mejorando la seguridad y la gestión de la autenticación.
+- **Rutas protegidas**: Implementé un sistema de rutas protegidas para los tres roles principales: ADMIN, TEACHER y MANAGER -- asegurando que cada usuario solo acceda a las funcionalidades permitidas.
+- **CRUDs y manejo de errores**: Desarrollé todos los CRUDs necesarios para la gestión de usuarios, armarios, casillas y objetos, incluyendo un manejo de errores personalizado.
 
-The app is designed specifically for teachers at the institute. Using the application, a teacher can:
+### Funcionalidades Destacadas
 
-- Browse through lockers and their respective compartments (or boxes).
-- Select one or more items from a locker to reserve for a specified period.
-- Receive notifications for check-in and check-out time of borrowed items.
-- Manage bookings seamlessly, ensuring transparency and accountability.
+#### Barra de Usuario y Actualización del Avatar
 
-This system is particularly useful as the previous process lacked any formalized control, leading to inefficiencies and confusion about item usage.
+En el panel de administrador, implementé una barra de usuario que muestra el avatar del usuario logueado. Esta barra está sincronizada con el componente de usuarios, de modo que cuando se actualiza el avatar de un usuario, la barra de usuario también se actualiza automáticamente. Para lograr esto, desarrollé una lógica basada en el contexto del usuario logueado (`logged user context`) que reinicia la sesión con los nuevos datos, los guarda y envía el usuario actualizado al frontend como parte de la respuesta. Esto asegura que el estado global de la aplicación se mantenga consistente sin afectar a otros usuarios.
 
-In addition to item reservations, the app offers a robust reporting system:
+#### Integración de Multer para la Gestión de Imágenes
 
-- Teachers can report issues with lockers or items (e.g., damages, malfunctions, or missing objects).
-- A designated report manager reviews these reports, communicates with the teacher if needed, and resolves the problems.
+Integré **Multer** en el proyecto para manejar la subida y eliminación de imágenes. Esta funcionalidad no existía previamente en el proyecto. Las características clave incluyen:
 
-By tracking who has borrowed each item and for how long, this project serves as a comprehensive control system, ensuring proper usage and management of the institute's resources.
+- **Middleware de eliminación**: Un middleware que se encarga de eliminar las imágenes de la carpeta `uploads` en dos situaciones:
+  1. Al cerrar el servidor, se eliminan todas las imágenes temporales.
+  2. Al actualizar la imagen de un usuario o casilla, se elimina la imagen anterior para evitar acumulación de archivos innecesarios.
+- **Eliminación de imágenes en CRUDs**: Al eliminar un usuario o una casilla, también se elimina su imagen asociada de la base de datos y del sistema de archivos, si existe.
 
-[![LockEDU Teacher's Report Page][teacher-report]](https://github.com/MiguelGC97/ProjectLockEdu)
-<br/>
-[![LockEDU Teacher' Admin Dashboard][admin-dash]](https://github.com/MiguelGC97/ProjectLockEdu)
+#### CRUDs con Modales y Categorías de Objetos
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+Todos los CRUDs fueron implementados utilizando modales para una experiencia de usuario más fluida. En el caso del CRUD de objetos, añadí la funcionalidad de seleccionar la categoría del objeto, la cual se basa en un listado predefinido en la tabla `types` de la base de datos. Esto permite una organización más eficiente de los objetos almacenados en los armarios.
 
-### Built With
+[![LockEDU Panel de Administración][admin-dash]](https://github.com/MiguelGC97/ProjectLockEdu)
 
-This app was built with:
+<p align="right">(<a href="#readme-top">volver al inicio</a>)</p>
+
+### Construido Con
+
+Este proyecto fue desarrollado utilizando las siguientes tecnologías:
 
 - [![React][React.js]][React-url]
 - [![Node.js][Node.js]][Node-url]
 - [![Sequelize][Sequelize.org]][Sequelize-url]
 - [![MySQL][Mysql.com]][Mysql-url]
-- [![Mantine][Mantine.dev]][Mysql-url]
+- [![Mantine][Mantine.dev]][Mantine-url]
 - [![EJS][Ejs.dev]][Ejs-url]
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">volver al inicio</a>)</p>
 
 <!-- GETTING STARTED -->
 
-## Getting Started
+## Empezando
 
-These are the instructions on setting up this project locally. To get a local copy up and running follow these simple example steps.
+Sigue estos pasos para configurar el proyecto localmente.
 
-### Prerequisites
-
-These are the technologies and tools you need to use this application.
+### Prerrequisitos
 
 - npm
-- vscode
-- node.js
-- any web browser
-- mysql workbench
+- Node.js
+- MySQL Workbench
+- Un navegador web moderno
 
-### Installation
+### Instalación
 
-1. Clone the repo
-   ```
+1. Clona el repositorio:
+   ```sh
    git clone https://github.com/MiguelGC97/ProjectLockEdu/
    ```
-2. Install NPM packages for backend and frontend
-   ```
+2. Instala las dependencias para el backend y el frontend:
+   ```sh
    cd backend
    npm install
    cd ../frontend
    npm install
    ```
-3. Create an `.env` file in both frontend and backend folders, then replace with your environment variables (except for the two last ones in the backend one)
-
-   - backend `.env`
-
+3. Adapta los archivos `.env.example` en las carpetas `backend` y `frontend` con las variables de entorno necesarias en un nuevo archivo `.env`
+4. Crea una base de datos en MySQL Workbench con el nombre especificado en tu `.env`.
+5. Ejecuta el backend:
+   ```sh
+   cd backend
+   node index.js
    ```
-   JWT_SECRET=your_jwt_secret
-   SESSION_SECRET=your_session_secret
-
-   DB_USERNAME_DEV=your_db_username
-   DB_PASSWORD_DEV=your_db_password
-   DB_ROOT_PASSWORD_DEV=your_db_password
-   DB_DATABASE_DEV=your_db_name
-   DB_DIALECT_DEV=mysql
-   DB_PORT_DEV=3306
-   DB_HOST_DEV=your_db_host
-
-   HOST_PORT_DEV=your_host_port
-   NODE_ENV_DEV=development
+6. Ejecuta el frontend:
+   ```sh
+   cd ../frontend
+   npm run dev
    ```
+7. ¡Listo! El panel de administración estará disponible en tu navegador, con las siguientes credentiales:
 
-- frontend `.env`
+- <strong>correo eletrónico:</strong> yamihg@gmail.com
+- <strong>contraseña:</strong> test1234
 
-```
-VITE_BASE_URL=your_base_url
-VITE_IMAGE_BASE_URL=your_backend_url_without_the_api_part
-
-```
-
-4. Create a database schema in MySQL workbench with the exact name of your DB_DATABASE environment variable
-
-5. Run the backend first
-
-```
-
-cd backend
-node index.js
-
-```
-
-6. Then, run the frontend
-
-```
-
-cd ../frontend
-npm run dev
-
-```
-
-7. You're all set!
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">volver al inicio</a>)</p>
 
 <!-- LICENSE -->
 
-## License
+## Licencia
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
+Distribuido bajo la licencia MIT. Consulta el archivo `LICENSE.txt` para más información.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- AUTHORS -->
-
-## Authors
-
-- **Yamiley del Mar Henriquez** - _Initial work_ - [Dr3am-dev](https://github.com/Dr3am-dev) or [Yamivc](https://github.com/Yamivc)
-- **Miguel Angel Gutierrez** - _Initial work_ - [MiguelGC97](https://github.com/MiguelGC97)
-- **Sarah Soares** - _Initial work_ - [scsoares](https://github.com/scsoares)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">volver al inicio</a>)</p>
 
 <!-- ACKNOWLEDGMENTS -->
 
-## Acknowledgments
+## Agradecimientos
 
-- [README Template by othneildrew](https://github.com/othneildrew/Best-README-Template)
+- [Plantilla de README por othneildrew](https://github.com/othneildrew/Best-README-Template)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">volver al inicio</a>)</p>
 
-[loginpage]: images/app-login.png
-[teacher-dash]: images/app-teacher.png
 [admin-dash]: images/app-admin.png
-[teacher-report]: images/app-report.png
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://react.dev/
 [Node.js]: https://img.shields.io/badge/Node.js-303030?style=for-the-badge&logo=node.js&logoColor=3C873A
 [Node-url]: https://nodejs.org/
-[Express.js]: https://img.shields.io/badge/Express-DEDEDE?style=for-the-badge&logo=express&logoColor=212121
-[Express-url]: https://expressjs.com/
 [Sequelize.org]: https://img.shields.io/badge/Sequelize-2379bd?style=for-the-badge&logo=sequelize&logoColor=#2379bd
 [Sequelize-url]: https://sequelize.org/
 [Mysql.com]: https://img.shields.io/badge/MySQL-DADADA?style=for-the-badge&logo=mysql&logoColor=00758F
@@ -234,7 +139,3 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 [Mantine-url]: https://mantine.dev
 [Ejs.dev]: https://img.shields.io/badge/ejs-B4CA65?style=for-the-badge&logo=ejs&logoColor=A91E50
 [Ejs-url]: https://ejs.co/
-
-```
-
-```
