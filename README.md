@@ -57,6 +57,14 @@ Todos los CRUDs fueron implementados utilizando modales para una experiencia de 
 
 [![LockEDU Panel de Administración][admin-dash]](https://github.com/MiguelGC97/ProjectLockEdu)
 
+[![LockEDU Panel de Administración][crud-create]](https://github.com/MiguelGC97/ProjectLockEdu)
+
+[![LockEDU Panel de Administración][crud-edit]](https://github.com/MiguelGC97/ProjectLockEdu)
+
+[![LockEDU Panel de Administración][crud-delete]](https://github.com/MiguelGC97/ProjectLockEdu)
+
+[![LockEDU Panel de Administración][crud-create2]](https://github.com/MiguelGC97/ProjectLockEdu)
+
 <p align="right">(<a href="#readme-top">volver al inicio</a>)</p>
 
 ### Construido Con
@@ -133,6 +141,11 @@ Distribuido bajo la licencia MIT. Consulta el archivo `LICENSE.txt` para más in
 
 <p align="right">(<a href="#readme-top">volver al inicio</a>)</p>
 
+[admin-dash]: images/app-admin.png
+[crud-delete]: images/crud-delete.png
+[crud-create]: images/crud-create.png
+[crud-edit]: images/crud-edit.png
+[crud-create2]: images/crud-create2.png
 [admin-dash]: images/app-admin.png
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://react.dev/
