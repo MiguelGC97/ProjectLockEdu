@@ -153,6 +153,19 @@ export async function fetchItems(): Promise<Item[] | undefined> {
   }
 }
 
+//function to fetch items by box id
+export async function fetchItemsByBox(boxId: number): Promise<Item[] | undefined> {
+  try {
+    const response = await instance.get(`${baseUrl}/items/box/${boxId}`);
+    if (Array.isArray(response.data.data)) {
+      return response.data.data;
+    }
+  } catch (error) {
+    console.error('Error fetching items by box id:', error);
+    return [];
+  }
+}
+
 //function to fetch bookings by user Id
 export async function fetchBookingsByUserId(userId: number): Promise<Booking[] | undefined> {
   try {

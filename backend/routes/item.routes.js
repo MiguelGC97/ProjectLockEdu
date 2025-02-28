@@ -19,5 +19,7 @@
 
   router.delete("/:id", permissions.authorize(["ADMIN"]), authForReact.isAuthenticated, items.delete);
 
+  router.get("/box/:id", permissions.authorize(["ADMIN", "TEACHER", "MANAGER"]), authForReact.isAuthenticated, items.getBoxItems);
+
   app.use("/api/items", router);
 };

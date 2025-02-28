@@ -29,9 +29,9 @@ export interface BoxEditType {
 //   onLockerClick: (locker: Locker) => void;
 // }
 
-export interface BoxesProps {
-  onBoxClick: (box: BoxType) => void;
-}
+// export interface BoxesProps {
+//   onBoxClick: (box: BoxType) => void;
+// }
 
 export interface Booking {
   id: number;
@@ -53,11 +53,11 @@ export interface Item {
   box: BoxType;
 }
 
-export interface ObjectsProps {
-  box: BoxType;
-  onReturn: () => void;
-  onCreateBooking: (box: BoxType, items: string[]) => void;
-}
+// export interface ObjectsProps {
+//   box: BoxType;
+//   onReturn: () => void;
+//   onCreateBooking: (box: BoxType, items: string[]) => void;
+// }
 
 export interface BookingFormProps {
   locker: Locker;

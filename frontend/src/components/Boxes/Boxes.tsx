@@ -24,7 +24,7 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { uploadBoxImage } from '@/services/fetch';
-import { BoxEditType, BoxesProps } from '@/types/types';
+import { BoxEditType } from '@/types/types';
 
 import './Boxes.module.css';
 
@@ -32,12 +32,13 @@ import { MdOutlineEdit } from 'react-icons/md';
 import instance, { baseUrl } from '@/services/api';
 import { useAuthStore, useBoxesStore, useLockersStore, useThemeStore } from '../store/store';
 
-const Boxes: React.FC<BoxesProps> = ({ onBoxClick }) => {
+const Boxes: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { themeName } = useThemeStore();
   const { user } = useAuthStore();
-  const { boxes, fetchAll, fetchBoxesByLockerId, create, update, deleteBox } = useBoxesStore();
+  const { boxes, fetchAll, fetchBoxesByLockerId, create, update, deleteBox, setSelectedBox } =
+    useBoxesStore();
   const { selectedLocker, setSelectedLocker } = useLockersStore();
   const [openedCreate, { open: openCreate, close: closeCreate }] = useDisclosure(false);
   const [openedEdit, { open: openEdit, close: closeEdit }] = useDisclosure(false);
@@ -138,7 +139,7 @@ const Boxes: React.FC<BoxesProps> = ({ onBoxClick }) => {
                       p="lg"
                       bg={themeName === 'dark' ? 'myPurple.8' : 'myPurple.8'}
                       bd={themeName === 'dark' ? 'none' : '1px solid myPurple.0'}
-                      onClick={() => (user?.role === 'TEACHER' ? onBoxClick(box) : null)}
+                      onClick={() => (user?.role === 'TEACHER' ? setSelectedBox(box) : null)}
                     >
                       <Flex w="100%" align="center" justify="space-between">
                         <Stack>
@@ -201,7 +202,7 @@ const Boxes: React.FC<BoxesProps> = ({ onBoxClick }) => {
                         {user?.role === 'ADMIN' ? (
                           <Button
                             aria-label={`ver casillas del armario número ${selectedLocker.number}`}
-                            onClick={() => onBoxClick(box)}
+                            onClick={() => setSelectedBox(box)}
                             size="md"
                             maw="8vw"
                             bg="myPurple.4"

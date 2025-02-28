@@ -13,7 +13,7 @@ exports.addItemDeprecated = async (req, res) => {
 
 exports.addItem = async (req, res) => {
     try {
-        const { typeId, boxId, description } = req.body;
+        const { typeId, boxId, description, isReserved } = req.body;
 
         if (!boxId || !typeId || !description) {
             return res.status(400).send({ message: "Todos los campos son obligatorios!" });
@@ -21,7 +21,7 @@ exports.addItem = async (req, res) => {
 
 
         const newItem = await Item.create({
-            typeId, boxId, description
+            typeId, boxId, description, isReserved
         });
 
 
@@ -43,6 +43,18 @@ exports.getAll = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+
+exports.getBoxItems = async (req, res) => {
+    const boxId = req.params.id;
+    try {
+        const items = await Item.findAll({ where: { boxId } });
+        res.status(200).send({ data: items });
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
+};
+
 
 exports.update = async (req, res) => {
     try {

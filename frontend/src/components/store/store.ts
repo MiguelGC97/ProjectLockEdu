@@ -19,6 +19,7 @@ import {
   fetchBoxes,
   fetchBoxesByLocker,
   fetchItems,
+  fetchItemsByBox,
   fetchLockers,
   updateAvatar,
   updateBookingState,
@@ -72,6 +73,7 @@ interface BoxesState {
 interface ItemsState {
   items: Item[];
   fetchAll: () => void;
+  fetchItemsByBoxId: (boxId: number) => void;
   create: (item: Item) => Promise<void>;
   update: (item: Item) => Promise<void>;
   deleteItem: (id: number) => Promise<void>;
@@ -358,6 +360,18 @@ export const useItemsStore = create<ItemsState>()(
             console.error('Error al obtener los artículos:', error);
             throw new Error(
               error.response?.data?.message || 'No se pudieron obtener los artículos.'
+            );
+          }
+        },
+        fetchItemsByBoxId: async (boxId) => {
+          try {
+            const items = await fetchItemsByBox(boxId);
+            set({ items });
+          } catch (error: any) {
+            console.error('Error al obtener artículos por ID de casilla:', error);
+            throw new Error(
+              error.response?.data?.message ||
+                'No se pudieron obtener los artículos de esta casilla.'
             );
           }
         },

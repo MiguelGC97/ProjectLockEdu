@@ -17,18 +17,6 @@ const DashboardAdmin: React.FC = () => {
   const { selectedLocker } = useLockersStore();
   const { selectedBox } = useBoxesStore();
 
-  const handleBoxClick = (box: BoxType) => {
-    setSelectedBox(box);
-  };
-
-  const handleReturnToBoxes = () => {
-    setSelectedBox(null);
-  };
-
-  const returnNull = () => {
-    return null;
-  };
-
   return (
     <>
       {!isMobile ? (
@@ -42,20 +30,14 @@ const DashboardAdmin: React.FC = () => {
               <UserBar />
             </Flex>
 
-            <Flex h="100%" w="100%" gap={30} justify="flex-end" px="xl">
+            <Flex h="100%" w="100%" gap={30} justify="flex-end" align="flex-start" px="xl">
               <UsersBox />
               {/* Conditional rendering for the different states */}
               {!selectedLocker && !selectedBox && <Lockers />}
 
-              {selectedLocker && !selectedBox && <Boxes onBoxClick={handleBoxClick} />}
+              {selectedLocker && !selectedBox && <Boxes />}
 
-              {selectedBox && (
-                <Objects
-                  box={selectedBox}
-                  onReturn={handleReturnToBoxes}
-                  onCreateBooking={returnNull}
-                />
-              )}
+              {selectedBox && <Objects />}
             </Flex>
           </Flex>
         </Flex>
