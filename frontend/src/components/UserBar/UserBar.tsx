@@ -1,13 +1,12 @@
 ﻿import React from 'react';
 import { IconMoon, IconSunHigh } from '@tabler/icons-react';
 import { Avatar, Button, Flex, Text } from '@mantine/core';
-import { useAuth } from '@/hooks/AuthProvider';
-import { useTheme } from '@/hooks/ThemeProvider';
 import { imageBaseUrl } from '@/services/api';
+import { useAuthStore } from '../store/store';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
 
 export default function UserBar() {
-  const { user } = useAuth();
+  const { user } = useAuthStore();
   const src = imageBaseUrl + user?.avatar;
 
   return (

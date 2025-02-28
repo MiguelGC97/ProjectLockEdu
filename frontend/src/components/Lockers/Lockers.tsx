@@ -21,16 +21,16 @@ import './Lockers.module.css';
 import { useEffect, useState } from 'react';
 import { MdOutlineEdit } from 'react-icons/md';
 import { useDisclosure } from '@mantine/hooks';
-import { useAuth } from '@/hooks/AuthProvider';
 import { useTheme } from '@/hooks/ThemeProvider';
 import { createLocker, deleteLocker, fetchLockers, updateLocker } from '@/services/fetch';
 import { Locker, LockersProps } from '@/types/types';
+import { useAuthStore, useThemeStore } from '../store/store';
 import { LockersContext } from './context';
 
 const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
   const [lockers, setLockers] = useState<Locker[] | undefined>();
-  const { theme } = useTheme();
-  const { user } = useAuth();
+  const { themeName } = useThemeStore();
+  const { user } = useAuthStore();
   const [openedCreate, { open: openCreate, close: closeCreate }] = useDisclosure(false);
   const [openedEdit, { open: openEdit, close: closeEdit }] = useDisclosure(false);
   const [openedDelete, { open: openDelete, close: closeDelete }] = useDisclosure(false);
@@ -270,14 +270,19 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
         )}
       </Modal>
 
-      <Box
-        bg={theme === 'dark' ? 'myPurple.4' : 'transparent'}
-        bd={theme === 'dark' ? null : '1px solid myPurple.0'}
+      <Flex
+        direction="column"
+        bg={themeName === 'dark' ? 'var(--mantine-color-myPurple-4)' : 'transparent'}
+        bd={themeName === 'dark' ? null : '1px solid var(--mantine-color-myPurple-0)'}
         px="1vw"
         mb="lg"
         h="86vh"
         w="34vw"
-        style={{ borderBottomLeftRadius: 40, borderBottomRightRadius: 40 }}
+        style={{
+          backgroundColor: themeName === 'dark' ? 'var(--mantine-color-myPurple-4)' : 'transparent',
+          borderBottomLeftRadius: 40,
+          borderBottomRightRadius: 40,
+        }}
       >
         <Stack my="4vh" gap="xl">
           <Center>
@@ -290,7 +295,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
             {user?.role === 'TEACHER' ? (
               <Input
                 aria-label="buscar objeto"
-                bd={theme === 'dark' ? null : '1px solid myPurple.0'}
+                bd={themeName === 'dark' ? null : '1px solid var(--mantine-color-myPurple-0)'}
                 style={{ borderRadius: '5px' }}
                 w="20vw"
                 size="lg"
@@ -307,8 +312,12 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
                 <Box
                   aria-label={`armario número ${locker.number}`}
                   h="auto"
-                  bg={theme === 'dark' ? 'myPurple.8' : 'myPurple.8'}
-                  bd={theme === 'dark' ? null : '1px solid myPurple.0'}
+                  bg={
+                    themeName === 'dark'
+                      ? 'var(--mantine-color-myPurple-8)'
+                      : 'var(--mantine-color-myPurple-8)'
+                  }
+                  bd={themeName === 'dark' ? null : '1px solid var(--mantine-color-myPurple-0)'}
                   style={{ borderRadius: 20 }}
                   p="sm"
                 >
@@ -354,7 +363,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
                         </Flex>
                       </Flex>
                       <svg
-                        fill={theme === 'dark' ? '#f8f7fc' : 'myPurple.0'}
+                        fill={themeName === 'dark' ? '#f8f7fc' : 'myPurple.0'}
                         height="60px"
                         width="60px"
                         version="1.1"
@@ -450,7 +459,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
             />
           </Flex>
         ) : null}
-      </Box>
+      </Flex>
     </LockersContext.Provider>
   );
 };

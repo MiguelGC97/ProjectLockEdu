@@ -21,6 +21,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { useAuth } from '@/hooks/AuthProvider';
 import instance, { baseUrl } from '@/services/api';
 import { updateAvatar, updateOwnPassword, updatePassword, uploadAvatar } from '@/services/fetch';
+import { useAuthStore } from '../store/store';
 import classes from './SettingsBox.module.css';
 
 export function SettingsBox() {
@@ -35,7 +36,7 @@ export function SettingsBox() {
   const [file, setFile] = useState(null);
   const [opened, { open, close }] = useDisclosure(false);
 
-  const { user, notification, updateNotification, updateUserAvatar, logout } = useAuth();
+  const { user, updateLoggedUserAvatar, updateLoggedUserDetails, logout } = useAuthStore();
 
   const handleSaveNotifications = () => {
     setShowNotification(true);
@@ -111,7 +112,7 @@ export function SettingsBox() {
         newFilename = await uploadAvatar(file);
       }
 
-      const responseUpdate = await updateUserAvatar(user, newFilename);
+      const responseUpdate = await updateLoggedUserAvatar(user, newFilename);
 
       if (responseUpdate.containsError) {
         setErrorMessage(responseUpdate.errorMessage);
@@ -286,7 +287,7 @@ export function SettingsBox() {
               <Flex px="20px" mr="50" h="100%" w="100%" justify="space-between" align="center">
                 <Flex direction="column">
                   <Checkbox
-                    checked={notification}
+                    checked="true"
                     ml={50}
                     size="md"
                     label="Recibir notificaciones de mis recordatorios"

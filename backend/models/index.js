@@ -94,13 +94,13 @@ db.item.belongsTo(db.box, {
 
 //Booking-item association
 db.booking.belongsToMany(db.item, {
-  through: "BookingItems",
+  through: "bookingItems",
   foreignKey: "bookingId",
   otherKey: "itemId",
   onDelete: "CASCADE",
 });
 db.item.belongsToMany(db.booking, {
-  through: "BookingItems",
+  through: "bookingItems",
   foreignKey: "itemId",
   otherKey: "bookingId",
   onDelete: "CASCADE",

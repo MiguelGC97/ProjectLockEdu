@@ -1,9 +1,9 @@
 import React from 'react';
 import { TbAlertHexagon } from 'react-icons/tb';
 import { Avatar, Button, Flex, Text } from '@mantine/core';
-import { useAuth } from '@/hooks/AuthProvider';
 import { useTheme } from '@/hooks/ThemeProvider';
 import { imageBaseUrl } from '@/services/api';
+import { useAuthStore, useThemeStore } from '../store/store';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
 
 interface UserBarReportProps {
@@ -11,8 +11,8 @@ interface UserBarReportProps {
 }
 
 export default function UserBarReport({ onToggleVisibility }: UserBarReportProps) {
-  const { user } = useAuth();
-  const { theme } = useTheme();
+  const { user } = useAuthStore();
+  const { themeName } = useThemeStore();
   const src = imageBaseUrl + user?.avatar;
 
   return (
@@ -29,10 +29,10 @@ export default function UserBarReport({ onToggleVisibility }: UserBarReportProps
         style={{ marginRight: '20px' }}
       >
         <Flex direction="column" justify="right" align="flex-start">
-          <Text size="sm" c={theme === 'dark' ? 'myPurple.0' : 'myPurple.9'}>
+          <Text size="sm" c={themeName === 'dark' ? 'myPurple.0' : 'myPurple.9'}>
             Reportar
           </Text>
-          <Text size="sm" c={theme === 'dark' ? 'myPurple.0' : 'myPurple.9'}>
+          <Text size="sm" c={themeName === 'dark' ? 'myPurple.0' : 'myPurple.9'}>
             Incidencia
           </Text>
         </Flex>

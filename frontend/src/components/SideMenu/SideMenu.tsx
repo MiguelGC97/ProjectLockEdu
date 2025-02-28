@@ -11,7 +11,7 @@ import {
 } from '@tabler/icons-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Center, Flex, Image, rem, Stack, Tooltip, UnstyledButton } from '@mantine/core';
-import { useAuth } from '@/hooks/AuthProvider';
+import { useAuthStore } from '../store/store';
 import classes from './SideMenu.module.css';
 
 interface NavbarLinkProps {
@@ -62,7 +62,7 @@ const menuDataManager = [
 export function SideMenu() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, logout } = useAuth();
+  const { user, logout } = useAuthStore();
   const [menu, setMenu] = useState(getUserType());
 
   useEffect(() => {

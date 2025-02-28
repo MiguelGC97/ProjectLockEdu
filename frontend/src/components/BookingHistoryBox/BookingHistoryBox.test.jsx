@@ -1,10 +1,10 @@
 import React from 'react';
-import { render, fireEvent, waitFor, screen } from '@testing-library/react';
-import BookingHistoryBox from './BookingHistoryBox';
+import { faker } from '@faker-js/faker';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { vi } from 'vitest';
 import { MantineProvider } from '@mantine/core';
 import { deleteBookingById, fetchBookingsByUserId, updateBookingState } from '@/services/fetch';
-import { vi } from 'vitest';
-import { faker } from '@faker-js/faker';
+import BookingHistoryBox from './BookingHistoryBox';
 
 // useAuth hook mock
 vi.mock('@/hooks/AuthProvider', () => ({
@@ -15,7 +15,7 @@ vi.mock('@/hooks/AuthProvider', () => ({
 
 // Mantine render
 const renderWithMantine = (component) => {
-  return render(<MantineProvider>{component}</MantineProvider>);
+  return render(<Flex>{component}</Flex>);
 };
 
 //Faker dynamic data generation
@@ -142,7 +142,9 @@ describe('BookingHistoryBox', () => {
   it('renders "No tienes reservas registradas" when bookings are empty', async () => {
     vi.mocked(fetchBookingsByUserId).mockResolvedValueOnce([]);
 
-    renderWithMantine(<BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />);
+    renderWithMantine(
+      <BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />
+    );
 
     await waitFor(() => {
       expect(screen.getByText('No tienes reservas registradas.')).toBeInTheDocument();
@@ -160,7 +162,9 @@ describe('BookingHistoryBox', () => {
       },
     ]);
 
-    renderWithMantine(<BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />);
+    renderWithMantine(
+      <BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />
+    );
 
     await waitFor(() => {
       expect(screen.getByText('Historial de reservas')).toBeInTheDocument();
@@ -180,8 +184,10 @@ describe('BookingHistoryBox', () => {
         items: [{ description: 'Item 1', box: { locker: { id: 1 }, id: 1 } }],
       },
     ]);
-    
-    renderWithMantine(<BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />);
+
+    renderWithMantine(
+      <BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />
+    );
 
     await waitFor(() => {
       const stateText = screen.getByText('Pendiente');
@@ -200,7 +206,9 @@ describe('BookingHistoryBox', () => {
       },
     ]);
 
-    renderWithMantine(<BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />);
+    renderWithMantine(
+      <BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />
+    );
 
     await waitFor(() => {
       expect(screen.getByText('Historial de reservas')).toBeInTheDocument();
@@ -215,7 +223,9 @@ describe('BookingHistoryBox', () => {
   });
 
   it('renders the correct number of bookings', async () => {
-    renderWithMantine(<BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />);
+    renderWithMantine(
+      <BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />
+    );
 
     await waitFor(() => {
       expect(screen.getAllByRole('row')).toHaveLength(2);
@@ -223,7 +233,9 @@ describe('BookingHistoryBox', () => {
   });
 
   it('renders the correct booking details', async () => {
-    renderWithMantine(<BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />);
+    renderWithMantine(
+      <BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />
+    );
 
     await waitFor(() => {
       expect(screen.getByText('Item 1')).toBeInTheDocument();
@@ -243,15 +255,19 @@ describe('BookingHistoryBox', () => {
       },
     ]);
 
-    renderWithMantine(<BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />);
-    
+    renderWithMantine(
+      <BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />
+    );
+
     await waitFor(() => {
       expect(screen.queryByText('Recoger')).not.toBeInTheDocument();
     });
   });
 
   it('does not render "Devolver" button for pending bookings', async () => {
-    renderWithMantine(<BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />);
+    renderWithMantine(
+      <BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />
+    );
 
     await waitFor(() => {
       expect(screen.queryByText('Devolver')).not.toBeInTheDocument();
@@ -269,7 +285,9 @@ describe('BookingHistoryBox', () => {
       },
     ]);
 
-    renderWithMantine(<BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />);
+    renderWithMantine(
+      <BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />
+    );
 
     await waitFor(() => {
       const stateText = screen.getByText('Recogido');
@@ -288,7 +306,9 @@ describe('BookingHistoryBox', () => {
       },
     ]);
 
-    renderWithMantine(<BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />);
+    renderWithMantine(
+      <BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />
+    );
 
     await waitFor(() => {
       const stateText = screen.getByText('Devuelto');
@@ -297,7 +317,9 @@ describe('BookingHistoryBox', () => {
   });
 
   it('calls deleteBookingById with the correct booking ID', async () => {
-    renderWithMantine(<BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />);
+    renderWithMantine(
+      <BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />
+    );
 
     await waitFor(() => {
       const trashIcon = screen.getByTestId('delete-booking');
@@ -310,7 +332,9 @@ describe('BookingHistoryBox', () => {
   });
 
   it('updates the bookings list after deleting a booking', async () => {
-    renderWithMantine(<BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />);
+    renderWithMantine(
+      <BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />
+    );
 
     await waitFor(() => {
       const trashIcon = screen.getByTestId('delete-booking');
@@ -339,7 +363,9 @@ describe('BookingHistoryBox', () => {
       updateBookingState: vi.fn(() => Promise.resolve()),
     }));
 
-    renderWithMantine(<BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />);
+    renderWithMantine(
+      <BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />
+    );
 
     await waitFor(() => {
       expect(screen.getByText('Historial de reservas')).toBeInTheDocument();
@@ -354,7 +380,9 @@ describe('BookingHistoryBox', () => {
   });
 
   it('deletes booking when trash icon is clicked', async () => {
-    renderWithMantine(<BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />);
+    renderWithMantine(
+      <BookingHistoryBox locker={testLocker} box={testBox} booking={testBooking} />
+    );
 
     await waitFor(() => {
       expect(screen.getByText('Historial de reservas')).toBeInTheDocument();

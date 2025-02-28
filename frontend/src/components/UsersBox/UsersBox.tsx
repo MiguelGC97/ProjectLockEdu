@@ -23,25 +23,19 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { useAuth } from '@/hooks/AuthProvider';
 import instance, { baseUrl, imageBaseUrl } from '@/services/api';
-import {
-  createUser,
-  deleteUser,
-  fetchAllUsers,
-  updateAvatar,
-  updateUser,
-  uploadAvatar,
-} from '@/services/fetch';
+import { uploadAvatar } from '@/services/fetch';
 import { UserType } from '@/types/types';
+import { useAuthStore, useUsersStore } from '../store/store';
 import classes from './UsersBox.module.css';
 
 const UsersBox: React.FC = () => {
-  const [users, setUsers] = useState<any[] | undefined>([]);
   const [openedCreate, { open: openCreate, close: closeCreate }] = useDisclosure(false);
   const [openedEdit, { open: openEdit, close: closeEdit }] = useDisclosure(false);
   const [openedDelete, { open: openDelete, close: closeDelete }] = useDisclosure(false);
-  const { user, updateUserDetails, updateUserAvatar } = useAuth();
+  const { users, create, deleteUser, fetchAll, updateUserDetails, updateUserAvatar } =
+    useUsersStore();
+  const { user } = useAuthStore();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [userToDelete, setUserToDelete] = useState<any | null>(null);
@@ -70,11 +64,10 @@ const UsersBox: React.FC = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const response = await fetchAllUsers();
-      setUsers(response);
+      await fetchAll();
     };
     fetchUsers();
-  }, []);
+  }, [users]);
 
   const handleChange = (field: keyof UserType, value: string) => {
     setNewUser((prev) => ({ ...prev, [field]: value }));
@@ -94,10 +87,10 @@ const UsersBox: React.FC = () => {
     try {
       const avatarPath = await uploadAvatar(image);
 
-      const response = await createUser(newUser, avatarPath);
+      const response = await create(newUser, avatarPath);
 
       if (response) {
-        setUsers((prev) => (prev ? [...prev, response.user] : [response.user]));
+        // setUsers((prev) => (prev ? [...prev, response.user] : [response.user]));
         closeCreate();
 
         setNewUser({
@@ -136,11 +129,7 @@ const UsersBox: React.FC = () => {
       }
 
       const response = await deleteUser(receivedUser.id);
-      if (response) {
-        setUsers((prev) => prev?.filter((u) => u.id !== receivedUser.id));
-        closeDelete();
-        setErrorMessage(null);
-      }
+      closeDelete();
     } catch (error: any) {
       if (error.response && error.response.status === 404) {
         setErrorMessage(error.response.data.message);
@@ -156,12 +145,12 @@ const UsersBox: React.FC = () => {
         return;
       }
       const response = await updateUserDetails(userToEdit);
-      if (response) {
-        setUsers((prevUsers) =>
-          prevUsers?.map((usr) => (usr.id === userToEdit.id ? { ...usr, ...userToEdit } : usr))
-        );
-        closeEdit();
-      }
+      // if (response) {
+      //   setUsers((prevUsers) =>
+      //     prevUsers?.map((usr) => (usr.id === userToEdit.id ? { ...usr, ...userToEdit } : usr))
+      //   );
+      //   closeEdit();
+      // }
     } catch (error: any) {
       setErrorMessage(
         error.response?.status === 404
@@ -214,13 +203,13 @@ const UsersBox: React.FC = () => {
           setSuccessMessage(null);
         }, 1500);
 
-        setUsers((prevUsers) =>
-          prevUsers?.map((usr) =>
-            usr.id === userToEdit.id
-              ? { ...usr, avatar: responseUpdate.updatedUserClean.avatar }
-              : usr
-          )
-        );
+        // setUsers((prevUsers) =>
+        //   prevUsers?.map((usr) =>
+        //     usr.id === userToEdit.id
+        //       ? { ...usr, avatar: responseUpdate.updatedUserClean.avatar }
+        //       : usr
+        //   )
+        // );
 
         setUserToEdit(
           (prev) => prev && { ...prev, avatar: responseUpdate.updatedUserClean.avatar }

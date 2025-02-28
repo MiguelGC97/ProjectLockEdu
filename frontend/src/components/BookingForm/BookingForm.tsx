@@ -31,11 +31,11 @@ import isBetween from 'dayjs/plugin/isBetween';
 
 import 'dayjs/locale/es';
 
-import { useAuth } from '@/hooks/AuthProvider';
 import { useTheme } from '@/hooks/ThemeProvider';
 import instance, { baseUrl } from '@/services/api';
 import { fetchBookingDatesByItemIds } from '@/services/fetch';
 import { BookingFormProps, BoxType, Item } from '@/types/types';
+import { useAuthStore, useThemeStore } from '../store/store';
 
 import './BookingForm.module.css';
 
@@ -58,8 +58,8 @@ const BookingForm: React.FC<BookingFormProps> = ({
   const [returnTime, setReturnTime] = useState<string>('');
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
   const currentDate = dayjs();
-  const { theme } = useTheme();
-  const { user } = useAuth();
+  const { themeName } = useThemeStore();
+  const { user } = useAuthStore();
   const [unavailableDates, setUnavailableDates] = useState<{ checkIn: Date; checkOut: Date }[]>([]);
 
   const handlePickupTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -234,7 +234,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
       <Box
         style={{
           backgroundColor:
-            theme === 'dark'
+            themeName === 'dark'
               ? 'var(--mantine-color-myPurple-4)'
               : 'var(--mantine-color-myPurple-8)',
           display: 'flex',
@@ -245,7 +245,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
           padding: '2rem',
           color: 'var(--mantine-color-myPurple-0)',
         }}
-        bd={theme === 'dark' ? null : '1px solid myPurple.0'}
+        bd={themeName === 'dark' ? null : '1px solid myPurple.0'}
       >
         <Title order={3}>Reserva Confirmada</Title>
         <Text>Casilla {confirmedBooking.box.id}</Text>
@@ -276,8 +276,8 @@ const BookingForm: React.FC<BookingFormProps> = ({
           borderBottomLeftRadius: 40,
           borderBottomRightRadius: 40,
         }}
-        bg={theme === 'dark' ? 'myPurple.4' : 'myPurple.8'}
-        bd={theme === 'dark' ? null : '1px solid myPurple.0'}
+        bg={themeName === 'dark' ? 'myPurple.4' : 'myPurple.8'}
+        bd={themeName === 'dark' ? null : '1px solid myPurple.0'}
         p="3%"
         mb="lg"
         h="86vh"
@@ -295,7 +295,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
                   p="2vw"
                   h="100%"
                   w="24vw"
-                  bd={theme === 'dark' ? null : '1px solid myPurple.0'}
+                  bd={themeName === 'dark' ? null : '1px solid myPurple.0'}
                 >
                   <DatePicker
                     type="range"

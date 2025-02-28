@@ -15,15 +15,15 @@ import {
 
 import './BookingHistoryBox.module.css';
 
-import { useAuth } from '@/hooks/AuthProvider';
 import { deleteBookingById, fetchBookingsByUserId, updateBookingState } from '@/services/fetch';
 import { Booking, BookingHistoryProps, Item } from '@/types/types';
+import { useAuthStore } from '../store/store';
 
 const BookingHistoryBox: React.FC<BookingHistoryProps> = ({ locker, box, booking }) => {
   const [bookings, setBookings] = useState<Booking[]>();
   const [items, setItems] = useState<Item[]>();
 
-  const { user } = useAuth();
+  const { user } = useAuthStore();
 
   useEffect(() => {
     if (!user?.id) return;

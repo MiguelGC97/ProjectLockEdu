@@ -1,9 +1,10 @@
 ﻿import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import { useAuth } from '@/hooks/AuthProvider';
+import { useThemeStore } from '../store/store';
 
 export default function ToastContainerComponent() {
-  const { theme } = useAuth();
+  const { themeName } = useThemeStore();
 
   return (
     <ToastContainer
@@ -21,7 +22,7 @@ export default function ToastContainerComponent() {
         borderRadius: '10px',
       }}
       toastStyle={{
-        background: theme === 'dark' ? '#ffff' : '#ffff',
+        background: themeName === 'dark' ? '#ffff' : '#ffff',
         color: 'var(--mantine-color-myPurple-9)',
       }}
     />

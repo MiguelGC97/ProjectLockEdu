@@ -128,7 +128,7 @@ export async function resolveIncidence(id: number, isSolved: boolean): Promise<a
 }
 
 //function to fetchBoxesByLocker
-export async function fetchBoxesByLocker(lockerId: string): Promise<BoxType[] | undefined> {
+export async function fetchBoxesByLocker(lockerId: number): Promise<BoxType[] | undefined> {
   try {
     const response = await instance.get(`${baseUrl}/boxes/locker/${lockerId}`);
     if (Array.isArray(response.data.data)) {
@@ -543,6 +543,17 @@ export const updateItem = async (itemToUpdate: any): Promise<any | undefined> =>
     return response.data;
   } catch (error) {
     console.error('Error updating item:', error);
+    throw error;
+  }
+};
+
+export const createBooking = async (booking: any): Promise<any | undefined> => {
+  try {
+    const response = await instance.post(`${baseUrl}/bookings`, booking);
+
+    return response.data;
+  } catch (error: any) {
+    console.error('Error creating booking:', error.response?.data || error.message);
     throw error;
   }
 };

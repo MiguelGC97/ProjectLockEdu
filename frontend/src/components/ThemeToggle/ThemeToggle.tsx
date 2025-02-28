@@ -2,16 +2,15 @@
 import { IconMoon, IconSunHigh, IconSunMoon } from '@tabler/icons-react';
 import { Button } from '@mantine/core';
 import { useAuth } from '@/hooks/AuthProvider';
-import { useTheme } from '@/hooks/ThemeProvider';
+import { useAuthStore, useThemeStore } from '../store/store';
 
 const ThemeToggle = () => {
-  const { theme } = useAuth();
-  const { toggleTheme } = useTheme();
+  const { themeName, toggleTheme } = useThemeStore();
 
   return (
     <div>
       <Button h="50px" bg="myPurple.4" onClick={toggleTheme}>
-        {theme === 'dark' ? <IconSunMoon /> : <IconSunMoon />}
+        {themeName === 'dark' ? <IconSunMoon /> : <IconSunMoon />}
       </Button>
     </div>
   );

@@ -4,14 +4,14 @@ import { Box, Center, Divider, Flex, Group, ScrollArea, Table, Text, Title } fro
 
 import './Pending.module.css';
 
-import { useAuth } from '@/hooks/AuthProvider';
 import { fetchBookingsByUserIdAndState } from '@/services/fetch';
 import { Booking, BookingHistoryProps, PendingProps } from '@/types/types';
+import { useAuthStore } from '../store/store';
 
 const Pending: React.FC<BookingHistoryProps> = ({ locker, box, booking }) => {
   const [bookings, setBookings] = useState<Booking[]>();
 
-  const { user, theme } = useAuth();
+  const { user } = useAuthStore();
   const state = 'pending';
 
   useEffect(() => {

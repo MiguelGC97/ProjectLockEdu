@@ -14,7 +14,6 @@ import UserBar from '@/components/UserBar/UserBar';
 import { BoxType, Locker } from '@/types/types';
 
 const Notifications: React.FC = () => {
-  const theme = useMantineTheme();
   const matches = useMediaQuery('(min-width: 85em)');
   const matches2 = useMediaQuery('(max-width: 93em)');
   const [selectedLocker, setSelectedLocker] = useState<Locker | null>(null);
@@ -41,7 +40,7 @@ const Notifications: React.FC = () => {
     <>
       {matches ? (
         matches2 ? (
-          <Flex style={{ backgroundColor: theme.colors.myPurple[6] }}>
+          <Flex style={{ backgroundColor: 'var(--mantine-color-myPurple-9)' }}>
             <Flex w="100%" gap="lg">
               <SideMenu />
               <Flex direction="column" w="100%">
@@ -70,7 +69,7 @@ const Notifications: React.FC = () => {
             </Flex>
           </Flex>
         ) : (
-          <Flex style={{ backgroundColor: theme.colors.myPurple[6] }}>
+          <Flex style={{ backgroundColor: 'var(--mantine-color-myPurple-9)' }}>
             <Flex w="100%" gap="lg">
               <SideMenu />
               <Flex direction="column" w="100%">
@@ -100,7 +99,7 @@ const Notifications: React.FC = () => {
           </Flex>
         )
       ) : (
-        <Flex style={{ backgroundColor: theme.colors.white }}>
+        <Flex style={{ backgroundColor: 'var(--mantine-color-white)' }}>
           <Flex w="100%" gap="lg">
             <MobileMenu />
             <Flex direction="column" w="100%">

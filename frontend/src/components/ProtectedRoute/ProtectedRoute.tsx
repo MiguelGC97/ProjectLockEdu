@@ -1,5 +1,5 @@
 ﻿import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '@/hooks/AuthProvider';
+import { useAuthStore } from '../store/store';
 
 interface ProtectedRouteProps {
   allowedRoles: string[];
@@ -7,21 +7,21 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles, redirectPath = '/' }) => {
-  const { user, loading } = useAuth();
+  const { user, loading } = useAuthStore();
 
   if (loading) {
-    return <div>Loading...</div>; // Show loading while checking session
+    return <div>Loading...</div>;
   }
 
   if (!user) {
-    return <Navigate to="/" replace />; // Redirect to login if no user
+    return <Navigate to="/" replace />;
   }
 
   if (!allowedRoles.includes(user?.role)) {
-    return <Navigate to={redirectPath} replace />; // Redirect if user role is not allowed
+    return <Navigate to={redirectPath} replace />;
   }
 
-  return <Outlet />; // Render the protected route if the user is authenticated and has the right role
+  return <Outlet />;
 };
 
 export default ProtectedRoute;

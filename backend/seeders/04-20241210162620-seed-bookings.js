@@ -5,37 +5,28 @@ module.exports = {
       [
         {
           description: "Reserva 1",
-          checkOut: "2024-12-10 14:00:00",
-          checkIn: "2024-12-15 12:00:00",
+          checkOut: "2025-03-10 14:00:00",
+          checkIn: "2025-03-15 12:00:00",
           state: "pending",
-          userId: 1,
+          userId: 2,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
           description: "Reserva 2",
-          checkOut: "2025-2-6 19:00:00",
-          checkIn: "2025-2-5 19:00:00",
+          checkOut: "2025-3-3 19:00:00",
+          checkIn: "2025-3-6 19:00:00",
           state: "withdrawn",
-          userId: 2,
+          userId: 4,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
           description: "Reserva 3",
-          checkOut: "2024-12-10 14:00:00",
-          checkIn: "2024-12-15 12:00:00",
-          state: "pending",
-          userId: 2,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          description: "Reserva 4",
-          checkOut: "2024-12-10 14:00:00",
-          checkIn: "2024-12-15 12:00:00",
-          state: "pending",
-          userId: 3,
+          checkOut: "2025-02-27 14:00:00",
+          checkIn: "2025-02-28 12:00:00",
+          state: "returned",
+          userId: 5,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -44,7 +35,7 @@ module.exports = {
     );
 
     await queryInterface.bulkInsert(
-      "BookingItems",
+      "bookingItems",
       [
         {
           bookingId: 1,
@@ -66,55 +57,31 @@ module.exports = {
         },
         {
           bookingId: 2,
-          itemId: 1,
+          itemId: 4,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
           bookingId: 2,
-          itemId: 2,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          bookingId: 2,
-          itemId: 3,
+          itemId: 5,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
           bookingId: 3,
-          itemId: 1,
+          itemId: 11,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
           bookingId: 3,
-          itemId: 2,
+          itemId: 12,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
           bookingId: 3,
-          itemId: 3,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          bookingId: 4,
-          itemId: 1,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          bookingId: 4,
-          itemId: 2,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          bookingId: 4,
-          itemId: 3,
+          itemId: 13,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -124,7 +91,7 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    await queryInterface.bulkDelete("BookingItems", null, {});
+    await queryInterface.bulkDelete("bookingItems", null, {});
 
     await queryInterface.bulkDelete("bookings", null, {});
   },

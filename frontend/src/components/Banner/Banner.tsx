@@ -1,10 +1,10 @@
 ﻿import { Card, Overlay } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { useAuth } from '@/hooks/AuthProvider';
+import { useAuthStore } from '../store/store';
 import classes from './Banner.module.css';
 
 export function Banner() {
-  const { user } = useAuth();
+  const { user } = useAuthStore();
   const isLaptop = useMediaQuery('(min-width: 1024px) and (max-width: 1280px)');
 
   return (

@@ -1,11 +1,10 @@
 import React from 'react';
-import { render, fireEvent, waitFor, screen } from '@testing-library/react';
-import { ReportForm } from './ReportForm';
-import { MantineProvider } from '@mantine/core';
-import { fetchBoxesByLocker, fetchFormIncident, fetchLockers } from '@/services/fetch';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { toast } from 'react-toastify';
 import { vi } from 'vitest';
-
+import { MantineProvider } from '@mantine/core';
+import { fetchBoxesByLocker, fetchFormIncident, fetchLockers } from '@/services/fetch';
+import { ReportForm } from './ReportForm';
 
 vi.mock('react-toastify', () => ({
   toast: {
@@ -13,7 +12,6 @@ vi.mock('react-toastify', () => ({
     success: vi.fn(),
   },
 }));
-
 
 vi.mock('@/hooks/AuthProvider', () => ({
   useAuth: () => ({
@@ -24,12 +22,14 @@ vi.mock('@/hooks/AuthProvider', () => ({
 // Mock de servicios fetch
 vi.mock('@/services/fetch', () => ({
   fetchLockers: vi.fn(() => Promise.resolve([{ id: 1, description: 'Armario 01' }])),
-  fetchBoxesByLocker: vi.fn(() => Promise.resolve([{ id: 1, description: 'Casilla del armario 01' }])),
+  fetchBoxesByLocker: vi.fn(() =>
+    Promise.resolve([{ id: 1, description: 'Casilla del armario 01' }])
+  ),
   fetchFormIncident: vi.fn(() => Promise.resolve({})),
 }));
 
 const renderWithMantine = (component) => {
-  return render(<MantineProvider>{component}</MantineProvider>);
+  return render(<Flex>{component}</Flex>);
 };
 
 describe('ReportForm', () => {

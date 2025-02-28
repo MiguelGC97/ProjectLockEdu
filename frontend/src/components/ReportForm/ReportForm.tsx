@@ -10,13 +10,14 @@ import {
   NativeSelect,
   Textarea,
 } from '@mantine/core';
-import { useAuth } from '@/hooks/AuthProvider';
 import { useTheme } from '@/hooks/ThemeProvider';
 import { fetchBoxesByLocker, fetchFormIncident, fetchLockers } from '@/services/fetch';
 import { Boxs, Locker } from '@/types/types';
 import classes from './ReportForm.module.css';
 
 import 'react-toastify/dist/ReactToastify.css';
+
+import { useAuthStore, useThemeStore } from '../store/store';
 
 const theme = createTheme({
   components: {
@@ -34,7 +35,7 @@ const theme = createTheme({
 });
 
 export function ReportForm() {
-  const { theme } = useTheme();
+  const { themeName } = useThemeStore();
   const [lockers, setLockers] = useState<Locker[]>([]);
   const [boxes, setBoxes] = useState<Boxs[]>([]);
   const [selectedLocker, setSelectedLocker] = useState('');
@@ -44,7 +45,7 @@ export function ReportForm() {
     []
   );
 
-  const { user } = useAuth();
+  const { user } = useAuthStore();
 
   useEffect(() => {
     const loadLockers = async () => {
@@ -134,8 +135,8 @@ export function ReportForm() {
   return (
     <>
       <Box
-        bg={theme === 'dark' ? 'myPurple.4' : 'myPurple.8'}
-        bd={theme === 'dark' ? null : '1px solid myPurple.0'}
+        bg={themeName === 'dark' ? 'myPurple.4' : 'myPurple.8'}
+        bd={themeName === 'dark' ? null : '1px solid myPurple.0'}
         style={{
           borderRadius: '20px',
           borderTopLeftRadius: '0',

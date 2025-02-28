@@ -12,11 +12,11 @@ import {
   TextInput,
   useMantineTheme,
 } from '@mantine/core';
-import { useAuth } from '@/hooks/AuthProvider';
+import { useAuthStore, useThemeStore } from '../store/store';
 
 const LoginForm: React.FC = () => {
-  const theme = useMantineTheme();
-  const { login, user, loading } = useAuth(); // Use loading from AuthProvider
+  const { themeName } = useThemeStore();
+  const { login, user, loading } = useAuthStore(); // Use loading from AuthProvider
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -59,7 +59,7 @@ const LoginForm: React.FC = () => {
       align="center"
       w="auto"
       h="auto"
-      style={{ backgroundColor: theme.colors.myPurple[9] }}
+      style={{ backgroundColor: themeName === 'dark' ? '#222337' : '#ffff' }}
     >
       <Flex radius={0} align="center" justify="center" px="auto" direction="column">
         <Image w="50%" src="/assets/logo-login.png" alt="logo de lockEdu" />

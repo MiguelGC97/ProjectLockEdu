@@ -16,7 +16,6 @@ import {
   Text,
   Textarea,
 } from '@mantine/core';
-import { useAuth } from '@/hooks/AuthProvider';
 import { useTheme } from '@/hooks/ThemeProvider';
 import {
   fetchIncidencesByUserId,
@@ -29,14 +28,15 @@ import classes from './ReportsBox.module.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { imageBaseUrl } from '@/services/api';
+import { useAuthStore, useThemeStore } from '../store/store';
 
 export function ReportsBox() {
   const [incidences, setIncidences] = useState<Incidence[]>();
   const [modalOpened, setModalOpened] = useState(false);
   const [currentIncidence, setCurrentIncidence] = useState<Incidence | null>(null);
   const [newContent, setNewContent] = useState<string>('');
-  const { user } = useAuth();
-  const { theme } = useTheme();
+  const { user } = useAuthStore();
+  const { theme, themeName } = useThemeStore();
   const src = imageBaseUrl + user?.avatar;
 
   useEffect(() => {
@@ -112,19 +112,27 @@ export function ReportsBox() {
       color: var(--mantine-color-myPurple-0);
       border-bottom: 1px solid
         ${({ theme }) =>
-          theme === 'dark' ? 'var(--mantine-color-myPurple-0)' : 'var(--mantine-color-myPurple-0)'};
+          themeName === 'dark'
+            ? 'var(--mantine-color-myPurple-0)'
+            : 'var(--mantine-color-myPurple-0)'};
 
       &:hover {
         background-color: transparent;
         color: ${({ theme }) =>
-          theme === 'dark' ? 'var(--mantine-color-myPurple-2)' : 'var(--mantine-color-myPurple-2)'};
+          themeName === 'dark'
+            ? 'var(--mantine-color-myPurple-2)'
+            : 'var(--mantine-color-myPurple-2)'};
       }
 
       &.mantine-Accordion-control-active {
         background-color: ${({ theme }) =>
-          theme === 'dark' ? 'var(--mantine-color-myPurple-0)' : 'var(--mantine-color-myPurple-0)'};
+          themeName === 'dark'
+            ? 'var(--mantine-color-myPurple-0)'
+            : 'var(--mantine-color-myPurple-0)'};
         color: ${({ theme }) =>
-          theme === 'dark' ? 'var(--mantine-color-myPurple-0)' : 'var(--mantine-color-myPurple-0)'};
+          themeName === 'dark'
+            ? 'var(--mantine-color-myPurple-0)'
+            : 'var(--mantine-color-myPurple-0)'};
       }
     }
   `;
@@ -171,7 +179,7 @@ export function ReportsBox() {
         id={`casilla-${report.boxId}-panel`}
         style={{
           backgroundColor:
-            theme === 'dark'
+            themeName === 'dark'
               ? 'var(--mantine-color-myPurple-5)'
               : 'var(--mantine-color-myPurple-8)',
           padding: '1rem',
@@ -253,7 +261,7 @@ export function ReportsBox() {
             <Table.Thead c="myPurple.0" aria-label="Encabezado de la tabla de incidencias">
               <Table.Tr>
                 <Table.Th style={{ textAlign: 'center', width: '33.33%' }}>
-                  <Text c={theme === 'dark' ? 'myPurple.0' : 'myPurple.0'} fw={700}>
+                  <Text c={themeName === 'dark' ? 'myPurple.0' : 'myPurple.0'} fw={700}>
                     Casilla
                   </Text>
                 </Table.Th>

@@ -26,7 +26,6 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { useAuth } from '@/hooks/AuthProvider';
 import { useTheme } from '@/hooks/ThemeProvider';
 import { createBox, deleteBox, fetchBoxes, updateBox, uploadBoxImage } from '@/services/fetch';
 import { BoxEditType, BoxesProps, BoxType } from '@/types/types';
@@ -35,6 +34,7 @@ import './Boxes.module.css';
 
 import { MdOutlineEdit } from 'react-icons/md';
 import instance, { baseUrl } from '@/services/api';
+import { useAuthStore, useThemeStore } from '../store/store';
 
 const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
   const routerLocation = useLocation();
@@ -42,8 +42,8 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [boxes, setBoxes] = useState<BoxType[]>();
-  const { theme } = useTheme();
-  const { user } = useAuth();
+  const { themeName } = useThemeStore();
+  const { user } = useAuthStore();
   const [openedCreate, { open: openCreate, close: closeCreate }] = useDisclosure(false);
   const [openedEdit, { open: openEdit, close: closeEdit }] = useDisclosure(false);
   const [openedDelete, { open: openDelete, close: closeDelete }] = useDisclosure(false);
@@ -108,8 +108,8 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
             borderBottomLeftRadius: 40,
             borderBottomRightRadius: 40,
           }}
-          bg={theme === 'dark' ? 'myPurple.4' : 'transparent'}
-          bd={theme === 'dark' ? null : '1px solid myPurple.0'}
+          bg={themeName === 'dark' ? 'myPurple.4' : 'transparent'}
+          bd={themeName === 'dark' ? null : '1px solid myPurple.0'}
           px="1vw"
           mb="lg"
           h="86vh"
@@ -138,7 +138,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
                   w="20vw"
                   size="lg"
                   placeholder="Busca un objeto"
-                  bd={theme === 'dark' ? null : '1px solid myPurple.0'}
+                  bd={themeName === 'dark' ? null : '1px solid myPurple.0'}
                   style={{ borderRadius: '5px' }}
                   rightSection={<IconSearch />}
                 />
@@ -164,8 +164,8 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
                         borderRadius: 20,
                       }}
                       p="lg"
-                      bg={theme === 'dark' ? 'myPurple.8' : 'myPurple.8'}
-                      bd={theme === 'dark' ? 'none' : '1px solid myPurple.0'}
+                      bg={themeName === 'dark' ? 'myPurple.8' : 'myPurple.8'}
+                      bd={themeName === 'dark' ? 'none' : '1px solid myPurple.0'}
                       onClick={() => (user?.role === 'TEACHER' ? onBoxClick(box) : null)}
                     >
                       <Flex w="100%" align="center" justify="space-between">
@@ -200,7 +200,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
                             {' '}
                             <path
                               d="M8.75 7.75H15.25M8.75 10.75H15.25M15 14V16M6 20V21M18 20V21M6 20H18C19.1046 20 20 19.1046 20 18V6C20 4.89543 19.1046 4 18 4H6C4.89543 4 4 4.89543 4 6V18C4 19.1046 4.89543 20 6 20Z"
-                              stroke={theme === 'dark' ? '#f8f7fc' : 'myPurple.0'}
+                              stroke={themeName === 'dark' ? '#f8f7fc' : 'myPurple.0'}
                               stroke-width="2"
                               stroke-linecap="round"
                               stroke-linejoin="round"

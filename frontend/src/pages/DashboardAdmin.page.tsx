@@ -5,13 +5,14 @@ import Boxes from '@/components/Boxes/Boxes';
 import Lockers from '@/components/Lockers/Lockers';
 import Objects from '@/components/Objects/Objects';
 import { SideMenu } from '@/components/SideMenu/SideMenu';
+import { useAuthStore } from '@/components/store/store';
 import UserBar from '@/components/UserBar/UserBar';
 import UsersBox from '@/components/UsersBox/UsersBox';
 import { useAuth } from '@/hooks/AuthProvider';
 import { BoxType, Locker } from '@/types/types';
 
 const DashboardAdmin: React.FC = () => {
-  const { user } = useAuth();
+  const { user } = useAuthStore();
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [selectedLocker, setSelectedLocker] = useState<Locker | null>(null);
   const [selectedBox, setSelectedBox] = useState<BoxType | null>(null);

@@ -17,6 +17,10 @@ module.exports = (sequelize) => {
             allowNull: false,
         },
         description: DataTypes.STRING,
+        isReserved: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+        },
     });
     return Item;
 }

@@ -7,6 +7,7 @@ import { useMediaQuery } from '@mantine/hooks';
 import { useAuth } from '@/hooks/AuthProvider';
 import instance from '@/services/api';
 import { Booking } from '@/types/types';
+import { useThemeStore } from '../store/store';
 
 function sortBookings(bookings: Booking[]): Booking[] {
   const now = Date.now();
@@ -34,7 +35,7 @@ function formatTime(timeString: string): string {
 
 export function NotificationsBox() {
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const { theme } = useAuth();
+  const { themeName } = useThemeStore();
 
   const matches = useMediaQuery('(min-width: 85em)');
   const matches2 = useMediaQuery('(max-width: 93em)');

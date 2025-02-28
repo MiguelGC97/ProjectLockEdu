@@ -1,6 +1,6 @@
 // Home.page.tsx
 import { useState } from 'react';
-import { Flex, useMantineTheme } from '@mantine/core';
+import { Flex, MantineProvider, useMantineTheme } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Banner } from '@/components/Banner/Banner';
 import BookingForm from '@/components/BookingForm/BookingForm';
@@ -11,13 +11,13 @@ import { NotificationsBox } from '@/components/NotificationsBox/NotificationsBox
 import Objects from '@/components/Objects/Objects';
 import Pending from '@/components/Pending/Pending';
 import { SideMenu } from '@/components/SideMenu/SideMenu';
+import { useAuthStore, useThemeStore } from '@/components/store/store';
 import UserBar from '@/components/UserBar/UserBar';
-import { useAuth } from '@/hooks/AuthProvider';
 import { fetchBookingsByUserIdAndState } from '@/services/fetch';
 import { Booking, BoxType, Locker } from '@/types/types';
 
 const Home: React.FC = () => {
-  const { theme } = useAuth();
+  const { theme, themeName } = useThemeStore();
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [selectedLocker, setSelectedLocker] = useState<Locker | null>(null);
   const [selectedBox, setSelectedBox] = useState<BoxType | null>(null);
@@ -64,7 +64,7 @@ const Home: React.FC = () => {
       {isMobile ? (
         <BottomTabs />
       ) : (
-        <>
+        <MantineProvider theme={theme}>
           {' '}
           <SideMenu />
           <Flex pl="1.5%" w="100%" style={{ backgroundColor: 'var(--mantine-color-myPurple-9)' }}>
@@ -106,7 +106,7 @@ const Home: React.FC = () => {
               </Flex>
             </Flex>
           </Flex>
-        </>
+        </MantineProvider>
       )}
     </>
   );

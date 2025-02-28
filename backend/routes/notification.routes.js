@@ -16,14 +16,14 @@ module.exports = (app) => {
   router.get(
     "/",
     authForReact.isAuthenticated,
-    permissions.authorize(["ADMIN"]),
+    permissions.authorize(["ADMIN", "TEACHER"]),
     notifications.getAll
   );
 
   router.get(
     "/:id",
     authForReact.isAuthenticated,
-    permissions.authorize(["ADMIN"]),
+    permissions.authorize(["ADMIN", "TEACHER"]),
     notifications.getOne
   );
 

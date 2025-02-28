@@ -1,8 +1,8 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import { Flex, useMantineTheme } from '@mantine/core';
+import { Flex, MantineProvider, MantineThemeProvider, useMantineTheme } from '@mantine/core';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
+import { useAuthStore, useThemeStore } from './components/store/store';
 import ToastContainerComponent from './components/ToastContainerComponent/ToastContainerComponent';
-import { AuthProvider, useAuth } from './hooks/AuthProvider'; // Import useAuth hook to check loading
 import { ThemeProvider } from './hooks/ThemeProvider';
 import BookingHistory from './pages/BookingsHistory.page';
 import DashboardAdmin from './pages/DashboardAdmin.page';
@@ -16,27 +16,27 @@ import SettingsManager from './pages/SettingsManager.page';
 
 // ✅ Import BrowserRouter correctly
 export default function App() {
+  const { theme, themeName } = useThemeStore();
+
   return (
-    <ThemeProvider>
+    <MantineProvider theme={theme}>
       <Router>
-        <AuthProvider>
-          <ThemeWrapper />
-        </AuthProvider>
+        <ThemeWrapper />
       </Router>
-    </ThemeProvider>
+    </MantineProvider>
   );
 }
 
 const ThemeWrapper = () => {
-  const theme = useMantineTheme();
-  const { loading } = useAuth();
+  const { theme, themeName } = useThemeStore();
+  const { loading } = useAuthStore();
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <Flex maw="100vw" mah="100vh" style={{ backgroundColor: theme.colors.myPurple[9] }}>
+    <Flex maw="100vw" mah="100vh" style={{ backgroundColor: 'var(--mantine-color-myPurple-9)' }}>
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Login />} />

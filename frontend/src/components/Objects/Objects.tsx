@@ -20,7 +20,6 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { useAuth } from '@/hooks/AuthProvider';
 import { imageBaseUrl } from '@/services/api';
 import { createItem, deleteItem, fetchItems, fetchObjectTypes, updateItem } from '@/services/fetch';
 import { Item, ObjectsProps } from '@/types/types';
@@ -28,6 +27,7 @@ import { Item, ObjectsProps } from '@/types/types';
 import './Objects.module.css';
 
 import { useTheme } from '@/hooks/ThemeProvider';
+import { useAuthStore, useThemeStore } from '../store/store';
 import { ObjectsContext } from './context';
 
 const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => {
@@ -36,7 +36,7 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [value, setValue] = useState<string[]>([]);
-  const { theme } = useTheme();
+  const { themeName } = useThemeStore();
   const [opened, { open, close }] = useDisclosure(false);
   const [openedCreate, { open: openCreate, close: closeCreate }] = useDisclosure(false);
   const [openedEdit, { open: openEdit, close: closeEdit }] = useDisclosure(false);
@@ -44,7 +44,7 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [objectToDelete, setObjectToDelete] = useState<any | null>(null);
   const [objectToEdit, setObjectToEdit] = useState<any | null>(null);
-  const { user } = useAuth();
+  const { user } = useAuthStore();
 
   const src = imageBaseUrl + box?.filename;
 
@@ -315,8 +315,8 @@ const Objects: React.FC<ObjectsProps> = ({ box, onReturn, onCreateBooking }) => 
             borderBottomLeftRadius: 40,
             borderBottomRightRadius: 40,
           }}
-          bg={theme === 'dark' ? 'myPurple.4' : 'transparent'}
-          bd={theme === 'dark' ? null : '1px solid myPurple.0'}
+          bg={themeName === 'dark' ? 'myPurple.4' : 'transparent'}
+          bd={themeName === 'dark' ? null : '1px solid myPurple.0'}
           p="3%"
           mb="lg"
           h="86vh"
