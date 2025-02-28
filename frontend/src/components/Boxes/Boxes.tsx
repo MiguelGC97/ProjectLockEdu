@@ -6,14 +6,12 @@ import {
   IconSearch,
   IconTrash,
 } from '@tabler/icons-react';
-import { useLocation } from 'react-router-dom';
 import {
   Box,
   Button,
   Center,
   FileInput,
   Flex,
-  Image,
   Input,
   Modal,
   ScrollArea,
@@ -23,27 +21,24 @@ import {
   TextInput,
   Title,
   Tooltip,
-  useMantineTheme,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { useTheme } from '@/hooks/ThemeProvider';
-import { createBox, deleteBox, fetchBoxes, updateBox, uploadBoxImage } from '@/services/fetch';
-import { BoxEditType, BoxesProps, BoxType } from '@/types/types';
+import { uploadBoxImage } from '@/services/fetch';
+import { BoxEditType, BoxesProps } from '@/types/types';
 
 import './Boxes.module.css';
 
 import { MdOutlineEdit } from 'react-icons/md';
 import instance, { baseUrl } from '@/services/api';
-import { useAuthStore, useThemeStore } from '../store/store';
+import { useAuthStore, useBoxesStore, useLockersStore, useThemeStore } from '../store/store';
 
-const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
-  const routerLocation = useLocation();
-  const { boxId, selectedValues } = routerLocation.state || {};
+const Boxes: React.FC<BoxesProps> = ({ onBoxClick }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [boxes, setBoxes] = useState<BoxType[]>();
   const { themeName } = useThemeStore();
   const { user } = useAuthStore();
+  const { boxes, fetchAll, fetchBoxesByLockerId, create, update, deleteBox } = useBoxesStore();
+  const { selectedLocker, setSelectedLocker } = useLockersStore();
   const [openedCreate, { open: openCreate, close: closeCreate }] = useDisclosure(false);
   const [openedEdit, { open: openEdit, close: closeEdit }] = useDisclosure(false);
   const [openedDelete, { open: openDelete, close: closeDelete }] = useDisclosure(false);
@@ -55,19 +50,16 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
   const [newImage, setNewImage] = useState(null);
 
   const [newBox, setNewBox] = useState<any>({
-    lockerId: locker?.id,
+    lockerId: selectedLocker?.id,
     description: '',
     filename: 'no-image',
   });
 
   useEffect(() => {
-    if (!locker) return;
+    if (!selectedLocker) return;
 
-    setNewBox((prev) => ({
-      ...prev,
-      lockerId: locker?.id || prev.lockerId,
-    }));
-  }, [locker]);
+    fetchBoxesByLockerId(selectedLocker.id);
+  }, [selectedLocker]);
 
   useEffect(() => {
     if (boxToEdit) {
@@ -77,28 +69,6 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
       }));
     }
   }, [boxToEdit]);
-
-  useEffect(() => {
-    if (!locker) {
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    const loadBoxes = async () => {
-      try {
-        const data = await fetchBoxes();
-        setBoxes(data?.filter((b) => b.lockerId === locker.id));
-      } catch (error) {
-        setError('Error fetching boxes');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadBoxes();
-  }, [locker]);
 
   const wholeComponent = () => {
     return (
@@ -122,12 +92,14 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
                   aria-label="volver a armarios"
                   color="var(--mantine-color-myPurple-0)"
                   size="30px"
-                  onClick={onReturn}
+                  onClick={() => {
+                    setSelectedLocker(null);
+                  }}
                 />
               </a>
 
               <Title fw="600" c="myPurple.0">
-                Casillas - Armario {locker?.number}
+                Casillas - Armario {selectedLocker?.number}
               </Title>
             </Flex>
 
@@ -228,7 +200,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
                         ) : null}
                         {user?.role === 'ADMIN' ? (
                           <Button
-                            aria-label={`ver casillas del armario número ${locker.number}`}
+                            aria-label={`ver casillas del armario número ${selectedLocker.number}`}
                             onClick={() => onBoxClick(box)}
                             size="md"
                             maw="8vw"
@@ -261,7 +233,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
           {user?.role === 'ADMIN' ? (
             <Flex h="4%" gap={10} mr="25px" justify="flex-end" align="center">
               <Text c="myPurple.0" size="xl" fw={700}>
-                Añadir nueva casilla al armario {locker?.number}
+                Añadir nueva casilla al armario {selectedLocker?.number}
               </Text>
 
               <IconCirclePlus
@@ -308,37 +280,17 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
     try {
       const filepath = await uploadBoxImage(file);
 
-      const response = await createBox(box, currentLockerId, filepath);
+      await create(box, currentLockerId, filepath);
 
-      if (response) {
-        setBoxes((prev) => (prev ? [...prev, response.box] : [response.box]));
-        closeCreate();
-        setNewBox({
-          lockerId: locker?.id,
-          description: '',
-          filename: 'no-image',
-        });
-        setErrorMessage(null);
-      }
+      closeCreate();
+      setNewBox({
+        lockerId: selectedLocker?.id,
+        description: '',
+        filename: 'no-image',
+      });
+      setErrorMessage(null);
     } catch (error: any) {
       console.error('Error creating box:', error.message);
-    }
-  };
-
-  const handleDeleteBoxDeprecated = async (boxId: number) => {
-    try {
-      const response = await deleteBox(boxId);
-      if (response) {
-        setBoxes((prev) => prev?.filter((box) => box.id !== boxId));
-        closeDelete();
-        setErrorMessage(null);
-      }
-    } catch (error: any) {
-      if (error.response && error.response.status === 404) {
-        setErrorMessage(error.response.data.message);
-      } else {
-        setErrorMessage('Ocurrió un error al eliminar la casilla.');
-      }
     }
   };
 
@@ -356,12 +308,10 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
         }
       }
 
-      const response = await deleteBox(receivedBox.id);
-      if (response) {
-        setBoxes((prev) => prev?.filter((b) => b.id !== receivedBox.id));
-        closeDelete();
-        setErrorMessage(null);
-      }
+      await deleteBox(receivedBox.id);
+
+      closeDelete();
+      setErrorMessage(null);
     } catch (error: any) {
       if (error.response && error.response.status === 404) {
         setErrorMessage(error.response.data.message);
@@ -396,15 +346,10 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
 
       const updatedBox = { ...boxToEdit, filename: newFilename };
 
-      const responseUpdate = await updateBox(updatedBox);
+      await update(updatedBox);
 
-      if (responseUpdate) {
-        setBoxes((prevBoxes) =>
-          prevBoxes?.map((box) => (box.id === boxToEdit.id ? { ...box, ...updatedBox } : box))
-        );
-        closeEdit();
-        setNewImage(null);
-      }
+      closeEdit();
+      setNewImage(null);
     } catch (error: any) {
       console.error('Update failed:', error.response?.data);
       setErrorMessage(
@@ -448,7 +393,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
           <Button
             size="md"
             onClick={() => {
-              handleCreateBox(newBox, locker?.id, file);
+              handleCreateBox(newBox, selectedLocker?.id, file);
             }}
             color="myPurple.4"
             fullWidth
@@ -463,7 +408,7 @@ const Boxes: React.FC<BoxesProps> = ({ locker, onBoxClick, onReturn }) => {
           <>
             <Text size="md">
               ¿Estás seguro de que deseas eliminar la casilla <strong>C{boxToDelete?.id}</strong>{' '}
-              del armario <strong>{locker?.number}</strong>? Todos sus objetos se eliminarán
+              del armario <strong>{selectedLocker?.number}</strong>? Todos sus objetos se eliminarán
               también.
             </Text>
 

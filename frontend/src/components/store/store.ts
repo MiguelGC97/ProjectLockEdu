@@ -33,14 +33,13 @@ import { Booking, BoxType, Item, Locker, UserType } from '@/types/types';
 // interfaces
 
 interface AuthState {
-  user: UserType | null;
+  user: any | null;
   loading: boolean;
   login: (username: string, password: string, navigate: (path: string) => void) => Promise<void>;
   logout: (navigate: (path: string) => void) => void;
-  // fetchUserPreferences: (userId: number) => Promise<void>;
   validateSession: () => Promise<void>;
-  updateLoggedUserDetails: (userToEdit: UserType) => Promise<void>;
-  updateLoggedUserAvatar: (userToEdit: UserType, avatar: string) => Promise<void>;
+  updateLoggedUserDetails: (userToEdit: any) => Promise<void>;
+  updateLoggedUserAvatar: (userToEdit: any, avatar: string) => Promise<void>;
 }
 
 type ThemeState = {
@@ -64,7 +63,7 @@ interface BoxesState {
   selectedBox: BoxType | null;
   fetchAll: () => void;
   fetchBoxesByLockerId: (lockerId: number) => void;
-  create: (box: BoxType, currentLockerId: number, filepath: string) => Promise<void>;
+  create: (box: BoxType, currentLockerId: number, filepath: string | undefined) => Promise<void>;
   update: (box: BoxType) => Promise<void>;
   deleteBox: (id: number) => Promise<void>;
   setSelectedBox: (box: BoxType | null) => void;
@@ -99,16 +98,15 @@ interface UsersState {
   setSelectedUser: (user: UserType | null) => void;
 }
 
-// Stores
+// stores
 
 export const useAuthStore = create<AuthState>()(
   devtools(
     persist(
-      (set) => ({
-        user: null,
+      (set, get) => ({
+        user: JSON.parse(sessionStorage.getItem('user') || 'null'),
         loading: true,
 
-        // Login
         login: async (username, password, navigate) => {
           try {
             const response = await authService(username, password);
@@ -116,7 +114,6 @@ export const useAuthStore = create<AuthState>()(
 
             sessionStorage.setItem('user', JSON.stringify(user));
             set({ user, loading: false });
-            // await get().fetchUserPreferences(user.id);
 
             if (user.role === 'ADMIN') {
               navigate('/panel-admin');
@@ -131,7 +128,6 @@ export const useAuthStore = create<AuthState>()(
           }
         },
 
-        // Logout
         logout: (navigate) => {
           Cookies.remove('connect.sid');
           sessionStorage.removeItem('user');
@@ -139,29 +135,12 @@ export const useAuthStore = create<AuthState>()(
           navigate('/');
         },
 
-        // // Fetch user preferences
-        // fetchUserPreferences: async (userId) => {
-        //   try {
-        //     const res = await instance.get(`${baseUrl}/users/settings/${userId}`, {
-        //       withCredentials: true,
-        //     });
-        //     set({
-        //       theme: res.data.settings.theme,
-        //       banner: res.data.settings.banner,
-        //       notification: res.data.settings.notifications,
-        //     });
-        //   } catch (error) {
-        //     console.error('Error fetching user preferences:', error);
-        //   }
-        // },
-
-        // Update logged user details
         updateLoggedUserDetails: async (userToEdit) => {
           try {
             const response = await updateUser(userToEdit);
-            if (response?.loggedUser) {
+            if (response) {
               sessionStorage.setItem('user', JSON.stringify(response.loggedUser));
-              set({ user: response.loggedUser });
+              set(() => ({ user: response.loggedUser }));
             }
             return response;
           } catch (error: any) {
@@ -169,13 +148,12 @@ export const useAuthStore = create<AuthState>()(
           }
         },
 
-        // Update logged user avatar
         updateLoggedUserAvatar: async (userToEdit, avatar) => {
           try {
             const response = await updateAvatar(userToEdit, avatar);
             if (response?.loggedUser) {
               sessionStorage.setItem('user', JSON.stringify(response.loggedUser));
-              set({ user: response.loggedUser });
+              set((state) => ({ user: { ...state.user, avatar: response.loggedUser.avatar } }));
             }
             return response;
           } catch (error: any) {
@@ -183,7 +161,6 @@ export const useAuthStore = create<AuthState>()(
           }
         },
 
-        // Validate session
         validateSession: async () => {
           const sessionSid = Cookies.get('connect.sid');
           const savedUser = sessionStorage.getItem('user');
@@ -203,7 +180,6 @@ export const useAuthStore = create<AuthState>()(
             const userData = res.data.user;
             sessionStorage.setItem('user', JSON.stringify(userData));
             set({ user: userData, loading: false });
-            // await get().fetchUserPreferences(userData.id);
           } catch (error: any) {
             console.error('Session validation failed:', error.response || error);
             Cookies.remove('connect.sid');
@@ -254,16 +230,20 @@ export const useLockersStore = create<LockersState>()(
           try {
             const lockers = await fetchLockers();
             set({ lockers });
-          } catch (error) {
-            console.error('Failed to fetch lockers:', error);
+          } catch (error: any) {
+            console.error('Error al obtener los lockers:', error);
+            throw new Error(
+              error.response?.data?.message || 'No se pudieron obtener los armarios.'
+            );
           }
         },
         create: async (locker) => {
           try {
             const newLocker = await createLocker(locker);
             set((state) => ({ lockers: [...state.lockers, newLocker] }));
-          } catch (error) {
-            console.error('Failed to create locker:', error);
+          } catch (error: any) {
+            console.error('Error al crear el locker:', error);
+            throw new Error(error.response?.data?.message || 'No se pudo crear el armario.');
           }
         },
         update: async (locker) => {
@@ -272,16 +252,18 @@ export const useLockersStore = create<LockersState>()(
             set((state) => ({
               lockers: state.lockers.map((l) => (l.id === locker.id ? locker : l)),
             }));
-          } catch (error) {
-            console.error('Failed to update locker:', error);
+          } catch (error: any) {
+            console.error('Error al actualizar el locker:', error);
+            throw new Error(error.response?.data?.message || 'No se pudo actualizar el armario.');
           }
         },
         deleteLocker: async (id) => {
           try {
             await deleteLocker(id);
             set((state) => ({ lockers: state.lockers.filter((l) => l.id !== id) }));
-          } catch (error) {
-            console.error('Failed to delete locker:', error);
+          } catch (error: any) {
+            console.error('Error al eliminar el locker:', error);
+            throw new Error(error.response?.data?.message || 'No se pudo eliminar el armario.');
           }
         },
         setSelectedLocker: (locker) => set({ selectedLocker: locker ?? null }),
@@ -304,24 +286,32 @@ export const useBoxesStore = create<BoxesState>()(
           try {
             const boxes = await fetchBoxes();
             set({ boxes });
-          } catch (error) {
-            console.error('Failed to fetch boxes:', error);
+          } catch (error: any) {
+            console.error('Error al obtener las cajas:', error);
+            throw new Error(
+              error.response?.data?.message || 'No se pudieron obtener las casillas.'
+            );
           }
         },
         fetchBoxesByLockerId: async (lockerId) => {
           try {
             const boxes = await fetchBoxesByLocker(lockerId);
             set({ boxes });
-          } catch (error) {
-            console.error('Failed to fetch boxes by locker id:', error);
+          } catch (error: any) {
+            console.error('Error al obtener cajas por ID de locker:', error);
+            throw new Error(
+              error.response?.data?.message ||
+                'No se pudieron obtener las casillas de este armario.'
+            );
           }
         },
         create: async (box, currentLockerId, filepath) => {
           try {
             await createBox(box, currentLockerId, filepath);
             set((state) => ({ boxes: [...state.boxes, box] }));
-          } catch (error) {
-            console.error('Failed to create box:', error);
+          } catch (error: any) {
+            console.error('Error al crear la caja:', error);
+            throw new Error(error.response?.data?.message || 'No se pudo crear la casilla.');
           }
         },
         update: async (box) => {
@@ -330,16 +320,18 @@ export const useBoxesStore = create<BoxesState>()(
             set((state) => ({
               boxes: state.boxes.map((b) => (b.id === box.id ? box : b)),
             }));
-          } catch (error) {
-            console.error('Failed to update box:', error);
+          } catch (error: any) {
+            console.error('Error al actualizar la caja:', error);
+            throw new Error(error.response?.data?.message || 'No se pudo actualizar la casilla.');
           }
         },
         deleteBox: async (id) => {
           try {
             await deleteBox(id);
             set((state) => ({ boxes: state.boxes.filter((b) => b.id !== id) }));
-          } catch (error) {
-            console.error('Failed to delete box:', error);
+          } catch (error: any) {
+            console.error('Error al eliminar la caja:', error);
+            throw new Error(error.response?.data?.message || 'No se pudo eliminar la casilla.');
           }
         },
         setSelectedBox: (box) => set({ selectedBox: box ?? null }),
@@ -362,16 +354,20 @@ export const useItemsStore = create<ItemsState>()(
           try {
             const items = await fetchItems();
             set({ items });
-          } catch (error) {
-            console.error('Failed to fetch items:', error);
+          } catch (error: any) {
+            console.error('Error al obtener los artículos:', error);
+            throw new Error(
+              error.response?.data?.message || 'No se pudieron obtener los artículos.'
+            );
           }
         },
         create: async (item) => {
           try {
             await createItem(item);
             set((state) => ({ items: [...state.items, item] }));
-          } catch (error) {
-            console.error('Failed to create item:', error);
+          } catch (error: any) {
+            console.error('Error al crear el artículo:', error);
+            throw new Error(error.response?.data?.message || 'No se pudo crear el artículo.');
           }
         },
         update: async (item) => {
@@ -380,16 +376,18 @@ export const useItemsStore = create<ItemsState>()(
             set((state) => ({
               items: state.items.map((i) => (i.id === item.id ? item : i)),
             }));
-          } catch (error) {
-            console.error('Failed to update item:', error);
+          } catch (error: any) {
+            console.error('Error al actualizar el artículo:', error);
+            throw new Error(error.response?.data?.message || 'No se pudo actualizar el artículo.');
           }
         },
         deleteItem: async (id) => {
           try {
             await deleteItem(id);
             set((state) => ({ items: state.items.filter((i) => i.id !== id) }));
-          } catch (error) {
-            console.error('Failed to delete item:', error);
+          } catch (error: any) {
+            console.error('Error al eliminar el artículo:', error);
+            throw new Error(error.response?.data?.message || 'No se pudo eliminar el artículo.');
           }
         },
         setSelectedItems: (items) => set({ selectedItems: items }),
@@ -411,37 +409,44 @@ export const useBookingsStore = create<BookingsState>()(
           try {
             const bookings = await fetchBookingsByUserId(userId);
             set({ bookings });
-          } catch (error) {
-            console.error('Failed to fetch bookings by user id:', error);
+          } catch (error: any) {
+            console.error('Error al obtener reservas por usuario:', error);
+            throw new Error(
+              error.response?.data?.message || 'No se pudieron obtener las reservas del usuario.'
+            );
           }
         },
         create: async (booking) => {
           try {
             const newBooking = await createBooking(booking);
             set((state) => ({ bookings: [...state.bookings, newBooking] }));
-          } catch (error) {
-            console.error('Failed to create booking:', error);
+          } catch (error: any) {
+            console.error('Error al crear la reserva:', error);
+            throw new Error(error.response?.data?.message || 'No se pudo crear la reserva.');
           }
         },
         deleteBooking: async (id) => {
           try {
             await deleteBookingById(id);
             set((state) => ({ bookings: state.bookings.filter((b) => b.id !== id) }));
-          } catch (error) {
-            console.error('Failed to delete booking:', error);
+          } catch (error: any) {
+            console.error('Error al eliminar la reserva:', error);
+            throw new Error(error.response?.data?.message || 'No se pudo eliminar la reserva.');
           }
         },
         updateBookingState: async (id, bookingState) => {
           try {
             await updateBookingState(id, bookingState);
-
             set((state) => ({
               bookings: state.bookings.map((b) =>
                 b.id === id ? { ...b, state: bookingState } : b
               ),
             }));
-          } catch (error) {
-            console.error('Failed to update booking state:', error);
+          } catch (error: any) {
+            console.error('Error al actualizar el estado de la reserva:', error);
+            throw new Error(
+              error.response?.data?.message || 'No se pudo actualizar el estado de la reserva.'
+            );
           }
         },
       }),
@@ -459,23 +464,27 @@ export const useUsersStore = create<UsersState>()(
       (set) => ({
         users: [],
         selectedUser: null,
+
         fetchAll: async () => {
           try {
             const users = await fetchAllUsers();
             set({ users });
-          } catch (error) {
+          } catch (error: any) {
             console.error('Failed to fetch users:', error);
             throw error;
           }
         },
+
         create: async (user, filepath) => {
           try {
             const newUser = await createUser(user, filepath);
             set((state) => ({ users: [...state.users, newUser] }));
-          } catch (error) {
+          } catch (error: any) {
             console.error('Failed to create user:', error);
+            throw error;
           }
         },
+
         updateUserDetails: async (userToEdit) => {
           try {
             const updatedUser = await updateUser(userToEdit);
@@ -484,10 +493,12 @@ export const useUsersStore = create<UsersState>()(
                 users: state.users.map((u) => (u.id === updatedUser.id ? updatedUser : u)),
               }));
             }
-          } catch (error) {
+          } catch (error: any) {
             console.error('Failed to update user details:', error);
+            throw error;
           }
         },
+
         updateUserAvatar: async (userToEdit, avatar) => {
           try {
             const response = await updateAvatar(userToEdit, avatar);
@@ -498,17 +509,21 @@ export const useUsersStore = create<UsersState>()(
             }
             return response;
           } catch (error: any) {
-            throw new Error(error.response?.data?.message || 'Error updating user avatar.');
+            console.error('Failed to update user avatar:', error);
+            throw error;
           }
         },
+
         deleteUser: async (id) => {
           try {
             await deleteUser(id);
             set((state) => ({ users: state.users.filter((u) => u.id !== id) }));
-          } catch (error) {
+          } catch (error: any) {
             console.error('Failed to delete user:', error);
+            throw error;
           }
         },
+
         setSelectedUser: (user) => set({ selectedUser: user }),
       }),
       {

@@ -26,7 +26,7 @@ import { useDisclosure } from '@mantine/hooks';
 import instance, { baseUrl, imageBaseUrl } from '@/services/api';
 import { uploadAvatar } from '@/services/fetch';
 import { UserType } from '@/types/types';
-import { useAuthStore, useUsersStore } from '../store/store';
+import { useAuthStore, useLockersStore, useUsersStore } from '../store/store';
 import classes from './UsersBox.module.css';
 
 const UsersBox: React.FC = () => {
@@ -35,7 +35,7 @@ const UsersBox: React.FC = () => {
   const [openedDelete, { open: openDelete, close: closeDelete }] = useDisclosure(false);
   const { users, create, deleteUser, fetchAll, updateUserDetails, updateUserAvatar } =
     useUsersStore();
-  const { user } = useAuthStore();
+  const { user, updateLoggedUserAvatar, updateLoggedUserDetails } = useAuthStore();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [userToDelete, setUserToDelete] = useState<any | null>(null);
@@ -86,29 +86,25 @@ const UsersBox: React.FC = () => {
   const handleCreateUser = async (image: any) => {
     try {
       const avatarPath = await uploadAvatar(image);
+      await create(newUser, avatarPath);
 
-      const response = await create(newUser, avatarPath);
-
-      if (response) {
-        // setUsers((prev) => (prev ? [...prev, response.user] : [response.user]));
-        closeCreate();
-
-        setNewUser({
-          name: '',
-          surname: '',
-          username: '',
-          password: '',
-          avatar: 'no-image',
-          role: '',
-        });
-        setErrorMessage(null);
-      }
+      closeCreate();
+      setNewUser({
+        name: '',
+        surname: '',
+        username: '',
+        password: '',
+        avatar: 'no-image',
+        role: '',
+      });
+      setErrorMessage(null);
     } catch (error: any) {
-      if (error.response && error.response.status === 400) {
-        setErrorMessage(error.response.data.message);
+      if (error instanceof Error && error.message) {
+        setErrorMessage(error.message || 'Ocurrió un error inesperado');
+      } else if (error.response && error.response.data) {
+        setErrorMessage(error.response.data.message || 'Ocurrió un error inesperado');
       } else {
-        console.error('Error creating user:', error);
-        setErrorMessage('Ocurrió un error al crear el usuario');
+        setErrorMessage('Ocurrió un error inesperado');
       }
     }
   };
@@ -144,13 +140,14 @@ const UsersBox: React.FC = () => {
       if (!userToEdit) {
         return;
       }
-      const response = await updateUserDetails(userToEdit);
-      // if (response) {
-      //   setUsers((prevUsers) =>
-      //     prevUsers?.map((usr) => (usr.id === userToEdit.id ? { ...usr, ...userToEdit } : usr))
-      //   );
-      //   closeEdit();
-      // }
+
+      if (userToEdit?.role === 'TEACHER' || userToEdit?.role === 'MANAGER') {
+        await updateUserDetails(userToEdit);
+      } else {
+        await updateLoggedUserDetails(userToEdit);
+      }
+
+      closeEdit();
     } catch (error: any) {
       setErrorMessage(
         error.response?.status === 404
@@ -186,35 +183,15 @@ const UsersBox: React.FC = () => {
         newFilename = await uploadAvatar(image);
       }
 
-      let responseUpdate = null;
+      // let responseUpdate = null;
 
       if (userToEdit?.role === 'TEACHER' || userToEdit?.role === 'MANAGER') {
-        responseUpdate = await updateAvatar(userToEdit, newFilename);
+        await updateUserAvatar(userToEdit, newFilename);
       } else {
-        responseUpdate = await updateUserAvatar(userToEdit, newFilename);
+        await updateLoggedUserAvatar(userToEdit, newFilename);
       }
 
-      if (responseUpdate?.updatedUserClean && responseUpdate?.updatedUserClean.avatar) {
-        closeEdit();
-
-        setSuccessMessage('¡Avatar actualizado con éxito!');
-
-        setTimeout(() => {
-          setSuccessMessage(null);
-        }, 1500);
-
-        // setUsers((prevUsers) =>
-        //   prevUsers?.map((usr) =>
-        //     usr.id === userToEdit.id
-        //       ? { ...usr, avatar: responseUpdate.updatedUserClean.avatar }
-        //       : usr
-        //   )
-        // );
-
-        setUserToEdit(
-          (prev) => prev && { ...prev, avatar: responseUpdate.updatedUserClean.avatar }
-        );
-      }
+      closeEdit();
     } catch (error: any) {
       setErrorMessage(
         error.response?.status === 404

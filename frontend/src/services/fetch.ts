@@ -236,22 +236,6 @@ export async function deleteBookingById(bookingId: number): Promise<void> {
   }
 }
 
-export async function updatePasswordDeprecated(user: UserType, password: string): Promise<string> {
-  try {
-    const userId = user?.id;
-    const response = await instance.put(`${baseUrl}/users/${userId}`, { password });
-    if (response.status >= 200 && response.status < 300) {
-      return response.data.data;
-    } else {
-      console.error('Error updating user password:', response.data.data);
-      throw new Error('Error updating user password');
-    }
-  } catch (error) {
-    console.error('Error user password:', error);
-    throw error;
-  }
-}
-
 export async function updatePassword(
   user: any,
   oldPassword: string,

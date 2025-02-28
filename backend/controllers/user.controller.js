@@ -10,7 +10,12 @@ const { Op } = require("sequelize");
 exports.getAll = async (req, res) => {
   try {
     const users = await User.findAll();
-    res.status(200).json({ data: users });
+
+    let cleanedUsers = users.map((user) => {
+      return utils.getCleanUser(user);
+    });
+
+    res.status(200).json({ data: cleanedUsers });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -54,12 +59,12 @@ exports.addNewUser = async (req, res) => {
     const { name, surname, password, username, avatar, role } = req.body;
 
     if (!username || !password || !role) {
-      return res.status(400).send({ message: "Correo eletrónico, contraseña y rol son obligatorios!" });
+      return res.status(400).send({ message: "Correo electrónico, contraseña y rol son obligatorios!" });
     }
 
     const existingUser = await User.findOne({ where: { username } });
     if (existingUser) {
-      return res.status(409).send({ message: "Este usuario ya existe." });
+      return res.status(409).send({ message: "Este correo electrónico ya está en uso." });
     }
 
     const hashedPassword = bcrypt.hashSync(password, 10);
@@ -81,9 +86,11 @@ exports.addNewUser = async (req, res) => {
     });
 
   } catch (err) {
-    return res.status(500).send({ message: err.message || "Internal server error" });
+    return res.status(500).send({ message: err.message || "Ocurrió un error inesperado" });
   }
 };
+
+
 
 
 exports.delete = async (req, res) => {
@@ -93,54 +100,6 @@ exports.delete = async (req, res) => {
   return res.status(status).json({ message: message });
 };
 
-
-
-
-exports.updateDeprecated2 = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const { username, password } = req.body;
-
-    const user = await User.findByPk(id);
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado." });
-    }
-
-    if (username) {
-      const existingUser = await User.findOne({
-        where: { username, id: { [Op.ne]: id } },
-      });
-
-      if (existingUser) {
-        return res.status(409).json({ message: "Este correo ya existe." });
-      }
-    }
-
-    // Prepare data for update
-    const updateData = {};
-    if (username) updateData.username = username;
-    if (password) updateData.password = await bcrypt.hash(password, 10);
-
-    // Perform update
-    const [updated] = await User.update(updateData, { where: { id } });
-
-    if (updated) {
-      const userUpdated = await User.findByPk(id);
-      const loggedUser = req.session.user;
-
-      return res.status(200).json({
-        message: "¡Usuario actualizado con éxito!",
-        userUpdated,
-        loggedUser,
-      });
-    } else {
-      return res.status(400).json({ message: "No se realizó ningún cambio." });
-    }
-  } catch (error) {
-    console.error("Update error:", error);
-    return res.status(500).json({ error: "Un error ocurrió al editar usuario" });
-  }
-};
 
 
 

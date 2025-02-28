@@ -5,7 +5,7 @@ import Boxes from '@/components/Boxes/Boxes';
 import Lockers from '@/components/Lockers/Lockers';
 import Objects from '@/components/Objects/Objects';
 import { SideMenu } from '@/components/SideMenu/SideMenu';
-import { useAuthStore } from '@/components/store/store';
+import { useAuthStore, useBoxesStore, useLockersStore } from '@/components/store/store';
 import UserBar from '@/components/UserBar/UserBar';
 import UsersBox from '@/components/UsersBox/UsersBox';
 import { useAuth } from '@/hooks/AuthProvider';
@@ -14,20 +14,11 @@ import { BoxType, Locker } from '@/types/types';
 const DashboardAdmin: React.FC = () => {
   const { user } = useAuthStore();
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const [selectedLocker, setSelectedLocker] = useState<Locker | null>(null);
-  const [selectedBox, setSelectedBox] = useState<BoxType | null>(null);
-
-  const handleLockerClick = (locker: Locker) => {
-    setSelectedLocker(locker);
-  };
+  const { selectedLocker } = useLockersStore();
+  const { selectedBox } = useBoxesStore();
 
   const handleBoxClick = (box: BoxType) => {
     setSelectedBox(box);
-  };
-
-  const handleReturnToLockers = () => {
-    setSelectedLocker(null);
-    setSelectedBox(null);
   };
 
   const handleReturnToBoxes = () => {
@@ -54,15 +45,9 @@ const DashboardAdmin: React.FC = () => {
             <Flex h="100%" w="100%" gap={30} justify="flex-end" px="xl">
               <UsersBox />
               {/* Conditional rendering for the different states */}
-              {!selectedLocker && !selectedBox && <Lockers onLockerClick={handleLockerClick} />}
+              {!selectedLocker && !selectedBox && <Lockers />}
 
-              {selectedLocker && !selectedBox && (
-                <Boxes
-                  locker={selectedLocker}
-                  onBoxClick={handleBoxClick}
-                  onReturn={handleReturnToLockers}
-                />
-              )}
+              {selectedLocker && !selectedBox && <Boxes onBoxClick={handleBoxClick} />}
 
               {selectedBox && (
                 <Objects

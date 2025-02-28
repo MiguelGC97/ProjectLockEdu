@@ -3,20 +3,12 @@ const Locker = db.locker;
 const { Op } = require('sequelize');
 
 
-exports.addLockerDeprecated = async (req, res) => {
-  try {
-    const locker = await Locker.create(req.body);
-    res.status(201).json({ data: locker });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
 
 exports.addLocker = async (req, res) => {
   try {
     const { description, location, number } = req.body;
 
-    if (!description || !location) {
+    if (!number || !description || !location) {
       return res.status(400).send({ message: "Todos los campos son obligatorios!" });
     }
 
@@ -66,26 +58,6 @@ exports.getOne = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-exports.updateDeprecated = async (req, res) => {
-  try {
-    const id = req.params.id;
-
-    const [updated] = await Locker.update(req.body, { where: { id } });
-
-    if (updated) {
-      res.status(200).json({
-        message: "¡Armario actualizado con éxito!",
-        data: req.body,
-      });
-    } else {
-      res.status(404).json({ message: "Armario no encontrado." });
-    }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
 
 
 

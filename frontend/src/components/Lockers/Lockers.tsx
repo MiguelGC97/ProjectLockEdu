@@ -8,7 +8,6 @@ import {
   Modal,
   NumberInput,
   ScrollArea,
-  Select,
   Stack,
   Text,
   TextInput,
@@ -21,16 +20,14 @@ import './Lockers.module.css';
 import { useEffect, useState } from 'react';
 import { MdOutlineEdit } from 'react-icons/md';
 import { useDisclosure } from '@mantine/hooks';
-import { useTheme } from '@/hooks/ThemeProvider';
-import { createLocker, deleteLocker, fetchLockers, updateLocker } from '@/services/fetch';
 import { Locker, LockersProps } from '@/types/types';
-import { useAuthStore, useThemeStore } from '../store/store';
+import { useAuthStore, useLockersStore, useThemeStore } from '../store/store';
 import { LockersContext } from './context';
 
-const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
-  const [lockers, setLockers] = useState<Locker[] | undefined>();
+const Lockers: React.FC = () => {
   const { themeName } = useThemeStore();
   const { user } = useAuthStore();
+  const { lockers, create, deleteLocker, update, fetchAll, setSelectedLocker } = useLockersStore();
   const [openedCreate, { open: openCreate, close: closeCreate }] = useDisclosure(false);
   const [openedEdit, { open: openEdit, close: closeEdit }] = useDisclosure(false);
   const [openedDelete, { open: openDelete, close: closeDelete }] = useDisclosure(false);
@@ -47,14 +44,13 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
   useEffect(() => {
     const loadLockers = async () => {
       try {
-        const data = await fetchLockers();
-        setLockers(data || []);
+        await fetchAll();
       } catch (error) {
         console.error('Error fetching lockers:', error);
       }
     };
     loadLockers();
-  }, []);
+  }, [lockers]);
 
   const handleChange = (field: keyof any, value: string) => {
     setNewLocker((prev) => ({ ...prev, [field]: value }));
@@ -72,35 +68,30 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
 
   const handleCreateLocker = async () => {
     try {
-      const response = await createLocker(newLocker);
-      if (response) {
-        setLockers((prev) => (prev ? [...prev, response.locker] : [response.locker]));
-        closeCreate();
-        setNewLocker({
-          description: '',
-          number: null,
-          location: '',
-        });
-        setErrorMessage(null);
-      }
+      await create(newLocker);
+      closeCreate();
+      setNewLocker({
+        description: '',
+        number: null,
+        location: '',
+      });
+      setErrorMessage(null);
     } catch (error: any) {
-      if (error.response && error.response.status === 409) {
-        setErrorMessage(error.response.data.message);
+      if (error instanceof Error && error.message) {
+        setErrorMessage(error.message || 'Ocurrió un error inesperado');
+      } else if (error.response && error.response.data) {
+        setErrorMessage(error.response.data.message || 'Ocurrió un error inesperado');
       } else {
-        console.error('Error creating locker:', error);
-        setErrorMessage('Ocurrió un error al crear el armario.');
+        setErrorMessage('Ocurrió un error inesperado');
       }
     }
   };
 
   const handleDeleteLocker = async (lockerId: number) => {
     try {
-      const response = await deleteLocker(lockerId);
-      if (response) {
-        setLockers((prev) => prev?.filter((locker) => locker.id !== lockerId));
-        closeDelete();
-        setErrorMessage(null);
-      }
+      await deleteLocker(lockerId);
+      closeDelete();
+      setErrorMessage(null);
     } catch (error: any) {
       if (error.response && error.response.status === 404) {
         setErrorMessage(error.response.data.message);
@@ -125,16 +116,8 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
         location: lockerToEdit.location,
       };
 
-      const response = await updateLocker(updatedLocker);
-
-      if (response) {
-        setLockers((prevLockers) =>
-          prevLockers?.map((locker) =>
-            locker.id === lockerToEdit.id ? { ...locker, ...updatedLocker } : locker
-          )
-        );
-        closeEdit();
-      }
+      await update(updatedLocker);
+      closeEdit();
     } catch (error: any) {
       switch (error.response?.status) {
         case 404:
@@ -270,7 +253,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
         )}
       </Modal>
 
-      <Flex
+      <Box
         direction="column"
         bg={themeName === 'dark' ? 'var(--mantine-color-myPurple-4)' : 'transparent'}
         bd={themeName === 'dark' ? null : '1px solid var(--mantine-color-myPurple-0)'}
@@ -305,7 +288,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
             ) : null}
           </Center>
         </Stack>
-        <ScrollArea p="lg" m="md" h={user?.role === 'TEACHER' ? '62vh' : '61vh'} scrollbarSize={16}>
+        <ScrollArea p="lg" m="md" h={user?.role === 'TEACHER' ? '62vh' : '60vh'} scrollbarSize={16}>
           <Flex direction="column" gap="sm">
             {lockers?.map((locker) => {
               return (
@@ -413,7 +396,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
                       <Button
                         aria-label={`ver casillas del armario número ${locker.number}`}
                         onClick={() => {
-                          onLockerClick(locker);
+                          setSelectedLocker(locker);
                         }}
                         size="md"
                         maw="8vw"
@@ -459,7 +442,7 @@ const Lockers: React.FC<LockersProps> = ({ onLockerClick }) => {
             />
           </Flex>
         ) : null}
-      </Flex>
+      </Box>
     </LockersContext.Provider>
   );
 };

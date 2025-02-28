@@ -25,14 +25,12 @@ export interface BoxEditType {
   lockerId: number;
 }
 
-export interface LockersProps {
-  onLockerClick: (locker: Locker) => void;
-}
+// export interface LockersProps {
+//   onLockerClick: (locker: Locker) => void;
+// }
 
 export interface BoxesProps {
-  locker: Locker;
   onBoxClick: (box: BoxType) => void;
-  onReturn: () => void;
 }
 
 export interface Booking {
